@@ -231,6 +231,7 @@ class CoordBase {
     unique_ptr<const CoordBase> convert(const CoordType) const;
     void validate(bool) const;
     const vector<bool> &get_valid() const;
+    const vector<string> &get_names() const;
     void warn_invalid() const;
     void set_waypoint() const;
     void print(ostream&) const;
@@ -287,6 +288,14 @@ inline const vector<double> &CoordBase::get_nv() const
 inline const vector<bool> &CoordBase::get_valid() const
 {
   return valid;
+}
+
+
+/// __________________________________________________
+/// Get const reference to names
+inline const vector<string> &CoordBase::get_names() const
+{
+  return names;
 }
 
 
@@ -692,12 +701,12 @@ unique_ptr<const CoordBase> newconstCoordBase(const T &t, const CoordType type)
 /// Waypoint class
 
 class WayPoint {
- protected:
+  protected:
     unique_ptr<const CoordBase> cbp_lat;
     unique_ptr<const CoordBase> cbp_lon;
     const vector<bool> &validlat;
     const vector<bool> &validlon;
-    const vector<string> names;
+    const vector<string>& names;
   public:
     explicit WayPoint(unique_ptr<const CoordBase>, unique_ptr<const CoordBase>);
     explicit WayPoint(const WayPoint&, CoordType);
@@ -716,8 +725,9 @@ class WayPoint {
 
 WayPoint::WayPoint(
           unique_ptr<const CoordBase> _cbp_lat, unique_ptr<const CoordBase> _cbp_lon) :
-            cbp_lat {std::move(_cbp_lat)}, cbp_lon {std::move(_cbp_lon)},
-            validlat(cbp_lat->get_valid()), validlon(cbp_lon->get_valid())
+            cbp_lat{std::move(_cbp_lat)}, cbp_lon{std::move(_cbp_lon)},
+            validlat(cbp_lat->get_valid()), validlon(cbp_lon->get_valid()),
+            names{ _cbp_lat->get_names() }
 {
 ///§  cout << "@WayPoint(unique_ptr<const CoordBase>, unique_ptr<const CoordBase>) "; _ctrsgn(typeid(*this));
   cbp_lat->set_waypoint();
@@ -725,7 +735,7 @@ WayPoint::WayPoint(
 }
 
 WayPoint::WayPoint(const WayPoint &wp, CoordType type) :
-            WayPoint { wp.get_cbp(true).convert(type), wp.get_cbp(false).convert(type) }
+            WayPoint{ wp.get_cbp(true).convert(type), wp.get_cbp(false).convert(type) }
 {
 ///§  cout << "@WayPoint(const WayPoint&) "; _ctrsgn(typeid(*this));
 }
