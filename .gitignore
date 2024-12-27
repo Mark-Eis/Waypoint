@@ -1,0 +1,19 @@
+### macOs ###
+.DS_Store
+._.DS_Store
+**/.DS_Store
+**/._.DS_Store
+
+### R ###
+# History files
+.Rhistory
+.Rapp.history
+# Session Data files
+.RData
+# User-specific files
+.Ruserdata
+
+### Package ###
+/Help pdf
+
+docs
