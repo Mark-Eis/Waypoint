@@ -772,11 +772,17 @@ vector<string> WayPoint::format() const
   vector<string> sv_lat{ cbp_lat->format() };
   vector<string> sv_lon{ cbp_lon->format() };
   vector<string> out(sv_lat.size());
-  transform(
-    sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(),
-    [](string &latstr, string &lonstr) { return latstr + "  " + lonstr; }
-  );
-
+  if (cbp_lat->get_names().size()) {
+    vector<string>::const_iterator nm_it(cbp_lat->get_names().begin());
+    transform(
+      sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(),
+      [&nm_it](string &latstr, string &lonstr) { return latstr + "  " + lonstr + "  " + *nm_it++; }
+    );
+  } else
+    transform(
+      sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(),
+      [](string &latstr, string &lonstr) { return latstr + "  " + lonstr; }
+    );
   return out;
 }
 
