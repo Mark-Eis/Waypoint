@@ -841,20 +841,6 @@ unique_ptr<const WayPoint> newconstWaypoint(const T &t)
   );
 }
 
-/*
-/// __________________________________________________
-/// Create unique_ptr<const WayPoint> to new WayPoint object 
-template<class T>
-unique_ptr<const WayPoint> newconstWaypoint(NumericVector& nv_lat, NumericVector& nv_lon)
-{
-//  cout << "@newconstWaypoint(NumericVector& nv_lat, NumericVector& nv_lon) fmt "
-//         << get_fmt_attribute(t) << endl;
-  return factory<const WayPoint>(
-    newconstCoordBase(nv_lat, get_coordtype(nv_lat)),
-    newconstCoordBase(nv_lon, get_coordtype(nv_lon))
-  );
-}
-*/
 
 /// __________________________________________________
 /// Output WayPoint to ostream
