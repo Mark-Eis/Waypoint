@@ -706,7 +706,6 @@ class WayPoint {
     unique_ptr<const CoordBase> cbp_lon;
     const vector<bool> &validlat;
     const vector<bool> &validlon;
-    const vector<string>& names;
   public:
     explicit WayPoint(unique_ptr<const CoordBase>, unique_ptr<const CoordBase>);
     explicit WayPoint(const WayPoint&, CoordType);
@@ -726,8 +725,7 @@ class WayPoint {
 WayPoint::WayPoint(
           unique_ptr<const CoordBase> _cbp_lat, unique_ptr<const CoordBase> _cbp_lon) :
             cbp_lat{std::move(_cbp_lat)}, cbp_lon{std::move(_cbp_lon)},
-            validlat(cbp_lat->get_valid()), validlon(cbp_lon->get_valid()),
-            names{ _cbp_lat->get_names() }
+            validlat(cbp_lat->get_valid()), validlon(cbp_lon->get_valid())
 {
 ///§  cout << "@WayPoint(unique_ptr<const CoordBase>, unique_ptr<const CoordBase>) "; _ctrsgn(typeid(*this));
   cbp_lat->set_waypoint();
@@ -843,6 +841,20 @@ unique_ptr<const WayPoint> newconstWaypoint(const T &t)
   );
 }
 
+/*
+/// __________________________________________________
+/// Create unique_ptr<const WayPoint> to new WayPoint object 
+template<class T>
+unique_ptr<const WayPoint> newconstWaypoint(NumericVector& nv_lat, NumericVector& nv_lon)
+{
+//  cout << "@newconstWaypoint(NumericVector& nv_lat, NumericVector& nv_lon) fmt "
+//         << get_fmt_attribute(t) << endl;
+  return factory<const WayPoint>(
+    newconstCoordBase(nv_lat, get_coordtype(nv_lat)),
+    newconstCoordBase(nv_lon, get_coordtype(nv_lon))
+  );
+}
+*/
 
 /// __________________________________________________
 /// Output WayPoint to ostream
@@ -1154,6 +1166,7 @@ DataFrame waypoints(DataFrame &df, int fmt = 1)
     for (const auto x : llcols)
       colattrset(df, x, "latlon", vector<bool>(1, llcols[1] - x));
   }
+  colattrset(df, llcols[0], "names", df[0]);				// !!!!!!!! Temporary Solution !!!!!!
   unique_ptr<const WayPoint> wp1{ newconstWaypoint(df) };
   if (inheritswaypoints) {
     unique_ptr<const WayPoint> wp2{ wp1->convert(newtype) };
