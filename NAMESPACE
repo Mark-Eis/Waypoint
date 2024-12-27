@@ -1,0 +1,3 @@
+useDynLib(Waypoint, .registration=TRUE)
+import(methods, Rcpp)
+exportPattern("^[[:alpha:]]+")

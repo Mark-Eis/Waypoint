@@ -1,0 +1,11 @@
+Package: Waypoint
+Type: Package
+Title: What the Package Does in One 'Title Case' Line
+Version: 1.0
+Date: 2024-12-27
+Author: Mark Eisler
+Maintainer: Mark Eisler <mark@markeisler.com>
+Description: One paragraph description of what the package does as one or more full sentences.
+License: MIT
+Imports: methods, Rcpp (>= 1.0.13)
+LinkingTo: Rcpp
