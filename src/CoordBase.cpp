@@ -260,7 +260,7 @@ CoordBase::CoordBase(const CoordBase &c) :
 
 
 CoordBase::CoordBase(const vector<double> n, const vector<bool>& ll, const vector<string>& _names) :
-           nv(std::move(n)), latlon{ ll }, llgt1(latlon.size() > 1), names{ std::move(_names) }
+           nv(std::move(n)), latlon{ ll }, names{ std::move(_names) }, llgt1(latlon.size() > 1)
 {
 ///§  cout << "@CoordBase::CoordBase(const vector<double>, const LogicalVector&, const vector<string>&) ";
 ///§  _ctrsgn(typeid(*this));
@@ -900,7 +900,7 @@ inline LogicalVector get_valid(const NumericVector &nv)
 
 
 /// __________________________________________________
-/// !!!!!!! Add constraint that must have [] !!!!!!!    
+/// Check first two columns have attribute "valid" all true    
 template<class T>
 bool check_valid(const T &t)
 {
