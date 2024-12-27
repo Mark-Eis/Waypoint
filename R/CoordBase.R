@@ -4,7 +4,7 @@
 #
 # Requires R version 4.4.2 (2024-10-31) -- "Pile of Leaves" or later
 #
-# coord.R
+# CoordBase.R
 
 # ========================================
 #  Validate Coordinates and Waypoints
