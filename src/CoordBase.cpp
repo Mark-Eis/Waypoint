@@ -697,6 +697,7 @@ class WayPoint {
     unique_ptr<const CoordBase> cbp_lon;
     const vector<bool> &validlat;
     const vector<bool> &validlon;
+    const vector<string> names;
   public:
     explicit WayPoint(unique_ptr<const CoordBase>, unique_ptr<const CoordBase>);
     explicit WayPoint(const WayPoint&, CoordType);
