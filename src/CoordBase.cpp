@@ -996,7 +996,7 @@ NumericVector coords_replace(NumericVector &nv, int value)
 
 
 /// __________________________________________________
-/// Set R vector object latlon attribute and revalidate
+/// Set latlon attribute on "coords" NumericVector and revalidate
 // [[Rcpp::export(name = "`latlon<-`")]]
 NumericVector latlon(NumericVector &nv, LogicalVector &value)
 {
