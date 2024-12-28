@@ -249,28 +249,28 @@ CoordBase::CoordBase(const NumericVector& nv) :
 		nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>()
 	)
 {
-///§  cout << "@CoordBase::CoordBase(const NumericVector&) "; _ctrsgn(typeid(*this));
+///§	cout << "@CoordBase::CoordBase(const NumericVector&) "; _ctrsgn(typeid(*this));
 }
 
 
 CoordBase::CoordBase(const CoordBase &c) :
 	CoordBase(vector<double>(c.nv.size()), vector<bool>{ c.latlon }, vector<string>{ c.names })
 {
-///§  cout << "@CoordBase::CoordBase(const CoordBase&) "; _ctrsgn(typeid(*this));
+///§	cout << "@CoordBase::CoordBase(const CoordBase&) "; _ctrsgn(typeid(*this));
 }
 
 
 CoordBase::CoordBase(const vector<double> n, const vector<bool>& ll, const vector<string>& _names) :
 	nv(std::move(n)), latlon{ ll }, names{ std::move(_names) }, llgt1(latlon.size() > 1)
 {
-///§  cout << "@CoordBase::CoordBase(const vector<double>, const LogicalVector&, const vector<string>&) ";
+///§	cout << "@CoordBase::CoordBase(const vector<double>, const LogicalVector&, const vector<string>&) ";
 ///§  _ctrsgn(typeid(*this));
 }
 
 
 CoordBase::~CoordBase()
 {
-///§  cout << "@CoordBase::~CoordBase() "; _ctrsgn(typeid(*this), true);
+///§	cout << "@CoordBase::~CoordBase() "; _ctrsgn(typeid(*this), true);
 }
 
 
@@ -417,20 +417,20 @@ class DecDeg : public CoordBase {
 
 DecDeg::DecDeg(const NumericVector &nv) : CoordBase(nv)
 {
-///§  cout << "@DecDeg::DecDeg(NumericVector&) "; _ctrsgn(typeid(*this));
+///§	cout << "@DecDeg::DecDeg(NumericVector&) "; _ctrsgn(typeid(*this));
 }
 
 
 DecDeg::DecDeg(const CoordBase &c) : CoordBase(c)
 {
-///§  cout << "@DecDeg::DecDeg(const CoordBase&) "; _ctrsgn(typeid(*this));
+///§	cout << "@DecDeg::DecDeg(const CoordBase&) "; _ctrsgn(typeid(*this));
 	transform(c.nv.begin(), c.nv.end(), nv.begin(), [&c](double n) { return c.get_decdeg(n); });
 }
 
 
 DecDeg::~DecDeg()
 {
-///§  cout << "@DecDeg::~DecDeg() "; _ctrsgn(typeid(*this), true);
+///§	cout << "@DecDeg::~DecDeg() "; _ctrsgn(typeid(*this), true);
 }
 
 inline int DecDeg::get_deg(double x) const
@@ -507,19 +507,19 @@ class DegMin : public CoordBase {
 
 DegMin::DegMin(const NumericVector &nv) : CoordBase(nv)
 {
-///§  cout << "@DegMin::DegMin(NumericVector&) "; _ctrsgn(typeid(*this));
+///§	cout << "@DegMin::DegMin(NumericVector&) "; _ctrsgn(typeid(*this));
 }
 
 DegMin::DegMin(const CoordBase &c) : CoordBase(c)
 {
-///§  cout << "@DegMin::DegMin(const CoordBase&) "; _ctrsgn(typeid(*this));
+///§	cout << "@DegMin::DegMin(const CoordBase&) "; _ctrsgn(typeid(*this));
 	transform(c.nv.begin(), c.nv.end(), nv.begin(),
 		[&c](double n) { return c.get_deg(n) * 1e2 + c.get_decmin(n); });
 }
 
 DegMin::~DegMin()
 {
-///§  cout << "@DegMin::~DegMin() "; _ctrsgn(typeid(*this), true);
+///§	cout << "@DegMin::~DegMin() "; _ctrsgn(typeid(*this), true);
 }
 
 inline int DegMin::get_deg(double x) const
@@ -599,19 +599,19 @@ class DegMinSec : public CoordBase {
 
 DegMinSec::DegMinSec(const NumericVector &nv) : CoordBase(nv)
 {
-///§  cout << "@DegMinSec::DegMinSec(NumericVector&) "; _ctrsgn(typeid(*this));
+///§	cout << "@DegMinSec::DegMinSec(NumericVector&) "; _ctrsgn(typeid(*this));
 }
 
 DegMinSec::DegMinSec(const CoordBase &c) : CoordBase(c)
 {
-///§  cout << "@DegMinSec::DegMinSec(const CoordBase&) "; _ctrsgn(typeid(*this));
+///§	cout << "@DegMinSec::DegMinSec(const CoordBase&) "; _ctrsgn(typeid(*this));
 	transform(c.nv.begin(), c.nv.end(), nv.begin(),
 		[&c](double n) { return c.get_deg(n) * 1e4 + c.get_min(n) * 1e2 + c.get_sec(n); });
 }
 
 DegMinSec::~DegMinSec()
 {
-///§  cout << "@DegMinSec::~DegMinSec() "; _ctrsgn(typeid(*this), true);
+///§	cout << "@DegMinSec::~DegMinSec() "; _ctrsgn(typeid(*this), true);
 }
 
 inline int DegMinSec::get_deg(double x) const
@@ -726,7 +726,7 @@ WayPoint::WayPoint(unique_ptr<const CoordBase> _cbp_lat, unique_ptr<const CoordB
 	cbp_lat{std::move(_cbp_lat)}, cbp_lon{std::move(_cbp_lon)},
 	validlat(cbp_lat->get_valid()), validlon(cbp_lon->get_valid())
 {
-///§  cout << "@WayPoint(unique_ptr<const CoordBase>, unique_ptr<const CoordBase>) "; _ctrsgn(typeid(*this));
+///§	cout << "@WayPoint(unique_ptr<const CoordBase>, unique_ptr<const CoordBase>) "; _ctrsgn(typeid(*this));
 	cbp_lat->set_waypoint();
 	cbp_lon->set_waypoint();
 }
@@ -734,13 +734,13 @@ WayPoint::WayPoint(unique_ptr<const CoordBase> _cbp_lat, unique_ptr<const CoordB
 WayPoint::WayPoint(const WayPoint &wp, CoordType type) :
 	WayPoint{ wp.get_cbp(true).convert(type), wp.get_cbp(false).convert(type) }
 {
-///§  cout << "@WayPoint(const WayPoint&) "; _ctrsgn(typeid(*this));
+///§	cout << "@WayPoint(const WayPoint&) "; _ctrsgn(typeid(*this));
 }
 
 
 WayPoint::~WayPoint()
 {
-///§  cout << "@WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true);
+///§	cout << "@WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true);
 }
 
 
