@@ -650,25 +650,25 @@ inline double DegMinSec::get_sec(double x) const
 vector<string> DegMinSec::format() const
 {
 //  cout << "DegMinSec::format()\n";
-  std::ostringstream outstrstr;
-  vector<string> out(nv.size());
-  transform(nv.begin(), nv.end(), out.begin(), [this, &outstrstr](double n) {
-    outstrstr.str("");
-    outstrstr << setw(3) << setfill(' ') << abs(get_deg(n)) << "\u00B0"
-              << setw(2) << setfill('0') << abs(get_min(n)) << "'"
-              << setw(5) << fixed << setprecision(2) << abs(get_sec(n)) << "\"";
-    return outstrstr.str();
-  });
+	std::ostringstream outstrstr;
+	vector<string> out(nv.size());
+	transform(nv.begin(), nv.end(), out.begin(), [this, &outstrstr](double n) {
+		outstrstr.str("");
+		outstrstr << setw(3) << setfill(' ') << abs(get_deg(n)) << "\u00B0"
+				  << setw(2) << setfill('0') << abs(get_min(n)) << "'"
+				  << setw(5) << fixed << setprecision(2) << abs(get_sec(n)) << "\"";
+		return outstrstr.str();
+	});
 
-  if (latlon.size()) {
-    vector<bool>::const_iterator ll_it(latlon.begin());
-    transform(out.begin(), out.end(), nv.begin(), out.begin(), [this, &ll_it](string ostr, double n)
-      { return ostr += cardpoint(get_sec(n) < 0, llgt1 ? *ll_it++ : *ll_it); });
-  } else
-    transform(out.begin(), out.end(), nv.begin(), out.begin(), [this](string ostr, double n)
-      { return ostr += cardi_b(get_sec(n) < 0); });
+	if (latlon.size()) {
+		vector<bool>::const_iterator ll_it(latlon.begin());
+		transform(out.begin(), out.end(), nv.begin(), out.begin(), [this, &ll_it](string ostr, double n)
+			{ return ostr += cardpoint(get_sec(n) < 0, llgt1 ? *ll_it++ : *ll_it); });
+	} else
+		transform(out.begin(), out.end(), nv.begin(), out.begin(), [this](string ostr, double n)
+			{ return ostr += cardi_b(get_sec(n) < 0); });
 
-  return out;
+	return out;
 }
 
 
