@@ -93,7 +93,7 @@ void _ctrsgn(const type_info &obj, bool destruct = false)
 /// Multiply integer part by sixty
 inline double mod1by60(double x)
 {
-		return fmod(x, 1) * 60;
+	return fmod(x, 1) * 60;
 }
 
 
@@ -101,7 +101,7 @@ inline double mod1by60(double x)
 /// Modulus after multiplication by 100
 inline double mod1e2(double x)
 {
-		return fmod(x, 1e2);
+	return fmod(x, 1e2);
 }
 
 
