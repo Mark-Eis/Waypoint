@@ -131,7 +131,7 @@ template <class T, class A1>
 inline unique_ptr<T>
 factory(A1&& a1)   // one argument version
 {
-//  cout << "@factory(A1& a1)\n";
+//	cout << "@factory(A1& a1)\n";
 	return unique_ptr<T>(new T(std::forward<A1>(a1)));
 }
 
@@ -139,7 +139,7 @@ template <class T, class A1, class A2>
 inline unique_ptr<T>
 factory(A1&& a1, A2&& a2)   // two argument version
 {
-//  cout << "@factory(A1& a1, A2& a2)\n";
+//	cout << "@factory(A1& a1, A2& a2)\n";
 	return unique_ptr<T>(new T(std::forward<A1>(a1), std::forward<A2>(a2)));
 }
 
@@ -154,7 +154,7 @@ enum class CoordType : char { decdeg, degmin, degminsec };
 /// Convert int to CoordType enum
 inline const CoordType get_coordtype(int i)
 {
-//  cout << "@get_coordtype(int) " << i << endl;
+//	cout << "@get_coordtype(int) " << i << endl;
 	if (i < 1 || i > 3)
 		stop("\"newfmt\" must be between 1 and 3");
 	return vector<CoordType>{ CoordType::decdeg, CoordType::degmin, CoordType::degminsec }[i - 1];
@@ -166,7 +166,7 @@ inline const CoordType get_coordtype(int i)
 template<class T>
 inline const CoordType get_coordtype(const T &t)
 {
-//  cout << "@get_coordtype<T>(const T&) " << as<int>(t.attr("fmt")) << endl;
+//	cout << "@get_coordtype<T>(const T&) " << as<int>(t.attr("fmt")) << endl;
 	return get_coordtype(get_fmt_attribute(t));
 }
 
@@ -175,7 +175,7 @@ inline const CoordType get_coordtype(const T &t)
 /// Convert CoordType enum to int
 inline const int coordtype_to_int(CoordType ct)
 {
-//  cout << "@coordtype_to_int(CoordType ct) " << static_cast<char>(ct) + 1 << endl;
+//	cout << "@coordtype_to_int(CoordType ct) " << static_cast<char>(ct) + 1 << endl;
 	return static_cast<char>(ct);
 }
 
@@ -278,7 +278,7 @@ CoordBase::~CoordBase()
 /// Get const reference to nv
 inline const vector<double> &CoordBase::get_nv() const
 {
-//  cout << "@CoordBase::get_nv()\n";
+//	cout << "@CoordBase::get_nv()\n";
 	return nv;
 }
 
@@ -303,12 +303,12 @@ inline const vector<string> &CoordBase::get_names() const
 /// Print coords vector
 void CoordBase::print(ostream& stream) const
 {
-//  cout << "@CoordBase::print() type " << typeid(*this).name() << endl;
+//	cout << "@CoordBase::print() type " << typeid(*this).name() << endl;
 	vector<string> sv(format());
 	if (names.size()) {
 		vector<string>::const_iterator nm_it(names.begin());
 		for_each(sv.begin(), sv.end(),
-		  [&stream, &nm_it](const string &s) { stream << s << " " << *nm_it++ << "\n"; });
+			[&stream, &nm_it](const string &s) { stream << s << " " << *nm_it++ << "\n"; });
 	} else
 		for_each(sv.begin(), sv.end(), [&stream](const string &s) { stream << s << "\n"; });
 }
@@ -318,7 +318,7 @@ void CoordBase::print(ostream& stream) const
 /// Convert to degrees, minutes and seconds, to degrees and minutes or to decimal degrees
 inline unique_ptr<const CoordBase> CoordBase::convert(const CoordType type) const
 {
-//  cout << "@CoordBase::convert(const CoordType type) " << typeid(*this).name()
+//	cout << "@CoordBase::convert(const CoordType type) " << typeid(*this).name()
 //       << " to type "<< coordtype_to_int(type) + 1 << endl;
 	return newconstCoordBase(*this, type);
 }
@@ -328,7 +328,7 @@ inline unique_ptr<const CoordBase> CoordBase::convert(const CoordType type) cons
 /// Validate coord value
 inline bool CoordBase::validator(double n, bool lat = false) const
 {
-//  cout << "@CoordBase::validator() " << " n: " << setw(9) << setfill(' ') << n << " lat: ";
+//	cout << "@CoordBase::validator() " << " n: " << setw(9) << setfill(' ') << n << " lat: ";
 //  if (latlon.size()) cout << boolalpha << lat << endl; else cout << "NA\n";
 
 	return !((abs(get_decdeg(n)) > (latlon.size() && lat ? 90 : 180)) ||
@@ -341,7 +341,7 @@ inline bool CoordBase::validator(double n, bool lat = false) const
 /// Validate coords vector
 void CoordBase::validate(bool warn = true) const
 {
-//  cout << "@CoordBase::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
+//	cout << "@CoordBase::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
 	vector<bool>& non_const_valid { const_cast<vector<bool>&>(valid) };
 	non_const_valid.assign(nv.size(), {false});
 	if (latlon.size()) {
@@ -355,7 +355,7 @@ void CoordBase::validate(bool warn = true) const
 		non_const_valid.assign({true});
 	else
 		if (warn)
-		  warning("Validation failed!");
+			warning("Validation failed!");
 }
 
 
@@ -363,7 +363,7 @@ void CoordBase::validate(bool warn = true) const
 /// All valid are true
 bool CoordBase::all_valid() const
 {
-//  cout << "@CoordBase::all_valid()\n";
+//	cout << "@CoordBase::all_valid()\n";
 	return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
 }
 
@@ -372,7 +372,7 @@ bool CoordBase::all_valid() const
 /// Warn if any valid are false
 void CoordBase::warn_invalid() const
 {
-//  cout << "@CoordBase::warn_invalid()\n";
+//	cout << "@CoordBase::warn_invalid()\n";
 	if (!all_valid())
 		warning("Validation failed!");
 }
@@ -382,7 +382,7 @@ void CoordBase::warn_invalid() const
 /// Set waypoint flag
 inline void CoordBase::set_waypoint() const
 {
-//  cout << "@CoordBase::set_waypoint()\n";
+//	cout << "@CoordBase::set_waypoint()\n";
 	bool &wpt = const_cast<bool&>(waypoint);
 	wpt = true;
 }
@@ -435,31 +435,31 @@ DecDeg::~DecDeg()
 
 inline int DecDeg::get_deg(double x) const
 {
-//  cout << "DecDeg.get_deg()\n";
+//	cout << "DecDeg.get_deg()\n";
 	return int(x);
 }
 
 inline double DecDeg::get_decdeg(double x) const
 {
-//  cout << "DecDeg.get_decdeg()\n";
+//	cout << "DecDeg.get_decdeg()\n";
 	return x;
 }
 
 inline int DecDeg::get_min(double x) const
 {
-//  cout << "DecDeg.get_min()\n";
+//	cout << "DecDeg.get_min()\n";
 	return (int(x * 1e6) % int(1e6)) * 6e-5;
 }
 
 inline double DecDeg::get_decmin(double x) const
 {
-//  cout << "DecDeg.get_decmin()\n";
+//	cout << "DecDeg.get_decmin()\n";
 	return polish(mod1by60(x));
 }
 
 inline double DecDeg::get_sec(double x) const
 {
-//  cout << "DecDeg.get_sec()\n";
+//	cout << "DecDeg.get_sec()\n";
 	return mod1by60(get_decmin(x));
 }
 
@@ -468,20 +468,20 @@ inline double DecDeg::get_sec(double x) const
 /// Formatted character strings for printing
 vector<string> DecDeg::format() const
 {
-//  cout << "DecDeg::format()\n";
+//	cout << "DecDeg::format()\n";
 	std::ostringstream outstrstr;
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), [&outstrstr](double n)
 		{
-		  outstrstr.str("");
-		  outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << n << "\u00B0";
-		  return outstrstr.str();
+			outstrstr.str("");
+			outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << n << "\u00B0";
+			return outstrstr.str();
 		});
 
 	if (latlon.size() && !waypoint) {
 		vector<bool>::const_iterator ll_it(latlon.begin());
 		transform(out.begin(), out.end(), out.begin(),
-		  [this, &ll_it](string ostr) { return ostr += ((llgt1 ? *ll_it++ : *ll_it) ? " lat" : " lon"); });
+			[this, &ll_it](string ostr) { return ostr += ((llgt1 ? *ll_it++ : *ll_it) ? " lat" : " lon"); });
 	}
 	return out;
 }
@@ -524,31 +524,31 @@ DegMin::~DegMin()
 
 inline int DegMin::get_deg(double x) const
 {
-//  cout << "DegMin.get_deg()\n";
+//	cout << "DegMin.get_deg()\n";
 	return int(x / 1e2);
 }
 
 inline double DegMin::get_decdeg(double x) const
 {
-//  cout << "DegMin.get_decdeg()\n";
+//	cout << "DegMin.get_decdeg()\n";
 	return int(x / 1e2) + mod1e2(x) / 60;
 }
 
 inline int DegMin::get_min(double x) const
 {
-//  cout << "DegMin.get_min()\n";
+//	cout << "DegMin.get_min()\n";
 	return int(x) % int(1e2);
 }
 
 inline double DegMin::get_decmin(double x) const
 {
-//  cout << "DegMin.get_decmin()\n";
+//	cout << "DegMin.get_decmin()\n";
 	return polish(mod1e2(x));
 }
 
 inline double DegMin::get_sec(double x) const
 {
-//  cout << "DegMin.get_sec()\n";
+//	cout << "DegMin.get_sec()\n";
 	return mod1by60(get_decmin(x));
 }
 
@@ -557,24 +557,24 @@ inline double DegMin::get_sec(double x) const
 /// Formatted character strings for printing
 vector<string> DegMin::format() const
 {
-//  cout << "DegMin::format()\n";
+//	cout << "DegMin::format()\n";
 	std::ostringstream outstrstr;
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), [this, &outstrstr](double n)
 		{
-		  outstrstr.str("");
-		  outstrstr << setw(3) << setfill(' ') << abs(get_deg(n)) << "\u00B0"
+			outstrstr.str("");
+			outstrstr << setw(3) << setfill(' ') << abs(get_deg(n)) << "\u00B0"
 				<< setw(7) << setfill('0') << fixed << setprecision(4) << abs(get_decmin(n)) << "'";
-		  return outstrstr.str();
+			return outstrstr.str();
 		});
 
 	if (latlon.size()) {
 		vector<bool>::const_iterator ll_it(latlon.begin());
 		transform(out.begin(), out.end(), nv.begin(), out.begin(), [this, &ll_it](string ostr, double n)
-		  { return ostr += cardpoint(get_decmin(n) < 0, llgt1 ? *ll_it++ : *ll_it); });
+			{ return ostr += cardpoint(get_decmin(n) < 0, llgt1 ? *ll_it++ : *ll_it); });
 	} else
 		transform(out.begin(), out.end(), nv.begin(), out.begin(), [this](string ostr, double n)
-		  { return ostr += cardi_b(get_decmin(n) < 0); });
+			{ return ostr += cardi_b(get_decmin(n) < 0); });
 	return out;
 }
 
@@ -616,31 +616,31 @@ DegMinSec::~DegMinSec()
 
 inline int DegMinSec::get_deg(double x) const
 {
-//  cout << "DegMinSec.get_deg()\n";
+//	cout << "DegMinSec.get_deg()\n";
 	return int(x / 1e4);
 }
 
 inline double DegMinSec::get_decdeg(double x) const
 {
-//  cout << "DegMinSec.get_decdeg()\n";
+//	cout << "DegMinSec.get_decdeg()\n";
 	return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600;
 }
 
 inline int DegMinSec::get_min(double x) const
 {
-//  cout << "DegMinSec.get_min()\n";
+//	cout << "DegMinSec.get_min()\n";
 	return (int(x) % int(1e4)) / 1e2;
 }
 
 inline double DegMinSec::get_decmin(double x) const
 {
-//  cout << "DegMinSec.get_decmin()\n";
+//	cout << "DegMinSec.get_decmin()\n";
 	return int(fmod(x, 1e4) / 1e2) + mod1e2(x) / 60;
 }
 
 inline double DegMinSec::get_sec(double x) const
 {
-//  cout << "DegMinSec.get_sec()\n";
+//	cout << "DegMinSec.get_sec()\n";
 	return mod1e2(x);
 }
 
@@ -649,7 +649,7 @@ inline double DegMinSec::get_sec(double x) const
 /// Formatted character strings for printing
 vector<string> DegMinSec::format() const
 {
-//  cout << "DegMinSec::format()\n";
+//	cout << "DegMinSec::format()\n";
 	std::ostringstream outstrstr;
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), [this, &outstrstr](double n) {
@@ -677,7 +677,7 @@ vector<string> DegMinSec::format() const
 template<class T>
 unique_ptr<const CoordBase> newconstCoordBase(const T &t, const CoordType type)
 {
-//  cout << "@newconstCoordBase<T>(const T&, const CoordType) of type "
+//	cout << "@newconstCoordBase<T>(const T&, const CoordType) of type "
 //       << coordtype_to_int(type) + 1 << endl;
 
 	switch (type)
@@ -748,7 +748,7 @@ WayPoint::~WayPoint()
 /// Convert waypoint format
 unique_ptr<const WayPoint> WayPoint::convert(const CoordType type) const
 {
-//  cout << "@WayPoint::convert(const CoordType type) " << typeid(*this).name()
+//	cout << "@WayPoint::convert(const CoordType type) " << typeid(*this).name()
 //       << " to type "<< coordtype_to_int(type) + 1 << endl;
 	return factory<const WayPoint>(*this, type);
 }
@@ -758,7 +758,7 @@ unique_ptr<const WayPoint> WayPoint::convert(const CoordType type) const
 /// Get const reference to cbp_lat or cbp_lon
 inline const CoordBase &WayPoint::get_cbp(bool latlon) const
 {
-//  cout << "@CoordBase::get_cbp(bool)\n";
+//	cout << "@CoordBase::get_cbp(bool)\n";
 	return *(latlon ? cbp_lat : cbp_lon).get() ;
 }
 
@@ -767,7 +767,7 @@ inline const CoordBase &WayPoint::get_cbp(bool latlon) const
 /// Formatted character strings for printing
 vector<string> WayPoint::format() const
 {
-//  cout << "@WayPoint::format()\n";
+//	cout << "@WayPoint::format()\n";
 	vector<string> sv_lat{ cbp_lat->format() };
 	vector<string> sv_lon{ cbp_lon->format() };
 	vector<string> out(sv_lat.size());
@@ -777,8 +777,8 @@ vector<string> WayPoint::format() const
 	);
 	if (cbp_lat->get_names().size())
 		transform(
-		  out.begin(), out.end(), cbp_lat->get_names().begin(), out.begin(),
-		  [](string &lls, const string &name) { return lls + "  " + name; }
+			out.begin(), out.end(), cbp_lat->get_names().begin(), out.begin(),
+			[](string &lls, const string &name) { return lls + "  " + name; }
 		);
 	return out;
 }
@@ -788,7 +788,7 @@ vector<string> WayPoint::format() const
 /// Print WayPoint
 void WayPoint::print(ostream& stream) const
 {
-//  cout << "@WayPoint::print() " << typeid(*this).name() << endl;
+//	cout << "@WayPoint::print() " << typeid(*this).name() << endl;
 	const int i { coordtype_to_int(cbp_lat->getfmt()) };
 	vector<int> spacing { 5, 7, 8, 11, 13, 14, 2, 2, 2 };
 	stream << " Latitude" << string(spacing[i], ' ') << "Longitude\n"
@@ -803,7 +803,7 @@ void WayPoint::print(ostream& stream) const
 /// Validate WayPoint
 void WayPoint::validate(bool warn = true) const
 {
-//  cout << "@WayPoint::validate(bool)\n";
+//	cout << "@WayPoint::validate(bool)\n";
 	cbp_lat->validate(warn);
 	cbp_lon->validate(warn);
 }
@@ -813,7 +813,7 @@ void WayPoint::validate(bool warn = true) const
 /// WayPoint validity
 const vector<bool> &WayPoint::get_valid(bool latlon) const
 {
-//  cout << "@WayPoint::get_valid(bool)\n";
+//	cout << "@WayPoint::get_valid(bool)\n";
 	return latlon ? validlat : validlon;
 }
 
@@ -822,7 +822,7 @@ const vector<bool> &WayPoint::get_valid(bool latlon) const
 /// WayPoint validity warning
 void WayPoint::warn_invalid() const
 {
-//  cout << "@WayPoint::warn_invalid()\n";
+//	cout << "@WayPoint::warn_invalid()\n";
 	if (any_of(validlat.begin(), validlat.end(), [](bool v) { return !v;})) {
 		warning("Invalid latitude");
 	}
@@ -837,7 +837,7 @@ void WayPoint::warn_invalid() const
 template<class T>
 unique_ptr<const WayPoint> newconstWaypoint(const T &t)
 {
-//  cout << "@newconstWaypoint(const T&) fmt " << get_fmt_attribute(t) << endl;
+//	cout << "@newconstWaypoint(const T&) fmt " << get_fmt_attribute(t) << endl;
 	return factory<const WayPoint>(
 		newconstCoordBase(as<NumericVector>(t[1]), get_coordtype(t)),
 		newconstCoordBase(as<NumericVector>(t[2]), get_coordtype(t))
@@ -849,7 +849,7 @@ unique_ptr<const WayPoint> newconstWaypoint(const T &t)
 /// Output WayPoint to ostream
 ostream& operator<<(ostream& stream, const WayPoint &wp)
 {
-//  cout << "@operator<<(ostream&, const WayPoint&)\n";
+//	cout << "@operator<<(ostream&, const WayPoint&)\n";
 	wp.print(stream);
 	return stream;
 }
@@ -864,7 +864,7 @@ ostream& operator<<(ostream& stream, const WayPoint &wp)
 template<class T>
 inline int get_fmt_attribute(const T &t)
 {
-//  cout << "@get_fmt_attribute<T>(const T&) " << as<int>(t.attr("fmt")) << endl;
+//	cout << "@get_fmt_attribute<T>(const T&) " << as<int>(t.attr("fmt")) << endl;
 	return as<int>(t.attr("fmt"));
 }
 
@@ -883,7 +883,7 @@ inline void checkinherits(T &t, const char *classname)
 template<class T, class V>
 void colattrset(const T &t, int col, const char *attrib, V &&val)
 {
-//  cout << "@colattrset(const T&, int, const char*, V&&) attrib " << attrib << ", col " << col << endl;
+//	cout << "@colattrset(const T&, int, const char*, V&&) attrib " << attrib << ", col " << col << endl;
 	as<NumericVector>(t[col]).attr(attrib) = std::forward<V>(val);
 }
 
@@ -896,7 +896,7 @@ void colattrset(const T &t, int col, const char *attrib, V &&val)
 /// Has R coords object been validated?
 inline bool validcoord(NumericVector &nv)
 {
-//  cout << "@validcoord(NumericVector&)\n";
+//	cout << "@validcoord(NumericVector&)\n";
 	LogicalVector lv { as<LogicalVector>(nv.attr("valid")) };
 	return 1 == lv.size() && lv[0];
 }
@@ -906,7 +906,7 @@ inline bool validcoord(NumericVector &nv)
 /// Return "valid" attribute or empty LogicalVector    !!!!!!! Generalise with template & specialisation !!!!!!!
 inline LogicalVector get_valid(const NumericVector &nv)
 {
-//  cout << "@get_valid(const NumericVector&) has attr \"valid\" " << boolalpha << nv.hasAttribute("valid") << endl;
+//	cout << "@get_valid(const NumericVector&) has attr \"valid\" " << boolalpha << nv.hasAttribute("valid") << endl;
 	return (nv.hasAttribute("valid") ? LogicalVector(nv.attr("valid")) : LogicalVector());
 }
 
@@ -916,7 +916,7 @@ inline LogicalVector get_valid(const NumericVector &nv)
 template<class T>
 bool check_valid(const T &t)
 {
-//  cout << "@check_valid(const T&) fmt " << get_fmt_attribute(t) << endl;
+//	cout << "@check_valid(const T&) fmt " << get_fmt_attribute(t) << endl;
 	bool boolat = check_valid(as<NumericVector>(t[1]));
 	if (!boolat)
 		warning("Invalid latitude!");
@@ -932,7 +932,7 @@ bool check_valid(const T &t)
 template<>
 bool check_valid<NumericVector>(const NumericVector &nv)
 {
-//  cout << "@check_valid<NumericVector>(const NumericVector&)" << endl;
+//	cout << "@check_valid<NumericVector>(const NumericVector&)" << endl;
 	LogicalVector valid = std::move(get_valid(nv));
 	if (valid.size())
 		return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
@@ -948,7 +948,7 @@ bool check_valid<NumericVector>(const NumericVector &nv)
 /// Validate coords vector
 vector<bool> validatecoord(const NumericVector &nv)
 {
-//  cout << "@validatecoord()\n";
+//	cout << "@validatecoord()\n";
 	unique_ptr<const CoordBase> cb{ newconstCoordBase(nv, get_coordtype(nv)) };
 	cb->validate();
 	const_cast<NumericVector&>(nv).attr("valid") = cb->get_valid();
@@ -1002,7 +1002,7 @@ NumericVector coords(NumericVector &nv, int fmt = 1)
 // [[Rcpp::export(name = "`coords<-`")]]
 NumericVector coords_replace(NumericVector &nv, int value)
 {
-//  cout << "——Rcpp::export——`coords_replace()<-`\n";
+//	cout << "——Rcpp::export——`coords_replace()<-`\n";
 	return coords(nv, value);
 }
 
@@ -1012,7 +1012,7 @@ NumericVector coords_replace(NumericVector &nv, int value)
 // [[Rcpp::export(name = "`latlon<-`")]]
 NumericVector latlon(NumericVector &nv, LogicalVector &value)
 {
-//  cout << "——Rcpp::export——set_latlon()\n";
+//	cout << "——Rcpp::export——set_latlon()\n";
 	checkinherits(nv, "coords");
 	if (value.size() != nv.size() && value.size() != 1)
 		stop("value must be either length 1 or length(nv)");
@@ -1027,7 +1027,7 @@ NumericVector latlon(NumericVector &nv, LogicalVector &value)
 // [[Rcpp::export(name = "print.coords", invisible = true)]]
 NumericVector printcoord(NumericVector &nv)
 {
-//  cout << "——Rcpp::export——printcoord() format " << get_fmt_attribute(nv) << endl;
+//	cout << "——Rcpp::export——printcoord() format " << get_fmt_attribute(nv) << endl;
 	checkinherits(nv, "coords");
 	if (!check_valid(nv))
 		warning("Printing invalid coords!");
@@ -1041,7 +1041,7 @@ NumericVector printcoord(NumericVector &nv)
 // [[Rcpp::export(name = "validate.coords")]]
 vector<bool> Rvalidatecoord(NumericVector &nv)
 {
-//  cout << "——Rcpp::export——Rvalidatecoord()\n";
+//	cout << "——Rcpp::export——Rvalidatecoord()\n";
 	checkinherits(nv, "coords");
 	return validatecoord(nv);
 }
@@ -1052,7 +1052,7 @@ vector<bool> Rvalidatecoord(NumericVector &nv)
 // [[Rcpp::export(name = "format.coords")]]
 vector<string> formatcoord(NumericVector &nv)
 {
-//  cout << "——Rcpp::export——format()\n";
+//	cout << "——Rcpp::export——format()\n";
 	checkinherits(nv, "coords");
 	if (!check_valid(nv))
 		warning("Formatting invalid coords!");
@@ -1065,7 +1065,7 @@ vector<string> formatcoord(NumericVector &nv)
 // [[Rcpp::export]]
 vector<int> get_deg(NumericVector &nv)
 {
-//  cout << "——Rcpp::export——get_deg()\n";
+//	cout << "——Rcpp::export——get_deg()\n";
 	checkinherits(nv, "coords");
 	unique_ptr<const CoordBase> c{newconstCoordBase(nv, get_coordtype(nv))};
 	vector<int> out(nv.size());
@@ -1079,7 +1079,7 @@ vector<int> get_deg(NumericVector &nv)
 // [[Rcpp::export]]
 vector<double> get_decdeg(NumericVector &nv)
 {
-//  cout << "——Rcpp::export——get_decdeg()\n";
+//	cout << "——Rcpp::export——get_decdeg()\n";
 	checkinherits(nv, "coords");
 	unique_ptr<const CoordBase> c{newconstCoordBase(nv, get_coordtype(nv))};
 	vector<double> out(nv.size());
@@ -1093,7 +1093,7 @@ vector<double> get_decdeg(NumericVector &nv)
 // [[Rcpp::export]]
 vector<int> get_min(NumericVector &nv)
 {
-//  cout << "——Rcpp::export——get_min()\n";
+//	cout << "——Rcpp::export——get_min()\n";
 	checkinherits(nv, "coords");
 	unique_ptr<const CoordBase> c{newconstCoordBase(nv, get_coordtype(nv))};
 	vector<int> out(nv.size());
@@ -1107,7 +1107,7 @@ vector<int> get_min(NumericVector &nv)
 // [[Rcpp::export]]
 vector<double> get_decmin(NumericVector &nv)
 {
-//  cout << "——Rcpp::export——get_decmin()\n";
+//	cout << "——Rcpp::export——get_decmin()\n";
 	checkinherits(nv, "coords");
 	unique_ptr<const CoordBase> c{newconstCoordBase(nv, get_coordtype(nv))};
 	vector<double> out(nv.size());
@@ -1121,7 +1121,7 @@ vector<double> get_decmin(NumericVector &nv)
 // [[Rcpp::export]]
 vector<double> get_sec(NumericVector &nv)
 {
-//  cout << "——Rcpp::export——get_sec()\n";
+//	cout << "——Rcpp::export——get_sec()\n";
 	checkinherits(nv, "coords");
 	unique_ptr<const CoordBase> c{newconstCoordBase(nv, get_coordtype(nv))};
 	vector<double> out(nv.size());
@@ -1184,7 +1184,7 @@ DataFrame waypoints(DataFrame &df, int fmt = 1)
 // [[Rcpp::export(name = "`waypoints<-`")]]
 DataFrame waypoints_replace(DataFrame &df, int value)
 {
-//  cout << "——Rcpp::export——`waypoints_replace()<-`\n";
+//	cout << "——Rcpp::export——`waypoints_replace()<-`\n";
 	return waypoints(df, value);
 }
 
@@ -1194,7 +1194,7 @@ DataFrame waypoints_replace(DataFrame &df, int value)
 // [[Rcpp::export(name = "print.waypoints", invisible = true)]]
 DataFrame printwaypoint(DataFrame &df)
 {
-//  cout << "——Rcpp::export——printwaypoint() format " << get_fmt_attribute(df) << endl;
+//	cout << "——Rcpp::export——printwaypoint() format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
 	if (!check_valid(df))
 		warning("Invalid waypoints!");
@@ -1208,7 +1208,7 @@ DataFrame printwaypoint(DataFrame &df)
 // [[Rcpp::export(name = "validate.waypoints")]]
 const DataFrame validatewaypoint(DataFrame &df)
 {
-//  cout << "——Rcpp::export——validatewaypoint()\n";
+//	cout << "——Rcpp::export——validatewaypoint()\n";
 	checkinherits(df, "waypoints");
 	unique_ptr<const WayPoint> wp{ newconstWaypoint(df) };
 	wp->validate(true);
