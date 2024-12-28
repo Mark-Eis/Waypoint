@@ -243,25 +243,25 @@ class CoordBase {
 };
 
 CoordBase::CoordBase(const NumericVector& nv) :
-           CoordBase(
-             as<vector<double>>(nv),
-             nv.hasAttribute("latlon") ? as<vector<bool>>(nv.attr("latlon")) : vector<bool>(),
-             nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>()
-           )
+	CoordBase(
+		as<vector<double>>(nv),
+		nv.hasAttribute("latlon") ? as<vector<bool>>(nv.attr("latlon")) : vector<bool>(),
+		nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>()
+	)
 {
 ///§  cout << "@CoordBase::CoordBase(const NumericVector&) "; _ctrsgn(typeid(*this));
 }
 
 
 CoordBase::CoordBase(const CoordBase &c) :
-           CoordBase(vector<double>(c.nv.size()), vector<bool>{ c.latlon }, vector<string>{ c.names })
+	CoordBase(vector<double>(c.nv.size()), vector<bool>{ c.latlon }, vector<string>{ c.names })
 {
 ///§  cout << "@CoordBase::CoordBase(const CoordBase&) "; _ctrsgn(typeid(*this));
 }
 
 
 CoordBase::CoordBase(const vector<double> n, const vector<bool>& ll, const vector<string>& _names) :
-           nv(std::move(n)), latlon{ ll }, names{ std::move(_names) }, llgt1(latlon.size() > 1)
+	nv(std::move(n)), latlon{ ll }, names{ std::move(_names) }, llgt1(latlon.size() > 1)
 {
 ///§  cout << "@CoordBase::CoordBase(const vector<double>, const LogicalVector&, const vector<string>&) ";
 ///§  _ctrsgn(typeid(*this));
@@ -722,10 +722,9 @@ class WayPoint {
 };
 
 
-WayPoint::WayPoint(
-          unique_ptr<const CoordBase> _cbp_lat, unique_ptr<const CoordBase> _cbp_lon) :
-            cbp_lat{std::move(_cbp_lat)}, cbp_lon{std::move(_cbp_lon)},
-            validlat(cbp_lat->get_valid()), validlon(cbp_lon->get_valid())
+WayPoint::WayPoint(unique_ptr<const CoordBase> _cbp_lat, unique_ptr<const CoordBase> _cbp_lon) :
+	cbp_lat{std::move(_cbp_lat)}, cbp_lon{std::move(_cbp_lon)},
+	validlat(cbp_lat->get_valid()), validlon(cbp_lon->get_valid())
 {
 ///§  cout << "@WayPoint(unique_ptr<const CoordBase>, unique_ptr<const CoordBase>) "; _ctrsgn(typeid(*this));
   cbp_lat->set_waypoint();
@@ -733,7 +732,7 @@ WayPoint::WayPoint(
 }
 
 WayPoint::WayPoint(const WayPoint &wp, CoordType type) :
-            WayPoint{ wp.get_cbp(true).convert(type), wp.get_cbp(false).convert(type) }
+	WayPoint{ wp.get_cbp(true).convert(type), wp.get_cbp(false).convert(type) }
 {
 ///§  cout << "@WayPoint(const WayPoint&) "; _ctrsgn(typeid(*this));
 }
