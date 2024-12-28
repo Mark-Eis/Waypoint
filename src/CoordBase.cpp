@@ -331,9 +331,9 @@ inline bool CoordBase::validator(double n, bool lat = false) const
 //  cout << "@CoordBase::validator() " << " n: " << setw(9) << setfill(' ') << n << " lat: ";
 //  if (latlon.size()) cout << boolalpha << lat << endl; else cout << "NA\n";
 
-  return !((abs(get_decdeg(n)) > (latlon.size() && lat ? 90 : 180)) ||
-           (abs(get_decmin(n)) >= 60) ||
-           (abs(get_sec(n)) >= 60));
+	return !((abs(get_decdeg(n)) > (latlon.size() && lat ? 90 : 180)) ||
+		(abs(get_decmin(n)) >= 60) ||
+		(abs(get_sec(n)) >= 60));
 }
 
 
