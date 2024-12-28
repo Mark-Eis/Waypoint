@@ -1135,48 +1135,47 @@ vector<double> get_sec(NumericVector &nv)
 // [[Rcpp::export]]
 DataFrame waypoints(DataFrame &df, int fmt = 1)
 {
-//  cout << "——Rcpp::export——waypoints()\n";
-  bool boolio;
-  vector<int> llcols { 1, 2 };
-  CoordType newtype = get_coordtype(fmt);
-  CoordType oldtype;
-  const bool inheritswaypoints { df.inherits("waypoints") };
-  if (inheritswaypoints) {
-    oldtype = get_coordtype(df);
-//    cout << "argument df is already a \"waypoints\" vector of type " << coordtype_to_int(oldtype) + 1 << endl;
-    if (!check_valid(df))
-      stop("Invalid waypoints!");
-    if (newtype == oldtype) {
-//      cout << "——fmt out == fmt in!——" << endl;
-      return df;
-    }
-  } else {
-    df.attr("fmt") = fmt;
-    for (const auto x : llcols)
-      colattrset(df, x, "latlon", vector<bool>(1, llcols[1] - x));
-  }
-  colattrset(df, llcols[0], "names", df[0]);				// !!!!!!!! Temporary Solution !!!!!!
-  unique_ptr<const WayPoint> wp1{ newconstWaypoint(df) };
-  if (inheritswaypoints) {
-    unique_ptr<const WayPoint> wp2{ wp1->convert(newtype) };
-    wp1.swap(wp2);
-    for (const auto x : llcols) {
-      boolio = llcols[2] - x;
-      copy((wp1->get_cbp(boolio).get_nv()).begin(), (wp1->get_cbp(boolio).get_nv()).end(),
-        as<NumericVector>(df[x]).begin());
-    }
-  } else {
-    df.attr("class") = CharacterVector{"waypoints", "data.frame"};
-  }
-  wp1->validate(true);
-  wp1->warn_invalid();
-  for (const auto x : llcols) {
-    boolio = llcols[2] - x;
-    colattrset(df, x, "valid", LogicalVector(wrap(wp1->get_valid(boolio))));
-    colattrset(df, x, "fmt", fmt);
-  }
-  df.attr("fmt") = fmt;
-  return df;
+//	cout << "——Rcpp::export——waypoints()\n";
+	bool boolio;
+	vector<int> llcols { 1, 2 };
+	CoordType newtype = get_coordtype(fmt);
+	CoordType oldtype;
+	const bool inheritswaypoints { df.inherits("waypoints") };
+	if (inheritswaypoints) {
+		oldtype = get_coordtype(df);
+//		cout << "argument df is already a \"waypoints\" vector of type " << coordtype_to_int(oldtype) + 1 << endl;
+		if (!check_valid(df))
+			stop("Invalid waypoints!");
+		if (newtype == oldtype) {
+//			cout << "——fmt out == fmt in!——" << endl;
+			return df;
+		}
+	} else {
+		df.attr("fmt") = fmt;
+		for (const auto x : llcols)
+			colattrset(df, x, "latlon", vector<bool>(1, llcols[1] - x));
+	}
+	colattrset(df, llcols[0], "names", df[0]);				// !!!!!!!! Temporary Solution !!!!!!
+	unique_ptr<const WayPoint> wp1{ newconstWaypoint(df) };
+	if (inheritswaypoints) {
+		unique_ptr<const WayPoint> wp2{ wp1->convert(newtype) };
+		wp1.swap(wp2);
+		for (const auto x : llcols) {
+			boolio = llcols[2] - x;
+			copy((wp1->get_cbp(boolio).get_nv()).begin(), (wp1->get_cbp(boolio).get_nv()).end(), as<NumericVector>(df[x]).begin());
+		}
+	} else {
+		df.attr("class") = CharacterVector{"waypoints", "data.frame"};
+	}
+	wp1->validate(true);
+	wp1->warn_invalid();
+	for (const auto x : llcols) {
+		boolio = llcols[2] - x;
+		colattrset(df, x, "valid", LogicalVector(wrap(wp1->get_valid(boolio))));
+		colattrset(df, x, "fmt", fmt);
+	}
+	df.attr("fmt") = fmt;
+	return df;
 }
 
 
