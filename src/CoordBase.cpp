@@ -30,8 +30,13 @@ inline string cardi_b(bool);
 
 template<class T>
 class CoordBase;
+
+typedef CoordBase<string> CoordBaseStr;
+typedef CoordBase<int> CoordBaseInt;
+
 template<class T>
 ostream& operator<<(ostream&, const CoordBase<T>&);
+
 template<class T>
 class DecDeg;
 template<class T>
@@ -246,7 +251,8 @@ class CoordBase {
 		friend class DecDeg<T>;
 		friend class DegMin<T>;
 		friend class DegMinSec<T>;
-		friend ostream& operator<<(ostream&, const CoordBase<T>&);
+	    friend ostream& operator<< <> (ostream&, const CoordBase&);
+
 };
 
 template<class T>
