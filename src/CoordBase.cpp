@@ -564,7 +564,7 @@ vector<string> DegMin::format() const
     {
       outstrstr.str("");
       outstrstr << setw(3) << setfill(' ') << abs(get_deg(n)) << "\u00B0"
-                << setw(7) << setfill('0') << fixed << setprecision(4) << abs(get_decmin(n)) << "'";
+				<< setw(7) << setfill('0') << fixed << setprecision(4) << abs(get_decmin(n)) << "'";
       return outstrstr.str();
     });
 
@@ -683,15 +683,15 @@ unique_ptr<const CoordBase> newconstCoordBase(const T &t, const CoordType type)
   switch (type)
   {
     case CoordType::decdeg:
-                    return factory<const DecDeg>(t);
+					return factory<const DecDeg>(t);
 
     case CoordType::degmin:
-                    return factory<const DegMin>(t);
+					return factory<const DegMin>(t);
 
     case CoordType::degminsec:
-                    return factory<const DegMinSec>(t);
+					return factory<const DegMinSec>(t);
     default:
-                    stop("newconstCoordBase<t>(const T&, const CoordType) my bad");
+					stop("newconstCoordBase<t>(const T&, const CoordType) my bad");
   }
 }
 
