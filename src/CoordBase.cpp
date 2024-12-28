@@ -789,13 +789,13 @@ vector<string> WayPoint::format() const
 void WayPoint::print(ostream& stream) const
 {
 //  cout << "@WayPoint::print() " << typeid(*this).name() << endl;
-  const int i { coordtype_to_int(cbp_lat->getfmt()) };
-  vector<int> spacing { 5, 7, 8, 11, 13, 14, 2, 2, 2 };
-  stream << " Latitude" << string(spacing[i], ' ') << "Longitude\n"
-         << string(1, ' ') << string(spacing[i + 3], '_')
-         << string(spacing[i + 6], ' ') << string(spacing[i + 3] + 1, '_') << endl;
-  vector<string> sv(format());
-  for_each(sv.begin(), sv.end(), [&stream](const string &s) { stream << s << "\n"; });
+	const int i { coordtype_to_int(cbp_lat->getfmt()) };
+	vector<int> spacing { 5, 7, 8, 11, 13, 14, 2, 2, 2 };
+	stream << " Latitude" << string(spacing[i], ' ') << "Longitude\n"
+		   << string(1, ' ') << string(spacing[i + 3], '_')
+		   << string(spacing[i + 6], ' ') << string(spacing[i + 3] + 1, '_') << endl;
+	vector<string> sv(format());
+	for_each(sv.begin(), sv.end(), [&stream](const string &s) { stream << s << "\n"; });
 }
 
 
