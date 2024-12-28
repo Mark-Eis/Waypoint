@@ -967,33 +967,33 @@ vector<bool> validatecoord(const NumericVector &nv)
 // [[Rcpp::export]]
 NumericVector coords(NumericVector &nv, int fmt = 1)
 {
-//  cout << "——Rcpp::export——coords()\n";
-  CoordType newtype = get_coordtype(fmt);
-  CoordType oldtype;
-  const bool inheritscoords { nv.inherits("coords") };
-  if (inheritscoords) {
-    oldtype = get_coordtype(nv);
-//    cout <<  "coords() argument nv is already a \"coords\" vector of type "
-//         << coordtype_to_int(oldtype) + 1 << endl;
-    if (newtype == oldtype) {
-//      cout << "——fmt out == fmt in!——" << endl;
-      if (!check_valid(nv))
-        warning("Invalid coords!");
-      return nv;
-    }
-  }
-  unique_ptr<const CoordBase> cb1{ newconstCoordBase(nv, inheritscoords ? oldtype : newtype) };
-  if (inheritscoords) {
-    unique_ptr<const CoordBase> cb2{ cb1->convert(newtype) };
-    cb1.swap(cb2);
-    copy((cb1->get_nv()).begin(), (cb1->get_nv()).end(), nv.begin());
-  } else {
-    nv.attr("class") = "coords";
-  }
-  nv.attr("fmt") = fmt;
-  cb1->validate();
-  nv.attr("valid") = cb1->get_valid();
-  return nv;
+//	cout << "——Rcpp::export——coords()\n";
+	CoordType newtype = get_coordtype(fmt);
+	CoordType oldtype;
+	const bool inheritscoords { nv.inherits("coords") };
+	if (inheritscoords) {
+		oldtype = get_coordtype(nv);
+//		cout <<  "coords() argument nv is already a \"coords\" vector of type "
+//			 << coordtype_to_int(oldtype) + 1 << endl;
+		if (newtype == oldtype) {
+//			cout << "——fmt out == fmt in!——" << endl;
+			if (!check_valid(nv))
+				warning("Invalid coords!");
+			return nv;
+		}
+	}
+	unique_ptr<const CoordBase> cb1{ newconstCoordBase(nv, inheritscoords ? oldtype : newtype) };
+	if (inheritscoords) {
+		unique_ptr<const CoordBase> cb2{ cb1->convert(newtype) };
+		cb1.swap(cb2);
+		copy((cb1->get_nv()).begin(), (cb1->get_nv()).end(), nv.begin());
+	} else {
+		nv.attr("class") = "coords";
+	}
+	nv.attr("fmt") = fmt;
+	cb1->validate();
+	nv.attr("valid") = cb1->get_valid();
+	return nv;
 }
 
 
