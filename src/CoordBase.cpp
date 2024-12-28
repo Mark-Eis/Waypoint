@@ -39,8 +39,8 @@ class DegMin;
 template<class T>
 class DegMinSec;
 
-template<class T, class A>
-unique_ptr<const CoordBase<T>> newconstCoordBase(const A&, const CoordType);
+template<class T>
+unique_ptr<const CoordBase<string>> newconstCoordBase(const T&, const CoordType);
 
 class WayPoint;
 template <class T>
@@ -215,7 +215,7 @@ class CoordBase {
 //		const vector<string> names;
 		const vector<T> names;
 		const bool llgt1 = false;
-		bool validator(double, bool) const;
+		bool validator(double, bool = false) const;
 		bool all_valid() const;
 		bool waypoint = false;
 
@@ -723,27 +723,54 @@ vector<string> DegMinSec<T>::format() const
 	return out;
 }
 
-
+/*
 /// __________________________________________________
 /// Create unique_ptr<CoordBase> to new DecDeg, DegMin or DegMinSec object
-template<class T, class A>
-unique_ptr<const CoordBase<T>> newconstCoordBase(const A &a, const CoordType type)
+template<class T>
+unique_ptr<const CoordBase> newconstCoordBase(const T &t, const CoordType type)
 {
-//	cout << "@newconstCoordBase<T>(const A&, const CoordType) of type "
+//	cout << "@newconstCoordBase<T>(const T&, const CoordType) of type "
 //       << coordtype_to_int(type) + 1 << endl;
 
 	switch (type)
 	{
 		case CoordType::decdeg:
-					return factory<const DecDeg<string>>(a);
+					return factory<const DecDeg>(t);
 
 		case CoordType::degmin:
-					return factory<const DegMin<string>>(a);
+					return factory<const DegMin>(t);
 
 		case CoordType::degminsec:
-					return factory<const DegMinSec<string>>(a);
+					return factory<const DegMinSec>(t);
 		default:
-					stop("newconstCoordBase<T>(const A&, const CoordType) my bad");
+					stop("newconstCoordBase<t>(const T&, const CoordType) my bad");
+	}
+}
+*/
+
+
+/// __________________________________________________
+/// Create unique_ptr<CoordBase> to new DecDeg, DegMin or DegMinSec object
+/// __________________________________________________
+/// Create unique_ptr<CoordBase> to new DecDeg, DegMin or DegMinSec object
+template<class T>
+unique_ptr<const CoordBase<string>> newconstCoordBase(const T &t, const CoordType type)
+{
+//	cout << "@newconstCoordBase(const T&, const CoordType) of type "
+//       << coordtype_to_int(type) + 1 << endl;
+
+	switch (type)
+	{
+		case CoordType::decdeg:
+					return factory<const DecDeg<string>>(t);
+
+		case CoordType::degmin:
+					return factory<const DegMin<string>>(t);
+
+		case CoordType::degminsec:
+					return factory<const DegMinSec<string>>(t);
+		default:
+					stop("newconstCoordBase<t>(const T&, const CoordType) my bad");
 	}
 }
 
@@ -1034,9 +1061,9 @@ NumericVector coords(NumericVector &nv, int fmt = 1)
 			return nv;
 		}
 	}
-	unique_ptr<const CoordBase> cb1{ newconstCoordBase(nv, inheritscoords ? oldtype : newtype) };
+	unique_ptr<const CoordBase<string>> cb1{ newconstCoordBase(nv, inheritscoords ? oldtype : newtype) };
 	if (inheritscoords) {
-		unique_ptr<const CoordBase> cb2{ cb1->convert(newtype) };
+		unique_ptr<const CoordBase<string>> cb2{ cb1->convert(newtype) };
 		cb1.swap(cb2);
 		copy((cb1->get_nv()).begin(), (cb1->get_nv()).end(), nv.begin());
 	} else {
@@ -1119,7 +1146,7 @@ vector<int> get_deg(NumericVector &nv)
 {
 //	cout << "——Rcpp::export——get_deg()\n";
 	checkinherits(nv, "coords");
-	unique_ptr<const CoordBase> c{newconstCoordBase(nv, get_coordtype(nv))};
+	unique_ptr<const CoordBase<string>> c{newconstCoordBase(nv, get_coordtype(nv))};
 	vector<int> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), [&c](double n) { return c->get_deg(n); });
 	return out;
@@ -1133,7 +1160,7 @@ vector<double> get_decdeg(NumericVector &nv)
 {
 //	cout << "——Rcpp::export——get_decdeg()\n";
 	checkinherits(nv, "coords");
-	unique_ptr<const CoordBase> c{newconstCoordBase(nv, get_coordtype(nv))};
+	unique_ptr<const CoordBase<string>> c{newconstCoordBase(nv, get_coordtype(nv))};
 	vector<double> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), [&c](double n) { return c->get_decdeg(n); });
 	return out;
@@ -1147,7 +1174,7 @@ vector<int> get_min(NumericVector &nv)
 {
 //	cout << "——Rcpp::export——get_min()\n";
 	checkinherits(nv, "coords");
-	unique_ptr<const CoordBase> c{newconstCoordBase(nv, get_coordtype(nv))};
+	unique_ptr<const CoordBase<string>> c{newconstCoordBase(nv, get_coordtype(nv))};
 	vector<int> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), [&c](double n) { return c->get_min(n); });
 	return out;
@@ -1161,7 +1188,7 @@ vector<double> get_decmin(NumericVector &nv)
 {
 //	cout << "——Rcpp::export——get_decmin()\n";
 	checkinherits(nv, "coords");
-	unique_ptr<const CoordBase> c{newconstCoordBase(nv, get_coordtype(nv))};
+	unique_ptr<const CoordBase<string>> c{newconstCoordBase(nv, get_coordtype(nv))};
 	vector<double> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), [&c](double n) { return c->get_decmin(n); });
 	return out;
@@ -1175,7 +1202,7 @@ vector<double> get_sec(NumericVector &nv)
 {
 //	cout << "——Rcpp::export——get_sec()\n";
 	checkinherits(nv, "coords");
-	unique_ptr<const CoordBase> c{newconstCoordBase(nv, get_coordtype(nv))};
+	unique_ptr<const CoordBase<string>> c{newconstCoordBase(nv, get_coordtype(nv))};
 	vector<double> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), [&c](double n) { return c->get_sec(n); });
 	return out;
