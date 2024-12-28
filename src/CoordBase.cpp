@@ -251,8 +251,7 @@ class CoordBase {
 		friend class DecDeg<T>;
 		friend class DegMin<T>;
 		friend class DegMinSec<T>;
-	    friend ostream& operator<< <> (ostream&, const CoordBase&);
-
+		friend ostream& operator<< <> (ostream&, const CoordBase&);
 };
 
 template<class T>
