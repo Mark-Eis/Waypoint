@@ -30,6 +30,9 @@ inline string cardi_b(bool);
 
 class CoordBase;
 ostream& operator<<(ostream&, const CoordBase&);
+
+template<class T> 
+string&& format_dd(const T&, double);
 class DecDeg;
 class DegMin;
 class DegMinSec;
@@ -464,34 +467,30 @@ inline double DecDeg::get_sec(double x) const
 }
 
 /*
-/// __________________________________________________
-/// Formatted character strings for printing
-vector<string> DecDeg::format() const
-{
-//	cout << "DecDeg::format()\n";
-	std::ostringstream outstrstr;
-	vector<string> out(nv.size());
-	transform(nv.begin(), nv.end(), out.begin(), [&outstrstr](double n)
-		{
-			outstrstr.str("");
-			outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << n << "\u00B0";
-			return outstrstr.str();
-		});
-
-	if (latlon.size() && !waypoint) {
-		vector<bool>::const_iterator ll_it(latlon.begin());
-		transform(out.begin(), out.end(), out.begin(),
-			[this, &ll_it](string ostr) { return ostr += ((llgt1 ? *ll_it++ : *ll_it) ? " lat" : " lon"); });
-	}
-	return out;
-}
-*/
-
 string&& format_dd(const CoordBase& cb, double n)
 {
 	cout << "format_dd(const CoordBase&, double)\n";
 	ostringstream outstrstr;
 	outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << abs(cb.get_decdeg(n)) << "\u00B0";
+	return outstrstr.str();
+}
+
+
+string&& format_dd(const DecDeg& dd, double n)
+{
+	cout << "format_dd(const DecDeg&, double)\n";
+	ostringstream outstrstr;
+	outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << abs(dd.get_decdeg(n)) << "\u00B0";
+	return outstrstr.str();
+} */
+
+
+template<class T> 
+string&& format_dd(const T& t, double n)
+{
+	cout << "template<class T> format_dd(const T&, double)\n";
+	ostringstream outstrstr;
+	outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << abs(t.get_decdeg(n)) << "\u00B0";
 	return outstrstr.str();
 }
 
