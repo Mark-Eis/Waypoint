@@ -45,7 +45,11 @@ template<class T>
 class DegMinSec;
 
 template<class T>
-unique_ptr<const CoordBase<string>> newconstCoordBase(const T&, const CoordType);
+unique_ptr<const CoordBase<int>> newconstCoordBaseInt(const T&, const CoordType);
+template<class T>
+unique_ptr<const CoordBase<string>> newconstCoordBaseStr(const T&, const CoordType);
+template<class T, class A>
+unique_ptr<const CoordBase<T>> newconstCoordBase(const A&, const CoordType);
 
 class WayPoint;
 template <class T>
@@ -217,8 +221,7 @@ class CoordBase {
 		vector<double> nv;
 		const vector<bool> valid { false };
 		const vector<bool> latlon;
-//		const vector<string> names;
-		const vector<T> names;
+		const vector<T> altsornames;
 		const bool llgt1 = false;
 		bool validator(double, bool = false) const;
 		bool all_valid() const;
@@ -227,7 +230,7 @@ class CoordBase {
 	public:
 		CoordBase(const NumericVector&);
 		explicit CoordBase(const CoordBase&);
-		CoordBase(const vector<double>, const vector<bool>&, const vector<string>&);
+		CoordBase(const vector<double>, const vector<bool>&, const vector<T>&);
 		CoordBase& operator=(const CoordBase&) = delete;
 
 		virtual ~CoordBase() = 0;
@@ -243,7 +246,7 @@ class CoordBase {
 		unique_ptr<const CoordBase> convert(const CoordType) const;
 		void validate(bool = true) const;
 		const vector<bool> &get_valid() const;
-		const vector<T> &get_names() const;
+		const vector<T> &get_altsornames() const;
 		void warn_invalid() const;
 		void set_waypoint() const;
 		void print(ostream&) const;
@@ -259,7 +262,7 @@ CoordBase<T>::CoordBase(const NumericVector& nv) :
 	CoordBase(
 		as<vector<double>>(nv),
 		nv.hasAttribute("latlon") ? as<vector<bool>>(nv.attr("latlon")) : vector<bool>(),
-		nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>()
+		nv.hasAttribute("altsornames") ? as<vector<T>>(nv.attr("altsornames")) : vector<T>()
 	)
 {
 ///§	cout << "@CoordBase<T>::CoordBase(const NumericVector&) "; _ctrsgn(typeid(*this));
@@ -268,17 +271,17 @@ CoordBase<T>::CoordBase(const NumericVector& nv) :
 
 template<class T>
 CoordBase<T>::CoordBase(const CoordBase &c) :
-	CoordBase(vector<double>(c.nv.size()), vector<bool>{ c.latlon }, vector<string>{ c.names })
+	CoordBase(vector<double>(c.nv.size()), vector<bool>{ c.latlon }, vector<T>{ c.altsornames })
 {
 ///§	cout << "@CoordBase<T>::CoordBase(const CoordBase&) "; _ctrsgn(typeid(*this));
 }
 
 
 template<class T>
-CoordBase<T>::CoordBase(const vector<double> n, const vector<bool>& ll, const vector<string>& _names) :
-	nv(std::move(n)), latlon{ ll }, names{ std::move(_names) }, llgt1(latlon.size() > 1)
+CoordBase<T>::CoordBase(const vector<double> n, const vector<bool>& ll, const vector<T>& _altsornames) :
+	nv(std::move(n)), latlon{ ll }, altsornames{ std::move(_altsornames) }, llgt1(latlon.size() > 1)
 {
-///§	cout << "@CoordBase<T>::CoordBase(const vector<double>, const LogicalVector&, const vector<string>&) ";
+///§	cout << "@CoordBase<T>::CoordBase(const vector<double>, const LogicalVector&, const vector<T>&) ";
 ///§  _ctrsgn(typeid(*this));
 }
 
@@ -312,9 +315,9 @@ inline const vector<bool> &CoordBase<T>::get_valid() const
 /// __________________________________________________
 /// Get const reference to names
 template<class T>
-inline const vector<T> &CoordBase<T>::get_names() const
+inline const vector<T> &CoordBase<T>::get_altsornames() const
 {
-	return names;
+	return altsornames;
 }
 
 
@@ -325,11 +328,11 @@ void CoordBase<T>::print(ostream& stream) const
 {
 //	cout << "@CoordBase<T>::print() type " << typeid(*this).name() << endl;
 	vector<string> sv(format());
-	if (names.size()) {
-		vector<string>::const_iterator nm_it(names.begin());
+/*	if (altsornames.size()) {
+		vector<T>::const_iterator nm_it(altsornames.begin());
 		for_each(sv.begin(), sv.end(),
 			[&stream, &nm_it](const string &s) { stream << s << " " << *nm_it++ << "\n"; });
-	} else
+	} else */
 		for_each(sv.begin(), sv.end(), [&stream](const string &s) { stream << s << "\n"; });
 }
 
@@ -341,7 +344,7 @@ inline unique_ptr<const CoordBase<T>> CoordBase<T>::convert(const CoordType type
 {
 //	cout << "@CoordBase<T>::convert(const CoordType type) " << typeid(*this).name()
 //       << " to type "<< coordtype_to_int(type) + 1 << endl;
-	return newconstCoordBase(*this, type);
+	return newconstCoordBaseStr(*this, type);
 }
 
 
@@ -755,13 +758,35 @@ unique_ptr<const CoordBase> newconstCoordBase(const T &t, const CoordType type)
 
 
 /// __________________________________________________
-/// Create unique_ptr<CoordBase> to new DecDeg, DegMin or DegMinSec object
-/// __________________________________________________
-/// Create unique_ptr<CoordBase> to new DecDeg, DegMin or DegMinSec object
+/// Create unique_ptr<CoordBase<int>> to new DecDeg, DegMin or DegMinSec object
 template<class T>
-unique_ptr<const CoordBase<string>> newconstCoordBase(const T &t, const CoordType type)
+unique_ptr<const CoordBase<int>> newconstCoordBaseInt(const T &t, const CoordType type)
 {
-//	cout << "@newconstCoordBase(const T&, const CoordType) of type "
+//	cout << "@newconstCoordBaseInt(const T&, const CoordType) of type "
+//       << coordtype_to_int(type) + 1 << endl;
+
+	switch (type)
+	{
+		case CoordType::decdeg:
+					return factory<const DecDeg<int>>(t);
+
+		case CoordType::degmin:
+					return factory<const DegMin<int>>(t);
+
+		case CoordType::degminsec:
+					return factory<const DegMinSec<int>>(t);
+		default:
+					stop("newconstCoordBaseInt(const T&, const CoordType) my bad");
+	}
+}
+
+
+/// __________________________________________________
+/// Create unique_ptr<CoordBase<string>> to new DecDeg, DegMin or DegMinSec object
+template<class T>
+unique_ptr<const CoordBase<string>> newconstCoordBaseStr(const T &t, const CoordType type)
+{
+//	cout << "@newconstCoordBaseStr(const T&, const CoordType) of type "
 //       << coordtype_to_int(type) + 1 << endl;
 
 	switch (type)
@@ -775,6 +800,30 @@ unique_ptr<const CoordBase<string>> newconstCoordBase(const T &t, const CoordTyp
 		case CoordType::degminsec:
 					return factory<const DegMinSec<string>>(t);
 		default:
+					stop("newconstCoordBaseStr(const T&, const CoordType) my bad");
+	}
+}
+
+
+/// __________________________________________________
+/// Create unique_ptr<CoordBase> to new DecDeg, DegMin or DegMinSec object
+template<class T, class A>
+unique_ptr<const CoordBase<T>> newconstCoordBase(const A &a, const CoordType type)
+{
+//	cout << "@newconstCoordBase(const T&, const CoordType) of type "
+//       << coordtype_to_int(type) + 1 << endl;
+
+	switch (type)
+	{
+		case CoordType::decdeg:
+					return factory<const DecDeg>(a);
+
+		case CoordType::degmin:
+					return factory<const DegMin>(a);
+
+		case CoordType::degminsec:
+					return factory<const DegMinSec>(a);
+		default:
 					stop("newconstCoordBase<t>(const T&, const CoordType) my bad");
 	}
 }
@@ -786,16 +835,17 @@ unique_ptr<const CoordBase<string>> newconstCoordBase(const T &t, const CoordTyp
 
 class WayPoint {
 	protected:
-		unique_ptr<const CoordBase<string>> cbp_lat;
+		unique_ptr<const CoordBase<int>> cbp_lat;
 		unique_ptr<const CoordBase<string>> cbp_lon;
 		const vector<bool> &validlat;
 		const vector<bool> &validlon;
 	public:
-		explicit WayPoint(unique_ptr<const CoordBase<string>>, unique_ptr<const CoordBase<string>>);
+		explicit WayPoint(unique_ptr<const CoordBase<int>>, unique_ptr<const CoordBase<string>>);
 		explicit WayPoint(const WayPoint&, CoordType);
 		~WayPoint();
 
-		const CoordBase<string> &get_cbp(bool) const;
+		const CoordBase<int> &get_cbp_lat() const;
+		const CoordBase<string> &get_cbp_lon() const;
 		unique_ptr<const WayPoint> convert(const CoordType) const;
 		void validate(bool) const;
 		const vector<bool> &get_valid(bool) const;
@@ -806,17 +856,17 @@ class WayPoint {
 };
 
 
-WayPoint::WayPoint(unique_ptr<const CoordBase<string>> _cbp_lat, unique_ptr<const CoordBase<string>> _cbp_lon) :
+WayPoint::WayPoint(unique_ptr<const CoordBase<int>> _cbp_lat, unique_ptr<const CoordBase<string>> _cbp_lon) :
 	cbp_lat{std::move(_cbp_lat)}, cbp_lon{std::move(_cbp_lon)},
 	validlat(cbp_lat->get_valid()), validlon(cbp_lon->get_valid())
 {
-///§	cout << "@WayPoint(unique_ptr<const CoordBase>, unique_ptr<const CoordBase>) "; _ctrsgn(typeid(*this));
+///§	cout << "@WayPoint(unique_ptr<const CoordBase<int>>, unique_ptr<const CoordBase<string>>) "; _ctrsgn(typeid(*this));
 	cbp_lat->set_waypoint();
 	cbp_lon->set_waypoint();
 }
 
 WayPoint::WayPoint(const WayPoint &wp, CoordType type) :
-	WayPoint{ wp.get_cbp(true).convert(type), wp.get_cbp(false).convert(type) }
+	WayPoint{ wp.get_cbp_lat().convert(type), wp.get_cbp_lon().convert(type) }
 {
 ///§	cout << "@WayPoint(const WayPoint&) "; _ctrsgn(typeid(*this));
 }
@@ -839,11 +889,20 @@ unique_ptr<const WayPoint> WayPoint::convert(const CoordType type) const
 
 
 /// __________________________________________________
-/// Get const reference to cbp_lat or cbp_lon
-inline const CoordBase<string> &WayPoint::get_cbp(bool latlon) const
+/// Get const reference to cbp_lat
+inline const CoordBase<int> &WayPoint::get_cbp_lat() const
 {
-//	cout << "@CoordBase<T>::get_cbp(bool)\n";
-	return *(latlon ? cbp_lat : cbp_lon).get() ;
+//	cout << "@CoordBase<int>::get_cbp_lat()\n";
+	return *cbp_lat.get() ;
+}
+
+
+/// __________________________________________________
+/// Get const reference to cbp_lon
+inline const CoordBase<string> &WayPoint::get_cbp_lon() const
+{
+//	cout << "@CoordBase<int>::get_cbp_lon()\n";
+	return *cbp_lon.get() ;
 }
 
 
@@ -859,9 +918,14 @@ vector<string> WayPoint::format() const
 		sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(),
 		[](string &latstr, string &lonstr) { return latstr + "  " + lonstr; }
 	);
-	if (cbp_lat->get_names().size())
+	if (cbp_lat->get_altsornames().size())
 		transform(
-			out.begin(), out.end(), cbp_lat->get_names().begin(), out.begin(),
+			out.begin(), out.end(), cbp_lat->get_altsornames().begin(), out.begin(),
+			[](string &lls, const int &alt) { return lls + "  " + to_string(alt); }
+		);
+	if (cbp_lon->get_altsornames().size())
+		transform(
+			out.begin(), out.end(), cbp_lat->get_altsornames().begin(), out.begin(),
 			[](string &lls, const string &name) { return lls + "  " + name; }
 		);
 	return out;
@@ -923,8 +987,8 @@ unique_ptr<const WayPoint> newconstWaypoint(const T &t)
 {
 //	cout << "@newconstWaypoint(const T&) fmt " << get_fmt_attribute(t) << endl;
 	return factory<const WayPoint>(
-		newconstCoordBase(as<NumericVector>(t[1]), get_coordtype(t)),
-		newconstCoordBase(as<NumericVector>(t[2]), get_coordtype(t))
+		newconstCoordBaseInt(as<NumericVector>(t[1]), get_coordtype(t)),
+		newconstCoordBaseStr(as<NumericVector>(t[2]), get_coordtype(t))
 	);
 }
 
@@ -1033,7 +1097,7 @@ bool check_valid<NumericVector>(const NumericVector &nv)
 vector<bool> validatecoord(const NumericVector &nv)
 {
 //	cout << "@validatecoord()\n";
-	unique_ptr<const CoordBase<string>> cb{ newconstCoordBase(nv, get_coordtype(nv)) };
+	unique_ptr<const CoordBase<string>> cb{ newconstCoordBaseStr(nv, get_coordtype(nv)) };
 	cb->validate();
 	const_cast<NumericVector&>(nv).attr("valid") = cb->get_valid();
 	return cb->get_valid();
@@ -1066,7 +1130,7 @@ NumericVector coords(NumericVector &nv, int fmt = 1)
 			return nv;
 		}
 	}
-	unique_ptr<const CoordBase<string>> cb1{ newconstCoordBase(nv, inheritscoords ? oldtype : newtype) };
+	unique_ptr<const CoordBase<string>> cb1{ newconstCoordBaseStr(nv, inheritscoords ? oldtype : newtype) };
 	if (inheritscoords) {
 		unique_ptr<const CoordBase<string>> cb2{ cb1->convert(newtype) };
 		cb1.swap(cb2);
@@ -1115,7 +1179,7 @@ NumericVector printcoord(NumericVector &nv)
 	checkinherits(nv, "coords");
 	if (!check_valid(nv))
 		warning("Printing invalid coords!");
-	Rcout << *newconstCoordBase(nv, get_coordtype(nv)) << endl;
+	Rcout << *newconstCoordBaseStr(nv, get_coordtype(nv)) << endl;
 	return nv;
 }
 
@@ -1140,7 +1204,7 @@ vector<string> formatcoord(NumericVector &nv)
 	checkinherits(nv, "coords");
 	if (!check_valid(nv))
 		warning("Formatting invalid coords!");
-	return newconstCoordBase(nv, get_coordtype(nv))->format();
+	return newconstCoordBaseStr(nv, get_coordtype(nv))->format();
 }
 
 
@@ -1151,7 +1215,7 @@ vector<int> get_deg(NumericVector &nv)
 {
 //	cout << "——Rcpp::export——get_deg()\n";
 	checkinherits(nv, "coords");
-	unique_ptr<const CoordBase<string>> c{newconstCoordBase(nv, get_coordtype(nv))};
+	unique_ptr<const CoordBase<string>> c{newconstCoordBaseStr(nv, get_coordtype(nv))};
 	vector<int> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), [&c](double n) { return c->get_deg(n); });
 	return out;
@@ -1165,7 +1229,7 @@ vector<double> get_decdeg(NumericVector &nv)
 {
 //	cout << "——Rcpp::export——get_decdeg()\n";
 	checkinherits(nv, "coords");
-	unique_ptr<const CoordBase<string>> c{newconstCoordBase(nv, get_coordtype(nv))};
+	unique_ptr<const CoordBase<string>> c{newconstCoordBaseStr(nv, get_coordtype(nv))};
 	vector<double> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), [&c](double n) { return c->get_decdeg(n); });
 	return out;
@@ -1179,7 +1243,7 @@ vector<int> get_min(NumericVector &nv)
 {
 //	cout << "——Rcpp::export——get_min()\n";
 	checkinherits(nv, "coords");
-	unique_ptr<const CoordBase<string>> c{newconstCoordBase(nv, get_coordtype(nv))};
+	unique_ptr<const CoordBase<string>> c{newconstCoordBaseStr(nv, get_coordtype(nv))};
 	vector<int> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), [&c](double n) { return c->get_min(n); });
 	return out;
@@ -1193,7 +1257,7 @@ vector<double> get_decmin(NumericVector &nv)
 {
 //	cout << "——Rcpp::export——get_decmin()\n";
 	checkinherits(nv, "coords");
-	unique_ptr<const CoordBase<string>> c{newconstCoordBase(nv, get_coordtype(nv))};
+	unique_ptr<const CoordBase<string>> c{newconstCoordBaseStr(nv, get_coordtype(nv))};
 	vector<double> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), [&c](double n) { return c->get_decmin(n); });
 	return out;
@@ -1207,7 +1271,7 @@ vector<double> get_sec(NumericVector &nv)
 {
 //	cout << "——Rcpp::export——get_sec()\n";
 	checkinherits(nv, "coords");
-	unique_ptr<const CoordBase<string>> c{newconstCoordBase(nv, get_coordtype(nv))};
+	unique_ptr<const CoordBase<string>> c{newconstCoordBaseStr(nv, get_coordtype(nv))};
 	vector<double> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), [&c](double n) { return c->get_sec(n); });
 	return out;
@@ -1245,17 +1309,15 @@ DataFrame waypoints(DataFrame &df, int fmt = 1)
 	if (inheritswaypoints) {
 		unique_ptr<const WayPoint> wp2{ wp1->convert(newtype) };
 		wp1.swap(wp2);
-		for (const auto x : llcols) {
-			boolio = llcols[2] - x;
-			copy((wp1->get_cbp(boolio).get_nv()).begin(), (wp1->get_cbp(boolio).get_nv()).end(), as<NumericVector>(df[x]).begin());
-		}
+		copy((wp1->get_cbp_lat().get_nv()).begin(), (wp1->get_cbp_lat().get_nv()).end(), as<NumericVector>(df[llcols[0]]).begin());
+		copy((wp1->get_cbp_lon().get_nv()).begin(), (wp1->get_cbp_lon().get_nv()).end(), as<NumericVector>(df[llcols[1]]).begin());
 	} else {
 		df.attr("class") = CharacterVector{"waypoints", "data.frame"};
 	}
 	wp1->validate(true);
 	wp1->warn_invalid();
 	for (const auto x : llcols) {
-		boolio = llcols[2] - x;
+		boolio = llcols[1] - x;
 		colattrset(df, x, "valid", LogicalVector(wrap(wp1->get_valid(boolio))));
 		colattrset(df, x, "fmt", fmt);
 	}
