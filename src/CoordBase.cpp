@@ -32,16 +32,16 @@ class CoordBase;
 ostream& operator<<(ostream&, const CoordBase&);
 
 template<class T> 
-string&& format_coord(const T&, double);
+string format_coord(const T&, double);
 class DecDeg;
 
 class DegMin;
 template<> 
-string&& format_coord<DegMin>(const DegMin&, double);
+string format_coord<DegMin>(const DegMin&, double);
 
 class DegMinSec;
 template<> 
-string&& format_coord<DegMinSec>(const DegMinSec&, double);
+string format_coord<DegMinSec>(const DegMinSec&, double);
 
 template<class T>
 unique_ptr<const CoordBase> newconstCoordBase(const T&, const CoordType);
@@ -382,18 +382,18 @@ inline void CoordBase::set_waypoint() const
 	wpt = true;
 }
 
-
+/*
 /// __________________________________________________
 /// Formatted character strings for printing
 vector<string> CoordBase::format() const
 {
 //	cout << "CoordBase::format()\n";
 	vector<string> out(nv.size());
-	transform(nv.begin(), nv.end(), out.begin(), [this](double n) { return std::move(format_coord(*this, n)); });
+	transform(nv.begin(), nv.end(), out.begin(), [this](double n) { return format_coord(*this, n); });
 	format2(out);
 	return out;
 }
-
+*/
 
 /// __________________________________________________
 /// Formatted character strings for printing
@@ -508,7 +508,7 @@ vector<string> DecDeg::format() const
 {
 //	cout << "DecDeg::format()\n";
 	vector<string> out(nv.size());
-	transform(nv.begin(), nv.end(), out.begin(), [this](double n) { return std::move(format_coord(*this, n)); });
+	transform(nv.begin(), nv.end(), out.begin(), [this](double n) { return format_coord(*this, n); });
 	format2(out);
 	return out;
 }
@@ -530,7 +530,7 @@ void DecDeg::format2(vector<string>& out) const
 /// __________________________________________________
 /// Format character string for printing
 template<class T> 
-string&& format_coord(const T& t, double n)
+string format_coord(const T& t, double n)
 {
 	cout << "template<class T> format_coord(const T&, double)\n";
 	ostringstream outstrstr;
@@ -611,7 +611,7 @@ vector<string> DegMin::format() const
 {
 //	cout << "DegMin::format()\n";
 	vector<string> out(nv.size());
-	transform(nv.begin(), nv.end(), out.begin(), [this](double n) { return std::move(format_coord(*this, n)); });
+	transform(nv.begin(), nv.end(), out.begin(), [this](double n) { return format_coord(*this, n); });
 	format2(out);
 	return out;
 }
@@ -620,7 +620,7 @@ vector<string> DegMin::format() const
 /// __________________________________________________
 /// Format character string for printing
 template<> 
-string&& format_coord<DegMin>(const DegMin& dm, double n)
+string format_coord<DegMin>(const DegMin& dm, double n)
 {
 	cout << "template<> format_coord<DegMin>(const DegMin&, double)\n";
 	ostringstream outstrstr;
@@ -702,7 +702,7 @@ vector<string> DegMinSec::format() const
 {
 //	cout << "DegMinSec::format()\n";
 	vector<string> out(nv.size());
-	transform(nv.begin(), nv.end(), out.begin(), [this](double n) { return std::move(format_coord(*this, n)); });
+	transform(nv.begin(), nv.end(), out.begin(), [this](double n) { return format_coord(*this, n); });
 	format2(out);
 	return out;
 }
@@ -711,7 +711,7 @@ vector<string> DegMinSec::format() const
 /// __________________________________________________
 /// Format character string for printing
 template<> 
-string&& format_coord<DegMinSec>(const DegMinSec& dms, double n)
+string format_coord<DegMinSec>(const DegMinSec& dms, double n)
 {
 	cout << "template<> format_coord<DegMinSec>(const DegMinSec&, double)\n";
 	ostringstream outstrstr;
