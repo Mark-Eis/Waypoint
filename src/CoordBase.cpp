@@ -463,6 +463,29 @@ inline double DecDeg::get_sec(double x) const
 	return mod1by60(get_decmin(x));
 }
 
+/*
+/// __________________________________________________
+/// Formatted character strings for printing
+vector<string> DecDeg::format() const
+{
+//	cout << "DecDeg::format()\n";
+	std::ostringstream outstrstr;
+	vector<string> out(nv.size());
+	transform(nv.begin(), nv.end(), out.begin(), [&outstrstr](double n)
+		{
+			outstrstr.str("");
+			outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << n << "\u00B0";
+			return outstrstr.str();
+		});
+
+	if (latlon.size() && !waypoint) {
+		vector<bool>::const_iterator ll_it(latlon.begin());
+		transform(out.begin(), out.end(), out.begin(),
+			[this, &ll_it](string ostr) { return ostr += ((llgt1 ? *ll_it++ : *ll_it) ? " lat" : " lon"); });
+	}
+	return out;
+}
+*/
 
 /// __________________________________________________
 /// Formatted character strings for printing
