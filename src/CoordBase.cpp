@@ -34,8 +34,6 @@ class DecDeg;
 class DegMin;
 class DegMinSec;
 
-class Format_DecDeg;
-
 template<class T>
 unique_ptr<const CoordBase> newconstCoordBase(const T&, const CoordType);
 
@@ -241,7 +239,6 @@ class CoordBase {
 		friend class DecDeg;
 		friend class DegMin;
 		friend class DegMinSec;
-		friend class Format_DecDeg;
 		friend ostream& operator<<(ostream&, const CoordBase&);
 };
 
@@ -400,18 +397,6 @@ ostream& operator<<(ostream& stream, const CoordBase &c)
 }
 
 
-class Format_DecDeg {
-	const CoordBase* cb_ptr;
-public:
-	Format_DecDeg(const CoordBase* dd) : cb_ptr(dd) { }
-	friend ostream& operator<<(ostream& stream, Format_DecDeg& fdd)
-	{ 
-	//	return stream << setw(11) << setfill(' ') << fixed << setprecision(6) << cb_ptr->nv << "\u00B0"; 
-		return stream << setw(11) << setfill(' ') << fixed << setprecision(6) << 51.507765 << "\u00B0"; 
-	}
-};
-
-
 /// __________________________________________________
 /// Decimal degrees derived class
 class DecDeg : public CoordBase {
@@ -502,24 +487,21 @@ vector<string> DecDeg::format() const
 }
 */
 
+string&& format_dd(const CoordBase& cb, double n)
+{
+	cout << "format_dd(const CoordBase&, double)\n";
+	ostringstream outstrstr;
+	outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << abs(cb.get_decdeg(n)) << "\u00B0";
+	return outstrstr.str();
+}
+
 /// __________________________________________________
 /// Formatted character strings for printing
 vector<string> DecDeg::format() const
 {
 //	cout << "DecDeg::format()\n";
-	std::ostringstream outstrstr;
 	vector<string> out(nv.size());
-
-	Format_DecDeg fdd(this);
-    cout << "fdd " << fdd << endl;
-
-	transform(nv.begin(), nv.end(), out.begin(), [&outstrstr](double n)
-		{
-			outstrstr.str("");
-			outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << n << "\u00B0";
-//			outstrstr << fdd;
-			return outstrstr.str();
-		});
+	transform(nv.begin(), nv.end(), out.begin(), [this](double n) { return std::move(format_dd(*this, n)); });
 
 	if (latlon.size() && !waypoint) {
 		vector<bool>::const_iterator ll_it(latlon.begin());
