@@ -32,7 +32,7 @@ class CoordBase;
 ostream& operator<<(ostream&, const CoordBase&);
 
 template<class T> 
-string&& format_dd(const T&, double);
+string&& format_coord(const T&, double);
 class DecDeg;
 class DegMin;
 class DegMinSec;
@@ -466,33 +466,16 @@ inline double DecDeg::get_sec(double x) const
 	return mod1by60(get_decmin(x));
 }
 
-/*
-string&& format_dd(const CoordBase& cb, double n)
-{
-	cout << "format_dd(const CoordBase&, double)\n";
-	ostringstream outstrstr;
-	outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << abs(cb.get_decdeg(n)) << "\u00B0";
-	return outstrstr.str();
-}
-
-
-string&& format_dd(const DecDeg& dd, double n)
-{
-	cout << "format_dd(const DecDeg&, double)\n";
-	ostringstream outstrstr;
-	outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << abs(dd.get_decdeg(n)) << "\u00B0";
-	return outstrstr.str();
-} */
-
 
 template<class T> 
-string&& format_dd(const T& t, double n)
+string&& format_coord(const T& t, double n)
 {
-	cout << "template<class T> format_dd(const T&, double)\n";
+	cout << "template<class T> format_coord(const T&, double)\n";
 	ostringstream outstrstr;
 	outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << abs(t.get_decdeg(n)) << "\u00B0";
 	return outstrstr.str();
 }
+
 
 /// __________________________________________________
 /// Formatted character strings for printing
@@ -500,7 +483,7 @@ vector<string> DecDeg::format() const
 {
 //	cout << "DecDeg::format()\n";
 	vector<string> out(nv.size());
-	transform(nv.begin(), nv.end(), out.begin(), [this](double n) { return std::move(format_dd(*this, n)); });
+	transform(nv.begin(), nv.end(), out.begin(), [this](double n) { return std::move(format_coord(*this, n)); });
 
 	if (latlon.size() && !waypoint) {
 		vector<bool>::const_iterator ll_it(latlon.begin());
@@ -576,7 +559,7 @@ inline double DegMin::get_sec(double x) const
 	return mod1by60(get_decmin(x));
 }
 
-
+/*
 /// __________________________________________________
 /// Formatted character strings for printing
 vector<string> DegMin::format() const
@@ -591,6 +574,37 @@ vector<string> DegMin::format() const
 				<< setw(7) << setfill('0') << fixed << setprecision(4) << abs(get_decmin(n)) << "'";
 			return outstrstr.str();
 		});
+
+	if (latlon.size()) {
+		vector<bool>::const_iterator ll_it(latlon.begin());
+		transform(out.begin(), out.end(), nv.begin(), out.begin(), [this, &ll_it](string ostr, double n)
+			{ return ostr += cardpoint(get_decmin(n) < 0, llgt1 ? *ll_it++ : *ll_it); });
+	} else
+		transform(out.begin(), out.end(), nv.begin(), out.begin(), [this](string ostr, double n)
+			{ return ostr += cardi_b(get_decmin(n) < 0); });
+	return out;
+} */
+
+
+template<> 
+string&& format_coord<DegMin>(const DegMin& dm, double n)
+{
+	cout << "template<> format_coord<DegMin>(const DegMin&, double)\n";
+	ostringstream outstrstr;
+	outstrstr << setw(3) << setfill(' ') << abs(dm.get_deg(n)) << "\u00B0"
+		<< setw(7) << setfill('0') << fixed << setprecision(4) << abs(dm.get_decmin(n)) << "'";
+	return outstrstr.str();
+}
+
+
+/// __________________________________________________
+/// Formatted character strings for printing
+vector<string> DegMin::format() const
+{
+//	cout << "DegMin::format()\n";
+	std::ostringstream outstrstr;
+	vector<string> out(nv.size());
+	transform(nv.begin(), nv.end(), out.begin(), [this](double n) { return std::move(format_coord(*this, n)); });
 
 	if (latlon.size()) {
 		vector<bool>::const_iterator ll_it(latlon.begin());
@@ -666,6 +680,39 @@ inline double DegMinSec::get_sec(double x) const
 {
 //	cout << "DegMinSec.get_sec()\n";
 	return mod1e2(x);
+}
+
+/*
+/// __________________________________________________
+/// Formatted character strings for printing
+vector<string> DegMinSec::format() const
+{
+//	cout << "DegMinSec::format()\n";
+	std::ostringstream outstrstr;
+	vector<string> out(nv.size());
+	transform(nv.begin(), nv.end(), out.begin(), [this](double n) { return std::move(format_coord(*this, n)); });
+
+	if (latlon.size()) {
+		vector<bool>::const_iterator ll_it(latlon.begin());
+		transform(out.begin(), out.end(), nv.begin(), out.begin(), [this, &ll_it](string ostr, double n)
+			{ return ostr += cardpoint(get_sec(n) < 0, llgt1 ? *ll_it++ : *ll_it); });
+	} else
+		transform(out.begin(), out.end(), nv.begin(), out.begin(), [this](string ostr, double n)
+			{ return ostr += cardi_b(get_sec(n) < 0); });
+
+	return out;
+} */
+
+
+template<> 
+string&& format_coord<DegMinSec>(const DegMinSec& dms, double n)
+{
+	cout << "template<> format_coord<DegMinSec>(const DegMinSec&, double)\n";
+	ostringstream outstrstr;
+	outstrstr << setw(3) << setfill(' ') << abs(dms.get_deg(n)) << "\u00B0"
+			  << setw(2) << setfill('0') << abs(dms.get_min(n)) << "'"
+			  << setw(5) << fixed << setprecision(2) << abs(dms.get_sec(n)) << "\"";
+	return outstrstr.str();
 }
 
 
