@@ -34,8 +34,14 @@ ostream& operator<<(ostream&, const CoordBase&);
 template<class T> 
 string&& format_coord(const T&, double);
 class DecDeg;
+
 class DegMin;
+template<> 
+string&& format_coord<DegMin>(const DegMin&, double);
+
 class DegMinSec;
+template<> 
+string&& format_coord<DegMinSec>(const DegMinSec&, double);
 
 template<class T>
 unique_ptr<const CoordBase> newconstCoordBase(const T&, const CoordType);
