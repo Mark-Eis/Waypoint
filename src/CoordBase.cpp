@@ -559,32 +559,6 @@ inline double DegMin::get_sec(double x) const
 	return mod1by60(get_decmin(x));
 }
 
-/*
-/// __________________________________________________
-/// Formatted character strings for printing
-vector<string> DegMin::format() const
-{
-//	cout << "DegMin::format()\n";
-	std::ostringstream outstrstr;
-	vector<string> out(nv.size());
-	transform(nv.begin(), nv.end(), out.begin(), [this, &outstrstr](double n)
-		{
-			outstrstr.str("");
-			outstrstr << setw(3) << setfill(' ') << abs(get_deg(n)) << "\u00B0"
-				<< setw(7) << setfill('0') << fixed << setprecision(4) << abs(get_decmin(n)) << "'";
-			return outstrstr.str();
-		});
-
-	if (latlon.size()) {
-		vector<bool>::const_iterator ll_it(latlon.begin());
-		transform(out.begin(), out.end(), nv.begin(), out.begin(), [this, &ll_it](string ostr, double n)
-			{ return ostr += cardpoint(get_decmin(n) < 0, llgt1 ? *ll_it++ : *ll_it); });
-	} else
-		transform(out.begin(), out.end(), nv.begin(), out.begin(), [this](string ostr, double n)
-			{ return ostr += cardi_b(get_decmin(n) < 0); });
-	return out;
-} */
-
 
 template<> 
 string&& format_coord<DegMin>(const DegMin& dm, double n)
@@ -682,27 +656,6 @@ inline double DegMinSec::get_sec(double x) const
 	return mod1e2(x);
 }
 
-/*
-/// __________________________________________________
-/// Formatted character strings for printing
-vector<string> DegMinSec::format() const
-{
-//	cout << "DegMinSec::format()\n";
-	std::ostringstream outstrstr;
-	vector<string> out(nv.size());
-	transform(nv.begin(), nv.end(), out.begin(), [this](double n) { return std::move(format_coord(*this, n)); });
-
-	if (latlon.size()) {
-		vector<bool>::const_iterator ll_it(latlon.begin());
-		transform(out.begin(), out.end(), nv.begin(), out.begin(), [this, &ll_it](string ostr, double n)
-			{ return ostr += cardpoint(get_sec(n) < 0, llgt1 ? *ll_it++ : *ll_it); });
-	} else
-		transform(out.begin(), out.end(), nv.begin(), out.begin(), [this](string ostr, double n)
-			{ return ostr += cardi_b(get_sec(n) < 0); });
-
-	return out;
-} */
-
 
 template<> 
 string&& format_coord<DegMinSec>(const DegMinSec& dms, double n)
@@ -723,13 +676,7 @@ vector<string> DegMinSec::format() const
 //	cout << "DegMinSec::format()\n";
 	std::ostringstream outstrstr;
 	vector<string> out(nv.size());
-	transform(nv.begin(), nv.end(), out.begin(), [this, &outstrstr](double n) {
-		outstrstr.str("");
-		outstrstr << setw(3) << setfill(' ') << abs(get_deg(n)) << "\u00B0"
-				  << setw(2) << setfill('0') << abs(get_min(n)) << "'"
-				  << setw(5) << fixed << setprecision(2) << abs(get_sec(n)) << "\"";
-		return outstrstr.str();
-	});
+	transform(nv.begin(), nv.end(), out.begin(), [this](double n) { return std::move(format_coord(*this, n)); });
 
 	if (latlon.size()) {
 		vector<bool>::const_iterator ll_it(latlon.begin());
