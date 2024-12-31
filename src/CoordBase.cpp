@@ -234,7 +234,7 @@ class CoordBase {
 		virtual int get_min(double) const = 0;
 		virtual double get_decmin(double) const = 0;
 		virtual double get_sec(double) const = 0;
-		virtual void format2(vector<string>&) const;
+		virtual void format_ll(vector<string>&) const;
 
 		const vector<double> &get_nv() const;
 		unique_ptr<const CoordBase> convert(const CoordType) const;
@@ -390,16 +390,16 @@ vector<string> CoordBase::format() const
 //	cout << "CoordBase::format()\n";
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), [this](double n) { return format_coord(*this, n); });
-	format2(out);
+	format_ll(out);
 	return out;
 }
 
 
 /// __________________________________________________
 /// Formatted character strings for printing
-void CoordBase::format2(vector<string>& out) const
+void CoordBase::format_ll(vector<string>& out) const
 {
-//	cout << "CoordBase::format2(vector<string>&)\n";
+//	cout << "CoordBase::format_ll(vector<string>&)\n";
 	if (latlon.size()) {
 		vector<bool>::const_iterator ll_it(latlon.begin());
 		transform(out.begin(), out.end(), nv.begin(), out.begin(), [this, &ll_it](string ostr, double n)
@@ -448,7 +448,7 @@ class DecDeg : public CoordBase {
 		int get_min(double x) const;
 		double get_decmin(double x) const;
 		double get_sec(double x) const;
-		void format2(vector<string>&) const;
+		void format_ll(vector<string>&) const;
 };
 
 
@@ -503,9 +503,9 @@ inline double DecDeg::get_sec(double x) const
 
 /// __________________________________________________
 /// Formatted character strings for printing
-void DecDeg::format2(vector<string>& out) const
+void DecDeg::format_ll(vector<string>& out) const
 {
-//	cout << "DecDeg::format2(vector<string>&)\n";
+//	cout << "DecDeg::format_ll(vector<string>&)\n";
 	if (latlon.size() && !waypoint) {
 		vector<bool>::const_iterator ll_it(latlon.begin());
 		transform(out.begin(), out.end(), out.begin(),
