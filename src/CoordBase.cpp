@@ -234,7 +234,6 @@ class CoordBase {
 		virtual int get_min(double) const = 0;
 		virtual double get_decmin(double) const = 0;
 		virtual double get_sec(double) const = 0;
-		virtual vector<string> format() const = 0;
 		virtual void format2(vector<string>&) const;
 
 		const vector<double> &get_nv() const;
@@ -244,6 +243,7 @@ class CoordBase {
 		const vector<string> &get_names() const;
 		void warn_invalid() const;
 		void set_waypoint() const;
+		vector<string> format() const;
 		void print(ostream&) const;
 
 		friend class DecDeg;
@@ -382,7 +382,7 @@ inline void CoordBase::set_waypoint() const
 	wpt = true;
 }
 
-/*
+
 /// __________________________________________________
 /// Formatted character strings for printing
 vector<string> CoordBase::format() const
@@ -393,7 +393,7 @@ vector<string> CoordBase::format() const
 	format2(out);
 	return out;
 }
-*/
+
 
 /// __________________________________________________
 /// Formatted character strings for printing
@@ -448,7 +448,6 @@ class DecDeg : public CoordBase {
 		int get_min(double x) const;
 		double get_decmin(double x) const;
 		double get_sec(double x) const;
-		vector<string> format() const;
 		void format2(vector<string>&) const;
 };
 
@@ -504,18 +503,6 @@ inline double DecDeg::get_sec(double x) const
 
 /// __________________________________________________
 /// Formatted character strings for printing
-vector<string> DecDeg::format() const
-{
-//	cout << "DecDeg::format()\n";
-	vector<string> out(nv.size());
-	transform(nv.begin(), nv.end(), out.begin(), [this](double n) { return format_coord(*this, n); });
-	format2(out);
-	return out;
-}
-
-
-/// __________________________________________________
-/// Formatted character strings for printing
 void DecDeg::format2(vector<string>& out) const
 {
 //	cout << "DecDeg::format2(vector<string>&)\n";
@@ -553,7 +540,6 @@ class DegMin : public CoordBase {
 		int get_min(double x) const;
 		double get_decmin(double x) const;
 		double get_sec(double x) const;
-		vector<string> format() const;
 };
 
 
@@ -606,18 +592,6 @@ inline double DegMin::get_sec(double x) const
 
 
 /// __________________________________________________
-/// Formatted character strings for printing
-vector<string> DegMin::format() const
-{
-//	cout << "DegMin::format()\n";
-	vector<string> out(nv.size());
-	transform(nv.begin(), nv.end(), out.begin(), [this](double n) { return format_coord(*this, n); });
-	format2(out);
-	return out;
-}
-
-
-/// __________________________________________________
 /// Format character string for printing
 template<> 
 string format_coord<DegMin>(const DegMin& dm, double n)
@@ -644,7 +618,6 @@ class DegMinSec : public CoordBase {
 		int get_min(double x) const;
 		double get_decmin(double x) const;
 		double get_sec(double x) const;
-		vector<string> format() const;
 };
 
 
@@ -693,18 +666,6 @@ inline double DegMinSec::get_sec(double x) const
 {
 //	cout << "DegMinSec.get_sec()\n";
 	return mod1e2(x);
-}
-
-
-/// __________________________________________________
-/// Formatted character strings for printing
-vector<string> DegMinSec::format() const
-{
-//	cout << "DegMinSec::format()\n";
-	vector<string> out(nv.size());
-	transform(nv.begin(), nv.end(), out.begin(), [this](double n) { return format_coord(*this, n); });
-	format2(out);
-	return out;
 }
 
 
