@@ -448,7 +448,7 @@ class DecDeg : public CoordBase {
 		int get_min(double x) const;
 		double get_decmin(double x) const;
 		double get_sec(double x) const;
-        vector<string> format() const;
+		vector<string> format() const;
 		void format2(vector<string>&) const;
 };
 
@@ -553,7 +553,7 @@ class DegMin : public CoordBase {
 		int get_min(double x) const;
 		double get_decmin(double x) const;
 		double get_sec(double x) const;
-        vector<string> format() const;
+		vector<string> format() const;
 };
 
 
@@ -644,7 +644,7 @@ class DegMinSec : public CoordBase {
 		int get_min(double x) const;
 		double get_decmin(double x) const;
 		double get_sec(double x) const;
-        vector<string> format() const;
+		vector<string> format() const;
 };
 
 
