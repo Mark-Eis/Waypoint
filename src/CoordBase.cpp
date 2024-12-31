@@ -502,18 +502,6 @@ inline double DecDeg::get_sec(double x) const
 	return mod1by60(get_decmin(x));
 }
 
-/*
-/// __________________________________________________
-/// Format character string for printing
-template<class T> 
-string format_nv(double n)
-{
-	cout << "template<class T> format_coord(const T&, double)\n";
-	ostringstream outstrstr;
-	outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << abs(t.get_decdeg(n)) << "\u00B0";
-	return outstrstr.str();
-} */
-
 
 /// __________________________________________________
 /// Format character string for printing
@@ -538,18 +526,6 @@ void DecDeg::format_ll(vector<string>& out) const
 	}
 }
 
-/*
-/// __________________________________________________
-/// Format character string for printing
-template<class T> 
-string format_coord(const T& t, double n)
-{
-	cout << "template<class T> format_coord(const T&, double)\n";
-	ostringstream outstrstr;
-	outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << abs(t.get_decdeg(n)) << "\u00B0";
-	return outstrstr.str();
-}
-*/
 
 /// __________________________________________________
 /// Degrees and minutes derived class
@@ -615,19 +591,6 @@ inline double DegMin::get_sec(double x) const
 //	cout << "DegMin.get_sec()\n";
 	return mod1by60(get_decmin(x));
 }
-
-/*
-/// __________________________________________________
-/// Format character string for printing
-template<> 
-string format_coord<DegMin>(const DegMin& dm, double n)
-{
-	cout << "template<> format_coord<DegMin>(const DegMin&, double)\n";
-	ostringstream outstrstr;
-	outstrstr << setw(3) << setfill(' ') << abs(dm.get_deg(n)) << "\u00B0"
-		<< setw(7) << setfill('0') << fixed << setprecision(4) << abs(dm.get_decmin(n)) << "'";
-	return outstrstr.str();
-} */
 
 
 /// __________________________________________________
