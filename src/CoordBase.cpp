@@ -234,7 +234,7 @@ class CoordBase {
 		virtual int get_min(double) const = 0;
 		virtual double get_decmin(double) const = 0;
 		virtual double get_sec(double) const = 0;
-		virtual string format_nv(double) const = 0;
+		virtual string format_nv(ostringstream&, double) const = 0;
 		virtual void format_ll(vector<string>&) const;
 
 		const vector<double> &get_nv() const;
@@ -389,8 +389,9 @@ inline void CoordBase::set_waypoint() const
 vector<string> CoordBase::format() const
 {
 //	cout << "CoordBase::format()\n";
+	ostringstream outstrstr;
 	vector<string> out(nv.size());
-	transform(nv.begin(), nv.end(), out.begin(), [this](double n) { return format_nv(n); });
+	transform(nv.begin(), nv.end(), out.begin(), [this, &outstrstr](double n) { return format_nv(outstrstr, n); });
 	format_ll(out);
 	return out;
 }
@@ -449,7 +450,7 @@ class DecDeg : public CoordBase {
 		int get_min(double x) const;
 		double get_decmin(double x) const;
 		double get_sec(double x) const;
-		string format_nv(double) const;
+		string format_nv(ostringstream&, double) const;
 		void format_ll(vector<string>&) const;
 };
 
@@ -505,10 +506,10 @@ inline double DecDeg::get_sec(double x) const
 
 /// __________________________________________________
 /// Format character string for printing
-string DecDeg::format_nv(double n) const
+string DecDeg::format_nv(ostringstream& outstrstr, double n) const
 {
-	cout << "DecDeg::format_nv(double)\n";
-	ostringstream outstrstr;
+//	cout << "DecDeg::format_nv(ostringstream&, double)\n";
+	outstrstr.str("");
 	outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << abs(get_decdeg(n)) << "\u00B0";
 	return outstrstr.str();
 }
@@ -541,7 +542,7 @@ class DegMin : public CoordBase {
 		int get_min(double x) const;
 		double get_decmin(double x) const;
 		double get_sec(double x) const;
-		string format_nv(double) const;
+		string format_nv(ostringstream&, double) const;
 };
 
 
@@ -595,10 +596,10 @@ inline double DegMin::get_sec(double x) const
 
 /// __________________________________________________
 /// Format character string for printing
-string DegMin::format_nv(double n) const
+string DegMin::format_nv(ostringstream& outstrstr, double n) const
 {
-	cout << "DegMin::format_nv(double)\n";
-	ostringstream outstrstr;
+//	cout << "DegMin::format_nv(ostringstream&, double)\n";
+	outstrstr.str("");
 	outstrstr << setw(3) << setfill(' ') << abs(get_deg(n)) << "\u00B0"
 		<< setw(7) << setfill('0') << fixed << setprecision(4) << abs(get_decmin(n)) << "'";
 	return outstrstr.str();
@@ -619,7 +620,7 @@ class DegMinSec : public CoordBase {
 		int get_min(double x) const;
 		double get_decmin(double x) const;
 		double get_sec(double x) const;
-		string format_nv(double) const;
+		string format_nv(ostringstream&, double) const;
 };
 
 
@@ -670,27 +671,13 @@ inline double DegMinSec::get_sec(double x) const
 	return mod1e2(x);
 }
 
-/*
-/// __________________________________________________
-/// Format character string for printing
-template<> 
-string format_coord<DegMinSec>(const DegMinSec& dms, double n)
-{
-	cout << "template<> format_coord<DegMinSec>(const DegMinSec&, double)\n";
-	ostringstream outstrstr;
-	outstrstr << setw(3) << setfill(' ') << abs(dms.get_deg(n)) << "\u00B0"
-			  << setw(2) << setfill('0') << abs(dms.get_min(n)) << "'"
-			  << setw(5) << fixed << setprecision(2) << abs(dms.get_sec(n)) << "\"";
-	return outstrstr.str();
-} */
-
 
 /// __________________________________________________
 /// Format character string for printing
-string DegMinSec::format_nv(double n) const
+string DegMinSec::format_nv(ostringstream& outstrstr, double n) const
 {
-	cout << "DegMinSec::format_nv(double)\n";
-	ostringstream outstrstr;
+//	cout << "DegMinSec::format_nv(ostringstream&, double)\n";
+	outstrstr.str("");
 	outstrstr << setw(3) << setfill(' ') << abs(get_deg(n)) << "\u00B0"
 			  << setw(2) << setfill('0') << abs(get_min(n)) << "'"
 			  << setw(5) << fixed << setprecision(2) << abs(get_sec(n)) << "\"";
