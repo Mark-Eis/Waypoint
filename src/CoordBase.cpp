@@ -43,6 +43,10 @@ class DegMinSec;
 template<> 
 string format_coord<DegMinSec>(const DegMinSec&, double);
 
+class format_dd;
+class format_dm;
+class format_dms;
+
 template<class T>
 unique_ptr<const CoordBase> newconstCoordBase(const T&, const CoordType);
 
@@ -383,7 +387,7 @@ inline void CoordBase::set_waypoint() const
 	wpt = true;
 }
 
-
+/*
 /// __________________________________________________
 /// Formatted character strings for printing
 vector<string> CoordBase::format() const
@@ -394,7 +398,7 @@ vector<string> CoordBase::format() const
 	transform(nv.begin(), nv.end(), out.begin(), [this, &outstrstr](double n) { return format_nv(outstrstr, n); });
 	format_ll(out);
 	return out;
-}
+} */
 
 
 /// __________________________________________________
@@ -425,48 +429,6 @@ void CoordBase::print(ostream& stream) const
 	} else
 		for_each(sv.begin(), sv.end(), [&stream](const string &s) { stream << s << "\n"; });
 }
-
-
-/// __________________________________________________
-/// Format coords vector functors
-
-class format_dd {
-	CoordBase& _cb; 
-	ostringstream outstrstr;
-public:
-	format_dd(CoordBase& cb) : _cb(cb) {}
-	string operator()(double n) { outstrstr.str("");
-								  outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << abs(_cb.get_decdeg(n)) << "\u00B0";
-								  return outstrstr.str();
-								}
-};
-
-
-class format_dm {
-	CoordBase& _cb; 
-	ostringstream outstrstr;
-public:
-	format_dm(CoordBase& cb) : _cb(cb) {}
-	string operator()(double n) { outstrstr.str("");
-								  outstrstr << setw(3) << setfill(' ') << abs(_cb.get_deg(n)) << "\u00B0"
-											<< setw(7) << setfill('0') << fixed << setprecision(4) << abs(_cb.get_decmin(n)) << "'";
-								  return outstrstr.str();
-								}
-};
-
-
-class format_dms {
-	CoordBase& _cb; 
-	ostringstream outstrstr;
-public:
-	format_dms(CoordBase& cb) : _cb(cb) {}
-	string operator()(double n) { outstrstr.str("");
-								  outstrstr << setw(3) << setfill(' ') << abs(_cb.get_deg(n)) << "\u00B0"
-											<< setw(2) << setfill('0') << abs(_cb.get_min(n)) << "'"
-											<< setw(5) << fixed << setprecision(2) << abs(_cb.get_sec(n)) << "\"";
-								  return outstrstr.str();
-								}
-};
 
 
 /// __________________________________________________
@@ -724,6 +686,70 @@ string DegMinSec::format_nv(ostringstream& outstrstr, double n) const
 			  << setw(2) << setfill('0') << abs(get_min(n)) << "'"
 			  << setw(5) << fixed << setprecision(2) << abs(get_sec(n)) << "\"";
 	return outstrstr.str();
+}
+
+
+/// __________________________________________________
+/// Format coords vector functor for decimal degrees
+class format_dd {
+	const CoordBase& cb; 
+	ostringstream outstrstr;
+public:
+//	format_dd(const CoordBase& cb) : _cb(cb) {}
+	format_dd(const DecDeg& dd) : cb(dynamic_cast<const CoordBase&>(dd)) {}
+	string operator()(double n) { cout << "@format_dd::operator()\n";
+								  outstrstr.str("");
+								  outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << abs(cb.get_decdeg(n)) << "\u00B0";
+								  return outstrstr.str();
+								}
+};
+
+
+/// __________________________________________________
+/// Format coords vector functor for degrees and minutes
+class format_dm {
+	const CoordBase& cb; 
+	ostringstream outstrstr;
+public:
+//	format_dm(const CoordBase& cb) : _cb(cb) {}
+	format_dm(const DegMin& dm) : cb(dynamic_cast<const CoordBase&>(dm)) {}
+	string operator()(double n) { cout << "@format_dm::operator()\n";
+								  outstrstr.str("");
+								  outstrstr << setw(3) << setfill(' ') << abs(cb.get_deg(n)) << "\u00B0"
+											<< setw(7) << setfill('0') << fixed << setprecision(4) << abs(cb.get_decmin(n)) << "'";
+								  return outstrstr.str();
+								}
+};
+
+
+/// __________________________________________________
+/// Format coords vector functor for degrees, minutes and seconds 
+class format_dms {
+	const CoordBase& cb; 
+	ostringstream outstrstr;
+public:
+//	format_dms(const CoordBase& cb) : _cb(cb) {}
+	format_dms(const DegMinSec& dms) : cb(dynamic_cast<const CoordBase&>(dms)) {}
+	string operator()(double n) { cout << "@format_dms::operator()\n";
+								  outstrstr.str("");
+								  outstrstr << setw(3) << setfill(' ') << abs(cb.get_deg(n)) << "\u00B0"
+											<< setw(2) << setfill('0') << abs(cb.get_min(n)) << "'"
+											<< setw(5) << fixed << setprecision(2) << abs(cb.get_sec(n)) << "\"";
+								  return outstrstr.str();
+								}
+};
+
+
+/// __________________________________________________
+/// Formatted character strings for printing
+vector<string> CoordBase::format() const
+{
+//	cout << "CoordBase::format()\n";
+	ostringstream outstrstr;
+	vector<string> out(nv.size());
+	transform(nv.begin(), nv.end(), out.begin(), format_dms(*this));
+	format_ll(out);
+	return out;
 }
 
 
