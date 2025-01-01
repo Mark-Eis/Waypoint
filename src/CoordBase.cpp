@@ -428,6 +428,47 @@ void CoordBase::print(ostream& stream) const
 
 
 /// __________________________________________________
+/// Format coords vector functors
+class format_dd {
+	CoordBase& _cb; 
+	ostringstream outstrstr;
+public:
+	format_dd(CoordBase& cb) : _cb(cb) {}
+	string operator()(double n) { 	outstrstr.str("");
+									outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << abs(_cb.get_decdeg(n)) << "\u00B0";
+									return outstrstr.str();
+ 								}
+};
+
+
+class format_dm {
+	CoordBase& _cb; 
+	ostringstream outstrstr;
+public:
+	format_dm(CoordBase& cb) : _cb(cb) {}
+	string operator()(double n) { 	outstrstr.str("");
+									outstrstr << setw(3) << setfill(' ') << abs(get_deg(n)) << "\u00B0"
+											  << setw(7) << setfill('0') << fixed << setprecision(4) << abs(get_decmin(n)) << "'";
+									return outstrstr.str();
+ 								}
+};
+
+
+class format_dms {
+	CoordBase& _cb; 
+	ostringstream outstrstr;
+public:
+	format_dms(CoordBase& cb) : _cb(cb) {}
+	string operator()(double n) { 	outstrstr.str("");
+									outstrstr << setw(3) << setfill(' ') << abs(get_deg(n)) << "\u00B0"
+											  << setw(2) << setfill('0') << abs(get_min(n)) << "'"
+											  << setw(5) << fixed << setprecision(2) << abs(get_sec(n)) << "\"";
+									return outstrstr.str();
+ 								}
+};
+
+
+/// __________________________________________________
 /// Output CoordBase derived object to ostream
 ostream& operator<<(ostream& stream, const CoordBase &c)
 {
