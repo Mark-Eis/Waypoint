@@ -424,7 +424,8 @@ void CoordBase::format_ll(vector<string>& out) const
 void CoordBase::print(ostream& stream) const
 {
 //	cout << "@CoordBase::print() type " << typeid(*this).name() << endl;
-	vector<string> sv(format());
+//	vector<string> sv(format());
+	vector<string> sv(newformat<Format_DD>());
 	if (names.size()) {
 		vector<string>::const_iterator nm_it(names.begin());
 		for_each(sv.begin(), sv.end(),
@@ -756,12 +757,26 @@ public:
 template <typename FunctObj>
 vector<string> CoordBase::newformat() const
 {
-//	cout << "CoordBase::format()\n";
+	cout << "CoordBase::newformat<typename FunctObj>()\n";
 	ostringstream outstrstr;
 	vector<string> out(nv.size());
-	vector<unique_ptr<const FormatBase>> FmtVec { factory<const Format_DD>(*this),  factory<const Format_DM>(*this),  factory<const Format_DMS>(*this) };
-	FunctObj& Format_X = FmtVec[coordtype_to_int(CoordType::decdeg)];
-	transform(nv.begin(), nv.end(), out.begin(), Format_X);
+/*	vector<unique_ptr<const FormatBase>> FmtVec { factory<const Format_DD>(*this),  factory<const Format_DM>(*this),  factory<const Format_DMS>(*this) };
+	vector<const FormatBase*> FmtVec {
+										dynamic_cast<const FormatBase*>(new const Format_DD(*this)),
+										dynamic_cast<const FormatBase*>(new const Format_DM(*this)),
+										dynamic_cast<const FormatBase*>(new const Format_DMS(*this))
+									};
+
+
+
+	const FormatBase* Format_X = FmtVec[coordtype_to_int(CoordType::decdeg)];
+	cout << "typeid(Format_X).name() " << typeid(Format_X).name() << endl;
+	const FunctObj* Format_Z = dynamic_cast<const FunctObj*>(Format_X);
+	cout << "typeid(Format_Z).name() " << typeid(Format_Z).name() << endl;
+
+	transform(nv.begin(), nv.end(), out.begin(), [this, &outstrstr](double n) { return format_nv(outstrstr, n); });
+	transform(nv.begin(), nv.end(), out.begin(), Format_DD(*this)); */
+	transform(nv.begin(), nv.end(), out.begin(), FunctObj(*this));
 	format_ll(out);
 	return out;
 }
