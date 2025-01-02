@@ -250,6 +250,8 @@ class CoordBase {
 		void warn_invalid() const;
 		void set_waypoint() const;
 		vector<string> format() const;
+		template <typename FunctObj>
+		vector<string> newformat() const;
 		void print(ostream&) const;
 
 		friend class DecDeg;
@@ -388,7 +390,7 @@ inline void CoordBase::set_waypoint() const
 	wpt = true;
 }
 
-/*
+/**/
 /// __________________________________________________
 /// Formatted character strings for printing
 vector<string> CoordBase::format() const
@@ -399,7 +401,7 @@ vector<string> CoordBase::format() const
 	transform(nv.begin(), nv.end(), out.begin(), [this, &outstrstr](double n) { return format_nv(outstrstr, n); });
 	format_ll(out);
 	return out;
-} */
+} /**/
 
 
 /// __________________________________________________
@@ -751,12 +753,15 @@ public:
 
 /// __________________________________________________
 /// Formatted character strings for printing
-vector<string> CoordBase::format() const
+template <typename FunctObj>
+vector<string> CoordBase::newformat() const
 {
 //	cout << "CoordBase::format()\n";
 	ostringstream outstrstr;
 	vector<string> out(nv.size());
-	transform(nv.begin(), nv.end(), out.begin(), Format_DMS(*this));
+	vector<unique_ptr<const FormatBase>> FmtVec { factory<const Format_DD>(*this),  factory<const Format_DM>(*this),  factory<const Format_DMS>(*this) };
+	FunctObj& Format_X = FmtVec[coordtype_to_int(CoordType::decdeg)];
+	transform(nv.begin(), nv.end(), out.begin(), Format_X);
 	format_ll(out);
 	return out;
 }
