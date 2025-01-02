@@ -501,7 +501,7 @@ inline double DecDeg::get_sec(double x) const
 /// Format character string for printing
 vector<string> DecDeg::chooseformat() const
 {
-	cout << "DecDeg::chooseformat()\n";
+//	cout << "DecDeg::chooseformat()\n";
 	return newformat<Format_DD>();
 }
 
@@ -589,7 +589,7 @@ inline double DegMin::get_sec(double x) const
 /// Format character string for printing
 vector<string> DegMin::chooseformat() const
 {
-	cout << "DegMin::chooseformat()\n";
+//	cout << "DegMin::chooseformat()\n";
 	return newformat<Format_DM>();
 }
 
@@ -664,7 +664,7 @@ inline double DegMinSec::get_sec(double x) const
 /// Format character string for printing
 vector<string> DegMinSec::chooseformat() const
 {
-	cout << "DegMinSec::chooseformat()\n";
+//	cout << "DegMinSec::chooseformat()\n";
 	return newformat<Format_DMS>();
 }
 
@@ -736,7 +736,7 @@ public:
 template <typename FunctObj>
 vector<string> CoordBase::newformat() const
 {
-	cout << "CoordBase::newformat<typename FunctObj>()\n";
+//	cout << "CoordBase::newformat<typename FunctObj>()\n";
 	ostringstream outstrstr;
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), FunctObj(*this));
