@@ -691,7 +691,8 @@ FormatBase::~FormatBase() {}
 class Format_DD : public FormatBase {
 public:
 	Format_DD(const DecDeg& dd) : FormatBase(dynamic_cast<const CoordBase&>(dd)) {}
-	string operator()(double n) { cout << "@Format_DD::operator()\n";
+	string operator()(double n) {
+//								  cout << "@Format_DD::operator()\n";
 								  outstrstr.str("");
 								  outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << abs(cb.get_decdeg(n)) << "\u00B0";
 								  return outstrstr.str();
@@ -704,7 +705,8 @@ public:
 class Format_DM : public FormatBase{
 public:
 	Format_DM(const DegMin& dm) : FormatBase(dynamic_cast<const CoordBase&>(dm)) {}
-	string operator()(double n) { cout << "@Format_DM::operator()\n";
+	string operator()(double n) {
+//								  cout << "@Format_DM::operator()\n";
 								  outstrstr.str("");
 								  outstrstr << setw(3) << setfill(' ') << abs(cb.get_deg(n)) << "\u00B0"
 											<< setw(7) << setfill('0') << fixed << setprecision(4) << abs(cb.get_decmin(n)) << "'";
@@ -718,7 +720,8 @@ public:
 class Format_DMS : public FormatBase{
 public:
 	Format_DMS(const DegMinSec& dms) : FormatBase(dynamic_cast<const CoordBase&>(dms)) {}
-	string operator()(double n) { cout << "@Format_DMS::operator()\n";
+	string operator()(double n) {
+//								  cout << "@Format_DMS::operator()\n";
 								  outstrstr.str("");
 								  outstrstr << setw(3) << setfill(' ') << abs(cb.get_deg(n)) << "\u00B0"
 											<< setw(2) << setfill('0') << abs(cb.get_min(n)) << "'"
