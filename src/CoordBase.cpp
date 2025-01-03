@@ -512,7 +512,7 @@ inline double DecDeg::get_sec(double x) const
 
 /// __________________________________________________
 /// Format character string for printing
-vector<string> DecDeg::chooseformat() const
+inline vector<string> DecDeg::chooseformat() const
 {
 //	cout << "DecDeg::chooseformat()\n";
 	return format<Format_DD>();
@@ -600,7 +600,7 @@ inline double DegMin::get_sec(double x) const
 
 /// __________________________________________________
 /// Format character string for printing
-vector<string> DegMin::chooseformat() const
+inline vector<string> DegMin::chooseformat() const
 {
 //	cout << "DegMin::chooseformat()\n";
 	return format<Format_DM>();
@@ -675,7 +675,7 @@ inline double DegMinSec::get_sec(double x) const
 
 /// __________________________________________________
 /// Format character string for printing
-vector<string> DegMinSec::chooseformat() const
+inline vector<string> DegMinSec::chooseformat() const
 {
 //	cout << "DegMinSec::chooseformat()\n";
 	return format<Format_DMS>();
