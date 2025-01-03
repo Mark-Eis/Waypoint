@@ -47,6 +47,8 @@ class FormatBase;
 class Format_DD;
 class Format_DM;
 class Format_DMS;
+class FormatLL_DM_S;
+class FormatLL_DD;
 
 template<class T>
 unique_ptr<const CoordBase> newconstCoordBase(const T&, const CoordType);
@@ -240,7 +242,6 @@ class CoordBase {
 		virtual double get_decmin(double) const = 0;
 		virtual double get_sec(double) const = 0;
 		virtual vector<string> chooseformat() const = 0;
-		virtual void format_ll(vector<string>&) const;
 
 		const vector<double> &get_nv() const;
 		unique_ptr<const CoordBase> convert(const CoordType) const;
@@ -249,13 +250,15 @@ class CoordBase {
 		const vector<string> &get_names() const;
 		void warn_invalid() const;
 		void set_waypoint() const;
-		template <typename FunctObj>
+		template <typename FunctObj, typename FunctObj2>
 		vector<string> format() const;
 		void print(ostream&) const;
 
 		friend class DecDeg;
 		friend class DegMin;
 		friend class DegMinSec;
+		friend class FormatLL_DM_S;
+		friend class FormatLL_DD;
 		friend ostream& operator<<(ostream&, const CoordBase&);
 };
 
@@ -392,29 +395,14 @@ inline void CoordBase::set_waypoint() const
 
 /// __________________________________________________
 /// Formatted coordinate strings for printing
-template <typename FunctObj>
+template <typename FunctObj, typename FunctObj2>
 vector<string> CoordBase::format() const
 {
-//	cout << "CoordBase::format<typename FunctObj>()\n";
+//	cout << "CoordBase::format<typename FunctObj, FunctObj2>()\n";
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), FunctObj(*this));
-	format_ll(out);
+	transform(out.begin(), out.end(), nv.begin(), out.begin(), FunctObj2(*this));
 	return out;
-}
-
-
-/// __________________________________________________
-/// Formatted latitude and longitude strings for printing
-void CoordBase::format_ll(vector<string>& out) const
-{
-//	cout << "CoordBase::format_ll(vector<string>&)\n";
-	if (latlon.size()) {
-		vector<bool>::const_iterator ll_it(latlon.begin());
-		transform(out.begin(), out.end(), nv.begin(), out.begin(), [this, &ll_it](string ostr, double n)
-			{ return ostr += cardpoint(get_decmin(n) < 0, llgt1 ? *ll_it++ : *ll_it); });
-	} else
-		transform(out.begin(), out.end(), nv.begin(), out.begin(), [this](string ostr, double n)
-			{ return ostr += cardi_b(get_decmin(n) < 0); });
 }
 
 
@@ -457,7 +445,6 @@ class DecDeg : public CoordBase {
 		double get_decmin(double x) const;
 		double get_sec(double x) const;
 		vector<string> chooseformat() const;
-		void format_ll(vector<string>&) const;
 };
 
 
@@ -515,20 +502,7 @@ inline double DecDeg::get_sec(double x) const
 inline vector<string> DecDeg::chooseformat() const
 {
 //	cout << "DecDeg::chooseformat()\n";
-	return format<Format_DD>();
-}
-
-
-/// __________________________________________________
-/// Formatted strings for printing
-void DecDeg::format_ll(vector<string>& out) const
-{
-//	cout << "DecDeg::format_ll(vector<string>&)\n";
-	if (latlon.size() && !waypoint) {
-		vector<bool>::const_iterator ll_it(latlon.begin());
-		transform(out.begin(), out.end(), out.begin(),
-			[this, &ll_it](string ostr) { return ostr += ((llgt1 ? *ll_it++ : *ll_it) ? " lat" : " lon"); });
-	}
+	return format<Format_DD, FormatLL_DD>();
 }
 
 
@@ -603,7 +577,7 @@ inline double DegMin::get_sec(double x) const
 inline vector<string> DegMin::chooseformat() const
 {
 //	cout << "DegMin::chooseformat()\n";
-	return format<Format_DM>();
+	return format<Format_DM, FormatLL_DM_S>();
 }
 
 
@@ -678,7 +652,7 @@ inline double DegMinSec::get_sec(double x) const
 inline vector<string> DegMinSec::chooseformat() const
 {
 //	cout << "DegMinSec::chooseformat()\n";
-	return format<Format_DMS>();
+	return format<Format_DMS, FormatLL_DM_S>();
 }
 
 
@@ -745,6 +719,33 @@ public:
 };
 
 
+/// __________________________________________________
+/// Format functor for latitude and longitude strings for  decimal degrees
+class FormatLL_DD : public FormatBase {
+	vector<bool>::const_iterator ll_it;
+public:
+	FormatLL_DD(const DecDeg& dd) : FormatBase(dynamic_cast<const CoordBase&>(dd)), ll_it(cb.latlon.begin()) {}
+	string operator()(string ostr, double n) {
+//								  				cout << "@FormatLL_DD::operator()\n";
+												return ostr += ((cb.llgt1 ? *ll_it++ : *ll_it) ? " lat" : " lon");
+											 }
+};
+
+
+/// __________________________________________________
+/// Format functor for latitude and longitude strings for degrees, minutes (and seconds)
+class FormatLL_DM_S : public FormatBase {
+	vector<bool>::const_iterator ll_it;
+public:
+	FormatLL_DM_S(const DecDeg& dd) : FormatBase(dynamic_cast<const CoordBase&>(dd)), ll_it(cb.latlon.begin()) {}
+	string operator()(string ostr, double n) {
+//								  				cout << "@FormatLL_DM_S::operator()\n";
+												return ostr += cb.latlon.size() ? cardpoint(cb.get_decmin(n) < 0, cb.llgt1 ? *ll_it++ : *ll_it) : cardi_b(cb.get_decmin(n) < 0);
+											 }
+};
+
+
+/// __________________________________________________
 /// __________________________________________________
 /// Create unique_ptr<CoordBase> to new DecDeg, DegMin or DegMinSec object
 template<class T>
