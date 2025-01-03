@@ -391,6 +391,20 @@ inline void CoordBase::set_waypoint() const
 
 
 /// __________________________________________________
+/// Formatted coordinate strings for printing
+template <typename FunctObj>
+vector<string> CoordBase::format() const
+{
+//	cout << "CoordBase::format<typename FunctObj>()\n";
+	ostringstream outstrstr;
+	vector<string> out(nv.size());
+	transform(nv.begin(), nv.end(), out.begin(), FunctObj(*this));
+	format_ll(out);
+	return out;
+}
+
+
+/// __________________________________________________
 /// Formatted latitude and longitude strings for printing
 void CoordBase::format_ll(vector<string>& out) const
 {
@@ -402,20 +416,6 @@ void CoordBase::format_ll(vector<string>& out) const
 	} else
 		transform(out.begin(), out.end(), nv.begin(), out.begin(), [this](string ostr, double n)
 			{ return ostr += cardi_b(get_decmin(n) < 0); });
-}
-
-
-/// __________________________________________________
-/// Formatted coorinate strings for printing
-template <typename FunctObj>
-vector<string> CoordBase::format() const
-{
-//	cout << "CoordBase::format<typename FunctObj>()\n";
-	ostringstream outstrstr;
-	vector<string> out(nv.size());
-	transform(nv.begin(), nv.end(), out.begin(), FunctObj(*this));
-	format_ll(out);
-	return out;
 }
 
 
