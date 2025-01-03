@@ -396,7 +396,7 @@ template <typename FunctObj>
 vector<string> CoordBase::format() const
 {
 //	cout << "CoordBase::format<typename FunctObj>()\n";
-	ostringstream outstrstr;
+//	ostringstream outstrstr;
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), FunctObj(*this));
 	format_ll(out);
