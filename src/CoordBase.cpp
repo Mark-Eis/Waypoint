@@ -667,7 +667,10 @@ class FormatBase {
 		const CoordBase& cb; 
 		ostringstream outstrstr;
 	public:
-		FormatBase(const CoordBase& _cb) : cb(_cb) { /*cout << "@FormatBase(const CoordBase& _cb) "; _ctrsgn(typeid(*this));*/ }
+		FormatBase(const CoordBase& _cb) : cb(_cb)
+		{
+//			cout << "@FormatBase(const CoordBase& _cb) "; _ctrsgn(typeid(*this));
+		}
 		virtual ~FormatBase() = 0;
 };
 
@@ -678,13 +681,17 @@ inline FormatBase::~FormatBase() {}
 /// Format coords vector functor for decimal degrees
 class Format_DD : public FormatBase {
 public:
-	Format_DD(const CoordBase& cb) : FormatBase(cb) { /*cout << "@Format_DD(const DecDeg& dd) "; _ctrsgn(typeid(*this));*/ }
-	string operator()(double n) {
-//								  cout << "@Format_DD::operator()\n";
-								  outstrstr.str("");
-								  outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << cb.get_decdeg(n) << "\u00B0";
-								  return outstrstr.str();
-								}
+	Format_DD(const CoordBase& cb) : FormatBase(cb)
+	{
+		cout << "@Format_DD(const DecDeg& dd) "; _ctrsgn(typeid(*this));
+	}
+	string operator()(double n)
+	{
+//		cout << "@Format_DD::operator()\n";
+		outstrstr.str("");
+		outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << cb.get_decdeg(n) << "\u00B0";
+		return outstrstr.str();
+	}
 };
 
 
@@ -692,14 +699,18 @@ public:
 /// Format coords vector functor for degrees and minutes
 class Format_DM : public FormatBase{
 public:
-	Format_DM(const CoordBase& cb) : FormatBase(cb) { /*cout << "@Format_DM(const DegMin& dm) "; _ctrsgn(typeid(*this));*/ }
-	string operator()(double n) {
-//								  cout << "@Format_DM::operator()\n";
-								  outstrstr.str("");
-								  outstrstr << setw(3) << setfill(' ') << abs(cb.get_deg(n)) << "\u00B0"
-											<< setw(7) << setfill('0') << fixed << setprecision(4) << abs(cb.get_decmin(n)) << "'";
-								  return outstrstr.str();
-								}
+	Format_DM(const CoordBase& cb) : FormatBase(cb)
+	{
+//		cout << "@Format_DM(const DegMin& dm) "; _ctrsgn(typeid(*this));
+	}
+	string operator()(double n)
+	{
+//		cout << "@Format_DM::operator()\n";
+		outstrstr.str("");
+		outstrstr << setw(3) << setfill(' ') << abs(cb.get_deg(n)) << "\u00B0"
+				  << setw(7) << setfill('0') << fixed << setprecision(4) << abs(cb.get_decmin(n)) << "'";
+		return outstrstr.str();
+	}
 };
 
 
@@ -707,15 +718,19 @@ public:
 /// Format coords vector functor for degrees, minutes and seconds 
 class Format_DMS : public FormatBase{
 public:
-	Format_DMS(const CoordBase& cb) : FormatBase(cb) { /*cout << "@Format_DM(const DegMinSec& dms) "; _ctrsgn(typeid(*this));*/ }
-	string operator()(double n) {
-//								  cout << "@Format_DMS::operator()\n";
-								  outstrstr.str("");
-								  outstrstr << setw(3) << setfill(' ') << abs(cb.get_deg(n)) << "\u00B0"
-											<< setw(2) << setfill('0') << abs(cb.get_min(n)) << "'"
-											<< setw(5) << fixed << setprecision(2) << abs(cb.get_sec(n)) << "\"";
-								  return outstrstr.str();
-								}
+	Format_DMS(const CoordBase& cb) : FormatBase(cb)
+	{
+		cout << "@Format_DM(const DegMinSec& dms) "; _ctrsgn(typeid(*this));
+	}
+	string operator()(double n)
+	{
+//		cout << "@Format_DMS::operator()\n";
+		outstrstr.str("");
+		outstrstr << setw(3) << setfill(' ') << abs(cb.get_deg(n)) << "\u00B0"
+				  << setw(2) << setfill('0') << abs(cb.get_min(n)) << "'"
+				  << setw(5) << fixed << setprecision(2) << abs(cb.get_sec(n)) << "\"";
+		return outstrstr.str();
+	}
 };
 
 
@@ -725,13 +740,14 @@ class FormatLL_DD : public FormatBase {
 	vector<bool>::const_iterator ll_it;
 public:
 	FormatLL_DD(const CoordBase& cb) : FormatBase(cb), ll_it(cb.latlon.begin()) {}
-	string operator()(string ostr, double n) {
-//								  				cout << "@FormatLL_DD::operator() cb.waypoint " << boolalpha << cb.waypoint << endl;
-												if (cb.latlon.size() && !cb.waypoint)
-													return ostr += ((cb.llgt1 ? *ll_it++ : *ll_it) ? " lat" : " lon");
-												else
-													return ostr;
-											 }
+	string operator()(string ostr, double n)
+	{
+//		cout << "@FormatLL_DD::operator() cb.waypoint " << boolalpha << cb.waypoint << endl;
+		if (cb.latlon.size() && !cb.waypoint)
+			return ostr += ((cb.llgt1 ? *ll_it++ : *ll_it) ? " lat" : " lon");
+		else
+			return ostr;
+	}
 };
 
 
@@ -741,10 +757,11 @@ class FormatLL_DM_S : public FormatBase {
 	vector<bool>::const_iterator ll_it;
 public:
 	FormatLL_DM_S(const CoordBase& cb) : FormatBase(cb), ll_it(cb.latlon.begin()) {}
-	string operator()(string ostr, double n) {
-//								  				cout << "@FormatLL_DM_S::operator()\n";
-												return ostr += cb.latlon.size() ? cardpoint(cb.get_decmin(n) < 0, cb.llgt1 ? *ll_it++ : *ll_it) : cardi_b(cb.get_decmin(n) < 0);
-											 }
+	string operator()(string ostr, double n)
+	{
+		cout << "@FormatLL_DM_S::operator()\n";
+		return ostr += cb.latlon.size() ? cardpoint(cb.get_decmin(n) < 0, cb.llgt1 ? *ll_it++ : *ll_it) : cardi_b(cb.get_decmin(n) < 0);
+	}
 };
 
 
