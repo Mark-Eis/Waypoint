@@ -49,6 +49,7 @@ class Format_DM;
 class Format_DMS;
 class FormatLL_DM_S;
 class FormatLL_DD;
+class Validator;
 
 template<class T>
 unique_ptr<const CoordBase> newconstCoordBase(const T&, const CoordType);
@@ -97,7 +98,7 @@ const DataFrame validatewaypoint(DataFrame&);
 /// Report object construction and destruction
 void _ctrsgn(const type_info &obj, bool destruct = false)
 {
-///§	cout << (destruct ? "Destroying " : "Constructing ") << obj.name() << endl;
+	cout << (destruct ? "Destroying " : "Constructing ") << obj.name() << endl;
 }
 
 
@@ -259,6 +260,8 @@ class CoordBase {
 		friend class DegMinSec;
 		friend class FormatLL_DM_S;
 		friend class FormatLL_DD;
+		friend class Validator;
+
 		friend ostream& operator<<(ostream&, const CoordBase&);
 };
 
@@ -329,16 +332,40 @@ inline unique_ptr<const CoordBase> CoordBase::convert(const CoordType type) cons
 
 
 /// __________________________________________________
-/// Validate coord value
-inline bool CoordBase::validator(double n, bool lat = false) const
-{
-//	cout << "@CoordBase::validator() " << " n: " << setw(9) << setfill(' ') << n << " lat: ";
-//  if (latlon.size()) cout << boolalpha << lat << endl; else cout << "NA\n";
+/// Format coords vector functor base class
+class FormatBase {
+	protected:
+		const CoordBase& cb; 
+		ostringstream outstrstr;
+	public:
+		FormatBase(const CoordBase& _cb) : cb(_cb)
+		{
+//			cout << "@FormatBase(const CoordBase& _cb) "; _ctrsgn(typeid(*this));
+		}
+		virtual ~FormatBase() = 0;
+};
 
-	return !((abs(get_decdeg(n)) > (latlon.size() && lat ? 90 : 180)) ||
-		(abs(get_decmin(n)) >= 60) ||
-		(abs(get_sec(n)) >= 60));
-}
+inline FormatBase::~FormatBase() {}
+
+
+/// __________________________________________________
+/// __________________________________________________
+/// Validate coord value functor
+class Validator : public FormatBase {
+	vector<bool>::const_iterator ll_it;
+public:
+	Validator(const CoordBase& cb) : FormatBase(cb), ll_it(cb.latlon.begin())
+	{
+//		cout << "@Validator(const CoordBase& cb) "; _ctrsgn(typeid(*this));
+	}
+	bool operator()(double n)
+	{
+//		cout << "@Validator() " << " n: " << setw(9) << setfill(' ') << n << endl;
+		return !((abs(cb.get_decdeg(n)) > (cb.latlon.size() && (cb.llgt1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
+			(abs(cb.get_decmin(n)) >= 60) ||
+			(abs(cb.get_sec(n)) >= 60));
+	}
+};
 
 
 /// __________________________________________________
@@ -348,13 +375,7 @@ void CoordBase::validate(bool warn = true) const
 //	cout << "@CoordBase::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
 	vector<bool>& non_const_valid { const_cast<vector<bool>&>(valid) };
 	non_const_valid.assign(nv.size(), {false});
-	if (latlon.size()) {
-		vector<bool>::const_iterator ll_it(latlon.begin());
-		transform(nv.begin(), nv.end(), non_const_valid.begin(),
-		 [this, &ll_it](double n) { return validator(n, llgt1 ? *ll_it++ : *ll_it); });
-	} else
-		transform(nv.begin(), nv.end(), non_const_valid.begin(),
-		 [this](double n) { return validator(n); });
+	transform(nv.begin(), nv.end(), non_const_valid.begin(), Validator(*this));
 	if (all_valid())
 		non_const_valid.assign({true});
 	else
@@ -659,7 +680,7 @@ inline vector<string> DegMinSec::fmt_fctr_tmpl() const
 /// __________________________________________________
 /// __________________________________________________
 /// Formatting functors
-
+/*
 /// __________________________________________________
 /// Format coords vector functor base class
 class FormatBase {
@@ -675,7 +696,7 @@ class FormatBase {
 };
 
 inline FormatBase::~FormatBase() {}
-
+*/
 
 /// __________________________________________________
 /// Format coords vector functor for decimal degrees
