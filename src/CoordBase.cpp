@@ -401,9 +401,10 @@ inline void CoordBase::set_waypoint() const
 template <typename FunctObj, typename FunctObj2>
 vector<string> CoordBase::format() const
 {
-//	cout << "CoordBase::format<typename FunctObj, FunctObj2>()\n";
+	cout << "CoordBase::format<typename FunctObj, FunctObj2>()\n";
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), FunctObj(*this));
+	cout << "CoordBase::format<typename FunctObj, FunctObj2>() §§1\n";
 	transform(out.begin(), out.end(), nv.begin(), out.begin(), FunctObj2(*this));
 	return out;
 }
@@ -413,7 +414,7 @@ vector<string> CoordBase::format() const
 /// Print coords vector
 void CoordBase::print(ostream& stream) const
 {
-//	cout << "@CoordBase::print() type " << typeid(*this).name() << endl;
+	cout << "@CoordBase::print() type " << typeid(*this).name() << endl;
 	vector<string> sv(fmt_fctr_tmpl()); 
 	if (names.size()) {
 		vector<string>::const_iterator nm_it(names.begin());
@@ -426,8 +427,9 @@ void CoordBase::print(ostream& stream) const
 
 /// __________________________________________________
 /// Output CoordBase derived object to ostream
-ostream& operator<<(ostream& stream, const CoordBase &c)
+ostream& operator<<(ostream& stream, const CoordBase& c)
 {
+	cout << "@operator<<(ostream&, const CoordBase&)\n";
 	c.print(stream);
 	return stream;
 }
@@ -507,7 +509,7 @@ inline double DecDeg::get_sec(double x) const
 /// Instantiate functor template for formatting decimal degrees
 inline vector<string> DecDeg::fmt_fctr_tmpl() const
 {
-//	cout << "DecDeg::fmt_fctr_tmpl()\n";
+	cout << "DecDeg::fmt_fctr_tmpl()\n";
 	return format<Format_DD, FormatLL_DD>();
 }
 
@@ -532,19 +534,22 @@ class DegMin : public CoordBase {
 
 DegMin::DegMin(const NumericVector &nv) : CoordBase(nv)
 {
-///§	cout << "@DegMin::DegMin(NumericVector&) "; _ctrsgn(typeid(*this));
+///§
+	cout << "@DegMin::DegMin(NumericVector&) "; _ctrsgn(typeid(*this));
 }
 
 DegMin::DegMin(const CoordBase &c) : CoordBase(c)
 {
-///§	cout << "@DegMin::DegMin(const CoordBase&) "; _ctrsgn(typeid(*this));
+///§
+	cout << "@DegMin::DegMin(const CoordBase&) "; _ctrsgn(typeid(*this));
 	transform(c.nv.begin(), c.nv.end(), nv.begin(),
 		[&c](double n) { return c.get_deg(n) * 1e2 + c.get_decmin(n); });
 }
 
 DegMin::~DegMin()
 {
-///§	cout << "@DegMin::~DegMin() "; _ctrsgn(typeid(*this), true);
+///§
+	cout << "@DegMin::~DegMin() "; _ctrsgn(typeid(*this), true);
 }
 
 inline int DegMin::get_deg(double x) const
@@ -607,19 +612,22 @@ class DegMinSec : public CoordBase {
 
 DegMinSec::DegMinSec(const NumericVector &nv) : CoordBase(nv)
 {
-///§	cout << "@DegMinSec::DegMinSec(NumericVector&) "; _ctrsgn(typeid(*this));
+///§
+	cout << "@DegMinSec::DegMinSec(NumericVector&) "; _ctrsgn(typeid(*this));
 }
 
 DegMinSec::DegMinSec(const CoordBase &c) : CoordBase(c)
 {
-///§	cout << "@DegMinSec::DegMinSec(const CoordBase&) "; _ctrsgn(typeid(*this));
+///§
+	cout << "@DegMinSec::DegMinSec(const CoordBase&) "; _ctrsgn(typeid(*this));
 	transform(c.nv.begin(), c.nv.end(), nv.begin(),
 		[&c](double n) { return c.get_deg(n) * 1e4 + c.get_min(n) * 1e2 + c.get_sec(n); });
 }
 
 DegMinSec::~DegMinSec()
 {
-///§	cout << "@DegMinSec::~DegMinSec() "; _ctrsgn(typeid(*this), true);
+///§
+	cout << "@DegMinSec::~DegMinSec() "; _ctrsgn(typeid(*this), true);
 }
 
 inline int DegMinSec::get_deg(double x) const
@@ -673,7 +681,7 @@ class FormatBase {
 		const CoordBase& cb; 
 		ostringstream outstrstr;
 	public:
-		FormatBase(const CoordBase& _cb) : cb(_cb) {}
+		FormatBase(const CoordBase& _cb) : cb(_cb) { cout << "@FormatBase(const CoordBase& _cb) "; _ctrsgn(typeid(*this)); }
 		virtual ~FormatBase() = 0;
 };
 
@@ -684,9 +692,10 @@ inline FormatBase::~FormatBase() {}
 /// Format coords vector functor for decimal degrees
 class Format_DD : public FormatBase {
 public:
-	Format_DD(const DecDeg& dd) : FormatBase(dynamic_cast<const CoordBase&>(dd)) {}
+//	Format_DD(const DecDeg& dd) : FormatBase(dynamic_cast<const CoordBase&>(dd)) { cout << "@Format_DD(const DecDeg& dd) "; _ctrsgn(typeid(*this)); }
+	Format_DD(const CoordBase& cb) : FormatBase(cb) { cout << "@Format_DD(const DecDeg& dd) "; _ctrsgn(typeid(*this)); }
 	string operator()(double n) {
-//								  cout << "@Format_DD::operator()\n";
+								  cout << "@Format_DD::operator()\n";
 								  outstrstr.str("");
 								  outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << cb.get_decdeg(n) << "\u00B0";
 								  return outstrstr.str();
@@ -698,9 +707,10 @@ public:
 /// Format coords vector functor for degrees and minutes
 class Format_DM : public FormatBase{
 public:
-	Format_DM(const DegMin& dm) : FormatBase(dynamic_cast<const CoordBase&>(dm)) {}
+//	Format_DM(const DegMin& dm) : FormatBase(dynamic_cast<const CoordBase&>(dm)) { cout << "@Format_DM(const DegMin& dm) "; _ctrsgn(typeid(*this)); }
+	Format_DM(const CoordBase& cb) : FormatBase(cb) { cout << "@Format_DM(const DegMin& dm) "; _ctrsgn(typeid(*this)); }
 	string operator()(double n) {
-//								  cout << "@Format_DM::operator()\n";
+								  cout << "@Format_DM::operator()\n";
 								  outstrstr.str("");
 								  outstrstr << setw(3) << setfill(' ') << abs(cb.get_deg(n)) << "\u00B0"
 											<< setw(7) << setfill('0') << fixed << setprecision(4) << abs(cb.get_decmin(n)) << "'";
@@ -713,9 +723,10 @@ public:
 /// Format coords vector functor for degrees, minutes and seconds 
 class Format_DMS : public FormatBase{
 public:
-	Format_DMS(const DegMinSec& dms) : FormatBase(dynamic_cast<const CoordBase&>(dms)) {}
+//	Format_DMS(const DegMinSec& dms) : FormatBase(dynamic_cast<const CoordBase&>(dms)) { cout << "@Format_DM(const DegMinSec& dms) "; _ctrsgn(typeid(*this)); }
+	Format_DMS(const CoordBase& cb) : FormatBase(cb) { cout << "@Format_DM(const DegMinSec& dms) "; _ctrsgn(typeid(*this)); }
 	string operator()(double n) {
-//								  cout << "@Format_DMS::operator()\n";
+								  cout << "@Format_DMS::operator()\n";
 								  outstrstr.str("");
 								  outstrstr << setw(3) << setfill(' ') << abs(cb.get_deg(n)) << "\u00B0"
 											<< setw(2) << setfill('0') << abs(cb.get_min(n)) << "'"
@@ -730,7 +741,8 @@ public:
 class FormatLL_DD : public FormatBase {
 	vector<bool>::const_iterator ll_it;
 public:
-	FormatLL_DD(const DecDeg& dd) : FormatBase(dynamic_cast<const CoordBase&>(dd)), ll_it(cb.latlon.begin()) {}
+//	FormatLL_DD(const DecDeg& dd) : FormatBase(dynamic_cast<const CoordBase&>(dd)), ll_it(cb.latlon.begin()) {}
+	FormatLL_DD(const CoordBase& cb) : FormatBase(cb), ll_it(cb.latlon.begin()) {}
 	string operator()(string ostr, double n) {
 //								  				cout << "@FormatLL_DD::operator()\n";
 								  				cout << "@FormatLL_DD::operator() cb.waypoint " << boolalpha << cb.waypoint << endl;
@@ -747,7 +759,8 @@ public:
 class FormatLL_DM_S : public FormatBase {
 	vector<bool>::const_iterator ll_it;
 public:
-	FormatLL_DM_S(const DecDeg& dd) : FormatBase(dynamic_cast<const CoordBase&>(dd)), ll_it(cb.latlon.begin()) {}
+//	FormatLL_DM_S(const DecDeg& dd) : FormatBase(dynamic_cast<const CoordBase&>(dd)), ll_it(cb.latlon.begin()) {}
+	FormatLL_DM_S(const CoordBase& cb) : FormatBase(cb), ll_it(cb.latlon.begin()) {}
 	string operator()(string ostr, double n) {
 //								  				cout << "@FormatLL_DM_S::operator()\n";
 												return ostr += cb.latlon.size() ? cardpoint(cb.get_decmin(n) < 0, cb.llgt1 ? *ll_it++ : *ll_it) : cardi_b(cb.get_decmin(n) < 0);
@@ -1004,7 +1017,7 @@ inline LogicalVector get_valid(const NumericVector &nv)
 template<class T>
 bool check_valid(const T &t)
 {
-//	cout << "@check_valid(const T&) fmt " << get_fmt_attribute(t) << endl;
+	cout << "@check_valid(const T&) fmt " << get_fmt_attribute(t) << endl;
 	bool boolat = check_valid(as<NumericVector>(t[1]));
 	if (!boolat)
 		warning("Invalid latitude!");
@@ -1020,7 +1033,7 @@ bool check_valid(const T &t)
 template<>
 bool check_valid<NumericVector>(const NumericVector &nv)
 {
-//	cout << "@check_valid<NumericVector>(const NumericVector&)" << endl;
+	cout << "@check_valid<NumericVector>(const NumericVector&)" << endl;
 	LogicalVector valid = std::move(get_valid(nv));
 	if (valid.size())
 		return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
