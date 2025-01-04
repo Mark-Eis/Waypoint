@@ -332,39 +332,23 @@ inline unique_ptr<const CoordBase> CoordBase::convert(const CoordType type) cons
 
 
 /// __________________________________________________
-/// Format coords vector functor base class
-class FormatBase {
-	protected:
-		const CoordBase& cb; 
-		ostringstream outstrstr;
-	public:
-		FormatBase(const CoordBase& _cb) : cb(_cb)
-		{
-//			cout << "@FormatBase(const CoordBase& _cb) "; _ctrsgn(typeid(*this));
-		}
-		virtual ~FormatBase() = 0;
-};
-
-inline FormatBase::~FormatBase() {}
-
-
-/// __________________________________________________
 /// __________________________________________________
 /// Validate coord value functor
-class Validator : public FormatBase {
-	vector<bool>::const_iterator ll_it;
-public:
-	Validator(const CoordBase& cb) : FormatBase(cb), ll_it(cb.latlon.begin())
-	{
-//		cout << "@Validator(const CoordBase& cb) "; _ctrsgn(typeid(*this));
-	}
-	bool operator()(double n)
-	{
-//		cout << "@Validator() " << " n: " << setw(9) << setfill(' ') << n << endl;
-		return !((abs(cb.get_decdeg(n)) > (cb.latlon.size() && (cb.llgt1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
-			(abs(cb.get_decmin(n)) >= 60) ||
-			(abs(cb.get_sec(n)) >= 60));
-	}
+class Validator {
+		const CoordBase& cb; 
+		vector<bool>::const_iterator ll_it;
+	public:
+		Validator(const CoordBase& _cb) : cb(_cb), ll_it(cb.latlon.begin())
+		{
+	//		cout << "@Validator(const CoordBase&) "; _ctrsgn(typeid(*this));
+		}
+		bool operator()(double n)
+		{
+	//		cout << "@Validator() " << " n: " << setw(9) << setfill(' ') << n << endl;
+			return !((abs(cb.get_decdeg(n)) > (cb.latlon.size() && (cb.llgt1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
+				(abs(cb.get_decmin(n)) >= 60) ||
+				(abs(cb.get_sec(n)) >= 60));
+		}
 };
 
 
@@ -680,7 +664,7 @@ inline vector<string> DegMinSec::fmt_fctr_tmpl() const
 /// __________________________________________________
 /// __________________________________________________
 /// Formatting functors
-/*
+
 /// __________________________________________________
 /// Format coords vector functor base class
 class FormatBase {
@@ -696,7 +680,7 @@ class FormatBase {
 };
 
 inline FormatBase::~FormatBase() {}
-*/
+
 
 /// __________________________________________________
 /// Format coords vector functor for decimal degrees
