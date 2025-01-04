@@ -147,7 +147,7 @@ template <class T, class A1>
 inline unique_ptr<T>
 factory(A1&& a1)   // one argument version
 {
-//	cout << "@factory(A1& a1)\n";
+	cout << "@factory(A1& a1)\n";
 	return unique_ptr<T>(new T(std::forward<A1>(a1)));
 }
 
@@ -155,7 +155,7 @@ template <class T, class A1, class A2>
 inline unique_ptr<T>
 factory(A1&& a1, A2&& a2)   // two argument version
 {
-//	cout << "@factory(A1& a1, A2& a2)\n";
+	cout << "@factory(A1& a1, A2& a2)\n";
 	return unique_ptr<T>(new T(std::forward<A1>(a1), std::forward<A2>(a2)));
 }
 
@@ -269,28 +269,32 @@ CoordBase::CoordBase(const NumericVector& nv) :
 		nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>()
 	)
 {
-///§	cout << "@CoordBase::CoordBase(const NumericVector&) "; _ctrsgn(typeid(*this));
+///§
+	cout << "@CoordBase::CoordBase(const NumericVector&) "; _ctrsgn(typeid(*this));
 }
 
 
 CoordBase::CoordBase(const CoordBase &c) :
 	CoordBase(vector<double>(c.nv.size()), vector<bool>{ c.latlon }, vector<string>{ c.names })
 {
-///§	cout << "@CoordBase::CoordBase(const CoordBase&) "; _ctrsgn(typeid(*this));
+///§
+	cout << "@CoordBase::CoordBase(const CoordBase&) "; _ctrsgn(typeid(*this));
 }
 
 
 CoordBase::CoordBase(const vector<double> n, const vector<bool>& ll, const vector<string>& _names) :
 	nv(std::move(n)), latlon{ ll }, names{ std::move(_names) }, llgt1(latlon.size() > 1)
 {
-///§	cout << "@CoordBase::CoordBase(const vector<double>, const LogicalVector&, const vector<string>&) ";
+///§
+	cout << "@CoordBase::CoordBase(const vector<double>, const LogicalVector&, const vector<string>&) ";
 ///§  _ctrsgn(typeid(*this));
 }
 
 
 CoordBase::~CoordBase()
 {
-///§	cout << "@CoordBase::~CoordBase() "; _ctrsgn(typeid(*this), true);
+///§
+	cout << "@CoordBase::~CoordBase() "; _ctrsgn(typeid(*this), true);
 }
 
 
@@ -450,20 +454,23 @@ class DecDeg : public CoordBase {
 
 DecDeg::DecDeg(const NumericVector &nv) : CoordBase(nv)
 {
-///§	cout << "@DecDeg::DecDeg(NumericVector&) "; _ctrsgn(typeid(*this));
+///§
+	cout << "@DecDeg::DecDeg(NumericVector&) "; _ctrsgn(typeid(*this));
 }
 
 
 DecDeg::DecDeg(const CoordBase &c) : CoordBase(c)
 {
-///§	cout << "@DecDeg::DecDeg(const CoordBase&) "; _ctrsgn(typeid(*this));
+///§
+	cout << "@DecDeg::DecDeg(const CoordBase&) "; _ctrsgn(typeid(*this));
 	transform(c.nv.begin(), c.nv.end(), nv.begin(), [&c](double n) { return c.get_decdeg(n); });
 }
 
 
 DecDeg::~DecDeg()
 {
-///§	cout << "@DecDeg::~DecDeg() "; _ctrsgn(typeid(*this), true);
+///§
+	cout << "@DecDeg::~DecDeg() "; _ctrsgn(typeid(*this), true);
 }
 
 inline int DecDeg::get_deg(double x) const
@@ -720,13 +727,14 @@ public:
 
 
 /// __________________________________________________
-/// Format functor for latitude and longitude strings for  decimal degrees
+/// Format functor for latitude and longitude strings for decimal degrees
 class FormatLL_DD : public FormatBase {
 	vector<bool>::const_iterator ll_it;
 public:
 	FormatLL_DD(const DecDeg& dd) : FormatBase(dynamic_cast<const CoordBase&>(dd)), ll_it(cb.latlon.begin()) {}
 	string operator()(string ostr, double n) {
 //								  				cout << "@FormatLL_DD::operator()\n";
+								  				cout << "@FormatLL_DD::operator() cb.waypoint " << boolalpha << cb.waypoint << endl;
 												if (cb.latlon.size() && !cb.waypoint)
 													return ostr += ((cb.llgt1 ? *ll_it++ : *ll_it) ? " lat" : " lon");
 												else
@@ -754,8 +762,8 @@ public:
 template<class T>
 unique_ptr<const CoordBase> newconstCoordBase(const T &t, const CoordType type)
 {
-//	cout << "@newconstCoordBase<T>(const T&, const CoordType) of type "
-//       << coordtype_to_int(type) + 1 << endl;
+	cout << "@newconstCoordBase<T>(const T&, const CoordType) of type "
+       << coordtype_to_int(type) + 1 << endl;
 
 	switch (type)
 	{
@@ -803,7 +811,8 @@ WayPoint::WayPoint(unique_ptr<const CoordBase> _cbp_lat, unique_ptr<const CoordB
 	cbp_lat{std::move(_cbp_lat)}, cbp_lon{std::move(_cbp_lon)},
 	validlat(cbp_lat->get_valid()), validlon(cbp_lon->get_valid())
 {
-///§	cout << "@WayPoint(unique_ptr<const CoordBase>, unique_ptr<const CoordBase>) "; _ctrsgn(typeid(*this));
+///§
+	cout << "@WayPoint(unique_ptr<const CoordBase>, unique_ptr<const CoordBase>) "; _ctrsgn(typeid(*this));
 	cbp_lat->set_waypoint();
 	cbp_lon->set_waypoint();
 }
@@ -811,13 +820,15 @@ WayPoint::WayPoint(unique_ptr<const CoordBase> _cbp_lat, unique_ptr<const CoordB
 WayPoint::WayPoint(const WayPoint &wp, CoordType type) :
 	WayPoint{ wp.get_cbp(true).convert(type), wp.get_cbp(false).convert(type) }
 {
-///§	cout << "@WayPoint(const WayPoint&) "; _ctrsgn(typeid(*this));
+///§
+	cout << "@WayPoint(const WayPoint&) "; _ctrsgn(typeid(*this));
 }
 
 
 WayPoint::~WayPoint()
 {
-///§	cout << "@WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true);
+///§
+	cout << "@WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true);
 }
 
 
@@ -844,7 +855,7 @@ inline const CoordBase &WayPoint::get_cbp(bool latlon) const
 /// Formatted strings for printing
 vector<string> WayPoint::format() const
 {
-//	cout << "@WayPoint::format()\n";
+	cout << "@WayPoint::format()\n";
 	vector<string> sv_lat{ cbp_lat->fmt_fctr_tmpl() };
 	vector<string> sv_lon{ cbp_lon->fmt_fctr_tmpl() };
 	vector<string> out(sv_lat.size());
@@ -865,7 +876,7 @@ vector<string> WayPoint::format() const
 /// Print WayPoint
 void WayPoint::print(ostream& stream) const
 {
-//	cout << "@WayPoint::print() " << typeid(*this).name() << endl;
+	cout << "@WayPoint::print() " << typeid(*this).name() << endl;
 	const int i { coordtype_to_int(cbp_lat->getfmt()) };
 	vector<int> spacing { 5, 7, 8, 11, 13, 14, 2, 2, 2 };
 	stream << " Latitude" << string(spacing[i], ' ') << "Longitude\n"
@@ -926,7 +937,7 @@ unique_ptr<const WayPoint> newconstWaypoint(const T &t)
 /// Output WayPoint to ostream
 ostream& operator<<(ostream& stream, const WayPoint &wp)
 {
-//	cout << "@operator<<(ostream&, const WayPoint&)\n";
+	cout << "@operator<<(ostream&, const WayPoint&)\n";
 	wp.print(stream);
 	return stream;
 }
