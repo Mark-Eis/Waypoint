@@ -287,7 +287,8 @@ CoordBase::CoordBase(const vector<double> n, const vector<bool>& ll, const vecto
 {
 ///§
 	cout << "@CoordBase::CoordBase(const vector<double>, const LogicalVector&, const vector<string>&) ";
-///§  _ctrsgn(typeid(*this));
+///§
+	_ctrsgn(typeid(*this));
 }
 
 
