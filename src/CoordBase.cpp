@@ -241,7 +241,7 @@ class CoordBase {
 		virtual int get_min(double) const = 0;
 		virtual double get_decmin(double) const = 0;
 		virtual double get_sec(double) const = 0;
-		virtual vector<string> chooseformat() const = 0;
+		virtual vector<string> fmt_fctr_tmpl() const = 0;
 
 		const vector<double> &get_nv() const;
 		unique_ptr<const CoordBase> convert(const CoordType) const;
@@ -411,7 +411,7 @@ vector<string> CoordBase::format() const
 void CoordBase::print(ostream& stream) const
 {
 //	cout << "@CoordBase::print() type " << typeid(*this).name() << endl;
-	vector<string> sv(chooseformat()); 
+	vector<string> sv(fmt_fctr_tmpl()); 
 	if (names.size()) {
 		vector<string>::const_iterator nm_it(names.begin());
 		for_each(sv.begin(), sv.end(),
@@ -444,7 +444,7 @@ class DecDeg : public CoordBase {
 		int get_min(double x) const;
 		double get_decmin(double x) const;
 		double get_sec(double x) const;
-		vector<string> chooseformat() const;
+		vector<string> fmt_fctr_tmpl() const;
 };
 
 
@@ -498,12 +498,11 @@ inline double DecDeg::get_sec(double x) const
 
 
 /// __________________________________________________
-/// Format character string for printing
-inline vector<string> DecDeg::chooseformat() const
+/// Instantiate functor template for formatting decimal degrees
+inline vector<string> DecDeg::fmt_fctr_tmpl() const
 {
-//	cout << "DecDeg::chooseformat()\n";
+//	cout << "DecDeg::fmt_fctr_tmpl()\n";
 	return format<Format_DD, FormatLL_DD>();
-//	return format<Format_DD, FormatLL_DM_S>();
 }
 
 
@@ -521,7 +520,7 @@ class DegMin : public CoordBase {
 		int get_min(double x) const;
 		double get_decmin(double x) const;
 		double get_sec(double x) const;
-		vector<string> chooseformat() const;
+		vector<string> fmt_fctr_tmpl() const;
 };
 
 
@@ -574,10 +573,10 @@ inline double DegMin::get_sec(double x) const
 
 
 /// __________________________________________________
-/// Format character string for printing
-inline vector<string> DegMin::chooseformat() const
+/// Instantiate functor template for formatting degrees and minutes
+inline vector<string> DegMin::fmt_fctr_tmpl() const
 {
-//	cout << "DegMin::chooseformat()\n";
+//	cout << "DegMin::fmt_fctr_tmpl()\n";
 	return format<Format_DM, FormatLL_DM_S>();
 }
 
@@ -596,7 +595,7 @@ class DegMinSec : public CoordBase {
 		int get_min(double x) const;
 		double get_decmin(double x) const;
 		double get_sec(double x) const;
-		vector<string> chooseformat() const;
+		vector<string> fmt_fctr_tmpl() const;
 };
 
 
@@ -649,10 +648,10 @@ inline double DegMinSec::get_sec(double x) const
 
 
 /// __________________________________________________
-/// Format character string for printing
-inline vector<string> DegMinSec::chooseformat() const
+/// Instantiate functor template for formatting degrees, minutes and seconds
+inline vector<string> DegMinSec::fmt_fctr_tmpl() const
 {
-//	cout << "DegMinSec::chooseformat()\n";
+//	cout << "DegMinSec::fmt_fctr_tmpl()\n";
 	return format<Format_DMS, FormatLL_DM_S>();
 }
 
@@ -846,10 +845,8 @@ inline const CoordBase &WayPoint::get_cbp(bool latlon) const
 vector<string> WayPoint::format() const
 {
 //	cout << "@WayPoint::format()\n";
-//	vector<string> sv_lat{ cbp_lat->format() };
-//	vector<string> sv_lon{ cbp_lon->format() };
-	vector<string> sv_lat{ cbp_lat->chooseformat() };
-	vector<string> sv_lon{ cbp_lon->chooseformat() };
+	vector<string> sv_lat{ cbp_lat->fmt_fctr_tmpl() };
+	vector<string> sv_lon{ cbp_lon->fmt_fctr_tmpl() };
 	vector<string> out(sv_lat.size());
 	transform(
 		sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(),
@@ -1136,8 +1133,7 @@ vector<string> formatcoord(NumericVector &nv)
 	checkinherits(nv, "coords");
 	if (!check_valid(nv))
 		warning("Formatting invalid coords!");
-//	return newconstCoordBase(nv, get_coordtype(nv))->format();
-	return newconstCoordBase(nv, get_coordtype(nv))->chooseformat();
+	return newconstCoordBase(nv, get_coordtype(nv))->fmt_fctr_tmpl();
 }
 
 
