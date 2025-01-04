@@ -286,9 +286,7 @@ CoordBase::CoordBase(const vector<double> n, const vector<bool>& ll, const vecto
 	nv(std::move(n)), latlon{ ll }, names{ std::move(_names) }, llgt1(latlon.size() > 1)
 {
 ///§
-	cout << "@CoordBase::CoordBase(const vector<double>, const LogicalVector&, const vector<string>&) ";
-///§
-	_ctrsgn(typeid(*this));
+	cout << "@CoordBase::CoordBase(const vector<double>, const LogicalVector&, const vector<string>&) "; _ctrsgn(typeid(*this));
 }
 
 
@@ -963,6 +961,7 @@ inline int get_fmt_attribute(const T &t)
 template<class T>
 inline void checkinherits(T &t, const char *classname)
 {
+	cout << "checkinherits(T &t, const char *classname) t " << typeid(t).name() << " classname " << classname << endl;
 	if (!t.inherits(classname)) stop("Argument must be a \"%s\" object", classname);
 }
 
@@ -1116,7 +1115,7 @@ NumericVector latlon(NumericVector &nv, LogicalVector &value)
 // [[Rcpp::export(name = "print.coords", invisible = true)]]
 NumericVector printcoord(NumericVector &nv)
 {
-//	cout << "——Rcpp::export——printcoord() format " << get_fmt_attribute(nv) << endl;
+	cout << "——Rcpp::export——printcoord() format " << get_fmt_attribute(nv) << endl;
 	checkinherits(nv, "coords");
 	if (!check_valid(nv))
 		warning("Printing invalid coords!");
