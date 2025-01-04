@@ -503,6 +503,7 @@ inline vector<string> DecDeg::chooseformat() const
 {
 //	cout << "DecDeg::chooseformat()\n";
 	return format<Format_DD, FormatLL_DD>();
+//	return format<Format_DD, FormatLL_DM_S>();
 }
 
 
@@ -682,7 +683,7 @@ public:
 	string operator()(double n) {
 //								  cout << "@Format_DD::operator()\n";
 								  outstrstr.str("");
-								  outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << abs(cb.get_decdeg(n)) << "\u00B0";
+								  outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << cb.get_decdeg(n) << "\u00B0";
 								  return outstrstr.str();
 								}
 };
@@ -727,7 +728,10 @@ public:
 	FormatLL_DD(const DecDeg& dd) : FormatBase(dynamic_cast<const CoordBase&>(dd)), ll_it(cb.latlon.begin()) {}
 	string operator()(string ostr, double n) {
 //								  				cout << "@FormatLL_DD::operator()\n";
-												return ostr += ((cb.llgt1 ? *ll_it++ : *ll_it) ? " lat" : " lon");
+												if (cb.latlon.size() && !cb.waypoint)
+													return ostr += ((cb.llgt1 ? *ll_it++ : *ll_it) ? " lat" : " lon");
+												else
+													return ostr;
 											 }
 };
 
