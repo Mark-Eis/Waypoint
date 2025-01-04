@@ -391,7 +391,7 @@ void CoordBase::warn_invalid() const
 /// Set waypoint flag
 inline void CoordBase::set_waypoint() const
 {
-//	cout << "@CoordBase::set_waypoint()\n";
+	cout << "@CoordBase::set_waypoint()\n";
 	bool &wpt = const_cast<bool&>(waypoint);
 	wpt = true;
 }
@@ -763,7 +763,7 @@ template<class T>
 unique_ptr<const CoordBase> newconstCoordBase(const T &t, const CoordType type)
 {
 	cout << "@newconstCoordBase<T>(const T&, const CoordType) of type "
-       << coordtype_to_int(type) + 1 << endl;
+		 << coordtype_to_int(type) + 1 << endl;
 
 	switch (type)
 	{
@@ -925,7 +925,7 @@ void WayPoint::warn_invalid() const
 template<class T>
 unique_ptr<const WayPoint> newconstWaypoint(const T &t)
 {
-//	cout << "@newconstWaypoint(const T&) fmt " << get_fmt_attribute(t) << endl;
+	cout << "@newconstWaypoint(const T&) fmt " << get_fmt_attribute(t) << endl;
 	return factory<const WayPoint>(
 		newconstCoordBase(as<NumericVector>(t[1]), get_coordtype(t)),
 		newconstCoordBase(as<NumericVector>(t[2]), get_coordtype(t))
