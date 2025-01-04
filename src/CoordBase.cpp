@@ -683,7 +683,7 @@ class Format_DD : public FormatBase {
 public:
 	Format_DD(const CoordBase& cb) : FormatBase(cb)
 	{
-		cout << "@Format_DD(const DecDeg& dd) "; _ctrsgn(typeid(*this));
+//		cout << "@Format_DD(const CoordBase& cb) "; _ctrsgn(typeid(*this));
 	}
 	string operator()(double n)
 	{
@@ -701,7 +701,7 @@ class Format_DM : public FormatBase{
 public:
 	Format_DM(const CoordBase& cb) : FormatBase(cb)
 	{
-//		cout << "@Format_DM(const DegMin& dm) "; _ctrsgn(typeid(*this));
+//		cout << "@Format_DM(const CoordBase& cb) "; _ctrsgn(typeid(*this));
 	}
 	string operator()(double n)
 	{
@@ -720,7 +720,7 @@ class Format_DMS : public FormatBase{
 public:
 	Format_DMS(const CoordBase& cb) : FormatBase(cb)
 	{
-		cout << "@Format_DM(const DegMinSec& dms) "; _ctrsgn(typeid(*this));
+//		cout << "@Format_DMS(const CoordBase& cb) "; _ctrsgn(typeid(*this));
 	}
 	string operator()(double n)
 	{
@@ -759,7 +759,7 @@ public:
 	FormatLL_DM_S(const CoordBase& cb) : FormatBase(cb), ll_it(cb.latlon.begin()) {}
 	string operator()(string ostr, double n)
 	{
-		cout << "@FormatLL_DM_S::operator()\n";
+//		cout << "@FormatLL_DM_S::operator()\n";
 		return ostr += cb.latlon.size() ? cardpoint(cb.get_decmin(n) < 0, cb.llgt1 ? *ll_it++ : *ll_it) : cardi_b(cb.get_decmin(n) < 0);
 	}
 };
