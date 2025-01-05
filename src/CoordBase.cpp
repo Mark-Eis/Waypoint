@@ -47,8 +47,8 @@ class FormatBase;
 class Format_DD;
 class Format_DM;
 class Format_DMS;
-class FormatLL_DM_S;
 class FormatLL_DD;
+class FormatLL_DM_S;
 class Validator;
 
 template<class T>
@@ -225,7 +225,6 @@ class CoordBase {
 		const vector<bool> latlon;
 		const vector<string> names;
 		const bool llgt1 = false;
-		bool validator(double, bool) const;
 		bool all_valid() const;
 		bool waypoint = false;
 
