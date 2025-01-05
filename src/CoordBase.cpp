@@ -62,7 +62,7 @@ ostream& operator<<(ostream&, const WayPoint&);
 template<class T>
 inline int get_fmt_attribute(const T&);
 template<class T>
-inline void checkinherits(T&, const char *);
+inline void checkinherits(T&, const char*);
 template<class T, class V>
 void colattrset(const T&, int, const char*, V&&);
 
@@ -969,9 +969,9 @@ inline int get_fmt_attribute(const T& t)
 /// __________________________________________________
 /// Does object inherit given class?
 template<class T>
-inline void checkinherits(T& t, const char *classname)
+inline void checkinherits(T& t, const char* classname)
 {
-//	cout << "checkinherits(T& t, const char *classname) t " << typeid(t).name() << " classname " << classname << endl;
+//	cout << "checkinherits(T& t, const char* classname) t " << typeid(t).name() << " classname " << classname << endl;
 	if (!t.inherits(classname)) stop("Argument must be a \"%s\" object", classname);
 }
 
@@ -979,7 +979,7 @@ inline void checkinherits(T& t, const char *classname)
 /// __________________________________________________
 /// set attributes for vector column within object
 template<class T, class V>
-void colattrset(const T& t, int col, const char *attrib, V&& val)
+void colattrset(const T& t, int col, const char* attrib, V&& val)
 {
 //	cout << "@colattrset(const T&, int, const char*, V&&) attrib " << attrib << ", col " << col << endl;
 	as<NumericVector>(t[col]).attr(attrib) = std::forward<V>(val);
