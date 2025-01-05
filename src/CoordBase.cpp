@@ -43,6 +43,9 @@ class DegMinSec;
 template<> 
 string format_coord<DegMinSec>(const DegMinSec&, double);
 
+class Convert_DD;
+class Convert_DM;
+class Convert_DMS;
 class FormatBase;
 class Format_DD;
 class Format_DM;
@@ -408,6 +411,41 @@ vector<string> CoordBase::format() const
 	return out;
 }
 
+/*
+/// __________________________________________________
+/// __________________________________________________
+/// Print coords vector functor
+class Printor {
+		ostream& stream; 
+		vector<string>::const_iterator nm_it;
+	public:
+		Printor(ostream& ostr) : stream(ostr), nm_it(cb.latlon.begin())
+		{
+	//		cout << "@Printor(ostream& stream) ";
+			if (names.size()) {
+				vector<string>::const_iterator nm_it(names.begin());		}
+		}
+		string operator()(double n)
+		{
+	//		cout << "@Printor()\n";
+			stream << s << " " << *nm_it++ << "\n"; ;
+		}
+};
+
+
+/// __________________________________________________
+/// Print coords vector
+void CoordBase::print(ostream& stream) const
+{
+//	cout << "@CoordBase::print() type " << typeid(*this).name() << endl;
+	vector<string> fmtstr(fmt_fctr_tmpl()); 
+	
+		for_each(fmtstr.begin(), fmtstr.end(),
+			[&stream,& nm_it](const string& s) { stream << s << " " << *nm_it++ << "\n"; });
+	} else
+		for_each(fmtstr.begin(), fmtstr.end(), [&stream](const string& s) { stream << s << "\n"; });
+} */
+
 
 /// __________________________________________________
 /// Print coords vector
@@ -662,6 +700,60 @@ inline vector<string> DegMinSec::fmt_fctr_tmpl() const
 
 /// __________________________________________________
 /// __________________________________________________
+/// Conversion functors
+
+/// __________________________________________________
+/// Convert coords vector functor base class
+class ConvertBase {
+	protected:
+		const CoordBase& cb; 
+	public:
+		ConvertBase(const CoordBase& _cb) : cb(_cb)
+		{
+//			cout << "@ConvertBase(const CoordBase& _cb) "; _ctrsgn(typeid(*this));
+		}
+		virtual ~ ConvertBase() = 0;
+};
+
+inline ConvertBase::~ConvertBase() {}
+
+
+/// __________________________________________________
+/// Convert coords vector functor for decimal degrees
+class Convert_DD : public ConvertBase {
+	public:
+		Convert_DD(const CoordBase& cb) : ConvertBase(cb)
+		{
+			cout << "@ Convert_DD(const CoordBase& _cb) "; _ctrsgn(typeid(*this));
+		}
+		double operator()(double n) { return cb.get_decdeg(n); }
+};
+
+/// __________________________________________________
+/// Convert coords vector functor for degrees and minutes
+class Convert_DM : public ConvertBase { 
+	public:
+		Convert_DM(const CoordBase& cb) : ConvertBase(cb)
+		{
+			cout << "@Convert_DM(const CoordBase& _cb) "; _ctrsgn(typeid(*this));
+		}
+		double operator()(double n) { return cb.get_deg(n) * 1e2 + cb.get_decmin(n); }
+};
+
+/// __________________________________________________
+/// Convert coords vector functor for degrees, minutes and seconds
+class Convert_DMS : public ConvertBase { 
+	public:
+		Convert_DMS(const CoordBase& cb) : ConvertBase(cb)
+		{
+			cout << "@Convert_DMS(const CoordBase& _cb) "; _ctrsgn(typeid(*this));
+		}
+		double operator()(double n) { return cb.get_deg(n) * 1e4 + cb.get_min(n) * 1e2 + cb.get_sec(n); }
+};
+
+
+/// __________________________________________________
+/// __________________________________________________
 /// Formatting functors
 
 /// __________________________________________________
@@ -719,7 +811,7 @@ public:
 
 
 /// __________________________________________________
-/// Format coords vector functor for degrees, minutes and seconds 
+/// Format coords vector functor for degrees, minutes and seconds
 class Format_DMS : public FormatBase{
 public:
 	Format_DMS(const CoordBase& cb) : FormatBase(cb)
