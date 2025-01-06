@@ -293,11 +293,11 @@ class ConvertBase {
 		{
 			cout << "@ConvertBase(const CoordBase& _cb) "; _ctrsgn(typeid(*this));
 		}
-		ConvertBase(ConvertBase&& c) : cb{c.cb} { cout << "ConvertBase transfer ownership\n"; }			// transfer ownership
-		ConvertBase& operator=(const ConvertBase&) = delete;	// Disallow copying
-		ConvertBase(const ConvertBase&) = delete;
+		ConvertBase(ConvertBase&& c) : cb{c.cb} { cout << "ConvertBase(ConvertBase&&) transfer ownership\n"; }			// transfer ownership
+		ConvertBase& operator=(const ConvertBase&) = delete;		// Disallow copying
+		ConvertBase(const ConvertBase&) = delete;				// Disallow copying
 
-		virtual ~ ConvertBase() = 0;
+		virtual ~ConvertBase() = 0;
 };
 
 inline ConvertBase::~ConvertBase() { cout << "@ConvertBase::~ConvertBase() "; _ctrsgn(typeid(*this), true); }
@@ -535,7 +535,7 @@ class Convert_DD : public ConvertBase {
 		{
 			cout << "@Convert_DD(const CoordBase& _cb) "; _ctrsgn(typeid(*this));
 		}
-		double operator()(double n) { return cb.get_decdeg(n); }
+		double operator()(double n) { cout << "@Convert_DD::operator()(double)\n"; return cb.get_decdeg(n); }
 };
 
 
@@ -625,7 +625,7 @@ class Convert_DM : public ConvertBase {
 		{
 			cout << "@Convert_DM(const CoordBase& _cb) "; _ctrsgn(typeid(*this));
 		}
-		double operator()(double n) { return cb.get_deg(n) * 1e2 + cb.get_decmin(n); }
+		double operator()(double n) { cout << "@Convert_DM::operator()(double)\n"; return cb.get_deg(n) * 1e2 + cb.get_decmin(n); }
 };
 
 DegMin::DegMin(const CoordBase& c) : CoordBase(c, Convert_DM(c))
@@ -713,7 +713,7 @@ class Convert_DMS : public ConvertBase {
 		{
 			cout << "@Convert_DMS(const CoordBase& _cb) "; _ctrsgn(typeid(*this));
 		}
-		double operator()(double n) { return cb.get_deg(n) * 1e4 + cb.get_min(n) * 1e2 + cb.get_sec(n); }
+		double operator()(double n) { cout << "@Convert_DMS::operator()(double)\n"; return cb.get_deg(n) * 1e4 + cb.get_min(n) * 1e2 + cb.get_sec(n); }
 };
 
 DegMinSec::DegMinSec(const CoordBase& c) : CoordBase(c, Convert_DMS(c))
