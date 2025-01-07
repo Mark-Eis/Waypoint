@@ -455,7 +455,8 @@ class CoordBase {
 		const vector<string>& get_names() const;
 		void warn_invalid() const;
 		void set_waypoint() const;
-		template <typename FunctObj, typename FunctObj2>
+//		template <typename FunctObj, typename FunctObj2>
+		template <typename FunctObj, typename FunctObj2, typename FunctObj3>
 		vector<string> format() const;
 		void print(ostream&) const;
 
@@ -606,7 +607,7 @@ inline void CoordBase::set_waypoint() const
 	wpt = true;
 }
 
-
+/*
 /// __________________________________________________
 /// Formatted coordinate strings for printing
 template <typename FunctObj, typename FunctObj2>
@@ -617,6 +618,20 @@ vector<string> CoordBase::format() const
 //	transform(nv.begin(), nv.end(), out.begin(), FunctObj(*this));
 	transform(nv.begin(), nv.end(), out.begin(), FunctObj());
 	transform(out.begin(), out.end(), nv.begin(), out.begin(), FunctObj2(*this));
+	return out;
+} */
+
+
+/// __________________________________________________
+/// Formatted coordinate strings for printing
+template <typename FunctObj, typename FunctObj2, typename FunctObj3>
+vector<string> CoordBase::format() const
+{
+//	cout << "CoordBase::format<typename FunctObj, typename FunctObj2, typename FunctObj3>()\n";
+	vector<string> out(nv.size());
+//	transform(nv.begin(), nv.end(), out.begin(), FunctObj(*this));
+	transform(nv.begin(), nv.end(), out.begin(), FunctObj(FunctObj2()));
+	transform(out.begin(), out.end(), nv.begin(), out.begin(), FunctObj3(*this));
 	return out;
 }
 
@@ -755,7 +770,7 @@ inline double DecDeg::get_sec(double x) const
 inline vector<string> DecDeg::fmt_fctr_tmpl() const
 {
 //	cout << "DecDeg::fmt_fctr_tmpl()\n";
-	return format<Format_DD, FormatLL_DD>();
+	return format<Format_DD, FamousFiveDD, FormatLL_DD>();
 }
 
 
@@ -832,7 +847,7 @@ inline double DegMin::get_sec(double x) const
 inline vector<string> DegMin::fmt_fctr_tmpl() const
 {
 //	cout << "DegMin::fmt_fctr_tmpl()\n";
-	return format<Format_DM, FormatLL_DM_S>();
+	return format<Format_DM, FamousFiveDM, FormatLL_DM_S>();
 }
 
 
@@ -909,7 +924,7 @@ inline double DegMinSec::get_sec(double x) const
 inline vector<string> DegMinSec::fmt_fctr_tmpl() const
 {
 //	cout << "DegMinSec::fmt_fctr_tmpl()\n";
-	return format<Format_DMS, FormatLL_DM_S>();
+	return format<Format_DMS, FamousFiveDMS, FormatLL_DM_S>();
 }
 
 
