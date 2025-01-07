@@ -443,11 +443,11 @@ class CoordBase {
 
 		virtual ~CoordBase() = 0;
 		virtual const CoordType getfmt() const = 0;
-		virtual int get_deg(double) const = 0;
+/*		virtual int get_deg(double) const = 0;
 		virtual double get_decdeg(double) const = 0;
 		virtual int get_min(double) const = 0;
 		virtual double get_decmin(double) const = 0;
-		virtual double get_sec(double) const = 0;
+		virtual double get_sec(double) const = 0;  */
 		virtual void validate_tmpl(bool = true) const = 0;
 		virtual vector<string> fmt_fctr_tmpl() const = 0;
 
@@ -693,11 +693,11 @@ class DecDeg : public CoordBase {
 		~DecDeg();
 
 		const CoordType getfmt() const { return CoordType::decdeg; }
-		int get_deg(double) const;
+/*		int get_deg(double) const;
 		double get_decdeg(double x) const;
 		int get_min(double x) const;
 		double get_decmin(double x) const;
-		double get_sec(double x) const;
+		double get_sec(double x) const; */
 		void validate_tmpl(bool) const;
 		vector<string> fmt_fctr_tmpl() const;
 };
@@ -723,6 +723,7 @@ DecDeg::~DecDeg()
 	cout << "@DecDeg::~DecDeg() "; _ctrsgn(typeid(*this), true);
 }
 
+/*
 inline int DecDeg::get_deg(double x) const
 {
 //	cout << "DecDeg.get_deg()\n";
@@ -752,7 +753,7 @@ inline double DecDeg::get_sec(double x) const
 //	cout << "DecDeg.get_sec()\n";
 	return mod1by60(get_decmin(x));
 }
-
+*/
 
 /// __________________________________________________
 /// Instantiate functor template for validating decimal degrees
@@ -781,11 +782,11 @@ class DegMin : public CoordBase {
 		~DegMin();
 
 		const CoordType getfmt() const { return CoordType::degmin; }
-		int get_deg(double) const;
+/*		int get_deg(double) const;
 		double get_decdeg(double x) const;
 		int get_min(double x) const;
 		double get_decmin(double x) const;
-		double get_sec(double x) const;
+		double get_sec(double x) const; */
 		void validate_tmpl(bool) const;
 		vector<string> fmt_fctr_tmpl() const;
 };
@@ -810,6 +811,7 @@ DegMin::~DegMin()
 	cout << "@DegMin::~DegMin() "; _ctrsgn(typeid(*this), true);
 }
 
+/*
 inline int DegMin::get_deg(double x) const
 {
 //	cout << "DegMin.get_deg()\n";
@@ -839,7 +841,7 @@ inline double DegMin::get_sec(double x) const
 //	cout << "DegMin.get_sec()\n";
 	return mod1by60(get_decmin(x));
 }
-
+*/
 
 /// __________________________________________________
 /// Instantiate functor template for validating degrees and minutes
@@ -868,11 +870,11 @@ class DegMinSec : public CoordBase {
 		~DegMinSec();
 
 		const CoordType getfmt() const { return CoordType::degminsec; }
-		int get_deg(double) const;
+/*		int get_deg(double) const;
 		double get_decdeg(double x) const;
 		int get_min(double x) const;
 		double get_decmin(double x) const;
-		double get_sec(double x) const;
+		double get_sec(double x) const;  */
 		void validate_tmpl(bool) const;
 		vector<string> fmt_fctr_tmpl() const;
 };
@@ -897,6 +899,7 @@ DegMinSec::~DegMinSec()
 	cout << "@DegMinSec::~DegMinSec() "; _ctrsgn(typeid(*this), true);
 }
 
+/*
 inline int DegMinSec::get_deg(double x) const
 {
 //	cout << "DegMinSec.get_deg()\n";
@@ -926,7 +929,7 @@ inline double DegMinSec::get_sec(double x) const
 //	cout << "DegMinSec.get_sec()\n";
 	return mod1e2(x);
 }
-
+*/
 
 /// __________________________________________________
 /// Instantiate functor template for validating degrees, minutes and seconds
@@ -1395,7 +1398,7 @@ vector<string> formatcoord(NumericVector& nv)
 	return newconstCoordBase(nv, get_coordtype(nv))->fmt_fctr_tmpl();
 }
 
-
+/*
 /// __________________________________________________
 /// Return degrees as integer
 // [[Rcpp::export]]
@@ -1464,7 +1467,7 @@ vector<double> get_sec(NumericVector& nv)
 	transform(nv.begin(), nv.end(), out.begin(), [&c](double n) { return c->get_sec(n); });
 	return out;
 }
-
+*/
 
 /// __________________________________________________
 /// Add "waypoints" to R data.frame object class and validate. !!!!!!! Template and Specialise !!!!!!!
