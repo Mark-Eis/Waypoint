@@ -446,11 +446,13 @@ class CoordBase {
 		virtual int get_min(double) const = 0;
 		virtual double get_decmin(double) const = 0;
 		virtual double get_sec(double) const = 0;
+		virtual void validate_tmpl() const = 0;
 		virtual vector<string> fmt_fctr_tmpl() const = 0;
 
 		const vector<double>& get_nv() const;
 		unique_ptr<const CoordBase> convert(const CoordType) const;
-		void validate(bool) const;
+		template<typename validate_type>
+		void validate(bool = true) const;
 		const vector<bool>& get_valid() const;
 		const vector<string>& get_names() const;
 		void warn_invalid() const;
@@ -546,30 +548,32 @@ inline unique_ptr<const CoordBase> CoordBase::convert(const CoordType type) cons
 /// Validate coord value functor
 class Validator {
 		const CoordBase& cb; 
+		const FamousFive& ff;
 		vector<bool>::const_iterator ll_it;
 	public:
-		Validator(const CoordBase& _cb) : cb(_cb), ll_it(cb.latlon.begin())
+		Validator(const CoordBase& _cb, const FamousFive& _ff) : cb(_cb), ff(_ff), ll_it(cb.latlon.begin())
 		{
-	//		cout << "@Validator(const CoordBase&) "; _ctrsgn(typeid(*this));
+			cout << "@Validator(const CoordBase&) "; _ctrsgn(typeid(*this));
 		}
 		bool operator()(double n)
 		{
-	//		cout << "@Validator() " << " n: " << setw(9) << setfill(' ') << n << endl;
-			return !((abs(cb.get_decdeg(n)) > (cb.latlon.size() && (cb.llgt1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
-				(abs(cb.get_decmin(n)) >= 60) ||
-				(abs(cb.get_sec(n)) >= 60));
+			cout << "@Validator() " << " n: " << setw(9) << setfill(' ') << n << endl;
+			return !((abs(ff.get_decdeg(n)) > (cb.latlon.size() && (cb.llgt1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
+				(abs(ff.get_decmin(n)) >= 60) ||
+				(abs(ff.get_sec(n)) >= 60));
 		}
 };
 
 
 /// __________________________________________________
 /// Validate coords vector
-void CoordBase::validate(bool warn = true) const
+template<typename validate_type>
+void CoordBase::validate(bool warn) const
 {
-//	cout << "@CoordBase::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
+	cout << "@CoordBase::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
 	vector<bool>& non_const_valid { const_cast<vector<bool>&>(valid) };
 	non_const_valid.assign(nv.size(), {false});
-	transform(nv.begin(), nv.end(), non_const_valid.begin(), Validator(*this));
+	transform(nv.begin(), nv.end(), non_const_valid.begin(), Validator(*this, validate_type()));
 	if (all_valid())
 		non_const_valid.assign({true});
 	else
@@ -694,6 +698,7 @@ class DecDeg : public CoordBase {
 		int get_min(double x) const;
 		double get_decmin(double x) const;
 		double get_sec(double x) const;
+		void validate_tmpl() const;
 		vector<string> fmt_fctr_tmpl() const;
 };
 
@@ -750,6 +755,15 @@ inline double DecDeg::get_sec(double x) const
 
 
 /// __________________________________________________
+/// Instantiate functor template for validating decimal degrees
+inline void DecDeg::validate_tmpl() const
+{
+	cout << "@DecDeg::validate_tmpl()\n";
+	return validate<FamousFiveDD>();
+}
+
+
+/// __________________________________________________
 /// Instantiate functor template for formatting decimal degrees
 inline vector<string> DecDeg::fmt_fctr_tmpl() const
 {
@@ -772,6 +786,7 @@ class DegMin : public CoordBase {
 		int get_min(double x) const;
 		double get_decmin(double x) const;
 		double get_sec(double x) const;
+		void validate_tmpl() const;
 		vector<string> fmt_fctr_tmpl() const;
 };
 
@@ -827,6 +842,15 @@ inline double DegMin::get_sec(double x) const
 
 
 /// __________________________________________________
+/// Instantiate functor template for validating degrees and minutes
+inline void DegMin::validate_tmpl() const
+{
+	cout << "@DegMin::validate_tmpl()\n";
+	return validate<FamousFiveDM>();
+}
+
+
+/// __________________________________________________
 /// Instantiate functor template for formatting degrees and minutes
 inline vector<string> DegMin::fmt_fctr_tmpl() const
 {
@@ -849,6 +873,7 @@ class DegMinSec : public CoordBase {
 		int get_min(double x) const;
 		double get_decmin(double x) const;
 		double get_sec(double x) const;
+		void validate_tmpl() const;
 		vector<string> fmt_fctr_tmpl() const;
 };
 
@@ -900,6 +925,15 @@ inline double DegMinSec::get_sec(double x) const
 {
 //	cout << "DegMinSec.get_sec()\n";
 	return mod1e2(x);
+}
+
+
+/// __________________________________________________
+/// Instantiate functor template for validating degrees, minutes and seconds
+inline void DegMinSec::validate_tmpl() const
+{
+	cout << "@DegMinSec::validate_tmpl()\n";
+	return validate<FamousFiveDMS>();
 }
 
 
