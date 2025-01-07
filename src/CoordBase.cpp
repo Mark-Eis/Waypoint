@@ -237,7 +237,11 @@ class FamousFive {
 		virtual double get_decmin(double) const = 0;
 		virtual double get_sec(double) const = 0;
 //		virtual vector<string> fmt_fctr_tmpl() const = 0;
+		virtual ~FamousFive() = 0;
+
 };
+
+inline FamousFive::~FamousFive() { cout << "@FamousFive::~FamousFive() "; _ctrsgn(typeid(*this), true); }
 
 
 /// __________________________________________________
@@ -276,6 +280,62 @@ class FamousFiveDMS : public FamousFive {
 		double get_decmin(double x) const { return int(fmod(x, 1e4) / 1e2) + mod1e2(x) / 60; }
 		double get_sec(double x) const { return mod1e2(x); }
 //		vector<string> fmt_fctr_tmpl() const { return format<Format_DMS, FormatLL_DM_S>(); }
+};
+
+/// __________________________________________________
+/// __________________________________________________
+/// Convert coords vector functor base class
+class ConvertBase {
+	protected:
+		const FamousFive& ff; 
+	public:
+		explicit ConvertBase(const FamousFive& _ff) : ff(_ff)
+		{
+			cout << "@ConvertBase(const CoordBase& _ff) "; _ctrsgn(typeid(*this));
+		}
+		ConvertBase(ConvertBase&& _ff) : ff{_ff.ff} { cout << "ConvertBase(ConvertBase&&) transfer ownership\n"; }			// transfer ownership
+		ConvertBase& operator=(const ConvertBase&) = delete;	// Disallow copying
+		ConvertBase(const ConvertBase&) = delete;				//   —— ditto ——
+
+		virtual ~ConvertBase() = 0;
+};
+
+inline ConvertBase::~ConvertBase() { cout << "@ConvertBase::~ConvertBase() "; _ctrsgn(typeid(*this), true); }
+
+
+/// __________________________________________________
+/// Convert coords vector functor for decimal degrees
+class Convert_DD : public ConvertBase {
+	public:
+		Convert_DD(const FamousFive& ff) : ConvertBase(ff)
+		{
+			cout << "@Convert_DD(const FamousFive& ff) "; _ctrsgn(typeid(*this));
+		}
+		double operator()(double n) { cout << "@Convert_DD::operator()(double)\n"; return ff.get_decdeg(n); }
+};
+
+
+/// __________________________________________________
+/// Convert coords vector functor for degrees and minutes
+class Convert_DM : public ConvertBase { 
+	public:
+		Convert_DM(const FamousFive& ff) : ConvertBase(ff)
+		{
+			cout << "@Convert_DM(const FamousFive& ff) "; _ctrsgn(typeid(*this));
+		}
+		double operator()(double n) { cout << "@Convert_DM::operator()(double)\n"; return ff.get_deg(n) * 1e2 + ff.get_decmin(n); }
+};
+
+
+/// __________________________________________________
+/// Convert coords vector functor for degrees, minutes and seconds
+class Convert_DMS : public ConvertBase { 
+	public:
+		Convert_DMS(const FamousFive& ff) : ConvertBase(ff)
+		{
+			cout << "@Convert_DMS(const FamousFive& ff) "; _ctrsgn(typeid(*this));
+		}
+		double operator()(double n) { cout << "@Convert_DMS::operator()(double)\n"; return ff.get_deg(n) * 1e4 + ff.get_min(n) * 1e2 + ff.get_sec(n); }
 };
 
 
@@ -341,26 +401,6 @@ CoordBase::CoordBase(const NumericVector& nv) :
 ///§
 	cout << "@CoordBase::CoordBase(const NumericVector&) "; _ctrsgn(typeid(*this));
 }
-
-
-/// __________________________________________________
-/// Convert coords vector functor base class
-class ConvertBase {
-	protected:
-		const CoordBase& cb; 
-	public:
-		explicit ConvertBase(const CoordBase& _cb) : cb(_cb)
-		{
-			cout << "@ConvertBase(const CoordBase& _cb) "; _ctrsgn(typeid(*this));
-		}
-		ConvertBase(ConvertBase&& c) : cb{c.cb} { cout << "ConvertBase(ConvertBase&&) transfer ownership\n"; }			// transfer ownership
-		ConvertBase& operator=(const ConvertBase&) = delete;		// Disallow copying
-		ConvertBase(const ConvertBase&) = delete;				// Disallow copying
-
-		virtual ~ConvertBase() = 0;
-};
-
-inline ConvertBase::~ConvertBase() { cout << "@ConvertBase::~ConvertBase() "; _ctrsgn(typeid(*this), true); }
 
 
 template <typename FunctObj>
@@ -587,19 +627,7 @@ DecDeg::DecDeg(const NumericVector& nv) : CoordBase(nv)
 }
 
 
-/// __________________________________________________
-/// Convert coords vector functor for decimal degrees
-class Convert_DD : public ConvertBase {
-	public:
-		Convert_DD(const CoordBase& cb) : ConvertBase(cb)
-		{
-			cout << "@Convert_DD(const CoordBase& _cb) "; _ctrsgn(typeid(*this));
-		}
-		double operator()(double n) { cout << "@Convert_DD::operator()(double)\n"; return cb.get_decdeg(n); }
-};
-
-
-DecDeg::DecDeg(const CoordBase& c) : CoordBase(c, Convert_DD(c))
+DecDeg::DecDeg(const CoordBase& c) : CoordBase(c, Convert_DD(FamousFiveDD()))
 {
 ///§
 	cout << "@DecDeg::DecDeg(const CoordBase&) "; _ctrsgn(typeid(*this));
@@ -677,18 +705,7 @@ DegMin::DegMin(const NumericVector& nv) : CoordBase(nv)
 }
 
 
-/// __________________________________________________
-/// Convert coords vector functor for degrees and minutes
-class Convert_DM : public ConvertBase { 
-	public:
-		Convert_DM(const CoordBase& cb) : ConvertBase(cb)
-		{
-			cout << "@Convert_DM(const CoordBase& _cb) "; _ctrsgn(typeid(*this));
-		}
-		double operator()(double n) { cout << "@Convert_DM::operator()(double)\n"; return cb.get_deg(n) * 1e2 + cb.get_decmin(n); }
-};
-
-DegMin::DegMin(const CoordBase& c) : CoordBase(c, Convert_DM(c))
+DegMin::DegMin(const CoordBase& c) : CoordBase(c, Convert_DM(FamousFiveDM()))
 {
 ///§
 	cout << "@DegMin::DegMin(const CoordBase&) "; _ctrsgn(typeid(*this));
@@ -765,18 +782,7 @@ DegMinSec::DegMinSec(const NumericVector& nv) : CoordBase(nv)
 }
 
 
-/// __________________________________________________
-/// Convert coords vector functor for degrees, minutes and seconds
-class Convert_DMS : public ConvertBase { 
-	public:
-		Convert_DMS(const CoordBase& cb) : ConvertBase(cb)
-		{
-			cout << "@Convert_DMS(const CoordBase& _cb) "; _ctrsgn(typeid(*this));
-		}
-		double operator()(double n) { cout << "@Convert_DMS::operator()(double)\n"; return cb.get_deg(n) * 1e4 + cb.get_min(n) * 1e2 + cb.get_sec(n); }
-};
-
-DegMinSec::DegMinSec(const CoordBase& c) : CoordBase(c, Convert_DMS(c))
+DegMinSec::DegMinSec(const CoordBase& c) : CoordBase(c, Convert_DMS(FamousFiveDMS()))
 {
 ///§
 	cout << "@DegMinSec::DegMinSec(const CoordBase&) "; _ctrsgn(typeid(*this));
