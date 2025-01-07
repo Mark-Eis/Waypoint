@@ -54,7 +54,7 @@ class DegMinSec;
 template<> 
 string format_coord<DegMinSec>(const DegMinSec&, double);
 
-class FormatBase;
+class Format;
 class Format_DD;
 class Format_DM;
 class Format_DMS;
@@ -340,6 +340,83 @@ class Convert_DMS : public Convert {
 };
 
 
+/// __________________________________________________
+/// __________________________________________________
+/// Formatting functors
+
+/// __________________________________________________
+/// Format coords vector functor base class
+class Format {
+	protected:
+		const FamousFive& ff; 
+		ostringstream outstrstr;
+	public:
+		explicit Format(const FamousFive& _ff) : ff(_ff)
+		{
+			cout << "@Format(const FamousFive& _ff) "; _ctrsgn(typeid(*this));
+		}
+		virtual ~Format() = 0;
+};
+
+inline Format::~Format() { cout << "@Format::~Format() "; _ctrsgn(typeid(*this), true); }
+
+
+/// __________________________________________________
+/// Format coords vector functor for decimal degrees
+class Format_DD : public Format {
+public:
+	Format_DD(const FamousFive& ff) : Format(ff)
+	{
+		cout << "@Format_DD(const FamousFive& ff) "; _ctrsgn(typeid(*this));
+	}
+	string operator()(double n)
+	{
+		cout << "@Format_DD::operator()\n";
+		outstrstr.str("");
+		outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << ff.get_decdeg(n) << "\u00B0";
+		return outstrstr.str();
+	}
+};
+
+
+/// __________________________________________________
+/// Format coords vector functor for degrees and minutes
+class Format_DM : public Format{
+public:
+	Format_DM(const FamousFive& ff) : Format(ff)
+	{
+		cout << "@Format_DM(const FamousFive& ff) "; _ctrsgn(typeid(*this));
+	}
+	string operator()(double n)
+	{
+		cout << "@Format_DM::operator()\n";
+		outstrstr.str("");
+		outstrstr << setw(3) << setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
+				  << setw(7) << setfill('0') << fixed << setprecision(4) << abs(ff.get_decmin(n)) << "'";
+		return outstrstr.str();
+	}
+};
+
+
+/// __________________________________________________
+/// Format coords vector functor for degrees, minutes and seconds
+class Format_DMS : public Format{
+public:
+	Format_DMS(const FamousFive& ff) : Format(ff)
+	{
+		cout << "@Format_DMS(const FamousFive& ff) "; _ctrsgn(typeid(*this));
+	}
+	string operator()(double n)
+	{
+		cout << "@Format_DMS::operator()\n";
+		outstrstr.str("");
+		outstrstr << setw(3) << setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
+				  << setw(2) << setfill('0') << abs(ff.get_min(n)) << "'"
+				  << setw(5) << fixed << setprecision(2) << abs(ff.get_sec(n)) << "\"";
+		return outstrstr.str();
+	}
+};
+
 
 /// __________________________________________________
 /// __________________________________________________
@@ -537,7 +614,8 @@ vector<string> CoordBase::format() const
 {
 //	cout << "CoordBase::format<typename FunctObj, FunctObj2>()\n";
 	vector<string> out(nv.size());
-	transform(nv.begin(), nv.end(), out.begin(), FunctObj(*this));
+//	transform(nv.begin(), nv.end(), out.begin(), FunctObj(*this));
+	transform(nv.begin(), nv.end(), out.begin(), FunctObj());
 	transform(out.begin(), out.end(), nv.begin(), out.begin(), FunctObj2(*this));
 	return out;
 }
@@ -837,88 +915,31 @@ inline vector<string> DegMinSec::fmt_fctr_tmpl() const
 
 /// __________________________________________________
 /// __________________________________________________
-/// Formatting functors
+/// Formatting functors for Latitude and Longitude
 
 /// __________________________________________________
 /// Format coords vector functor base class
-class FormatBase {
+class FormatLL {
 	protected:
 		const CoordBase& cb; 
 		ostringstream outstrstr;
 	public:
-		FormatBase(const CoordBase& _cb) : cb(_cb)
+		FormatLL(const CoordBase& _cb) : cb(_cb)
 		{
-			cout << "@FormatBase(const CoordBase& _cb) "; _ctrsgn(typeid(*this));
+			cout << "@FormatLL(const CoordBase& _cb) "; _ctrsgn(typeid(*this));
 		}
-		virtual ~FormatBase() = 0;
+		virtual ~FormatLL() = 0;
 };
 
-inline FormatBase::~FormatBase() { cout << "@FormatBase::~FormatBase() "; _ctrsgn(typeid(*this), true); }
+inline FormatLL::~FormatLL() { cout << "@FormatLL::~FormatLL() "; _ctrsgn(typeid(*this), true); }
 
 
 /// __________________________________________________
-/// Format coords vector functor for decimal degrees
-class Format_DD : public FormatBase {
-public:
-	Format_DD(const CoordBase& cb) : FormatBase(cb)
-	{
-		cout << "@Format_DD(const CoordBase& cb) "; _ctrsgn(typeid(*this));
-	}
-	string operator()(double n)
-	{
-		cout << "@Format_DD::operator()\n";
-		outstrstr.str("");
-		outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << cb.get_decdeg(n) << "\u00B0";
-		return outstrstr.str();
-	}
-};
-
-
-/// __________________________________________________
-/// Format coords vector functor for degrees and minutes
-class Format_DM : public FormatBase{
-public:
-	Format_DM(const CoordBase& cb) : FormatBase(cb)
-	{
-		cout << "@Format_DM(const CoordBase& cb) "; _ctrsgn(typeid(*this));
-	}
-	string operator()(double n)
-	{
-		cout << "@Format_DM::operator()\n";
-		outstrstr.str("");
-		outstrstr << setw(3) << setfill(' ') << abs(cb.get_deg(n)) << "\u00B0"
-				  << setw(7) << setfill('0') << fixed << setprecision(4) << abs(cb.get_decmin(n)) << "'";
-		return outstrstr.str();
-	}
-};
-
-
-/// __________________________________________________
-/// Format coords vector functor for degrees, minutes and seconds
-class Format_DMS : public FormatBase{
-public:
-	Format_DMS(const CoordBase& cb) : FormatBase(cb)
-	{
-		cout << "@Format_DMS(const CoordBase& cb) "; _ctrsgn(typeid(*this));
-	}
-	string operator()(double n)
-	{
-		cout << "@Format_DMS::operator()\n";
-		outstrstr.str("");
-		outstrstr << setw(3) << setfill(' ') << abs(cb.get_deg(n)) << "\u00B0"
-				  << setw(2) << setfill('0') << abs(cb.get_min(n)) << "'"
-				  << setw(5) << fixed << setprecision(2) << abs(cb.get_sec(n)) << "\"";
-		return outstrstr.str();
-	}
-};
-
-
-/// __________________________________________________
-/// Format functor for latitude and longitude strings for decimal degrees
-class FormatLL_DD : public FormatBase {
+/// FormatLL functor for latitude and longitude strings for decimal degrees
+class FormatLL_DD : public FormatLL {
 	vector<bool>::const_iterator ll_it;
 public:
-	FormatLL_DD(const CoordBase& cb) : FormatBase(cb), ll_it(cb.latlon.begin())
+	FormatLL_DD(const CoordBase& cb) : FormatLL(cb), ll_it(cb.latlon.begin())
 	{
 		cout << "@FormatLL_DD(const CoordBase&) "; _ctrsgn(typeid(*this));
 	}
@@ -934,11 +955,11 @@ public:
 
 
 /// __________________________________________________
-/// Format functor for latitude and longitude strings for degrees, minutes (and seconds)
-class FormatLL_DM_S : public FormatBase {
+/// FormatLL functor for latitude and longitude strings for degrees, minutes (and seconds)
+class FormatLL_DM_S : public FormatLL {
 	vector<bool>::const_iterator ll_it;
 public:
-	FormatLL_DM_S(const CoordBase& cb) : FormatBase(cb), ll_it(cb.latlon.begin())
+	FormatLL_DM_S(const CoordBase& cb) : FormatLL(cb), ll_it(cb.latlon.begin())
 	{
 		cout << "@FormatLL_DM_S(const CoordBase&) "; _ctrsgn(typeid(*this));
 	}
