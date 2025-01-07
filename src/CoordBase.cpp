@@ -429,6 +429,8 @@ class CoordBase {
 		const vector<bool> latlon;
 		const vector<string> names;
 		const bool llgt1 = false;
+		template<typename validate_type>
+		void validate(bool) const;
 		bool all_valid() const;
 		bool waypoint = false;
 
@@ -446,13 +448,11 @@ class CoordBase {
 		virtual int get_min(double) const = 0;
 		virtual double get_decmin(double) const = 0;
 		virtual double get_sec(double) const = 0;
-		virtual void validate_tmpl() const = 0;
+		virtual void validate_tmpl(bool = true) const = 0;
 		virtual vector<string> fmt_fctr_tmpl() const = 0;
 
 		const vector<double>& get_nv() const;
 		unique_ptr<const CoordBase> convert(const CoordType) const;
-		template<typename validate_type>
-		void validate(bool = true) const;
 		const vector<bool>& get_valid() const;
 		const vector<string>& get_names() const;
 		void warn_invalid() const;
@@ -698,7 +698,7 @@ class DecDeg : public CoordBase {
 		int get_min(double x) const;
 		double get_decmin(double x) const;
 		double get_sec(double x) const;
-		void validate_tmpl() const;
+		void validate_tmpl(bool) const;
 		vector<string> fmt_fctr_tmpl() const;
 };
 
@@ -756,10 +756,10 @@ inline double DecDeg::get_sec(double x) const
 
 /// __________________________________________________
 /// Instantiate functor template for validating decimal degrees
-inline void DecDeg::validate_tmpl() const
+inline void DecDeg::validate_tmpl(bool warn) const
 {
-	cout << "@DecDeg::validate_tmpl()\n";
-	return validate<FamousFiveDD>();
+	cout << "@DecDeg::validate_tmpl(bool)\n";
+	return validate<FamousFiveDD>(warn);
 }
 
 
@@ -786,7 +786,7 @@ class DegMin : public CoordBase {
 		int get_min(double x) const;
 		double get_decmin(double x) const;
 		double get_sec(double x) const;
-		void validate_tmpl() const;
+		void validate_tmpl(bool) const;
 		vector<string> fmt_fctr_tmpl() const;
 };
 
@@ -843,10 +843,10 @@ inline double DegMin::get_sec(double x) const
 
 /// __________________________________________________
 /// Instantiate functor template for validating degrees and minutes
-inline void DegMin::validate_tmpl() const
+inline void DegMin::validate_tmpl(bool warn) const
 {
-	cout << "@DegMin::validate_tmpl()\n";
-	return validate<FamousFiveDM>();
+	cout << "@DegMin::validate_tmpl(bool)\n";
+	return validate<FamousFiveDM>(warn);
 }
 
 
@@ -873,7 +873,7 @@ class DegMinSec : public CoordBase {
 		int get_min(double x) const;
 		double get_decmin(double x) const;
 		double get_sec(double x) const;
-		void validate_tmpl() const;
+		void validate_tmpl(bool) const;
 		vector<string> fmt_fctr_tmpl() const;
 };
 
@@ -930,10 +930,10 @@ inline double DegMinSec::get_sec(double x) const
 
 /// __________________________________________________
 /// Instantiate functor template for validating degrees, minutes and seconds
-inline void DegMinSec::validate_tmpl() const
+inline void DegMinSec::validate_tmpl(bool warn) const
 {
-	cout << "@DegMinSec::validate_tmpl()\n";
-	return validate<FamousFiveDMS>();
+	cout << "@DegMinSec::validate_tmpl(bool)\n";
+	return validate<FamousFiveDMS>(warn);
 }
 
 
@@ -1139,8 +1139,8 @@ void WayPoint::print(ostream& stream) const
 void WayPoint::validate(bool warn = true) const
 {
 //	cout << "@WayPoint::validate(bool)\n";
-	cbp_lat->validate(warn);
-	cbp_lon->validate(warn);
+	cbp_lat->validate_tmpl(warn);
+	cbp_lon->validate_tmpl(warn);
 }
 
 
@@ -1286,7 +1286,7 @@ vector<bool> validatecoord(const NumericVector& nv)
 {
 //	cout << "@validatecoord()\n";
 	unique_ptr<const CoordBase> cb{ newconstCoordBase(nv, get_coordtype(nv)) };
-	cb->validate();
+	cb->validate_tmpl();
 	const_cast<NumericVector&>(nv).attr("valid") = cb->get_valid();
 	return cb->get_valid();
 }
@@ -1327,7 +1327,7 @@ NumericVector coords(NumericVector& nv, int fmt = 1)
 		nv.attr("class") = "coords";
 	}
 	nv.attr("fmt") = fmt;
-	cb1->validate();
+	cb1->validate_tmpl();
 	nv.attr("valid") = cb1->get_valid();
 	return nv;
 }
