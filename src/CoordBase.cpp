@@ -28,6 +28,12 @@ inline const int coordtype_to_int(CoordType);
 inline string cardpoint(bool, bool);
 inline string cardi_b(bool);
 
+
+class FamousFive;
+class FamousFiveDD;
+class FamousFiveDM;
+class FamousFiveDMS;
+
 class CoordBase;
 ostream& operator<<(ostream&, const CoordBase&);
 
@@ -218,6 +224,60 @@ inline string cardi_b(bool negative)
 {
 	return negative ? " (S/W)" : " (N/E)";
 }
+
+
+/// __________________________________________________
+/// __________________________________________________
+/// FamousFive abstract base class
+class FamousFive {
+	public:
+		virtual int get_deg(double) const = 0;
+		virtual double get_decdeg(double) const = 0;
+		virtual int get_min(double) const = 0;
+		virtual double get_decmin(double) const = 0;
+		virtual double get_sec(double) const = 0;
+//		virtual vector<string> fmt_fctr_tmpl() const = 0;
+};
+
+
+/// __________________________________________________
+/// Decimal degrees derived class
+class FamousFiveDD : public FamousFive {
+	public:
+		int get_deg(double x) const { return int(x); }
+		double get_decdeg(double x) const { return x; }
+		int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
+		double get_decmin(double x) const { return polish(mod1by60(x)); }
+		double get_sec(double x) const { return mod1by60(get_decmin(x)); }
+//		vector<string> fmt_fctr_tmpl() const { return format<Format_DD, FormatLL_DD>(); }
+};
+
+
+/// __________________________________________________
+/// Degrees and minutes derived class
+class FamousFiveDM : public FamousFive {
+	public:
+		int get_deg(double x) const { return int(x / 1e2); }
+		double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
+		int get_min(double x) const { return int(x) % int(1e2); }
+		double get_decmin(double x) const { return polish(mod1e2(x)); }
+		double get_sec(double x) const { return mod1by60(get_decmin(x)); }
+//		vector<string> fmt_fctr_tmpl() const { return format<Format_DM, FormatLL_DM_S>(); }
+};
+
+
+/// __________________________________________________
+/// Degrees minutes and seconds derived class
+class FamousFiveDMS : public FamousFive {
+	public:
+		int get_deg(double x) const { return int(x / 1e4); }
+		double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
+		int get_min(double x) const { return (int(x) % int(1e4)) / 1e2; }
+		double get_decmin(double x) const { return int(fmod(x, 1e4) / 1e2) + mod1e2(x) / 60; }
+		double get_sec(double x) const { return mod1e2(x); }
+//		vector<string> fmt_fctr_tmpl() const { return format<Format_DMS, FormatLL_DM_S>(); }
+};
+
 
 
 /// __________________________________________________
