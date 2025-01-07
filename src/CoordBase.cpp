@@ -34,6 +34,11 @@ class FamousFiveDD;
 class FamousFiveDM;
 class FamousFiveDMS;
 
+class Convert;
+class Convert_DD;
+class Convert_DM;
+class Convert_DMS;
+
 class CoordBase;
 ostream& operator<<(ostream&, const CoordBase&);
 
@@ -49,10 +54,6 @@ class DegMinSec;
 template<> 
 string format_coord<DegMinSec>(const DegMinSec&, double);
 
-class ConvertBase;
-class Convert_DD;
-class Convert_DM;
-class Convert_DMS;
 class FormatBase;
 class Format_DD;
 class Format_DM;
@@ -285,29 +286,29 @@ class FamousFiveDMS : public FamousFive {
 /// __________________________________________________
 /// __________________________________________________
 /// Convert coords vector functor base class
-class ConvertBase {
+class Convert {
 	protected:
 		const FamousFive& ff; 
 	public:
-		explicit ConvertBase(const FamousFive& _ff) : ff(_ff)
+		explicit Convert(const FamousFive& _ff) : ff(_ff)
 		{
-			cout << "@ConvertBase(const CoordBase& _ff) "; _ctrsgn(typeid(*this));
+			cout << "@Convert(const CoordBase& _ff) "; _ctrsgn(typeid(*this));
 		}
-		ConvertBase(ConvertBase&& _ff) : ff{_ff.ff} { cout << "ConvertBase(ConvertBase&&) transfer ownership\n"; }			// transfer ownership
-		ConvertBase& operator=(const ConvertBase&) = delete;	// Disallow copying
-		ConvertBase(const ConvertBase&) = delete;				//   —— ditto ——
+		Convert(Convert&& _ff) : ff{_ff.ff} { cout << "Convert(Convert&&) transfer ownership\n"; }			// transfer ownership
+		Convert& operator=(const Convert&) = delete;	// Disallow copying
+		Convert(const Convert&) = delete;				//   —— ditto ——
 
-		virtual ~ConvertBase() = 0;
+		virtual ~Convert() = 0;
 };
 
-inline ConvertBase::~ConvertBase() { cout << "@ConvertBase::~ConvertBase() "; _ctrsgn(typeid(*this), true); }
+inline Convert::~Convert() { cout << "@Convert::~Convert() "; _ctrsgn(typeid(*this), true); }
 
 
 /// __________________________________________________
 /// Convert coords vector functor for decimal degrees
-class Convert_DD : public ConvertBase {
+class Convert_DD : public Convert {
 	public:
-		Convert_DD(const FamousFive& ff) : ConvertBase(ff)
+		Convert_DD(const FamousFive& ff) : Convert(ff)
 		{
 			cout << "@Convert_DD(const FamousFive& ff) "; _ctrsgn(typeid(*this));
 		}
@@ -317,9 +318,9 @@ class Convert_DD : public ConvertBase {
 
 /// __________________________________________________
 /// Convert coords vector functor for degrees and minutes
-class Convert_DM : public ConvertBase { 
+class Convert_DM : public Convert { 
 	public:
-		Convert_DM(const FamousFive& ff) : ConvertBase(ff)
+		Convert_DM(const FamousFive& ff) : Convert(ff)
 		{
 			cout << "@Convert_DM(const FamousFive& ff) "; _ctrsgn(typeid(*this));
 		}
@@ -329,9 +330,9 @@ class Convert_DM : public ConvertBase {
 
 /// __________________________________________________
 /// Convert coords vector functor for degrees, minutes and seconds
-class Convert_DMS : public ConvertBase { 
+class Convert_DMS : public Convert { 
 	public:
-		Convert_DMS(const FamousFive& ff) : ConvertBase(ff)
+		Convert_DMS(const FamousFive& ff) : Convert(ff)
 		{
 			cout << "@Convert_DMS(const FamousFive& ff) "; _ctrsgn(typeid(*this));
 		}
