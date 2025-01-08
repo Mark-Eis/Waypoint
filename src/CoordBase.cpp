@@ -42,10 +42,15 @@ class ConvertDMS;
 
 template <class FamousFive_type>
 class FormatDD;
+using format_decdeg = FormatDD<FamousFiveDD>;
+
 template <class FamousFive_type>
 class FormatDM;
+using format_degmin = FormatDM<FamousFiveDM>;
+
 template <class FamousFive_type>
 class FormatDMS;
+using format_degminsec = FormatDMS<FamousFiveDMS>;
 
 class CoordBase;
 ostream& operator<<(ostream&, const CoordBase&);
@@ -683,8 +688,7 @@ inline void DecDeg::validate_tmpl(bool warn) const
 inline vector<string> DecDeg::fmt_fctr_tmpl() const
 {
 	cout << "@DecDeg::fmt_fctr_tmpl()\n";
-//	return format<FormatDD<FamousFiveDD>, FormatLL_DD<FamousFiveDD>>();
-	return format<FormatDD<FamousFiveDD>, FormatLL_DD>();
+	return format<format_decdeg, FormatLL_DD>();
 }
 
 
@@ -736,7 +740,7 @@ inline void DegMin::validate_tmpl(bool warn) const
 inline vector<string> DegMin::fmt_fctr_tmpl() const
 {
 	cout << "@DegMin::fmt_fctr_tmpl()\n";
-	return format<FormatDM<FamousFiveDM>, FormatLL_DM_S<FamousFiveDM>>();
+	return format<format_degmin, FormatLL_DM_S<FamousFiveDM>>();
 }
 
 
@@ -788,7 +792,7 @@ inline void DegMinSec::validate_tmpl(bool warn) const
 inline vector<string> DegMinSec::fmt_fctr_tmpl() const
 {
 	cout << "@DegMinSec::fmt_fctr_tmpl()\n";
-	return format<FormatDMS<FamousFiveDMS>, FormatLL_DM_S<FamousFiveDMS>>();
+	return format<format_degminsec, FormatLL_DM_S<FamousFiveDMS>>();
 }
 
 
