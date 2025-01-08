@@ -29,9 +29,9 @@ inline string cardpoint(bool, bool);
 inline string cardi_b(bool);
 
 
-class FamousFiveDD;
-class FamousFiveDM;
-class FamousFiveDMS;
+struct FamousFiveDD;
+struct FamousFiveDM;
+struct FamousFiveDMS;
 
 template <class FamousFive_type>
 class ConvertDD;
@@ -228,9 +228,8 @@ inline string cardi_b(bool negative)
 
 /// __________________________________________________
 /// __________________________________________________
-/// FamousFive class for decimal degrees
-class FamousFiveDD {
-	public:
+/// Famous five functions class for decimal degrees
+struct FamousFiveDD {
 		int get_deg(double x) const { return int(x); }
 		double get_decdeg(double x) const { return x; }
 		int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
@@ -240,9 +239,8 @@ class FamousFiveDD {
 
 
 /// __________________________________________________
-/// FamousFive class for degrees and minutes
-class FamousFiveDM {
-	public:
+/// Famous five functions class for degrees and minutes
+struct FamousFiveDM {
 		int get_deg(double x) const { return int(x / 1e2); }
 		double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
 		int get_min(double x) const { return int(x) % int(1e2); }
@@ -252,9 +250,8 @@ class FamousFiveDM {
 
 
 /// __________________________________________________
-/// FamousFive class for degrees minutes and seconds
-class FamousFiveDMS {
-	public:
+/// Famous five functions class for degrees minutes and seconds
+struct FamousFiveDMS {
 		int get_deg(double x) const { return int(x / 1e4); }
 		double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
 		int get_min(double x) const { return (int(x) % int(1e4)) / 1e2; }
@@ -264,7 +261,7 @@ class FamousFiveDMS {
 
 /// __________________________________________________
 /// __________________________________________________
-/// Convert coords vector functor for decimal degrees
+/// Convert functor for decimal degrees
 template <class FamousFive_type>
 class ConvertDD {
 		const FamousFive_type ff; 
@@ -278,7 +275,7 @@ class ConvertDD {
 
 
 /// __________________________________________________
-/// Convert coords vector functor for degrees and minutes
+/// Convert functor for degrees and minutes
 template <class FamousFive_type>
 class ConvertDM { 
 		const FamousFive_type ff; 
@@ -292,7 +289,7 @@ class ConvertDM {
 
 
 /// __________________________________________________
-/// Convert coords vector functor for degrees, minutes and seconds
+/// Convert functor for degrees, minutes and seconds
 template <class FamousFive_type>
 class ConvertDMS { 
 		const FamousFive_type ff; 
@@ -307,10 +304,7 @@ class ConvertDMS {
 
 /// __________________________________________________
 /// __________________________________________________
-/// Formatting functors
-
-/// __________________________________________________
-/// Format functor for decimal degrees
+/// Formatting functor for decimal degrees
 template <class FamousFive_type>
 class FormatDD {
 		FamousFive_type ff;
@@ -331,7 +325,7 @@ class FormatDD {
 
 
 /// __________________________________________________
-/// Format functor for degrees and minutes
+/// Formatting functor for degrees and minutes
 template <class FamousFive_type>
 class FormatDM {
 		FamousFive_type ff;
@@ -353,7 +347,7 @@ class FormatDM {
 
 
 /// __________________________________________________
-/// Format functor for degrees, minutes and seconds
+/// Formatting functor for degrees, minutes and seconds
 template <class FamousFive_type>
 class FormatDMS {
 		FamousFive_type ff;
@@ -413,6 +407,7 @@ class CoordBase {
 		vector<string> format() const;
 		void print(ostream&) const;
 
+		template<class FamousFive_type>
 		friend class Validator;
 		friend class DecDeg;
 		friend class DegMin;
@@ -420,7 +415,6 @@ class CoordBase {
 		friend class FormatLL_DD;
 		template<class FamousFive_type>
 		friend class FormatLL_DM_S;
-		template<class FamousFive_type>
 
 		friend ostream& operator<<(ostream&, const CoordBase&);
 };
