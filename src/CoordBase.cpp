@@ -62,6 +62,7 @@ class DecDeg;
 class DegMin;
 class DegMinSec;
 
+class FormatLL;
 class FormatLL_DD;
 template <class FamousFive_type>
 class FormatLL_DM_S;
@@ -417,6 +418,7 @@ class CoordBase {
 		friend class DecDeg;
 		friend class DegMin;
 		friend class DegMinSec;
+		friend class FormatLL;
 		friend class FormatLL_DD;
 		template<class FamousFive_type>
 		friend class FormatLL_DM_S;
@@ -801,13 +803,29 @@ inline vector<string> DegMinSec::fmt_fctr_tmpl() const
 /// Formatting functors for Latitude and Longitude
 
 /// __________________________________________________
-/// FormatLL functor for latitude and longitude strings for decimal degrees
-class FormatLL_DD {
+/// FormatLL functor base class
+class FormatLL {
+	protected:
 		const CoordBase& cb; 
 		vector<bool>::const_iterator ll_it;
 		ostringstream outstrstr;
 	public:
-		FormatLL_DD(const CoordBase& _cb) : cb(_cb), ll_it(cb.latlon.begin())
+		FormatLL(const CoordBase& _cb) : cb(_cb), ll_it(cb.latlon.begin())
+		{
+			cout << "@FormatLL(const CoordBase&) "; _ctrsgn(typeid(*this));
+		}
+		virtual string operator()(string ostr, double n) = 0;
+		virtual ~FormatLL() = 0;
+};
+
+inline FormatLL::~FormatLL() { cout << "@FormatLL::~FormatLL() "; _ctrsgn(typeid(*this), true); }
+
+
+/// __________________________________________________
+/// FormatLL functor for latitude and longitude strings for decimal degrees
+class FormatLL_DD : public FormatLL {
+	public:
+		FormatLL_DD(const CoordBase& cb) : FormatLL(cb)
 		{
 			cout << "@FormatLL_DD<FamousFive_type>(const CoordBase&) "; _ctrsgn(typeid(*this));
 		}
@@ -825,13 +843,10 @@ class FormatLL_DD {
 /// __________________________________________________
 /// FormatLL functor for latitude and longitude strings for degrees, minutes (and seconds)
 template<class FamousFive_type>
-class FormatLL_DM_S {
-		const CoordBase& cb; 
-		vector<bool>::const_iterator ll_it;
+class FormatLL_DM_S : public FormatLL {
 		const FamousFive_type ff;
-		ostringstream outstrstr;
 	public:
-		FormatLL_DM_S(const CoordBase& _cb) : cb(_cb), ll_it(cb.latlon.begin())
+		FormatLL_DM_S(const CoordBase& cb) : FormatLL(cb)
 		{
 			cout << "@FormatLL_DM_S<FamousFive_type>(const CoordBase&) "; _ctrsgn(typeid(*this));
 		}
