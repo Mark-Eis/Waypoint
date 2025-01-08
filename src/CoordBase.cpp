@@ -60,6 +60,7 @@ class Format_DM;
 class Format_DMS;
 class FormatLL_DD;
 class FormatLL_DM_S;
+template<class FamousFive_type>
 class Validator;
 
 template<class T>
@@ -458,6 +459,7 @@ class CoordBase {
 		friend class DegMinSec;
 		friend class FormatLL_DM_S;
 		friend class FormatLL_DD;
+		template<class FamousFive_type>
 		friend class Validator;
 
 		friend ostream& operator<<(ostream&, const CoordBase&);
@@ -534,7 +536,7 @@ inline unique_ptr<const CoordBase> CoordBase::convert(const CoordType type) cons
 	return newconstCoordBase(*this, type);
 }
 
-
+/*
 /// __________________________________________________
 /// __________________________________________________
 /// Validate coord value functor
@@ -544,6 +546,29 @@ class Validator {
 		vector<bool>::const_iterator ll_it;
 	public:
 		Validator(const CoordBase& _cb, const FamousFive& _ff) : cb(_cb), ff(_ff), ll_it(cb.latlon.begin())
+		{
+			cout << "@Validator(const CoordBase&) "; _ctrsgn(typeid(*this));
+		}
+		bool operator()(double n)
+		{
+			cout << "@Validator() " << " n: " << setw(9) << setfill(' ') << n << endl;
+			return !((abs(ff.get_decdeg(n)) > (cb.latlon.size() && (cb.llgt1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
+				(abs(ff.get_decmin(n)) >= 60) ||
+				(abs(ff.get_sec(n)) >= 60));
+		}
+}; */
+
+
+/// __________________________________________________
+/// __________________________________________________
+/// Validate coord value functor
+template<class FamousFive_type>
+class Validator {
+		const CoordBase& cb; 
+		const FamousFive_type& ff;
+		vector<bool>::const_iterator ll_it;
+	public:
+		Validator(const CoordBase& _cb, const FamousFive_type& _ff) : cb(_cb), ff(_ff), ll_it(cb.latlon.begin())
 		{
 			cout << "@Validator(const CoordBase&) "; _ctrsgn(typeid(*this));
 		}
@@ -565,7 +590,7 @@ void CoordBase::validate(bool warn) const
 	cout << "@CoordBase::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
 	vector<bool>& non_const_valid { const_cast<vector<bool>&>(valid) };
 	non_const_valid.assign(nv.size(), {false});
-	transform(nv.begin(), nv.end(), non_const_valid.begin(), Validator(*this, validate_type()));
+	transform(nv.begin(), nv.end(), non_const_valid.begin(), Validator<validate_type>(*this, validate_type()));
 	if (all_valid())
 		non_const_valid.assign({true});
 	else
