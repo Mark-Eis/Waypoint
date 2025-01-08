@@ -29,7 +29,6 @@ inline string cardpoint(bool, bool);
 inline string cardi_b(bool);
 
 
-// class FamousFive;		// Deprecate
 class FamousFiveDD;
 class FamousFiveDM;
 class FamousFiveDMS;
@@ -40,6 +39,13 @@ template <class FamousFive_type>
 class ConvertDM;
 template <class FamousFive_type>
 class ConvertDMS;
+
+template <class FamousFive_type>
+class FormatDD;
+template <class FamousFive_type>
+class FormatDM;
+template <class FamousFive_type>
+class FormatDMS;
 
 class CoordBase;
 ostream& operator<<(ostream&, const CoordBase&);
@@ -56,13 +62,6 @@ class DegMinSec;
 template<> 
 string format_coord<DegMinSec>(const DegMinSec&, double);
 
-// class Format;			//Deprecate?
-template <class FamousFive_type>
-class FormatDD;
-template <class FamousFive_type>
-class FormatDM;
-template <class FamousFive_type>
-class FormatDMS;
 // template<class FamousFive_type>
 // class FormatLL;
 template<class FamousFive_type>
@@ -836,7 +835,7 @@ template<class FamousFive_type>
 class FormatLL_DD {
 		const CoordBase& cb; 
 		vector<bool>::const_iterator ll_it;
-		const FamousFive_type ff;
+//		const FamousFive_type ff;
 		ostringstream outstrstr;
 	public:
 		FormatLL_DD(const CoordBase& _cb) : cb(_cb), ll_it(cb.latlon.begin())
