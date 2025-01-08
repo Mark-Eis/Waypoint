@@ -29,14 +29,16 @@ inline string cardpoint(bool, bool);
 inline string cardi_b(bool);
 
 
-class FamousFive;
+class FamousFive;		// Deprecate
 class FamousFiveDD;
 class FamousFiveDM;
 class FamousFiveDMS;
 
-class Convert;
+template <class FamousFive_type>
 class Convert_DD;
+template <class FamousFive_type>
 class Convert_DM;
+template <class FamousFive_type>
 class Convert_DMS;
 
 class CoordBase;
@@ -54,7 +56,7 @@ class DegMinSec;
 template<> 
 string format_coord<DegMinSec>(const DegMinSec&, double);
 
-class Format;
+class Format;			//Deprecate?
 class Format_DD;
 class Format_DM;
 class Format_DMS;
@@ -283,32 +285,14 @@ class FamousFiveDMS : public FamousFive {
 
 /// __________________________________________________
 /// __________________________________________________
-/// Convert coords vector functor base class
-class Convert {
-	protected:
-		const FamousFive& ff; 
-	public:
-		explicit Convert(const FamousFive& _ff) : ff(_ff)
-		{
-			cout << "@Convert(const CoordBase& _ff) "; _ctrsgn(typeid(*this));
-		}
-		Convert(Convert&& _ff) : ff{_ff.ff} { cout << "Convert(Convert&&) transfer ownership\n"; }			// transfer ownership
-		Convert& operator=(const Convert&) = delete;	// Disallow copying
-		Convert(const Convert&) = delete;				//   —— ditto ——
-
-		virtual ~Convert() = 0;
-};
-
-inline Convert::~Convert() { cout << "@Convert::~Convert() "; _ctrsgn(typeid(*this), true); }
-
-
-/// __________________________________________________
 /// Convert coords vector functor for decimal degrees
-class Convert_DD : public Convert {
+template <class FamousFive_type>
+class Convert_DD {
+		const FamousFive_type ff; 
 	public:
-		Convert_DD(const FamousFive& ff) : Convert(ff)
+		Convert_DD()
 		{
-			cout << "@Convert_DD(const FamousFive& ff) "; _ctrsgn(typeid(*this));
+			cout << "@Convert_DD() "; _ctrsgn(typeid(*this));
 		}
 		double operator()(double n) { cout << "@Convert_DD::operator()(double)\n"; return ff.get_decdeg(n); }
 };
@@ -316,11 +300,13 @@ class Convert_DD : public Convert {
 
 /// __________________________________________________
 /// Convert coords vector functor for degrees and minutes
-class Convert_DM : public Convert { 
+template <class FamousFive_type>
+class Convert_DM { 
+		const FamousFive_type ff; 
 	public:
-		Convert_DM(const FamousFive& ff) : Convert(ff)
+		Convert_DM()
 		{
-			cout << "@Convert_DM(const FamousFive& ff) "; _ctrsgn(typeid(*this));
+			cout << "@Convert_DM() "; _ctrsgn(typeid(*this));
 		}
 		double operator()(double n) { cout << "@Convert_DM::operator()(double)\n"; return ff.get_deg(n) * 1e2 + ff.get_decmin(n); }
 };
@@ -328,11 +314,13 @@ class Convert_DM : public Convert {
 
 /// __________________________________________________
 /// Convert coords vector functor for degrees, minutes and seconds
-class Convert_DMS : public Convert { 
+template <class FamousFive_type>
+class Convert_DMS { 
+		const FamousFive_type ff; 
 	public:
-		Convert_DMS(const FamousFive& ff) : Convert(ff)
+		Convert_DMS()
 		{
-			cout << "@Convert_DMS(const FamousFive& ff) "; _ctrsgn(typeid(*this));
+			cout << "@Convert_DMS() "; _ctrsgn(typeid(*this));
 		}
 		double operator()(double n) { cout << "@Convert_DMS::operator()(double)\n"; return ff.get_deg(n) * 1e4 + ff.get_min(n) * 1e2 + ff.get_sec(n); }
 };
@@ -700,7 +688,7 @@ DecDeg::DecDeg(const NumericVector& nv) : CoordBase(nv)
 }
 
 
-DecDeg::DecDeg(const CoordBase& c) : CoordBase(c, Convert_DD(FamousFiveDD()))
+DecDeg::DecDeg(const CoordBase& c) : CoordBase(c, Convert_DD<FamousFiveDD>())
 {
 ///§
 	cout << "@DecDeg::DecDeg(const CoordBase&) "; _ctrsgn(typeid(*this));
@@ -753,7 +741,7 @@ DegMin::DegMin(const NumericVector& nv) : CoordBase(nv)
 }
 
 
-DegMin::DegMin(const CoordBase& c) : CoordBase(c, Convert_DM(FamousFiveDM()))
+DegMin::DegMin(const CoordBase& c) : CoordBase(c, Convert_DM<FamousFiveDM>())
 {
 ///§
 	cout << "@DegMin::DegMin(const CoordBase&) "; _ctrsgn(typeid(*this));
@@ -805,7 +793,7 @@ DegMinSec::DegMinSec(const NumericVector& nv) : CoordBase(nv)
 }
 
 
-DegMinSec::DegMinSec(const CoordBase& c) : CoordBase(c, Convert_DMS(FamousFiveDMS()))
+DegMinSec::DegMinSec(const CoordBase& c) : CoordBase(c, Convert_DMS<FamousFiveDMS>())
 {
 ///§
 	cout << "@DegMinSec::DegMinSec(const CoordBase&) "; _ctrsgn(typeid(*this));
