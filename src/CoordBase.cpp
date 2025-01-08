@@ -443,11 +443,6 @@ class CoordBase {
 
 		virtual ~CoordBase() = 0;
 		virtual const CoordType getfmt() const = 0;
-/*		virtual int get_deg(double) const = 0;
-		virtual double get_decdeg(double) const = 0;
-		virtual int get_min(double) const = 0;
-		virtual double get_decmin(double) const = 0;
-		virtual double get_sec(double) const = 0;  */
 		virtual void validate_tmpl(bool = true) const = 0;
 		virtual vector<string> fmt_fctr_tmpl() const = 0;
 
@@ -619,7 +614,7 @@ vector<string> CoordBase::format() const
 	cout << "@CoordBase::format<typename Format_type, typename FamousFive_type, typename FormatLL_type>()\n";
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), Format_type(FamousFive_type()));
-	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL_type(*this));
+	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL_type(*this, FamousFive_type()));
 	return out;
 }
 
@@ -693,11 +688,6 @@ class DecDeg : public CoordBase {
 		~DecDeg();
 
 		const CoordType getfmt() const { return CoordType::decdeg; }
-/*		int get_deg(double) const;
-		double get_decdeg(double x) const;
-		int get_min(double x) const;
-		double get_decmin(double x) const;
-		double get_sec(double x) const; */
 		void validate_tmpl(bool) const;
 		vector<string> fmt_fctr_tmpl() const;
 };
@@ -723,37 +713,6 @@ DecDeg::~DecDeg()
 	cout << "@DecDeg::~DecDeg() "; _ctrsgn(typeid(*this), true);
 }
 
-/*
-inline int DecDeg::get_deg(double x) const
-{
-//	cout << "DecDeg.get_deg()\n";
-	return int(x);
-}
-
-inline double DecDeg::get_decdeg(double x) const
-{
-//	cout << "DecDeg.get_decdeg()\n";
-	return x;
-}
-
-inline int DecDeg::get_min(double x) const
-{
-//	cout << "DecDeg.get_min()\n";
-	return (int(x * 1e6) % int(1e6)) * 6e-5;
-}
-
-inline double DecDeg::get_decmin(double x) const
-{
-//	cout << "DecDeg.get_decmin()\n";
-	return polish(mod1by60(x));
-}
-
-inline double DecDeg::get_sec(double x) const
-{
-//	cout << "DecDeg.get_sec()\n";
-	return mod1by60(get_decmin(x));
-}
-*/
 
 /// __________________________________________________
 /// Instantiate functor template for validating decimal degrees
@@ -782,11 +741,6 @@ class DegMin : public CoordBase {
 		~DegMin();
 
 		const CoordType getfmt() const { return CoordType::degmin; }
-/*		int get_deg(double) const;
-		double get_decdeg(double x) const;
-		int get_min(double x) const;
-		double get_decmin(double x) const;
-		double get_sec(double x) const; */
 		void validate_tmpl(bool) const;
 		vector<string> fmt_fctr_tmpl() const;
 };
@@ -811,37 +765,6 @@ DegMin::~DegMin()
 	cout << "@DegMin::~DegMin() "; _ctrsgn(typeid(*this), true);
 }
 
-/*
-inline int DegMin::get_deg(double x) const
-{
-//	cout << "DegMin.get_deg()\n";
-	return int(x / 1e2);
-}
-
-inline double DegMin::get_decdeg(double x) const
-{
-//	cout << "DegMin.get_decdeg()\n";
-	return int(x / 1e2) + mod1e2(x) / 60;
-}
-
-inline int DegMin::get_min(double x) const
-{
-//	cout << "DegMin.get_min()\n";
-	return int(x) % int(1e2);
-}
-
-inline double DegMin::get_decmin(double x) const
-{
-//	cout << "DegMin.get_decmin()\n";
-	return polish(mod1e2(x));
-}
-
-inline double DegMin::get_sec(double x) const
-{
-//	cout << "DegMin.get_sec()\n";
-	return mod1by60(get_decmin(x));
-}
-*/
 
 /// __________________________________________________
 /// Instantiate functor template for validating degrees and minutes
@@ -870,11 +793,6 @@ class DegMinSec : public CoordBase {
 		~DegMinSec();
 
 		const CoordType getfmt() const { return CoordType::degminsec; }
-/*		int get_deg(double) const;
-		double get_decdeg(double x) const;
-		int get_min(double x) const;
-		double get_decmin(double x) const;
-		double get_sec(double x) const;  */
 		void validate_tmpl(bool) const;
 		vector<string> fmt_fctr_tmpl() const;
 };
@@ -899,37 +817,6 @@ DegMinSec::~DegMinSec()
 	cout << "@DegMinSec::~DegMinSec() "; _ctrsgn(typeid(*this), true);
 }
 
-/*
-inline int DegMinSec::get_deg(double x) const
-{
-//	cout << "DegMinSec.get_deg()\n";
-	return int(x / 1e4);
-}
-
-inline double DegMinSec::get_decdeg(double x) const
-{
-//	cout << "DegMinSec.get_decdeg()\n";
-	return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600;
-}
-
-inline int DegMinSec::get_min(double x) const
-{
-//	cout << "DegMinSec.get_min()\n";
-	return (int(x) % int(1e4)) / 1e2;
-}
-
-inline double DegMinSec::get_decmin(double x) const
-{
-//	cout << "DegMinSec.get_decmin()\n";
-	return int(fmod(x, 1e4) / 1e2) + mod1e2(x) / 60;
-}
-
-inline double DegMinSec::get_sec(double x) const
-{
-//	cout << "DegMinSec.get_sec()\n";
-	return mod1e2(x);
-}
-*/
 
 /// __________________________________________________
 /// Instantiate functor template for validating degrees, minutes and seconds
@@ -958,9 +845,10 @@ inline vector<string> DegMinSec::fmt_fctr_tmpl() const
 class FormatLL {
 	protected:
 		const CoordBase& cb; 
+		const FamousFive& ff;
 		ostringstream outstrstr;
 	public:
-		FormatLL(const CoordBase& _cb) : cb(_cb)
+		FormatLL(const CoordBase& _cb, const FamousFive& _ff) : cb(_cb), ff(_ff)
 		{
 			cout << "@FormatLL(const CoordBase& _cb) "; _ctrsgn(typeid(*this));
 		}
@@ -975,9 +863,9 @@ inline FormatLL::~FormatLL() { cout << "@FormatLL::~FormatLL() "; _ctrsgn(typeid
 class FormatLL_DD : public FormatLL {
 	vector<bool>::const_iterator ll_it;
 public:
-	FormatLL_DD(const CoordBase& cb) : FormatLL(cb), ll_it(cb.latlon.begin())
+	FormatLL_DD(const CoordBase& cb, const FamousFive& ff) : FormatLL(cb, ff), ll_it(cb.latlon.begin())
 	{
-		cout << "@FormatLL_DD(const CoordBase&) "; _ctrsgn(typeid(*this));
+		cout << "@FormatLL_DD(const CoordBase&, const FamousFive&) "; _ctrsgn(typeid(*this));
 	}
 	string operator()(string ostr, double n)
 	{
@@ -995,14 +883,14 @@ public:
 class FormatLL_DM_S : public FormatLL {
 	vector<bool>::const_iterator ll_it;
 public:
-	FormatLL_DM_S(const CoordBase& cb) : FormatLL(cb), ll_it(cb.latlon.begin())
+	FormatLL_DM_S(const CoordBase& cb, const FamousFive& ff) : FormatLL(cb, ff), ll_it(cb.latlon.begin())
 	{
-		cout << "@FormatLL_DM_S(const CoordBase&) "; _ctrsgn(typeid(*this));
+		cout << "@FormatLL_DM_S(const CoordBase&, const FamousFive&) "; _ctrsgn(typeid(*this));
 	}
 	string operator()(string ostr, double n)
 	{
 		cout << "@FormatLL_DM_S::operator()\n";
-		return ostr += cb.latlon.size() ? cardpoint(cb.get_decmin(n) < 0, cb.llgt1 ? *ll_it++ : *ll_it) : cardi_b(cb.get_decmin(n) < 0);
+		return ostr += cb.latlon.size() ? cardpoint(ff.get_decmin(n) < 0, cb.llgt1 ? *ll_it++ : *ll_it) : cardi_b(ff.get_decmin(n) < 0);
 	}
 };
 
