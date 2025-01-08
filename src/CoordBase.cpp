@@ -434,8 +434,8 @@ class CoordBase {
 
 	public:
 		CoordBase(const NumericVector&);
-		template <typename FunctObj>
-		explicit CoordBase(const CoordBase&, FunctObj&& obj);
+		template <class FamousFive_type>
+		explicit CoordBase(const CoordBase&, FamousFive_type&&);
 		CoordBase(const vector<double>, const vector<bool>&, const vector<string>&);
 		CoordBase& operator=(const CoordBase&) = delete;
 
@@ -477,13 +477,13 @@ CoordBase::CoordBase(const NumericVector& nv) :
 }
 
 
-template <typename FunctObj>
-CoordBase::CoordBase(const CoordBase& cb, FunctObj&& obj) :
+template <class FamousFive_type>
+CoordBase::CoordBase(const CoordBase& cb, FamousFive_type&& ff) :
 	CoordBase(vector<double>(cb.nv.size()), vector<bool>{ cb.latlon }, vector<string>{ cb.names })
 {
 ///§
 	cout << "@CoordBase::CoordBase(const CoordBase&, FunctObj) "; _ctrsgn(typeid(*this));
-	transform(cb.nv.begin(), cb.nv.end(), nv.begin(), std::move(obj));
+	transform(cb.nv.begin(), cb.nv.end(), nv.begin(), std::move(ff));
 }
 
 
