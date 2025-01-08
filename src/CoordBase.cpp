@@ -239,7 +239,6 @@ class FamousFive {
 		virtual int get_min(double) const = 0;
 		virtual double get_decmin(double) const = 0;
 		virtual double get_sec(double) const = 0;
-//		virtual vector<string> fmt_fctr_tmpl() const = 0;
 };
 
 inline FamousFive::~FamousFive() { cout << "@FamousFive::~FamousFive() "; _ctrsgn(typeid(*this), true); }
@@ -254,7 +253,6 @@ class FamousFiveDD : public FamousFive {
 		int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
 		double get_decmin(double x) const { return polish(mod1by60(x)); }
 		double get_sec(double x) const { return mod1by60(get_decmin(x)); }
-//		vector<string> fmt_fctr_tmpl() const { return format<Format_DD, FormatLL_DD>(); }
 };
 
 
@@ -267,7 +265,6 @@ class FamousFiveDM : public FamousFive {
 		int get_min(double x) const { return int(x) % int(1e2); }
 		double get_decmin(double x) const { return polish(mod1e2(x)); }
 		double get_sec(double x) const { return mod1by60(get_decmin(x)); }
-//		vector<string> fmt_fctr_tmpl() const { return format<Format_DM, FormatLL_DM_S>(); }
 };
 
 
