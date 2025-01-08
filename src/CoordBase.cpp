@@ -310,7 +310,7 @@ class ConvertDMS {
 /// Formatting functors
 
 /// __________________________________________________
-/// Format coords vector functor for decimal degrees
+/// Format functor for decimal degrees
 template <class FamousFive_type>
 class FormatDD {
 		FamousFive_type ff;
@@ -331,7 +331,7 @@ class FormatDD {
 
 
 /// __________________________________________________
-/// Format coords vector functor for degrees and minutes
+/// Format functor for degrees and minutes
 template <class FamousFive_type>
 class FormatDM {
 		FamousFive_type ff;
@@ -353,7 +353,7 @@ class FormatDM {
 
 
 /// __________________________________________________
-/// Format coords vector functor for degrees, minutes and seconds
+/// Format functor for degrees, minutes and seconds
 template <class FamousFive_type>
 class FormatDMS {
 		FamousFive_type ff;
@@ -413,15 +413,14 @@ class CoordBase {
 		vector<string> format() const;
 		void print(ostream&) const;
 
+		friend class Validator;
 		friend class DecDeg;
 		friend class DegMin;
 		friend class DegMinSec;
-//		template<class FamousFive_type>
 		friend class FormatLL_DD;
 		template<class FamousFive_type>
 		friend class FormatLL_DM_S;
 		template<class FamousFive_type>
-		friend class Validator;
 
 		friend ostream& operator<<(ostream&, const CoordBase&);
 };
