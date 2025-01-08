@@ -50,26 +50,16 @@ class FormatDMS;
 class CoordBase;
 ostream& operator<<(ostream&, const CoordBase&);
 
-template<class T> 
-string format_coord(const T&, double);
-class DecDeg;
-
-class DegMin;
-template<> 
-string format_coord<DegMin>(const DegMin&, double);
-
-class DegMinSec;
-template<> 
-string format_coord<DegMinSec>(const DegMinSec&, double);
-
-// template<class FamousFive_type>
-// class FormatLL;
 template<class FamousFive_type>
+class Validator;
+
+class DecDeg;
+class DegMin;
+class DegMinSec;
+
 class FormatLL_DD;
 template <class FamousFive_type>
 class FormatLL_DM_S;
-template<class FamousFive_type>
-class Validator;
 
 template<class T>
 unique_ptr<const CoordBase> newconstCoordBase(const T&, const CoordType);
@@ -426,7 +416,7 @@ class CoordBase {
 		friend class DecDeg;
 		friend class DegMin;
 		friend class DegMinSec;
-		template<class FamousFive_type>
+//		template<class FamousFive_type>
 		friend class FormatLL_DD;
 		template<class FamousFive_type>
 		friend class FormatLL_DM_S;
@@ -583,7 +573,7 @@ inline void CoordBase::set_waypoint() const
 template <class Format_type, class FormatLL_type>
 vector<string> CoordBase::format() const
 {
-	cout << "@CoordBase::format<class FamousFive_type, class Format_type, class FormatLL_type>()\n";
+	cout << "@CoordBase::format<class Format_type, class FormatLL_type>()\n";
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), Format_type());
 	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL_type(*this));
@@ -700,7 +690,8 @@ inline void DecDeg::validate_tmpl(bool warn) const
 inline vector<string> DecDeg::fmt_fctr_tmpl() const
 {
 	cout << "@DecDeg::fmt_fctr_tmpl()\n";
-	return format<FormatDD<FamousFiveDD>, FormatLL_DD<FamousFiveDD>>();
+//	return format<FormatDD<FamousFiveDD>, FormatLL_DD<FamousFiveDD>>();
+	return format<FormatDD<FamousFiveDD>, FormatLL_DD>();
 }
 
 
@@ -811,31 +802,12 @@ inline vector<string> DegMinSec::fmt_fctr_tmpl() const
 /// __________________________________________________
 /// __________________________________________________
 /// Formatting functors for Latitude and Longitude
-/*
-/// __________________________________________________
-/// Format coords vector functor base class
-template<class FamousFive_type>
-class FormatLL {
-	protected:
-	public:
-		FormatLL(const CoordBase& _cb) : cb(_cb)
-		{
-			cout << "@FormatLL(const CoordBase& _cb) "; _ctrsgn(typeid(*this));
-		}
-		virtual ~FormatLL() = 0;
-};
-
-template<class FamousFive_type>
-inline FormatLL<FamousFive_type>::~FormatLL() { cout << "@FormatLL<FamousFive_type>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
-*/
 
 /// __________________________________________________
 /// FormatLL functor for latitude and longitude strings for decimal degrees
-template<class FamousFive_type>
 class FormatLL_DD {
 		const CoordBase& cb; 
 		vector<bool>::const_iterator ll_it;
-//		const FamousFive_type ff;
 		ostringstream outstrstr;
 	public:
 		FormatLL_DD(const CoordBase& _cb) : cb(_cb), ll_it(cb.latlon.begin())
