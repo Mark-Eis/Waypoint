@@ -405,6 +405,7 @@ class CoordBase {
 
 		const vector<double>& get_nv() const;
 		unique_ptr<const CoordBase> convert(const CoordType) const;
+		void newconvert(const CoordType) const;
 		const vector<bool>& get_valid() const;
 		const vector<string>& get_names() const;
 		void warn_invalid() const;
@@ -495,6 +496,17 @@ inline unique_ptr<const CoordBase> CoordBase::convert(const CoordType type) cons
 //	cout << "@CoordBase::convert(const CoordType type) " << typeid(*this).name()
 //       << " to type "<< coordtype_to_int(type) + 1 << endl;
 	return newconstCoordBase(*this, type);
+}
+
+
+/// __________________________________________________
+/// Convert to degrees, minutes and seconds, to degrees and minutes or to decimal degrees
+inline void CoordBase::newconvert(const CoordType type) const
+{
+//	cout << "@CoordBase::newconvert(const CoordType type) " << typeid(*this).name()
+//       << " to type "<< coordtype_to_int(type) + 1 << endl;
+	
+
 }
 
 
@@ -662,7 +674,7 @@ DecDeg::DecDeg(const NumericVector& nv) : CoordBase(nv)
 }
 
 
-DecDeg::DecDeg(const CoordBase& c) : CoordBase(c, ConvertDD<FamousFiveDD>())
+DecDeg::DecDeg(const CoordBase& c) : CoordBase(c, ConvertDD<FamousFiveDMS>())
 {
 ///§
 	cout << "@DecDeg::DecDeg(const CoordBase&) "; _ctrsgn(typeid(*this));
@@ -715,7 +727,7 @@ DegMin::DegMin(const NumericVector& nv) : CoordBase(nv)
 }
 
 
-DegMin::DegMin(const CoordBase& c) : CoordBase(c, ConvertDM<FamousFiveDM>())
+DegMin::DegMin(const CoordBase& c) : CoordBase(c, ConvertDM<FamousFiveDD>())
 {
 ///§
 	cout << "@DegMin::DegMin(const CoordBase&) "; _ctrsgn(typeid(*this));
@@ -767,7 +779,7 @@ DegMinSec::DegMinSec(const NumericVector& nv) : CoordBase(nv)
 }
 
 
-DegMinSec::DegMinSec(const CoordBase& c) : CoordBase(c, ConvertDMS<FamousFiveDMS>())
+DegMinSec::DegMinSec(const CoordBase& c) : CoordBase(c, ConvertDMS<FamousFiveDM>())
 {
 ///§
 	cout << "@DegMinSec::DegMinSec(const CoordBase&) "; _ctrsgn(typeid(*this));
