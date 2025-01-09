@@ -28,7 +28,6 @@ inline const int coordtype_to_int(CoordType);
 inline string cardpoint(bool, bool);
 inline string cardi_b(bool);
 
-
 struct FamousFiveDD;
 struct FamousFiveDM;
 struct FamousFiveDMS;
@@ -39,6 +38,9 @@ template <class FamousFive_type>
 class ConvertDM;
 template <class FamousFive_type>
 class ConvertDMS;
+
+template <class FamousFive_type>
+class Format;
 
 template <class FamousFive_type>
 class FormatDD;
@@ -310,21 +312,40 @@ class ConvertDMS {
 
 /// __________________________________________________
 /// __________________________________________________
-/// Formatting functor for decimal degrees
+/// Formatting functor base class
 template <class FamousFive_type>
-class FormatDD {
+class Format {
+	protected:
 		FamousFive_type ff;
 		ostringstream outstrstr;
 	public:
-		FormatDD()
+		Format()
+		{
+			cout << "§Format<class FamousFive_type>() "; _ctrsgn(typeid(*this));
+		}
+		virtual ~Format() = 0;
+};
+
+template <class FamousFive_type>
+inline Format<FamousFive_type>::~Format() { cout << "@Format::~Format() "; _ctrsgn(typeid(*this), true); }
+
+
+/// __________________________________________________
+/// Formatting functor for decimal degrees [rescue version]
+template <class FamousFive_type>
+class FormatDD : public Format<FamousFive_type> {
+	public:
+		FormatDD() : Format<FamousFive_type>()
 		{
 			cout << "§FormatDD<class FamousFive_type>() "; _ctrsgn(typeid(*this));
 		}
+	    using Format<FamousFive_type>::outstrstr;
+	    using Format<FamousFive_type>::ff;
 		string operator()(double n)
 		{
 			cout << "@FormatDD::operator()\n";
 			outstrstr.str("");
-			outstrstr << setw(11) << setfill(' ') << fixed << setprecision(6) << ff.get_decdeg(n) << "\u00B0";
+			outstrstr << setw(11) << setfill(' ')  << fixed << setprecision(6) << ff.get_decdeg(n) << "\u00B0";
 			return outstrstr.str();
 		}
 };
@@ -333,14 +354,14 @@ class FormatDD {
 /// __________________________________________________
 /// Formatting functor for degrees and minutes
 template <class FamousFive_type>
-class FormatDM {
-		FamousFive_type ff;
-		ostringstream outstrstr;
+class FormatDM : public Format<FamousFive_type> {
 	public:
-		FormatDM()
+		FormatDM() : Format<FamousFive_type>()
 		{
 			cout << "§FormatDM<class FamousFive_type>() "; _ctrsgn(typeid(*this));
 		}
+	    using Format<FamousFive_type>::outstrstr;
+	    using Format<FamousFive_type>::ff;
 		string operator()(double n)
 		{
 			cout << "@FormatDM::operator()\n";
@@ -355,14 +376,14 @@ class FormatDM {
 /// __________________________________________________
 /// Formatting functor for degrees, minutes and seconds
 template <class FamousFive_type>
-class FormatDMS {
-		FamousFive_type ff;
-		ostringstream outstrstr;
+class FormatDMS : public Format<FamousFive_type> {
 	public:
-		FormatDMS()
+		FormatDMS() : Format<FamousFive_type>()
 		{
 			cout << "§FormatDMS<class FamousFive_type>() "; _ctrsgn(typeid(*this));
 		}
+	    using Format<FamousFive_type>::outstrstr;
+	    using Format<FamousFive_type>::ff;
 		string operator()(double n)
 		{
 			cout << "@FormatDMS::operator()\n";
