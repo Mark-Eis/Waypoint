@@ -323,6 +323,10 @@ class Format {
 		{
 			cout << "§Format<class FamousFive_type>() "; _ctrsgn(typeid(*this));
 		}
+		Format(const Format&) = delete;				// Disallow copying
+		Format& operator=(const Format&) = delete;	//  ——— ditto ———
+		Format(Format&&) = delete;					// Disallow transfer ownership
+		Format& operator=(Format&&) = delete;	    // Disallow moving
 		virtual ~Format() = 0;
 };
 
@@ -847,6 +851,7 @@ class FormatLL {
 		{
 			cout << "§FormatLL(const CoordBase&) "; _ctrsgn(typeid(*this));
 		}
+		
 		virtual string operator()(string ostr, double n) = 0;
 		virtual ~FormatLL() = 0;
 };
