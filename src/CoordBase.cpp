@@ -319,10 +319,11 @@ class Format {
 		FamousFive_type ff;
 		ostringstream outstrstr;
 	public:
-		Format()
+/*		Format()
 		{
 			cout << "§Format<class FamousFive_type>() "; _ctrsgn(typeid(*this));
-		}
+		} */
+		Format() = default;
 		Format(const Format&) = delete;				// Disallow copying
 		Format& operator=(const Format&) = delete;	//  ——— ditto ———
 		Format(Format&&) = delete;					// Disallow transfer ownership
@@ -331,7 +332,7 @@ class Format {
 };
 
 template <class FamousFive_type>
-inline Format<FamousFive_type>::~Format() { cout << "§Format::~Format() "; _ctrsgn(typeid(*this), true); }
+inline Format<FamousFive_type>::~Format() { /* cout << "§Format::~Format() "; _ctrsgn(typeid(*this), true); */ }
 
 
 /// __________________________________________________
@@ -339,15 +340,16 @@ inline Format<FamousFive_type>::~Format() { cout << "§Format::~Format() "; _ctr
 template <class FamousFive_type>
 class FormatDD : public Format<FamousFive_type> {
 	public:
-		FormatDD()
+/*		FormatDD()
 		{
 			cout << "§FormatDD<class FamousFive_type>() "; _ctrsgn(typeid(*this));
-		}
+		} */
+		FormatDD() = default;
 	    using Format<FamousFive_type>::outstrstr;
 	    using Format<FamousFive_type>::ff;
 		string operator()(double n)
 		{
-			cout << "@FormatDD::operator()\n";
+		//	cout << "@FormatDD::operator()\n";
 			outstrstr.str("");
 			outstrstr << setw(11) << setfill(' ')  << fixed << setprecision(6) << ff.get_decdeg(n) << "\u00B0";
 			return outstrstr.str();
@@ -360,15 +362,16 @@ class FormatDD : public Format<FamousFive_type> {
 template <class FamousFive_type>
 class FormatDM : public Format<FamousFive_type> {
 	public:
-		FormatDM()
+/*		FormatDM()
 		{
 			cout << "§FormatDM<class FamousFive_type>() "; _ctrsgn(typeid(*this));
-		}
+		} */
+		FormatDM() = default;
 	    using Format<FamousFive_type>::outstrstr;
 	    using Format<FamousFive_type>::ff;
 		string operator()(double n)
 		{
-			cout << "@FormatDM::operator()\n";
+		//	cout << "@FormatDM::operator()\n";
 			outstrstr.str("");
 			outstrstr << setw(3) << setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
 					  << setw(7) << setfill('0') << fixed << setprecision(4) << abs(ff.get_decmin(n)) << "'";
@@ -382,15 +385,16 @@ class FormatDM : public Format<FamousFive_type> {
 template <class FamousFive_type>
 class FormatDMS : public Format<FamousFive_type> {
 	public:
-		FormatDMS()
+/*		FormatDMS()
 		{
 			cout << "§FormatDMS<class FamousFive_type>() "; _ctrsgn(typeid(*this));
-		}
+		} */
+		FormatDMS() = default;
 	    using Format<FamousFive_type>::outstrstr;
 	    using Format<FamousFive_type>::ff;
 		string operator()(double n)
 		{
-			cout << "@FormatDMS::operator()\n";
+		//	cout << "@FormatDMS::operator()\n";
 			outstrstr.str("");
 			outstrstr << setw(3) << setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
 					  << setw(2) << setfill('0') << abs(ff.get_min(n)) << "'"
@@ -849,14 +853,16 @@ class FormatLL {
 	public:
 		FormatLL(const CoordBase& _cb) : cb(_cb), ll_it(cb.latlon.begin())
 		{
-			cout << "§FormatLL(const CoordBase&) "; _ctrsgn(typeid(*this));
+		//	cout << "§FormatLL(const CoordBase&) "; _ctrsgn(typeid(*this));
 		}
-		
-		virtual string operator()(string ostr, double n) = 0;
+		FormatLL(const FormatLL&) = delete;				// Disallow copying
+		FormatLL& operator=(const FormatLL&) = delete;	//  ——— ditto ———
+		FormatLL(FormatLL&&) = delete;					// Disallow transfer ownership
+		FormatLL& operator=(FormatLL&&) = delete;	    // Disallow moving
 		virtual ~FormatLL() = 0;
 };
 
-inline FormatLL::~FormatLL() { cout << "§FormatLL::~FormatLL() "; _ctrsgn(typeid(*this), true); }
+inline FormatLL::~FormatLL() { /* cout << "§FormatLL::~FormatLL() "; _ctrsgn(typeid(*this), true); */ }
 
 
 /// __________________________________________________
@@ -865,11 +871,11 @@ class FormatLL_DD : public FormatLL {
 	public:
 		FormatLL_DD(const CoordBase& cb) : FormatLL(cb)
 		{
-			cout << "§FormatLL_DD<FamousFive_type>(const CoordBase&) "; _ctrsgn(typeid(*this));
+		//	cout << "§FormatLL_DD<FamousFive_type>(const CoordBase&) "; _ctrsgn(typeid(*this));
 		}
 		string operator()(string ostr, double n)
 		{
-			cout << "@FormatLL_DD::operator() cb.waypoint " << boolalpha << cb.waypoint << endl;
+		//	cout << "@FormatLL_DD::operator() cb.waypoint " << boolalpha << cb.waypoint << endl;
 			if (cb.latlon.size() && !cb.waypoint)
 				return ostr += ((cb.llgt1 ? *ll_it++ : *ll_it) ? " lat" : " lon");
 			else
@@ -886,11 +892,11 @@ class FormatLL_DM_S : public FormatLL {
 	public:
 		FormatLL_DM_S(const CoordBase& cb) : FormatLL(cb)
 		{
-			cout << "§FormatLL_DM_S<FamousFive_type>(const CoordBase&) "; _ctrsgn(typeid(*this));
+		//	cout << "§FormatLL_DM_S<FamousFive_type>(const CoordBase&) "; _ctrsgn(typeid(*this));
 		}
 		string operator()(string ostr, double n)
 		{
-			cout << "@FormatLL_DM_S::operator()\n";
+		//	cout << "@FormatLL_DM_S::operator()\n";
 			return ostr += cb.latlon.size() ? cardpoint(ff.get_decmin(n) < 0, cb.llgt1 ? *ll_it++ : *ll_it) : cardi_b(ff.get_decmin(n) < 0);
 		}
 };
