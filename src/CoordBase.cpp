@@ -274,7 +274,7 @@ class ConvertDD {
 	public:
 		ConvertDD()
 		{
-			cout << "@ConvertDD<class FamousFive_type>() "; _ctrsgn(typeid(*this));
+			cout << "§ConvertDD<class FamousFive_type>() "; _ctrsgn(typeid(*this));
 		}
 		double operator()(double n) { cout << "@ConvertDD::operator()(double)\n"; return ff.get_decdeg(n); }
 };
@@ -288,7 +288,7 @@ class ConvertDM {
 	public:
 		ConvertDM()
 		{
-			cout << "@ConvertDM<class FamousFive_type>() "; _ctrsgn(typeid(*this));
+			cout << "§ConvertDM<class FamousFive_type>() "; _ctrsgn(typeid(*this));
 		}
 		double operator()(double n) { cout << "@ConvertDM::operator()(double)\n"; return ff.get_deg(n) * 1e2 + ff.get_decmin(n); }
 };
@@ -302,7 +302,7 @@ class ConvertDMS {
 	public:
 		ConvertDMS()
 		{
-			cout << "@ConvertDMS<class FamousFive_type>() "; _ctrsgn(typeid(*this));
+			cout << "§ConvertDMS<class FamousFive_type>() "; _ctrsgn(typeid(*this));
 		}
 		double operator()(double n) { cout << "@ConvertDMS::operator()(double)\n"; return ff.get_deg(n) * 1e4 + ff.get_min(n) * 1e2 + ff.get_sec(n); }
 };
@@ -318,7 +318,7 @@ class FormatDD {
 	public:
 		FormatDD()
 		{
-			cout << "@FormatDD<class FamousFive_type>() "; _ctrsgn(typeid(*this));
+			cout << "§FormatDD<class FamousFive_type>() "; _ctrsgn(typeid(*this));
 		}
 		string operator()(double n)
 		{
@@ -339,7 +339,7 @@ class FormatDM {
 	public:
 		FormatDM()
 		{
-			cout << "@FormatDM<class FamousFive_type>() "; _ctrsgn(typeid(*this));
+			cout << "§FormatDM<class FamousFive_type>() "; _ctrsgn(typeid(*this));
 		}
 		string operator()(double n)
 		{
@@ -361,7 +361,7 @@ class FormatDMS {
 	public:
 		FormatDMS()
 		{
-			cout << "@FormatDMS<class FamousFive_type>() "; _ctrsgn(typeid(*this));
+			cout << "§FormatDMS<class FamousFive_type>() "; _ctrsgn(typeid(*this));
 		}
 		string operator()(double n)
 		{
@@ -434,8 +434,8 @@ CoordBase::CoordBase(const NumericVector& nv) :
 		nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>()
 	)
 {
-///§
-	cout << "@CoordBase::CoordBase(const NumericVector&) "; _ctrsgn(typeid(*this));
+//
+	cout << "§CoordBase::CoordBase(const NumericVector&) "; _ctrsgn(typeid(*this));
 }
 
 
@@ -443,8 +443,8 @@ template <class FamousFive_type>
 CoordBase::CoordBase(const CoordBase& cb, FamousFive_type&& ff) :
 	CoordBase(vector<double>(cb.nv.size()), vector<bool>{ cb.latlon }, vector<string>{ cb.names })
 {
-///§
-	cout << "@CoordBase::CoordBase(const CoordBase&, FunctObj) "; _ctrsgn(typeid(*this));
+//
+	cout << "§CoordBase::CoordBase(const CoordBase&, FunctObj) "; _ctrsgn(typeid(*this));
 	transform(cb.nv.begin(), cb.nv.end(), nv.begin(), std::move(ff));
 }
 
@@ -452,15 +452,15 @@ CoordBase::CoordBase(const CoordBase& cb, FamousFive_type&& ff) :
 CoordBase::CoordBase(const vector<double> n, const vector<bool>& ll, const vector<string>& _names) :
 	nv(std::move(n)), latlon{ ll }, names{ std::move(_names) }, llgt1(latlon.size() > 1)
 {
-///§
-	cout << "@CoordBase::CoordBase(const vector<double>, const LogicalVector&, const vector<string>&) "; _ctrsgn(typeid(*this));
+//
+	cout << "§CoordBase::CoordBase(const vector<double>, const LogicalVector&, const vector<string>&) "; _ctrsgn(typeid(*this));
 }
 
 
 CoordBase::~CoordBase()
 {
-///§
-	cout << "@CoordBase::~CoordBase() "; _ctrsgn(typeid(*this), true);
+//
+	cout << "§CoordBase::~CoordBase() "; _ctrsgn(typeid(*this), true);
 }
 
 
@@ -521,7 +521,7 @@ class Validator {
 	public:
 		Validator(const CoordBase& _cb) : cb(_cb), ll_it(cb.latlon.begin())
 		{
-			cout << "@Validator(const CoordBase&) "; _ctrsgn(typeid(*this));
+			cout << "§Validator(const CoordBase&) "; _ctrsgn(typeid(*this));
 		}
 		bool operator()(double n)
 		{
@@ -669,22 +669,22 @@ class DecDeg : public CoordBase {
 
 DecDeg::DecDeg(const NumericVector& nv) : CoordBase(nv)
 {
-///§
-	cout << "@DecDeg::DecDeg(NumericVector&) "; _ctrsgn(typeid(*this));
+//
+	cout << "§DecDeg::DecDeg(NumericVector&) "; _ctrsgn(typeid(*this));
 }
 
 
 DecDeg::DecDeg(const CoordBase& c) : CoordBase(c, ConvertDD<FamousFiveDMS>())
 {
-///§
-	cout << "@DecDeg::DecDeg(const CoordBase&) "; _ctrsgn(typeid(*this));
+//
+	cout << "§DecDeg::DecDeg(const CoordBase&) "; _ctrsgn(typeid(*this));
 }
 
 
 DecDeg::~DecDeg()
 {
-///§
-	cout << "@DecDeg::~DecDeg() "; _ctrsgn(typeid(*this), true);
+//
+	cout << "§DecDeg::~DecDeg() "; _ctrsgn(typeid(*this), true);
 }
 
 
@@ -722,21 +722,21 @@ class DegMin : public CoordBase {
 
 DegMin::DegMin(const NumericVector& nv) : CoordBase(nv)
 {
-///§
-	cout << "@DegMin::DegMin(NumericVector&) "; _ctrsgn(typeid(*this));
+//
+	cout << "§DegMin::DegMin(NumericVector&) "; _ctrsgn(typeid(*this));
 }
 
 
 DegMin::DegMin(const CoordBase& c) : CoordBase(c, ConvertDM<FamousFiveDD>())
 {
-///§
-	cout << "@DegMin::DegMin(const CoordBase&) "; _ctrsgn(typeid(*this));
+//
+	cout << "§DegMin::DegMin(const CoordBase&) "; _ctrsgn(typeid(*this));
 }
 
 DegMin::~DegMin()
 {
-///§
-	cout << "@DegMin::~DegMin() "; _ctrsgn(typeid(*this), true);
+//
+	cout << "§DegMin::~DegMin() "; _ctrsgn(typeid(*this), true);
 }
 
 
@@ -774,21 +774,21 @@ class DegMinSec : public CoordBase {
 
 DegMinSec::DegMinSec(const NumericVector& nv) : CoordBase(nv)
 {
-///§
-	cout << "@DegMinSec::DegMinSec(NumericVector&) "; _ctrsgn(typeid(*this));
+//
+	cout << "§DegMinSec::DegMinSec(NumericVector&) "; _ctrsgn(typeid(*this));
 }
 
 
 DegMinSec::DegMinSec(const CoordBase& c) : CoordBase(c, ConvertDMS<FamousFiveDM>())
 {
-///§
-	cout << "@DegMinSec::DegMinSec(const CoordBase&) "; _ctrsgn(typeid(*this));
+//
+	cout << "§DegMinSec::DegMinSec(const CoordBase&) "; _ctrsgn(typeid(*this));
 }
 
 DegMinSec::~DegMinSec()
 {
-///§
-	cout << "@DegMinSec::~DegMinSec() "; _ctrsgn(typeid(*this), true);
+//
+	cout << "§DegMinSec::~DegMinSec() "; _ctrsgn(typeid(*this), true);
 }
 
 
@@ -824,7 +824,7 @@ class FormatLL {
 	public:
 		FormatLL(const CoordBase& _cb) : cb(_cb), ll_it(cb.latlon.begin())
 		{
-			cout << "@FormatLL(const CoordBase&) "; _ctrsgn(typeid(*this));
+			cout << "§FormatLL(const CoordBase&) "; _ctrsgn(typeid(*this));
 		}
 		virtual string operator()(string ostr, double n) = 0;
 		virtual ~FormatLL() = 0;
@@ -839,7 +839,7 @@ class FormatLL_DD : public FormatLL {
 	public:
 		FormatLL_DD(const CoordBase& cb) : FormatLL(cb)
 		{
-			cout << "@FormatLL_DD<FamousFive_type>(const CoordBase&) "; _ctrsgn(typeid(*this));
+			cout << "§FormatLL_DD<FamousFive_type>(const CoordBase&) "; _ctrsgn(typeid(*this));
 		}
 		string operator()(string ostr, double n)
 		{
@@ -860,7 +860,7 @@ class FormatLL_DM_S : public FormatLL {
 	public:
 		FormatLL_DM_S(const CoordBase& cb) : FormatLL(cb)
 		{
-			cout << "@FormatLL_DM_S<FamousFive_type>(const CoordBase&) "; _ctrsgn(typeid(*this));
+			cout << "§FormatLL_DM_S<FamousFive_type>(const CoordBase&) "; _ctrsgn(typeid(*this));
 		}
 		string operator()(string ostr, double n)
 		{
@@ -924,8 +924,8 @@ WayPoint::WayPoint(unique_ptr<const CoordBase> _cbp_lat, unique_ptr<const CoordB
 	cbp_lat{std::move(_cbp_lat)}, cbp_lon{std::move(_cbp_lon)},
 	validlat(cbp_lat->get_valid()), validlon(cbp_lon->get_valid())
 {
-///§
-	cout << "@WayPoint(unique_ptr<const CoordBase>, unique_ptr<const CoordBase>) "; _ctrsgn(typeid(*this));
+//
+	cout << "§WayPoint(unique_ptr<const CoordBase>, unique_ptr<const CoordBase>) "; _ctrsgn(typeid(*this));
 	cbp_lat->set_waypoint();
 	cbp_lon->set_waypoint();
 }
@@ -933,15 +933,15 @@ WayPoint::WayPoint(unique_ptr<const CoordBase> _cbp_lat, unique_ptr<const CoordB
 WayPoint::WayPoint(const WayPoint& wp, CoordType type) :
 	WayPoint{ wp.get_cbp(true).convert(type), wp.get_cbp(false).convert(type) }
 {
-///§
-	cout << "@WayPoint(const WayPoint&) "; _ctrsgn(typeid(*this));
+//
+	cout << "§WayPoint(const WayPoint&) "; _ctrsgn(typeid(*this));
 }
 
 
 WayPoint::~WayPoint()
 {
-///§
-	cout << "@WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true);
+//
+	cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true);
 }
 
 
