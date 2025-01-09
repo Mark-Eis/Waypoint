@@ -327,7 +327,7 @@ class Format {
 };
 
 template <class FamousFive_type>
-inline Format<FamousFive_type>::~Format() { cout << "@Format::~Format() "; _ctrsgn(typeid(*this), true); }
+inline Format<FamousFive_type>::~Format() { cout << "§Format::~Format() "; _ctrsgn(typeid(*this), true); }
 
 
 /// __________________________________________________
@@ -335,7 +335,7 @@ inline Format<FamousFive_type>::~Format() { cout << "@Format::~Format() "; _ctrs
 template <class FamousFive_type>
 class FormatDD : public Format<FamousFive_type> {
 	public:
-		FormatDD() : Format<FamousFive_type>()
+		FormatDD()
 		{
 			cout << "§FormatDD<class FamousFive_type>() "; _ctrsgn(typeid(*this));
 		}
@@ -356,7 +356,7 @@ class FormatDD : public Format<FamousFive_type> {
 template <class FamousFive_type>
 class FormatDM : public Format<FamousFive_type> {
 	public:
-		FormatDM() : Format<FamousFive_type>()
+		FormatDM()
 		{
 			cout << "§FormatDM<class FamousFive_type>() "; _ctrsgn(typeid(*this));
 		}
@@ -378,7 +378,7 @@ class FormatDM : public Format<FamousFive_type> {
 template <class FamousFive_type>
 class FormatDMS : public Format<FamousFive_type> {
 	public:
-		FormatDMS() : Format<FamousFive_type>()
+		FormatDMS()
 		{
 			cout << "§FormatDMS<class FamousFive_type>() "; _ctrsgn(typeid(*this));
 		}
@@ -851,7 +851,7 @@ class FormatLL {
 		virtual ~FormatLL() = 0;
 };
 
-inline FormatLL::~FormatLL() { cout << "@FormatLL::~FormatLL() "; _ctrsgn(typeid(*this), true); }
+inline FormatLL::~FormatLL() { cout << "§FormatLL::~FormatLL() "; _ctrsgn(typeid(*this), true); }
 
 
 /// __________________________________________________
