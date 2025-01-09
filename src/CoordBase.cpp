@@ -610,11 +610,10 @@ inline void CoordBase::set_waypoint() const
 
 /// __________________________________________________
 /// Formatted coordinate strings for printing
-//template <class FamousFive_type, class Format_type, class FormatLL_type>
 template <class Format_type, class FormatLL_type>
 vector<string> CoordBase::format() const
 {
-	cout << "@CoordBase::format<class Format_type, class FormatLL_type>()\n";
+//	cout << "@CoordBase::format<class Format_type, class FormatLL_type>()\n";
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), Format_type());
 	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL_type(*this));
@@ -661,7 +660,7 @@ void CoordBase::print(ostream& stream) const
 /// Print coords vector
 void CoordBase::print(ostream& stream) const
 {
-	cout << "@CoordBase::print() type " << typeid(*this).name() << endl;
+//	cout << "@CoordBase::print() type " << typeid(*this).name() << endl;
 	vector<string> sv(fmt_fctr_tmpl()); 
 	if (names.size()) {
 		vector<string>::const_iterator nm_it(names.begin());
@@ -676,7 +675,7 @@ void CoordBase::print(ostream& stream) const
 /// Output CoordBase derived object to ostream
 ostream& operator<<(ostream& stream, const CoordBase& c)
 {
-	cout << "@operator<<(ostream&, const CoordBase&)\n";
+//	cout << "@operator<<(ostream&, const CoordBase&)\n";
 	c.print(stream);
 	return stream;
 }
@@ -730,7 +729,7 @@ inline void DecDeg::validate_tmpl(bool warn) const
 /// Instantiate functor template for formatting decimal degrees
 inline vector<string> DecDeg::fmt_fctr_tmpl() const
 {
-	cout << "@DecDeg::fmt_fctr_tmpl()\n";
+//	cout << "@DecDeg::fmt_fctr_tmpl()\n";
 	return format<format_decdeg, FormatLL_DD>();
 }
 
@@ -782,7 +781,7 @@ inline void DegMin::validate_tmpl(bool warn) const
 /// Instantiate functor template for formatting degrees and minutes
 inline vector<string> DegMin::fmt_fctr_tmpl() const
 {
-	cout << "@DegMin::fmt_fctr_tmpl()\n";
+//	cout << "@DegMin::fmt_fctr_tmpl()\n";
 	return format<format_degmin, FormatLL_DM_S<FamousFiveDM>>();
 }
 
@@ -834,7 +833,7 @@ inline void DegMinSec::validate_tmpl(bool warn) const
 /// Instantiate functor template for formatting degrees, minutes and seconds
 inline vector<string> DegMinSec::fmt_fctr_tmpl() const
 {
-	cout << "@DegMinSec::fmt_fctr_tmpl()\n";
+//	cout << "@DegMinSec::fmt_fctr_tmpl()\n";
 	return format<format_degminsec, FormatLL_DM_S<FamousFiveDMS>>();
 }
 
