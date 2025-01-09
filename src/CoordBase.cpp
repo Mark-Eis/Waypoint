@@ -34,12 +34,21 @@ struct FamousFiveDMS;
 
 template <class FamousFive_type>
 class Convert;
+
 template <class FamousFive_type>
 class ConvertDD;
+using convert_dd_dm = ConvertDD<FamousFiveDM>;
+using convert_dd_dms = ConvertDD<FamousFiveDMS>;
+
 template <class FamousFive_type>
 class ConvertDM;
+using convert_dm_dd = ConvertDM<FamousFiveDD>;
+using convert_dm_dms = ConvertDM<FamousFiveDMS>;
+
 template <class FamousFive_type>
 class ConvertDMS;
+using convert_dms_dd = ConvertDMS<FamousFiveDD>;
+using convert_dms_dm = ConvertDMS<FamousFiveDM>;
 
 template <class FamousFive_type>
 class Format;
@@ -283,7 +292,7 @@ class Convert {
 		}
 //		Convert() = default;
 //		Convert(const Convert&) = delete;				// Disallow copying
-//		Convert& operator=(const Convert&) = delete;	//  ——— ditto ———
+		Convert& operator=(const Convert&) = delete;	//  ——— ditto ———
 //		Convert(Convert&&) = delete;					// Disallow transfer ownership
 //		Convert& operator=(Convert&&) = delete;			// Disallow moving
 		virtual ~Convert() = 0;
@@ -446,8 +455,8 @@ class CoordBase {
 
 	public:
 		CoordBase(const NumericVector&);
-		template <class FamousFive_type>
-		explicit CoordBase(const CoordBase&, FamousFive_type&&);
+		template <class Convert_type>
+		explicit CoordBase(const CoordBase&, Convert_type&&);
 		CoordBase(const vector<double>, const vector<bool>&, const vector<string>&);
 		CoordBase& operator=(const CoordBase&) = delete;
 
@@ -458,7 +467,8 @@ class CoordBase {
 
 		const vector<double>& get_nv() const;
 		unique_ptr<const CoordBase> convert(const CoordType) const;
-		void newconvert(const CoordType) const;
+		template <class Convert_type>
+		void newconvert() const;
 		const vector<bool>& get_valid() const;
 		const vector<string>& get_names() const;
 		void warn_invalid() const;
@@ -492,13 +502,13 @@ CoordBase::CoordBase(const NumericVector& nv) :
 }
 
 
-template <class FamousFive_type>
-CoordBase::CoordBase(const CoordBase& cb, FamousFive_type&& ff) :
+template <class Convert_type>
+CoordBase::CoordBase(const CoordBase& cb, Convert_type&& ct) :
 	CoordBase(vector<double>(cb.nv.size()), vector<bool>{ cb.latlon }, vector<string>{ cb.names })
 {
 //
-	cout << "§CoordBase::CoordBase(const CoordBase&, FunctObj) "; _ctrsgn(typeid(*this));
-	transform(cb.nv.begin(), cb.nv.end(), nv.begin(), std::move(ff));
+	cout << "§CoordBase::CoordBase<Convert_type>(const CoordBase&, Convert_type&&) "; _ctrsgn(typeid(*this));
+	transform(cb.nv.begin(), cb.nv.end(), nv.begin(), std::move(ct));
 }
 
 
@@ -554,12 +564,12 @@ inline unique_ptr<const CoordBase> CoordBase::convert(const CoordType type) cons
 
 /// __________________________________________________
 /// Convert to degrees, minutes and seconds, to degrees and minutes or to decimal degrees
-inline void CoordBase::newconvert(const CoordType type) const
+template <class Convert_type>
+inline void CoordBase::newconvert() const
 {
-//	cout << "@CoordBase::newconvert(const CoordType type) " << typeid(*this).name()
-//       << " to type "<< coordtype_to_int(type) + 1 << endl;
-	
-
+//	cout << "@CoordBase::newconvert<Convert_type>()\n";
+	vector<double>& non_const_nv { const_cast<vector<double>&>(nv) };
+	transform(nv.begin(), nv.end(), non_const_nv.begin(), Convert_type());
 }
 
 
