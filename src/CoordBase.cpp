@@ -86,9 +86,6 @@ class FormatLL_DM_S;
 template<class T>
 unique_ptr<const CoordBase> newconstCoordBase(const T&, const CoordType);
 
-template<class T>
-unique_ptr<const CoordBase> newconstCoordBaseConvert(const T&, const CoordType);
-
 class WayPoint;
 template <class T>
 unique_ptr<const WayPoint> newconstWayPoint(const T&);
@@ -460,7 +457,9 @@ class CoordBase {
 		bool waypoint = false;
 
 	public:
-		CoordBase(const NumericVector&);
+
+		template <class FF>
+		CoordBase(const NumericVector&, in_place_type_t<FF>);
 		template <class Convert_type>
 		explicit CoordBase(const CoordBase&, in_place_type_t<Convert_type>);
 		CoordBase(const vector<double>, const vector<bool>&, const vector<string>&);
@@ -496,7 +495,9 @@ class CoordBase {
 		friend ostream& operator<<(ostream&, const CoordBase&);
 };
 
-CoordBase::CoordBase(const NumericVector& nv) :
+
+template <class FF>
+CoordBase::CoordBase(const NumericVector& nv, in_place_type_t<FF>) :
 	CoordBase(
 		as<vector<double>>(nv),
 		nv.hasAttribute("latlon") ? as<vector<bool>>(nv.attr("latlon")) : vector<bool>(),
@@ -560,7 +561,7 @@ inline unique_ptr<const CoordBase> CoordBase::convert(const CoordType type) cons
 {
 	cout << "@CoordBase::convert(const CoordType type) " << typeid(*this).name()
        << " to type "<< coordtype_to_int(type) + 1 << endl;
-	return newconstCoordBaseConvert(*this, type);
+	return newconstCoordBase(*this, type);
 }
 
 
@@ -721,7 +722,8 @@ ostream& operator<<(ostream& stream, const CoordBase& c)
 /// Decimal degrees derived class
 class DecDeg : public CoordBase {
 	public:
-		DecDeg(const NumericVector&);
+		template <class FF>
+		DecDeg(const NumericVector&, in_place_type_t<FF>);
 		template <class FF>
 		DecDeg(const CoordBase&, in_place_type_t<FF>);
 		~DecDeg();
@@ -732,9 +734,10 @@ class DecDeg : public CoordBase {
 };
 
 
-DecDeg::DecDeg(const NumericVector& nv) : CoordBase(nv)
+template <class FF>
+DecDeg::DecDeg(const NumericVector& nv, in_place_type_t<FF>) : CoordBase(nv, in_place_type<FF>)
 {
-	cout << "§DecDeg::DecDeg(NumericVector&) "; _ctrsgn(typeid(*this));
+	cout << "§DecDeg::DecDeg(NumericVector&, in_place_type_t<FF>) "; _ctrsgn(typeid(*this));
 }
 
 
@@ -773,7 +776,8 @@ inline vector<string> DecDeg::fmt_fctr_tmpl() const
 /// Degrees and minutes derived class
 class DegMin : public CoordBase {
 	public:
-		DegMin(const NumericVector&);
+		template <class FF>
+		DegMin(const NumericVector&, in_place_type_t<FF>);
 		template <class FF>
 		DegMin(const CoordBase&, in_place_type_t<FF>);
 		~DegMin();
@@ -784,9 +788,10 @@ class DegMin : public CoordBase {
 };
 
 
-DegMin::DegMin(const NumericVector& nv) : CoordBase(nv)
+template <class FF>
+DegMin::DegMin(const NumericVector& nv, in_place_type_t<FF>) : CoordBase(nv, in_place_type<FF>)
 {
-	cout << "§DegMin::DegMin(NumericVector&) "; _ctrsgn(typeid(*this));
+	cout << "§DegMin::DegMin(NumericVector&, in_place_type_t<FF>) "; _ctrsgn(typeid(*this));
 }
 
 
@@ -825,7 +830,8 @@ inline vector<string> DegMin::fmt_fctr_tmpl() const
 /// Degrees minutes and seconds derived class
 class DegMinSec : public CoordBase {
 	public:
-		DegMinSec(const NumericVector&);
+		template <class FF>
+		DegMinSec(const NumericVector&, in_place_type_t<FF>);
 		template <class FF>
 		DegMinSec(const CoordBase&, in_place_type_t<FF>);
 		~DegMinSec();
@@ -836,9 +842,10 @@ class DegMinSec : public CoordBase {
 };
 
 
-DegMinSec::DegMinSec(const NumericVector& nv) : CoordBase(nv)
+template <class FF>
+DegMinSec::DegMinSec(const NumericVector& nv, in_place_type_t<FF>) : CoordBase(nv, in_place_type<FF>)
 {
-	cout << "§DegMinSec::DegMinSec(NumericVector&) "; _ctrsgn(typeid(*this));
+	cout << "§DegMinSec::DegMinSec(NumericVector&, in_place_type_t<FF>) "; _ctrsgn(typeid(*this));
 }
 
 
@@ -942,30 +949,6 @@ template<class T>
 unique_ptr<const CoordBase> newconstCoordBase(const T& t, const CoordType type)
 {
 	cout << "@newconstCoordBase<T>(const T&, const CoordType) of type " << coordtype_to_int(type) + 1 << endl;
-
-	switch (type)
-	{
-		case CoordType::decdeg:
-					return factory<const DecDeg>(t);
-
-		case CoordType::degmin:
-					return factory<const DegMin>(t);
-
-		case CoordType::degminsec:
-					return factory<const DegMinSec>(t);
-		default:
-					stop("newconstCoordBase<t>(const T&, const CoordType) my bad");
-	}
-}
-
-
-/// __________________________________________________
-/// __________________________________________________
-/// Create unique_ptr<CoordBase> to new DecDeg, DegMin or DegMinSec object for Conversion
-template<class T>
-unique_ptr<const CoordBase> newconstCoordBaseConvert(const T& t, const CoordType type)
-{
-	cout << "@newconstCoordBaseConvert<T>(const T&, const CoordType) of type " << coordtype_to_int(type) + 1 << endl;
 
 	switch (type)
 	{
