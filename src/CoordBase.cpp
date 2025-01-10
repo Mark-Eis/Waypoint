@@ -500,7 +500,6 @@ CoordBase::CoordBase(const NumericVector& nv) :
 		nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>()
 	)
 {
-//
 	cout << "§CoordBase::CoordBase(const NumericVector&) "; _ctrsgn(typeid(*this));
 }
 
@@ -509,7 +508,6 @@ template <class Convert_type>
 CoordBase::CoordBase(const CoordBase& cb, in_place_type_t<Convert_type>) :
 	CoordBase(vector<double>(cb.nv.size()), vector<bool>{ cb.latlon }, vector<string>{ cb.names })
 {
-//
 	cout << "§CoordBase::CoordBase<Convert_type>(const CoordBase&, in_place_type_t<Convert_type>) "; _ctrsgn(typeid(*this));
 	transform(cb.nv.begin(), cb.nv.end(), nv.begin(), Convert_type());
 }
@@ -518,14 +516,12 @@ CoordBase::CoordBase(const CoordBase& cb, in_place_type_t<Convert_type>) :
 CoordBase::CoordBase(const vector<double> n, const vector<bool>& ll, const vector<string>& _names) :
 	nv(std::move(n)), latlon{ ll }, names{ std::move(_names) }, llgt1(latlon.size() > 1)
 {
-//
 	cout << "§CoordBase::CoordBase(const vector<double>, const LogicalVector&, const vector<string>&) "; _ctrsgn(typeid(*this));
 }
 
 
 CoordBase::~CoordBase()
 {
-//
 	cout << "§CoordBase::~CoordBase() "; _ctrsgn(typeid(*this), true);
 }
 
@@ -723,7 +719,8 @@ ostream& operator<<(ostream& stream, const CoordBase& c)
 class DecDeg : public CoordBase {
 	public:
 		DecDeg(const NumericVector&);
-		DecDeg(const CoordBase&);
+		template <class FF>
+		DecDeg(const CoordBase&, in_place_type_t<FF>);
 		~DecDeg();
 
 		const CoordType getfmt() const { return CoordType::decdeg; }
@@ -734,21 +731,19 @@ class DecDeg : public CoordBase {
 
 DecDeg::DecDeg(const NumericVector& nv) : CoordBase(nv)
 {
-//
 	cout << "§DecDeg::DecDeg(NumericVector&) "; _ctrsgn(typeid(*this));
 }
 
 
-DecDeg::DecDeg(const CoordBase& c) : CoordBase(c, in_place_type<convert_dms_dd>)
+template <class FF>
+DecDeg::DecDeg(const CoordBase& c, in_place_type_t<FF>) : CoordBase(c, in_place_type<ConvertDD<FF>>)
 {
-//
-	cout << "§DecDeg::DecDeg(const CoordBase&) "; _ctrsgn(typeid(*this));
+	cout << "§DecDeg::DecDeg(const CoordBase&, in_place_type_t<ff>) "; _ctrsgn(typeid(*this));
 }
 
 
 DecDeg::~DecDeg()
 {
-//
 	cout << "§DecDeg::~DecDeg() "; _ctrsgn(typeid(*this), true);
 }
 
@@ -776,7 +771,8 @@ inline vector<string> DecDeg::fmt_fctr_tmpl() const
 class DegMin : public CoordBase {
 	public:
 		DegMin(const NumericVector&);
-		DegMin(const CoordBase&);
+		template <class FF>
+		DegMin(const CoordBase&, in_place_type_t<FF>);
 		~DegMin();
 
 		const CoordType getfmt() const { return CoordType::degmin; }
@@ -787,20 +783,19 @@ class DegMin : public CoordBase {
 
 DegMin::DegMin(const NumericVector& nv) : CoordBase(nv)
 {
-//
 	cout << "§DegMin::DegMin(NumericVector&) "; _ctrsgn(typeid(*this));
 }
 
 
-DegMin::DegMin(const CoordBase& c) : CoordBase(c, in_place_type<convert_dd_dm>)
+template <class FF>
+DegMin::DegMin(const CoordBase& c, in_place_type_t<FF>) : CoordBase(c, in_place_type<ConvertDM<FF>>)
 {
-//
-	cout << "§DegMin::DegMin(const CoordBase&) "; _ctrsgn(typeid(*this));
+	cout << "§DegMin::DegMin(const CoordBase&, in_place_type_t<ff>) "; _ctrsgn(typeid(*this));
 }
+
 
 DegMin::~DegMin()
 {
-//
 	cout << "§DegMin::~DegMin() "; _ctrsgn(typeid(*this), true);
 }
 
@@ -828,7 +823,8 @@ inline vector<string> DegMin::fmt_fctr_tmpl() const
 class DegMinSec : public CoordBase {
 	public:
 		DegMinSec(const NumericVector&);
-		DegMinSec(const CoordBase&);
+		template <class FF>
+		DegMinSec(const CoordBase&, in_place_type_t<FF>);
 		~DegMinSec();
 
 		const CoordType getfmt() const { return CoordType::degminsec; }
@@ -839,20 +835,18 @@ class DegMinSec : public CoordBase {
 
 DegMinSec::DegMinSec(const NumericVector& nv) : CoordBase(nv)
 {
-//
 	cout << "§DegMinSec::DegMinSec(NumericVector&) "; _ctrsgn(typeid(*this));
 }
 
 
-DegMinSec::DegMinSec(const CoordBase& c) : CoordBase(c, in_place_type<convert_dm_dms>)
+template <class FF>
+DegMinSec::DegMinSec(const CoordBase& c, in_place_type_t<FF>) : CoordBase(c, in_place_type<ConvertDMS<FF>>)
 {
-//
-	cout << "§DegMinSec::DegMinSec(const CoordBase&) "; _ctrsgn(typeid(*this));
+	cout << "§DegMinSec::DegMinSec(const CoordBase&, in_place_type_t<ff>) "; _ctrsgn(typeid(*this));
 }
 
 DegMinSec::~DegMinSec()
 {
-//
 	cout << "§DegMinSec::~DegMinSec() "; _ctrsgn(typeid(*this), true);
 }
 
@@ -992,7 +986,6 @@ WayPoint::WayPoint(unique_ptr<const CoordBase> _cbp_lat, unique_ptr<const CoordB
 	cbp_lat{std::move(_cbp_lat)}, cbp_lon{std::move(_cbp_lon)},
 	validlat(cbp_lat->get_valid()), validlon(cbp_lon->get_valid())
 {
-//
 	cout << "§WayPoint(unique_ptr<const CoordBase>, unique_ptr<const CoordBase>) "; _ctrsgn(typeid(*this));
 	cbp_lat->set_waypoint();
 	cbp_lon->set_waypoint();
@@ -1001,14 +994,12 @@ WayPoint::WayPoint(unique_ptr<const CoordBase> _cbp_lat, unique_ptr<const CoordB
 WayPoint::WayPoint(const WayPoint& wp, CoordType type) :
 	WayPoint{ wp.get_cbp(true).convert(type), wp.get_cbp(false).convert(type) }
 {
-//
 	cout << "§WayPoint(const WayPoint&) "; _ctrsgn(typeid(*this));
 }
 
 
 WayPoint::~WayPoint()
 {
-//
 	cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true);
 }
 
