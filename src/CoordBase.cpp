@@ -32,46 +32,46 @@ struct FamousFiveDD;
 struct FamousFiveDM;
 struct FamousFiveDMS;
 
-template <class FamousFive_type>
+template <class FF>
 class Convert;
 
-template <class FamousFive_type>
+template <class FF>
 class ConvertDD;
 using convert_dd_dd = ConvertDD<FamousFiveDD>;
 using convert_dm_dd = ConvertDD<FamousFiveDM>;
 using convert_dms_dd = ConvertDD<FamousFiveDMS>;
 
-template <class FamousFive_type>
+template <class FF>
 class ConvertDM;
 using convert_dd_dm = ConvertDM<FamousFiveDD>;
 using convert_dm_dm = ConvertDM<FamousFiveDM>;
 using convert_dms_dm = ConvertDM<FamousFiveDMS>;
 
-template <class FamousFive_type>
+template <class FF>
 class ConvertDMS;
 using convert_dd_dms = ConvertDMS<FamousFiveDD>;
 using convert_dm_dms = ConvertDMS<FamousFiveDM>;
 using convert_dms_dms = ConvertDMS<FamousFiveDMS>;
 
-template <class FamousFive_type>
+template <class FF>
 class Format;
 
-template <class FamousFive_type>
+template <class FF>
 class FormatDD;
 using format_decdeg = FormatDD<FamousFiveDD>;
 
-template <class FamousFive_type>
+template <class FF>
 class FormatDM;
 using format_degmin = FormatDM<FamousFiveDM>;
 
-template <class FamousFive_type>
+template <class FF>
 class FormatDMS;
 using format_degminsec = FormatDMS<FamousFiveDMS>;
 
 class CoordBase;
 ostream& operator<<(ostream&, const CoordBase&);
 
-template<class FamousFive_type>
+template<class FF>
 class Validator;
 
 class DecDeg;
@@ -80,7 +80,7 @@ class DegMinSec;
 
 class FormatLL;
 class FormatLL_DD;
-template <class FamousFive_type>
+template <class FF>
 class FormatLL_DM_S;
 
 template<class T>
@@ -252,46 +252,46 @@ inline string cardi_b(bool negative)
 /// __________________________________________________
 /// Famous five functions class for decimal degrees
 struct FamousFiveDD {
-		int get_deg(double x) const { return int(x); }
-		double get_decdeg(double x) const { return x; }
-		int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
-		double get_decmin(double x) const { return polish(mod1by60(x)); }
-		double get_sec(double x) const { return mod1by60(get_decmin(x)); }
+	int get_deg(double x) const { return int(x); }
+	double get_decdeg(double x) const { return x; }
+	int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
+	double get_decmin(double x) const { return polish(mod1by60(x)); }
+	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
 };
 
 
 /// __________________________________________________
 /// Famous five functions class for degrees and minutes
 struct FamousFiveDM {
-		int get_deg(double x) const { return int(x / 1e2); }
-		double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
-		int get_min(double x) const { return int(x) % int(1e2); }
-		double get_decmin(double x) const { return polish(mod1e2(x)); }
-		double get_sec(double x) const { return mod1by60(get_decmin(x)); }
+	int get_deg(double x) const { return int(x / 1e2); }
+	double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
+	int get_min(double x) const { return int(x) % int(1e2); }
+	double get_decmin(double x) const { return polish(mod1e2(x)); }
+	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
 };
 
 
 /// __________________________________________________
 /// Famous five functions class for degrees minutes and seconds
 struct FamousFiveDMS {
-		int get_deg(double x) const { return int(x / 1e4); }
-		double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
-		int get_min(double x) const { return (int(x) % int(1e4)) / 1e2; }
-		double get_decmin(double x) const { return int(fmod(x, 1e4) / 1e2) + mod1e2(x) / 60; }
-		double get_sec(double x) const { return mod1e2(x); }
+	int get_deg(double x) const { return int(x / 1e4); }
+	double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
+	int get_min(double x) const { return (int(x) % int(1e4)) / 1e2; }
+	double get_decmin(double x) const { return int(fmod(x, 1e4) / 1e2) + mod1e2(x) / 60; }
+	double get_sec(double x) const { return mod1e2(x); }
 };
 
 /// __________________________________________________
 /// __________________________________________________
 /// Convert functor base class
-template <class FamousFive_type>
+template <class FF>
 class Convert {
 	protected:
-		const FamousFive_type ff; 
+		const FF ff; 
 	public:
 		Convert()
 		{
-			cout << "§Convert<class FamousFive_type>() "; _ctrsgn(typeid(*this));
+			cout << "§Convert<class FF>() "; _ctrsgn(typeid(*this));
 		}
 //		Convert() = default;
 //		Convert(const Convert&) = delete;				// Disallow copying
@@ -301,47 +301,47 @@ class Convert {
 		virtual ~Convert() = 0;
 };
 
-template <class FamousFive_type>
-inline Convert<FamousFive_type>::~Convert() { /* cout << "§Convert::~Convert() "; _ctrsgn(typeid(*this), true); */ }
+template <class FF>
+inline Convert<FF>::~Convert() { /* cout << "§Convert::~Convert() "; _ctrsgn(typeid(*this), true); */ }
 
 /// __________________________________________________
 /// Convert functor for decimal degrees
-template <class FamousFive_type>
-class ConvertDD : public Convert<FamousFive_type> {
+template <class FF>
+class ConvertDD : public Convert<FF> {
 	public:
 		ConvertDD()
 		{
-			cout << "§ConvertDD<class FamousFive_type>() "; _ctrsgn(typeid(*this));
+			cout << "§ConvertDD<class FF>() "; _ctrsgn(typeid(*this));
 		}
-	    using Convert<FamousFive_type>::ff;
+	    using Convert<FF>::ff;
 		double operator()(double n) { cout << "@ConvertDD::operator()(double)\n"; return ff.get_decdeg(n); }
 };
 
 
 /// __________________________________________________
 /// Convert functor for degrees and minutes
-template <class FamousFive_type>
-class ConvertDM : public Convert<FamousFive_type> { 
+template <class FF>
+class ConvertDM : public Convert<FF> { 
 	public:
 		ConvertDM()
 		{
-			cout << "§ConvertDM<class FamousFive_type>() "; _ctrsgn(typeid(*this));
+			cout << "§ConvertDM<class FF>() "; _ctrsgn(typeid(*this));
 		}
-	    using Convert<FamousFive_type>::ff;
+	    using Convert<FF>::ff;
 		double operator()(double n) { cout << "@ConvertDM::operator()(double)\n"; return ff.get_deg(n) * 1e2 + ff.get_decmin(n); }
 };
 
 
 /// __________________________________________________
 /// Convert functor for degrees, minutes and seconds
-template <class FamousFive_type>
-class ConvertDMS : public Convert<FamousFive_type> { 
+template <class FF>
+class ConvertDMS : public Convert<FF> { 
 	public:
 		ConvertDMS()
 		{
-			cout << "§ConvertDMS<class FamousFive_type>() "; _ctrsgn(typeid(*this));
+			cout << "§ConvertDMS<class FF>() "; _ctrsgn(typeid(*this));
 		}
-	    using Convert<FamousFive_type>::ff;
+	    using Convert<FF>::ff;
 		double operator()(double n) { cout << "@ConvertDMS::operator()(double)\n"; return ff.get_deg(n) * 1e4 + ff.get_min(n) * 1e2 + ff.get_sec(n); }
 };
 
@@ -349,15 +349,15 @@ class ConvertDMS : public Convert<FamousFive_type> {
 /// __________________________________________________
 /// __________________________________________________
 /// Formatting functor base class
-template <class FamousFive_type>
+template <class FF>
 class Format {
 	protected:
-		FamousFive_type ff;
+		FF ff;
 		ostringstream outstrstr;
 	public:
 /*		Format()
 		{
-			cout << "§Format<class FamousFive_type>() "; _ctrsgn(typeid(*this));
+			cout << "§Format<class FF>() "; _ctrsgn(typeid(*this));
 		} */
 		Format() = default;
 		Format(const Format&) = delete;				// Disallow copying
@@ -367,22 +367,22 @@ class Format {
 		virtual ~Format() = 0;
 };
 
-template <class FamousFive_type>
-inline Format<FamousFive_type>::~Format() { /* cout << "§Format::~Format() "; _ctrsgn(typeid(*this), true); */ }
+template <class FF>
+inline Format<FF>::~Format() { /* cout << "§Format::~Format() "; _ctrsgn(typeid(*this), true); */ }
 
 
 /// __________________________________________________
 /// Formatting functor for decimal degrees [rescue version]
-template <class FamousFive_type>
-class FormatDD : public Format<FamousFive_type> {
+template <class FF>
+class FormatDD : public Format<FF> {
 	public:
 /*		FormatDD()
 		{
-			cout << "§FormatDD<class FamousFive_type>() "; _ctrsgn(typeid(*this));
+			cout << "§FormatDD<class FF>() "; _ctrsgn(typeid(*this));
 		} */
 		FormatDD() = default;
-	    using Format<FamousFive_type>::outstrstr;
-	    using Format<FamousFive_type>::ff;
+	    using Format<FF>::outstrstr;
+	    using Format<FF>::ff;
 		string operator()(double n)
 		{
 		//	cout << "@FormatDD::operator()\n";
@@ -395,16 +395,16 @@ class FormatDD : public Format<FamousFive_type> {
 
 /// __________________________________________________
 /// Formatting functor for degrees and minutes
-template <class FamousFive_type>
-class FormatDM : public Format<FamousFive_type> {
+template <class FF>
+class FormatDM : public Format<FF> {
 	public:
 /*		FormatDM()
 		{
-			cout << "§FormatDM<class FamousFive_type>() "; _ctrsgn(typeid(*this));
+			cout << "§FormatDM<class FF>() "; _ctrsgn(typeid(*this));
 		} */
 		FormatDM() = default;
-	    using Format<FamousFive_type>::outstrstr;
-	    using Format<FamousFive_type>::ff;
+	    using Format<FF>::outstrstr;
+	    using Format<FF>::ff;
 		string operator()(double n)
 		{
 		//	cout << "@FormatDM::operator()\n";
@@ -418,16 +418,16 @@ class FormatDM : public Format<FamousFive_type> {
 
 /// __________________________________________________
 /// Formatting functor for degrees, minutes and seconds
-template <class FamousFive_type>
-class FormatDMS : public Format<FamousFive_type> {
+template <class FF>
+class FormatDMS : public Format<FF> {
 	public:
 /*		FormatDMS()
 		{
-			cout << "§FormatDMS<class FamousFive_type>() "; _ctrsgn(typeid(*this));
+			cout << "§FormatDMS<class FF>() "; _ctrsgn(typeid(*this));
 		} */
 		FormatDMS() = default;
-	    using Format<FamousFive_type>::outstrstr;
-	    using Format<FamousFive_type>::ff;
+	    using Format<FF>::outstrstr;
+	    using Format<FF>::ff;
 		string operator()(double n)
 		{
 		//	cout << "@FormatDMS::operator()\n";
@@ -480,14 +480,14 @@ class CoordBase {
 		vector<string> format() const;
 		void print(ostream&) const;
 
-		template<class FamousFive_type>
+		template<class FF>
 		friend class Validator;
 		friend class DecDeg;
 		friend class DegMin;
 		friend class DegMinSec;
 		friend class FormatLL;
 		friend class FormatLL_DD;
-		template<class FamousFive_type>
+		template<class FF>
 		friend class FormatLL_DM_S;
 
 		friend ostream& operator<<(ostream&, const CoordBase&);
@@ -579,10 +579,10 @@ inline void CoordBase::newconvert() const
 /// __________________________________________________
 /// __________________________________________________
 /// Validate coord value functor
-template<class FamousFive_type>
+template<class FF>
 class Validator {
 		const CoordBase& cb; 
-		const FamousFive_type ff;
+		const FF ff;
 		vector<bool>::const_iterator ll_it;
 	public:
 		Validator(const CoordBase& _cb) : cb(_cb), ll_it(cb.latlon.begin())
@@ -907,7 +907,7 @@ class FormatLL_DD : public FormatLL {
 	public:
 		FormatLL_DD(const CoordBase& cb) : FormatLL(cb)
 		{
-		//	cout << "§FormatLL_DD<FamousFive_type>(const CoordBase&) "; _ctrsgn(typeid(*this));
+		//	cout << "§FormatLL_DD<FF>(const CoordBase&) "; _ctrsgn(typeid(*this));
 		}
 		string operator()(string ostr, double n)
 		{
@@ -922,13 +922,13 @@ class FormatLL_DD : public FormatLL {
 
 /// __________________________________________________
 /// FormatLL functor for latitude and longitude strings for degrees, minutes (and seconds)
-template<class FamousFive_type>
+template<class FF>
 class FormatLL_DM_S : public FormatLL {
-		const FamousFive_type ff;
+		const FF ff;
 	public:
 		FormatLL_DM_S(const CoordBase& cb) : FormatLL(cb)
 		{
-		//	cout << "§FormatLL_DM_S<FamousFive_type>(const CoordBase&) "; _ctrsgn(typeid(*this));
+		//	cout << "§FormatLL_DM_S<FF>(const CoordBase&) "; _ctrsgn(typeid(*this));
 		}
 		string operator()(string ostr, double n)
 		{
