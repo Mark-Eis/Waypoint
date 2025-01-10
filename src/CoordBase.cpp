@@ -86,6 +86,9 @@ class FormatLL_DM_S;
 template<class T>
 unique_ptr<const CoordBase> newconstCoordBase(const T&, const CoordType);
 
+template<class T>
+unique_ptr<const CoordBase> newconstCoordBaseConvert(const T&, const CoordType);
+
 class WayPoint;
 template <class T>
 unique_ptr<const WayPoint> newconstWayPoint(const T&);
@@ -555,9 +558,9 @@ inline const vector<string>& CoordBase::get_names() const
 /// Convert to degrees, minutes and seconds, to degrees and minutes or to decimal degrees
 inline unique_ptr<const CoordBase> CoordBase::convert(const CoordType type) const
 {
-//	cout << "@CoordBase::convert(const CoordType type) " << typeid(*this).name()
-//       << " to type "<< coordtype_to_int(type) + 1 << endl;
-	return newconstCoordBase(*this, type);
+	cout << "@CoordBase::convert(const CoordType type) " << typeid(*this).name()
+       << " to type "<< coordtype_to_int(type) + 1 << endl;
+	return newconstCoordBaseConvert(*this, type);
 }
 
 
@@ -950,6 +953,30 @@ unique_ptr<const CoordBase> newconstCoordBase(const T& t, const CoordType type)
 
 		case CoordType::degminsec:
 					return factory<const DegMinSec>(t);
+		default:
+					stop("newconstCoordBase<t>(const T&, const CoordType) my bad");
+	}
+}
+
+
+/// __________________________________________________
+/// __________________________________________________
+/// Create unique_ptr<CoordBase> to new DecDeg, DegMin or DegMinSec object for Conversion
+template<class T>
+unique_ptr<const CoordBase> newconstCoordBaseConvert(const T& t, const CoordType type)
+{
+	cout << "@newconstCoordBaseConvert<T>(const T&, const CoordType) of type " << coordtype_to_int(type) + 1 << endl;
+
+	switch (type)
+	{
+		case CoordType::decdeg:
+					return factory<const DecDeg>(t, in_place_type<FamousFiveDMS>);
+
+		case CoordType::degmin:
+					return factory<const DegMin>(t, in_place_type<FamousFiveDD>);
+
+		case CoordType::degminsec:
+					return factory<const DegMinSec>(t, in_place_type<FamousFiveDM>);
 		default:
 					stop("newconstCoordBase<t>(const T&, const CoordType) my bad");
 	}
