@@ -289,15 +289,15 @@ class Convert {
 	protected:
 		const FF ff; 
 	public:
-		Convert()
+/*		Convert()
 		{
 			cout << "§Convert<class FF>() "; _ctrsgn(typeid(*this));
-		}
-//		Convert() = default;
-//		Convert(const Convert&) = delete;				// Disallow copying
+		} */
+		Convert() = default;
+		Convert(const Convert&) = delete;				// Disallow copying
 		Convert& operator=(const Convert&) = delete;	//  ——— ditto ———
-//		Convert(Convert&&) = delete;					// Disallow transfer ownership
-//		Convert& operator=(Convert&&) = delete;			// Disallow moving
+		Convert(Convert&&) = delete;					// Disallow transfer ownership
+		Convert& operator=(Convert&&) = delete;			// Disallow moving
 		virtual ~Convert() = 0;
 };
 
@@ -459,7 +459,7 @@ class CoordBase {
 	public:
 		CoordBase(const NumericVector&);
 		template <class Convert_type>
-		explicit CoordBase(const CoordBase&, Convert_type&&);
+		explicit CoordBase(const CoordBase&, in_place_type_t<Convert_type>);
 		CoordBase(const vector<double>, const vector<bool>&, const vector<string>&);
 		CoordBase& operator=(const CoordBase&) = delete;
 
@@ -506,12 +506,12 @@ CoordBase::CoordBase(const NumericVector& nv) :
 
 
 template <class Convert_type>
-CoordBase::CoordBase(const CoordBase& cb, Convert_type&& ct) :
+CoordBase::CoordBase(const CoordBase& cb, in_place_type_t<Convert_type>) :
 	CoordBase(vector<double>(cb.nv.size()), vector<bool>{ cb.latlon }, vector<string>{ cb.names })
 {
 //
-	cout << "§CoordBase::CoordBase<Convert_type>(const CoordBase&, Convert_type&&) "; _ctrsgn(typeid(*this));
-	transform(cb.nv.begin(), cb.nv.end(), nv.begin(), std::move(ct));
+	cout << "§CoordBase::CoordBase<Convert_type>(const CoordBase&, in_place_type_t<Convert_type>) "; _ctrsgn(typeid(*this));
+	transform(cb.nv.begin(), cb.nv.end(), nv.begin(), Convert_type());
 }
 
 
@@ -739,7 +739,7 @@ DecDeg::DecDeg(const NumericVector& nv) : CoordBase(nv)
 }
 
 
-DecDeg::DecDeg(const CoordBase& c) : CoordBase(c, convert_dms_dd())
+DecDeg::DecDeg(const CoordBase& c) : CoordBase(c, in_place_type<convert_dms_dd>)
 {
 //
 	cout << "§DecDeg::DecDeg(const CoordBase&) "; _ctrsgn(typeid(*this));
@@ -792,7 +792,7 @@ DegMin::DegMin(const NumericVector& nv) : CoordBase(nv)
 }
 
 
-DegMin::DegMin(const CoordBase& c) : CoordBase(c, convert_dd_dm())
+DegMin::DegMin(const CoordBase& c) : CoordBase(c, in_place_type<convert_dd_dm>)
 {
 //
 	cout << "§DegMin::DegMin(const CoordBase&) "; _ctrsgn(typeid(*this));
@@ -844,7 +844,7 @@ DegMinSec::DegMinSec(const NumericVector& nv) : CoordBase(nv)
 }
 
 
-DegMinSec::DegMinSec(const CoordBase& c) : CoordBase(c, convert_dm_dms())
+DegMinSec::DegMinSec(const CoordBase& c) : CoordBase(c, in_place_type<convert_dm_dms>)
 {
 //
 	cout << "§DegMinSec::DegMinSec(const CoordBase&) "; _ctrsgn(typeid(*this));
@@ -1257,7 +1257,6 @@ NumericVector coords(NumericVector& nv, int fmt = 1)
 		unique_ptr<const CoordBase> cb2{ cb1->convert(newtype) };
 		cb1.swap(cb2);
 		copy((cb1->get_nv()).begin(), (cb1->get_nv()).end(), nv.begin());
-//		cb1->newconvert<convert_dm_dms>();
 	} else {
 		nv.attr("class") = "coords";
 	}
