@@ -37,18 +37,21 @@ class Convert;
 
 template <class FamousFive_type>
 class ConvertDD;
+using convert_dd_dd = ConvertDD<FamousFiveDD>;
 using convert_dd_dm = ConvertDD<FamousFiveDM>;
 using convert_dd_dms = ConvertDD<FamousFiveDMS>;
 
 template <class FamousFive_type>
 class ConvertDM;
 using convert_dm_dd = ConvertDM<FamousFiveDD>;
+using convert_dm_dm = ConvertDM<FamousFiveDM>;
 using convert_dm_dms = ConvertDM<FamousFiveDMS>;
 
 template <class FamousFive_type>
 class ConvertDMS;
 using convert_dms_dd = ConvertDMS<FamousFiveDD>;
 using convert_dms_dm = ConvertDMS<FamousFiveDM>;
+using convert_dms_dms= ConvertDMS<FamousFiveDMS>;
 
 template <class FamousFive_type>
 class Format;
