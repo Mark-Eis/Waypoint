@@ -457,7 +457,6 @@ class CoordBase {
 		bool waypoint = false;
 
 	public:
-
 		template <class FF>
 		CoordBase(const NumericVector&, in_place_type_t<FF>);
 		template <class Convert_type>
@@ -504,7 +503,7 @@ CoordBase::CoordBase(const NumericVector& nv, in_place_type_t<FF>) :
 		nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>()
 	)
 {
-	cout << "§CoordBase::CoordBase(const NumericVector&) "; _ctrsgn(typeid(*this));
+	cout << "§CoordBase::CoordBase(const NumericVector&, in_place_type_t<FF>) "; _ctrsgn(typeid(*this));
 }
 
 
