@@ -352,7 +352,7 @@ class ConvertDMS : public Convert<FF> {
 template <class FF>
 class Format {
 	protected:
-		FF ff;
+		const FF ff;
 		ostringstream outstrstr;
 	public:
 /*		Format()
@@ -570,7 +570,7 @@ inline unique_ptr<const CoordBase> CoordBase::convert(const CoordType type) cons
 template <class Convert_type>
 inline void CoordBase::newconvert() const
 {
-//	cout << "@CoordBase::newconvert<Convert_type>()\n";
+	cout << "@CoordBase::newconvert<Convert_type>()\n";
 	vector<double>& non_const_nv { const_cast<vector<double>&>(nv) };
 	transform(nv.begin(), nv.end(), non_const_nv.begin(), Convert_type());
 }
@@ -1257,6 +1257,7 @@ NumericVector coords(NumericVector& nv, int fmt = 1)
 		unique_ptr<const CoordBase> cb2{ cb1->convert(newtype) };
 		cb1.swap(cb2);
 		copy((cb1->get_nv()).begin(), (cb1->get_nv()).end(), nv.begin());
+//		cb1->newconvert<convert_dm_dms>();
 	} else {
 		nv.attr("class") = "coords";
 	}
