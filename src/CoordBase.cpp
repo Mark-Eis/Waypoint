@@ -739,7 +739,7 @@ DecDeg::DecDeg(const NumericVector& nv) : CoordBase(nv)
 }
 
 
-DecDeg::DecDeg(const CoordBase& c) : CoordBase(c, ConvertDD<FamousFiveDMS>())
+DecDeg::DecDeg(const CoordBase& c) : CoordBase(c, convert_dms_dd())
 {
 //
 	cout << "§DecDeg::DecDeg(const CoordBase&) "; _ctrsgn(typeid(*this));
@@ -792,7 +792,7 @@ DegMin::DegMin(const NumericVector& nv) : CoordBase(nv)
 }
 
 
-DegMin::DegMin(const CoordBase& c) : CoordBase(c, ConvertDM<FamousFiveDD>())
+DegMin::DegMin(const CoordBase& c) : CoordBase(c, convert_dd_dm())
 {
 //
 	cout << "§DegMin::DegMin(const CoordBase&) "; _ctrsgn(typeid(*this));
@@ -844,7 +844,7 @@ DegMinSec::DegMinSec(const NumericVector& nv) : CoordBase(nv)
 }
 
 
-DegMinSec::DegMinSec(const CoordBase& c) : CoordBase(c, ConvertDMS<FamousFiveDM>())
+DegMinSec::DegMinSec(const CoordBase& c) : CoordBase(c, convert_dm_dms())
 {
 //
 	cout << "§DegMinSec::DegMinSec(const CoordBase&) "; _ctrsgn(typeid(*this));
