@@ -457,7 +457,6 @@ class Coord {
 		const vector<string> names;
 		const bool llgt1 = false;
 		const FF ff;
-		void validate(bool) const;
 		bool all_valid() const;
 		bool waypoint = false;
 
@@ -465,9 +464,14 @@ class Coord {
 		Coord<FF>(const vector<double>, const vector<bool>&, const vector<string>&);
 		Coord<FF>(const NumericVector&);
 
+		void validate(bool) const;
 		const vector<double>& get_nv() const;
 		const vector<bool>& get_valid() const;
 		const vector<string>& get_names() const;
+
+		void warn_invalid() const;
+		void set_waypoint() const;
+
 
 		friend class newValidator<FF>;
 
@@ -568,6 +572,35 @@ inline const vector<string>& Coord<FF>::get_names() const
 {
 	return names;
 }
+
+
+/// __________________________________________________
+/// Warn if any valid are false
+template<class FF>
+void Coord<FF>::warn_invalid() const
+{
+//	cout << "@Coord<FF>::warn_invalid()\n";
+	if (!all_valid())
+		warning("Validation failed!");
+}
+
+
+/// __________________________________________________
+/// Set waypoint flag
+template<class FF>
+inline void Coord<FF>::set_waypoint() const
+{
+//	cout << "@Coord<FF>::set_waypoint()\n";
+	bool& wpt = const_cast<bool&>(waypoint);
+	wpt = true;
+}
+
+
+
+
+
+
+
 
 
 
