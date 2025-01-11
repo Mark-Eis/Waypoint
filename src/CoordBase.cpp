@@ -13,9 +13,9 @@ inline double mod1e2(double);
 inline double round2(double, int);
 inline double polish(double);
 
-template <class T, class A1>
+template<class T, class A1>
 inline unique_ptr<T> factory(A1&&);
-template <class T, class A1, class A2>
+template<class T, class A1, class A2>
 inline unique_ptr<T> factory(A1&&, A2&&);
 
 
@@ -32,45 +32,45 @@ struct FamousFiveDD;
 struct FamousFiveDM;
 struct FamousFiveDMS;
 
-template <class FF>
+template<class FF>
 class Convert;
 
-template <class FF>
+template<class FF>
 class ConvertDD;
 using convert_dd_dd = ConvertDD<FamousFiveDD>;
 using convert_dm_dd = ConvertDD<FamousFiveDM>;
 using convert_dms_dd = ConvertDD<FamousFiveDMS>;
 
-template <class FF>
+template<class FF>
 class ConvertDM;
 using convert_dd_dm = ConvertDM<FamousFiveDD>;
 using convert_dm_dm = ConvertDM<FamousFiveDM>;
 using convert_dms_dm = ConvertDM<FamousFiveDMS>;
 
-template <class FF>
+template<class FF>
 class ConvertDMS;
 using convert_dd_dms = ConvertDMS<FamousFiveDD>;
 using convert_dm_dms = ConvertDMS<FamousFiveDM>;
 using convert_dms_dms = ConvertDMS<FamousFiveDMS>;
 
-template <class FF>
+template<class FF>
 class Format;
 
-template <class FF>
+template<class FF>
 class FormatDD;
 using format_decdeg = FormatDD<FamousFiveDD>;
 
-template <class FF>
+template<class FF>
 class FormatDM;
 using format_degmin = FormatDM<FamousFiveDM>;
 
-template <class FF>
+template<class FF>
 class FormatDMS;
 using format_degminsec = FormatDMS<FamousFiveDMS>;
 
-template <class FF>
+template<class FF, class FT, class FL>
 class Coord;
-template<class FF>
+template<class FF, class FT, class FL>
 class newValidator;
 
 class CoordBase;
@@ -85,14 +85,14 @@ class DegMinSec;
 
 class FormatLL;
 class FormatLL_DD;
-template <class FF>
+template<class FF>
 class FormatLL_DM_S;
 
 template<class T>
 unique_ptr<const CoordBase> newconstCoordBase(const T&, const CoordType);
 
 class WayPoint;
-template <class T>
+template<class T>
 unique_ptr<const WayPoint> newconstWayPoint(const T&);
 ostream& operator<<(ostream&, const WayPoint&);
 
@@ -181,7 +181,7 @@ inline double polish(double x)
 /// Generic factory functions returning unique_ptr
 /// see: Perfect Forwarding (http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2006/n2027.html)
 
-template <class T, class A1>
+template<class T, class A1>
 inline unique_ptr<T>
 factory(A1&& a1)   // one argument version
 {
@@ -190,7 +190,7 @@ factory(A1&& a1)   // one argument version
 	return unique_ptr<T>(new T(std::forward<A1>(a1)));
 }
 
-template <class T, class A1, class A2>
+template<class T, class A1, class A2>
 inline unique_ptr<T>
 factory(A1&& a1, A2&& a2)   // two argument version
 {
@@ -289,7 +289,7 @@ struct FamousFiveDMS {
 /// __________________________________________________
 /// __________________________________________________
 /// Convert functor base class
-template <class FF>
+template<class FF>
 class Convert {
 	protected:
 		const FF ff; 
@@ -306,12 +306,12 @@ class Convert {
 		virtual ~Convert() = 0;
 };
 
-template <class FF>
+template<class FF>
 inline Convert<FF>::~Convert() { /* cout << "§Convert::~Convert() "; _ctrsgn(typeid(*this), true); */ }
 
 /// __________________________________________________
 /// Convert functor for decimal degrees
-template <class FF>
+template<class FF>
 class ConvertDD : public Convert<FF> {
 	public:
 		ConvertDD()
@@ -325,7 +325,7 @@ class ConvertDD : public Convert<FF> {
 
 /// __________________________________________________
 /// Convert functor for degrees and minutes
-template <class FF>
+template<class FF>
 class ConvertDM : public Convert<FF> { 
 	public:
 		ConvertDM()
@@ -339,7 +339,7 @@ class ConvertDM : public Convert<FF> {
 
 /// __________________________________________________
 /// Convert functor for degrees, minutes and seconds
-template <class FF>
+template<class FF>
 class ConvertDMS : public Convert<FF> { 
 	public:
 		ConvertDMS()
@@ -354,7 +354,7 @@ class ConvertDMS : public Convert<FF> {
 /// __________________________________________________
 /// __________________________________________________
 /// Formatting functor base class
-template <class FF>
+template<class FF>
 class Format {
 	protected:
 		const FF ff;
@@ -372,13 +372,13 @@ class Format {
 		virtual ~Format() = 0;
 };
 
-template <class FF>
+template<class FF>
 inline Format<FF>::~Format() { /* cout << "§Format::~Format() "; _ctrsgn(typeid(*this), true); */ }
 
 
 /// __________________________________________________
 /// Formatting functor for decimal degrees [rescue version]
-template <class FF>
+template<class FF>
 class FormatDD : public Format<FF> {
 	public:
 /*		FormatDD()
@@ -400,7 +400,7 @@ class FormatDD : public Format<FF> {
 
 /// __________________________________________________
 /// Formatting functor for degrees and minutes
-template <class FF>
+template<class FF>
 class FormatDM : public Format<FF> {
 	public:
 /*		FormatDM()
@@ -423,7 +423,7 @@ class FormatDM : public Format<FF> {
 
 /// __________________________________________________
 /// Formatting functor for degrees, minutes and seconds
-template <class FF>
+template<class FF>
 class FormatDMS : public Format<FF> {
 	public:
 /*		FormatDMS()
@@ -448,7 +448,7 @@ class FormatDMS : public Format<FF> {
 /// __________________________________________________
 /// __________________________________________________
 /// Coordinate class
-template <class FF>
+template<class FF, class FT, class FL>
 class Coord {
 	protected:
 		vector<double> nv;
@@ -471,28 +471,29 @@ class Coord {
 
 		void warn_invalid() const;
 		void set_waypoint() const;
+		vector<string> format() const;
+		void print(ostream&) const;
 
-
-		friend class newValidator<FF>;
+		friend class newValidator<FF, FT, FL>;
 
 };
 
-template <class FF>
-Coord<FF>::Coord(const vector<double> n, const vector<bool>& ll, const vector<string>& _names) :
+template<class FF, class FT, class FL>
+Coord<FF, FT, FL>::Coord(const vector<double> n, const vector<bool>& ll, const vector<string>& _names) :
 	nv(std::move(n)), latlon{ ll }, names{ std::move(_names) }, llgt1(latlon.size() > 1)
 {
-	cout << "§Coord<FF>::Coord(const vector<double>, const LogicalVector&, const vector<string>&) "; _ctrsgn(typeid(*this));
+	cout << "§Coord<FF, FT, FL>::Coord(const vector<double>, const LogicalVector&, const vector<string>&) "; _ctrsgn(typeid(*this));
 }
 
-template <class FF>
-Coord<FF>::Coord(const NumericVector& nv) :
+template<class FF, class FT, class FL>
+Coord<FF, FT, FL>::Coord(const NumericVector& nv) :
 	Coord(
 		as<vector<double>>(nv),
 		nv.hasAttribute("latlon") ? as<vector<bool>>(nv.attr("latlon")) : vector<bool>(),
 		nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>()
 	)
 {
-	cout << "§Coord<FF>::Coord(const NumericVector&) "; _ctrsgn(typeid(*this));
+	cout << "§Coord<FF, FT, FL>::Coord(const NumericVector&) "; _ctrsgn(typeid(*this));
 }
 
 
@@ -500,12 +501,12 @@ Coord<FF>::Coord(const NumericVector& nv) :
 /// __________________________________________________
 /// Validate Coord functor
 
-template<class FF>
+template<class FF, class FT, class FL>
 class newValidator {
-		const Coord<FF>& cb; 
+		const Coord<FF, FT, FL>& cb; 
 		vector<bool>::const_iterator ll_it;
 	public:
-		newValidator(const Coord<FF>& _cb) : cb(_cb), ll_it(cb.latlon.begin())
+		newValidator(const Coord<FF, FT, FL>& _cb) : cb(_cb), ll_it(cb.latlon.begin())
 		{
 			cout << "§newValidator(const Coord&) "; _ctrsgn(typeid(*this));
 		}
@@ -521,10 +522,10 @@ class newValidator {
 
 /// __________________________________________________
 /// Validate coords vector
-template<class FF>
-void Coord<FF>::validate(bool warn) const
+template<class FF, class FT, class FL>
+void Coord<FF, FT, FL>::validate(bool warn) const
 {
-	cout << "@Coord<FF>::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
+	cout << "@Coord<FF, FT, FL>::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
 	vector<bool>& non_const_valid { const_cast<vector<bool>&>(valid) };
 	non_const_valid.assign(nv.size(), {false});
 	transform(nv.begin(), nv.end(), non_const_valid.begin(), newValidator(*this));
@@ -538,28 +539,28 @@ void Coord<FF>::validate(bool warn) const
 
 /// __________________________________________________
 /// All valid are true
-template<class FF>
-bool Coord<FF>::all_valid() const
+template<class FF, class FT, class FL>
+bool Coord<FF, FT, FL>::all_valid() const
 {
-//	cout << "@Coord<FF>::all_valid()\n";
+//	cout << "@Coord<FF, FT, FL>::all_valid()\n";
 	return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
 }
 
 
 /// __________________________________________________
 /// Get const reference to nv
-template<class FF>
-inline const vector<double>& Coord<FF>::get_nv() const
+template<class FF, class FT, class FL>
+inline const vector<double>& Coord<FF, FT, FL>::get_nv() const
 {
-//	cout << "@Coord<FF>::get_nv()\n";
+//	cout << "@Coord<FF, FT, FL>::get_nv()\n";
 	return nv;
 }
 
 
 /// __________________________________________________
 /// Get const reference to valid
-template<class FF>
-inline const vector<bool>& Coord<FF>::get_valid() const
+template<class FF, class FT, class FL>
+inline const vector<bool>& Coord<FF, FT, FL>::get_valid() const
 {
 	return valid;
 }
@@ -567,8 +568,8 @@ inline const vector<bool>& Coord<FF>::get_valid() const
 
 /// __________________________________________________
 /// Get const reference to names
-template<class FF>
-inline const vector<string>& Coord<FF>::get_names() const
+template<class FF, class FT, class FL>
+inline const vector<string>& Coord<FF, FT, FL>::get_names() const
 {
 	return names;
 }
@@ -576,10 +577,10 @@ inline const vector<string>& Coord<FF>::get_names() const
 
 /// __________________________________________________
 /// Warn if any valid are false
-template<class FF>
-void Coord<FF>::warn_invalid() const
+template<class FF, class FT, class FL>
+void Coord<FF, FT, FL>::warn_invalid() const
 {
-//	cout << "@Coord<FF>::warn_invalid()\n";
+//	cout << "@Coord<FF, FT, FL>::warn_invalid()\n";
 	if (!all_valid())
 		warning("Validation failed!");
 }
@@ -587,12 +588,36 @@ void Coord<FF>::warn_invalid() const
 
 /// __________________________________________________
 /// Set waypoint flag
-template<class FF>
-inline void Coord<FF>::set_waypoint() const
+template<class FF, class FT, class FL>
+inline void Coord<FF, FT, FL>::set_waypoint() const
 {
-//	cout << "@Coord<FF>::set_waypoint()\n";
+//	cout << "@Coord<FF, FT, FL>::set_waypoint()\n";
 	bool& wpt = const_cast<bool&>(waypoint);
 	wpt = true;
+}
+
+
+/// __________________________________________________
+/// Formatted coordinate strings for printing
+template<class FF, class FT, class FL>
+vector<string> Coord<FF, FT, FL>::format() const
+{
+//	cout << "@Coord<FF, FT, FL>::format<FF, FT, FL>()\n";
+	vector<string> out(nv.size());
+	transform(nv.begin(), nv.end(), out.begin(), FT());
+	transform(out.begin(), out.end(), nv.begin(), out.begin(), FL(*this));
+	return out;
+}
+
+
+/// __________________________________________________
+/// Output Coord derived object to ostream
+template<class FF, class FT, class FL>
+ostream& operator<<(ostream& stream, const Coord<FF, FT, FL>& c)
+{
+//	cout << "@operator<<(ostream&, const Coord<FF, FT, FL>&)\n";
+	c.print(stream);
+	return stream;
 }
 
 
@@ -622,9 +647,9 @@ class CoordBase {
 		bool waypoint = false;
 
 	public:
-		template <class FF>
+		template<class FF>
 		CoordBase(const NumericVector&, in_place_type_t<FF>);
-		template <class Convert_type>
+		template<class Convert_type>
 		explicit CoordBase(const CoordBase&, in_place_type_t<Convert_type>);
 		CoordBase(const vector<double>, const vector<bool>&, const vector<string>&);
 		CoordBase& operator=(const CoordBase&) = delete;
@@ -636,13 +661,13 @@ class CoordBase {
 
 		const vector<double>& get_nv() const;
 		unique_ptr<const CoordBase> convert(const CoordType) const;
-		template <class Convert_type>
+		template<class Convert_type>
 		void newconvert() const;
 		const vector<bool>& get_valid() const;
 		const vector<string>& get_names() const;
 		void warn_invalid() const;
 		void set_waypoint() const;
-		template <class Format_type, class FormatLL_type>
+		template<class Format_type, class FormatLL_type>
 		vector<string> format() const;
 		void print(ostream&) const;
 
@@ -660,7 +685,7 @@ class CoordBase {
 };
 
 
-template <class FF>
+template<class FF>
 CoordBase::CoordBase(const NumericVector& nv, in_place_type_t<FF>) :
 	CoordBase(
 		as<vector<double>>(nv),
@@ -672,7 +697,7 @@ CoordBase::CoordBase(const NumericVector& nv, in_place_type_t<FF>) :
 }
 
 
-template <class Convert_type>
+template<class Convert_type>
 CoordBase::CoordBase(const CoordBase& cb, in_place_type_t<Convert_type>) :
 	CoordBase(vector<double>(cb.nv.size()), vector<bool>{ cb.latlon }, vector<string>{ cb.names })
 {
@@ -731,7 +756,7 @@ inline unique_ptr<const CoordBase> CoordBase::convert(const CoordType type) cons
 
 /// __________________________________________________
 /// Convert to degrees, minutes and seconds, to degrees and minutes or to decimal degrees
-template <class Convert_type>
+template<class Convert_type>
 inline void CoordBase::newconvert() const
 {
 	cout << "@CoordBase::newconvert<Convert_type>()\n";
@@ -811,7 +836,7 @@ inline void CoordBase::set_waypoint() const
 
 /// __________________________________________________
 /// Formatted coordinate strings for printing
-template <class Format_type, class FormatLL_type>
+template<class Format_type, class FormatLL_type>
 vector<string> CoordBase::format() const
 {
 //	cout << "@CoordBase::format<class Format_type, class FormatLL_type>()\n";
@@ -886,9 +911,9 @@ ostream& operator<<(ostream& stream, const CoordBase& c)
 /// Decimal degrees derived class
 class DecDeg : public CoordBase {
 	public:
-		template <class FF>
+		template<class FF>
 		DecDeg(const NumericVector&, in_place_type_t<FF>);
-		template <class FF>
+		template<class FF>
 		DecDeg(const CoordBase&, in_place_type_t<FF>);
 		~DecDeg();
 
@@ -898,14 +923,14 @@ class DecDeg : public CoordBase {
 };
 
 
-template <class FF>
+template<class FF>
 DecDeg::DecDeg(const NumericVector& nv, in_place_type_t<FF>) : CoordBase(nv, in_place_type<FF>)
 {
 	cout << "§DecDeg::DecDeg(NumericVector&, in_place_type_t<FF>) "; _ctrsgn(typeid(*this));
 }
 
 
-template <class FF>
+template<class FF>
 DecDeg::DecDeg(const CoordBase& c, in_place_type_t<FF>) : CoordBase(c, in_place_type<ConvertDD<FF>>)
 {
 	cout << "§DecDeg::DecDeg(const CoordBase&, in_place_type_t<ff>) "; _ctrsgn(typeid(*this));
@@ -940,9 +965,9 @@ inline vector<string> DecDeg::fmt_fctr_tmpl() const
 /// Degrees and minutes derived class
 class DegMin : public CoordBase {
 	public:
-		template <class FF>
+		template<class FF>
 		DegMin(const NumericVector&, in_place_type_t<FF>);
-		template <class FF>
+		template<class FF>
 		DegMin(const CoordBase&, in_place_type_t<FF>);
 		~DegMin();
 
@@ -952,14 +977,14 @@ class DegMin : public CoordBase {
 };
 
 
-template <class FF>
+template<class FF>
 DegMin::DegMin(const NumericVector& nv, in_place_type_t<FF>) : CoordBase(nv, in_place_type<FF>)
 {
 	cout << "§DegMin::DegMin(NumericVector&, in_place_type_t<FF>) "; _ctrsgn(typeid(*this));
 }
 
 
-template <class FF>
+template<class FF>
 DegMin::DegMin(const CoordBase& c, in_place_type_t<FF>) : CoordBase(c, in_place_type<ConvertDM<FF>>)
 {
 	cout << "§DegMin::DegMin(const CoordBase&, in_place_type_t<ff>) "; _ctrsgn(typeid(*this));
@@ -994,9 +1019,9 @@ inline vector<string> DegMin::fmt_fctr_tmpl() const
 /// Degrees minutes and seconds derived class
 class DegMinSec : public CoordBase {
 	public:
-		template <class FF>
+		template<class FF>
 		DegMinSec(const NumericVector&, in_place_type_t<FF>);
-		template <class FF>
+		template<class FF>
 		DegMinSec(const CoordBase&, in_place_type_t<FF>);
 		~DegMinSec();
 
@@ -1006,14 +1031,14 @@ class DegMinSec : public CoordBase {
 };
 
 
-template <class FF>
+template<class FF>
 DegMinSec::DegMinSec(const NumericVector& nv, in_place_type_t<FF>) : CoordBase(nv, in_place_type<FF>)
 {
 	cout << "§DegMinSec::DegMinSec(NumericVector&, in_place_type_t<FF>) "; _ctrsgn(typeid(*this));
 }
 
 
-template <class FF>
+template<class FF>
 DegMinSec::DegMinSec(const CoordBase& c, in_place_type_t<FF>) : CoordBase(c, in_place_type<ConvertDMS<FF>>)
 {
 	cout << "§DegMinSec::DegMinSec(const CoordBase&, in_place_type_t<ff>) "; _ctrsgn(typeid(*this));
