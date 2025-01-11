@@ -452,6 +452,7 @@ template <class FF>
 class Coord {
 	protected:
 		vector<double> nv;
+		const vector<bool> valid { false };
 		const vector<bool> latlon;
 		const vector<string> names;
 		const bool llgt1 = false;
@@ -464,6 +465,10 @@ class Coord {
 		Coord<FF>(const vector<double>, const vector<bool>&, const vector<string>&);
 		Coord<FF>(const NumericVector&);
 
+		const vector<double>& get_nv() const;
+		const vector<bool>& get_valid() const;
+		const vector<string>& get_names() const;
+
 		friend class newValidator<FF>;
 
 };
@@ -472,7 +477,7 @@ template <class FF>
 Coord<FF>::Coord(const vector<double> n, const vector<bool>& ll, const vector<string>& _names) :
 	nv(std::move(n)), latlon{ ll }, names{ std::move(_names) }, llgt1(latlon.size() > 1)
 {
-	cout << "§Coord::Coord(const vector<double>, const LogicalVector&, const vector<string>&) "; _ctrsgn(typeid(*this));
+	cout << "§Coord<FF>::Coord(const vector<double>, const LogicalVector&, const vector<string>&) "; _ctrsgn(typeid(*this));
 }
 
 template <class FF>
@@ -483,7 +488,7 @@ Coord<FF>::Coord(const NumericVector& nv) :
 		nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>()
 	)
 {
-	cout << "§Coord::Coord(const NumericVector&) "; _ctrsgn(typeid(*this));
+	cout << "§Coord<FF>::Coord(const NumericVector&) "; _ctrsgn(typeid(*this));
 }
 
 
@@ -509,16 +514,16 @@ class newValidator {
 		}
 };
 
-/*
+
 /// __________________________________________________
 /// Validate coords vector
-template<typename validate_type>
-void Coord::validate(bool warn) const
+template<class FF>
+void Coord<FF>::validate(bool warn) const
 {
-	cout << "@Coord::<typename validate_type>validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
+	cout << "@Coord<FF>::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
 	vector<bool>& non_const_valid { const_cast<vector<bool>&>(valid) };
 	non_const_valid.assign(nv.size(), {false});
-	transform(nv.begin(), nv.end(), non_const_valid.begin(), newValidator<validate_type>(*this));
+	transform(nv.begin(), nv.end(), non_const_valid.begin(), newValidator(*this));
 	if (all_valid())
 		non_const_valid.assign({true});
 	else
@@ -529,12 +534,40 @@ void Coord::validate(bool warn) const
 
 /// __________________________________________________
 /// All valid are true
-bool Coord::all_valid() const
+template<class FF>
+bool Coord<FF>::all_valid() const
 {
-//	cout << "@Coord::all_valid()\n";
+//	cout << "@Coord<FF>::all_valid()\n";
 	return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
 }
-*/
+
+
+/// __________________________________________________
+/// Get const reference to nv
+template<class FF>
+inline const vector<double>& Coord<FF>::get_nv() const
+{
+//	cout << "@Coord<FF>::get_nv()\n";
+	return nv;
+}
+
+
+/// __________________________________________________
+/// Get const reference to valid
+template<class FF>
+inline const vector<bool>& Coord<FF>::get_valid() const
+{
+	return valid;
+}
+
+
+/// __________________________________________________
+/// Get const reference to names
+template<class FF>
+inline const vector<string>& Coord<FF>::get_names() const
+{
+	return names;
+}
 
 
 
