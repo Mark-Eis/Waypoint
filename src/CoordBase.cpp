@@ -68,6 +68,11 @@ template <class FF>
 class FormatDMS;
 using format_degminsec = FormatDMS<FamousFiveDMS>;
 
+template <class FF>
+class Coord;
+template<class FF>
+class newValidator;
+
 class CoordBase;
 ostream& operator<<(ostream&, const CoordBase&);
 
@@ -442,10 +447,104 @@ class FormatDMS : public Format<FF> {
 
 /// __________________________________________________
 /// __________________________________________________
+/// Coordinate class
+template <class FF>
+class Coord {
+	protected:
+		vector<double> nv;
+		const vector<bool> latlon;
+		const vector<string> names;
+		const bool llgt1 = false;
+		const FF ff;
+		void validate(bool) const;
+		bool all_valid() const;
+		bool waypoint = false;
+
+	public:
+		Coord<FF>(const vector<double>, const vector<bool>&, const vector<string>&);
+		Coord<FF>(const NumericVector&);
+
+		friend class newValidator<FF>;
+
+};
+
+template <class FF>
+Coord<FF>::Coord(const vector<double> n, const vector<bool>& ll, const vector<string>& _names) :
+	nv(std::move(n)), latlon{ ll }, names{ std::move(_names) }, llgt1(latlon.size() > 1)
+{
+	cout << "§Coord::Coord(const vector<double>, const LogicalVector&, const vector<string>&) "; _ctrsgn(typeid(*this));
+}
+
+template <class FF>
+Coord<FF>::Coord(const NumericVector& nv) :
+	Coord(
+		as<vector<double>>(nv),
+		nv.hasAttribute("latlon") ? as<vector<bool>>(nv.attr("latlon")) : vector<bool>(),
+		nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>()
+	)
+{
+	cout << "§Coord::Coord(const NumericVector&) "; _ctrsgn(typeid(*this));
+}
+
+
+/// __________________________________________________
+/// __________________________________________________
+/// Validate Coord functor
+
+template<class FF>
+class newValidator {
+		const Coord<FF>& cb; 
+		vector<bool>::const_iterator ll_it;
+	public:
+		newValidator(const Coord<FF>& _cb) : cb(_cb), ll_it(cb.latlon.begin())
+		{
+			cout << "§newValidator(const Coord&) "; _ctrsgn(typeid(*this));
+		}
+		bool operator()(double n)
+		{
+			cout << "@newValidator() " << " n: " << setw(9) << setfill(' ') << n << endl;
+			return !((abs(cb.ff.get_decdeg(n)) > (cb.latlon.size() && (cb.llgt1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
+				(abs(cb.ff.get_decmin(n)) >= 60) ||
+				(abs(cb.ff.get_sec(n)) >= 60));
+		}
+};
+
+/*
+/// __________________________________________________
+/// Validate coords vector
+template<typename validate_type>
+void Coord::validate(bool warn) const
+{
+	cout << "@Coord::<typename validate_type>validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
+	vector<bool>& non_const_valid { const_cast<vector<bool>&>(valid) };
+	non_const_valid.assign(nv.size(), {false});
+	transform(nv.begin(), nv.end(), non_const_valid.begin(), newValidator<validate_type>(*this));
+	if (all_valid())
+		non_const_valid.assign({true});
+	else
+		if (warn)
+			warning("Validation failed!");
+}
+
+
+/// __________________________________________________
+/// All valid are true
+bool Coord::all_valid() const
+{
+//	cout << "@Coord::all_valid()\n";
+	return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
+}
+*/
+
+
+
+/// __________________________________________________
+/// __________________________________________________
 /// Coordinate abstract base class
 
 class CoordBase {
 	protected:
+		
 		vector<double> nv;
 		const vector<bool> valid { false };
 		const vector<bool> latlon;
