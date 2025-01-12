@@ -86,9 +86,11 @@ class FormatLL;
 class FormatLL_DD;
 template<class FF>
 class FormatLL_DM_S;
+using formatll_dm = FormatLL_DM_S<FamousFiveDM>;
+using formatll_dms = FormatLL_DM_S<FamousFiveDMS>;
 
-// template<class T, class FF, class FT, class FL, class CV>
-// unique_ptr<const Coord> newconstCoord(const T&, const CoordType);
+template<class T>
+unique_ptr<const Coord> newconstCoord(const T&, const CoordType);
 
 template<class T>
 unique_ptr<const CoordBase> newconstCoordBase(const T&, const CoordType);
@@ -496,6 +498,10 @@ class Coord {
 		vector<string> format() const;
 		void print(ostream&) const;
 
+		friend class FormatLL;
+		friend class FormatLL_DD;
+		template<class FF>
+		friend class FormatLL_DM_S;
 		friend class newValidator;
 
 };
@@ -624,13 +630,76 @@ inline void Coord::set_waypoint() const
 
 
 /// __________________________________________________
+/// __________________________________________________
+/// Formatting functors for Latitude and Longitude
+
+/// __________________________________________________
+/// FormatLL functor base class
+class FormatLL {
+	protected:
+		const Coord& c; 
+		vector<bool>::const_iterator ll_it;
+		ostringstream outstrstr;
+	public:
+		FormatLL(const Coord& _c) : c(_c), ll_it(c.latlon.begin())
+		{
+			cout << "§FormatLL(const Coord&) "; _ctrsgn(typeid(*this));
+		}
+		FormatLL(const FormatLL&) = delete;				// Disallow copying
+		FormatLL& operator=(const FormatLL&) = delete;	//  ——— ditto ———
+		FormatLL(FormatLL&&) = delete;					// Disallow transfer ownership
+		FormatLL& operator=(FormatLL&&) = delete;	    // Disallow moving
+		virtual ~FormatLL() = 0;
+};
+
+inline FormatLL::~FormatLL() { /* cout << "§FormatLL::~FormatLL() "; _ctrsgn(typeid(*this), true); */ }
+
+/// __________________________________________________
+/// FormatLL functor for latitude and longitude strings for decimal degrees
+class FormatLL_DD : public FormatLL {
+	public:
+		FormatLL_DD(const Coord& c) : FormatLL(c)
+		{
+			cout << "§FormatLL_DD<FF>(const Coord&) "; _ctrsgn(typeid(*this));
+		}
+		string operator()(string ostr, double n)
+		{
+			cout << "@FormatLL_DD::operator() c.waypoint " << boolalpha << c.waypoint << endl;
+			if (c.latlon.size() && !c.waypoint)
+				return ostr += ((c.llgt1 ? *ll_it++ : *ll_it) ? " lat" : " lon");
+			else
+				return ostr;
+		}
+};
+
+
+/// __________________________________________________
+/// FormatLL functor for latitude and longitude strings for degrees, minutes (and seconds)
+template<class FF>
+class FormatLL_DM_S : public FormatLL {
+	public:
+		FormatLL_DM_S(const Coord& c) : FormatLL(c)
+		{
+			cout << "§FormatLL_DM_S<FF>(const Coord&) "; _ctrsgn(typeid(*this));
+		}
+		string operator()(string ostr, double n)
+		{
+			cout << "@FormatLL_DM_S::operator()\n";
+			return ostr += c.latlon.size() ? cardpoint(c.ff->get_decmin(n) < 0, c.llgt1 ? *ll_it++ : *ll_it) : cardi_b(c.ff->get_decmin(n) < 0);
+		}
+};
+
+
+/// __________________________________________________
 /// Formatted coordinate strings for printing
 vector<string> Coord::format() const
 {
-//	cout << "@Coord::format<FT, FL>()\n";
+	cout << "@Coord::format<FT, FL>()\n";
 	vector<string> out(nv.size());
-	transform(nv.begin(), nv.end(), out.begin(), FT());
-	transform(out.begin(), out.end(), nv.begin(), out.begin(), FL(*this));
+//	transform(nv.begin(), nv.end(), out.begin(), FT());
+//	transform(out.begin(), out.end(), nv.begin(), out.begin(), FL(*this));
+	transform(nv.begin(), nv.end(), out.begin(), format_degmin());
+	transform(out.begin(), out.end(), nv.begin(), out.begin(), formatll_dm(*this));
 	return out;
 }
 
@@ -857,7 +926,7 @@ inline void CoordBase::set_waypoint() const
 	wpt = true;
 }
 
-
+/*
 /// __________________________________________________
 /// Formatted coordinate strings for printing
 template<class Format_type, class FormatLL_type>
@@ -868,7 +937,7 @@ vector<string> CoordBase::format() const
 	transform(nv.begin(), nv.end(), out.begin(), Format_type());
 	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL_type(*this));
 	return out;
-}
+} */
 
 /*
 /// __________________________________________________
@@ -903,7 +972,7 @@ void CoordBase::print(ostream& stream) const
 			[&stream,& nm_it](const string& s) { stream << s << " " << *nm_it++ << "\n"; });
 	} else
 		for_each(fmtstr.begin(), fmtstr.end(), [&stream](const string& s) { stream << s << "\n"; });
-} */
+}
 
 
 /// __________________________________________________
@@ -928,7 +997,7 @@ ostream& operator<<(ostream& stream, const CoordBase& c)
 //	cout << "@operator<<(ostream&, const CoordBase&)\n";
 	c.print(stream);
 	return stream;
-}
+} */
 
 
 /// __________________________________________________
@@ -1091,7 +1160,7 @@ inline vector<string> DegMinSec::fmt_fctr_tmpl() const
 	return format<format_degminsec, FormatLL_DM_S<FamousFiveDMS>>();
 }
 
-
+/*
 /// __________________________________________________
 /// __________________________________________________
 /// Formatting functors for Latitude and Longitude
@@ -1100,11 +1169,13 @@ inline vector<string> DegMinSec::fmt_fctr_tmpl() const
 /// FormatLL functor base class
 class FormatLL {
 	protected:
-		const CoordBase& cb; 
+//		const CoordBase& cb; 
+		const Coord& c; 
 		vector<bool>::const_iterator ll_it;
 		ostringstream outstrstr;
 	public:
-		FormatLL(const CoordBase& _cb) : cb(_cb), ll_it(cb.latlon.begin())
+//		FormatLL(const CoordBase& _cb) : cb(_cb), ll_it(cb.latlon.begin())
+		FormatLL(const Coord& _c) : c(_c), ll_it(c.latlon.begin())
 		{
 		//	cout << "§FormatLL(const CoordBase&) "; _ctrsgn(typeid(*this));
 		}
@@ -1115,22 +1186,29 @@ class FormatLL {
 		virtual ~FormatLL() = 0;
 };
 
-inline FormatLL::~FormatLL() { /* cout << "§FormatLL::~FormatLL() "; _ctrsgn(typeid(*this), true); */ }
+inline FormatLL::~FormatLL()
+{
+	// cout << "§FormatLL::~FormatLL() "; _ctrsgn(typeid(*this), true);
+}
 
 
 /// __________________________________________________
 /// FormatLL functor for latitude and longitude strings for decimal degrees
 class FormatLL_DD : public FormatLL {
 	public:
-		FormatLL_DD(const CoordBase& cb) : FormatLL(cb)
+//		FormatLL_DD(const CoordBase& cb) : FormatLL(cb)
+		FormatLL_DD(const Coord& c) : FormatLL(c)
 		{
 		//	cout << "§FormatLL_DD<FF>(const CoordBase&) "; _ctrsgn(typeid(*this));
+			cout << "§FormatLL_DD<FF>(const Coord&) "; _ctrsgn(typeid(*this));
 		}
 		string operator()(string ostr, double n)
 		{
 		//	cout << "@FormatLL_DD::operator() cb.waypoint " << boolalpha << cb.waypoint << endl;
-			if (cb.latlon.size() && !cb.waypoint)
-				return ostr += ((cb.llgt1 ? *ll_it++ : *ll_it) ? " lat" : " lon");
+//			if (cb.latlon.size() && !cb.waypoint)
+//				return ostr += ((cb.llgt1 ? *ll_it++ : *ll_it) ? " lat" : " lon");
+			if (c.latlon.size() && !c.waypoint)
+				return ostr += ((c.llgt1 ? *ll_it++ : *ll_it) ? " lat" : " lon");
 			else
 				return ostr;
 		}
@@ -1141,30 +1219,30 @@ class FormatLL_DD : public FormatLL {
 /// FormatLL functor for latitude and longitude strings for degrees, minutes (and seconds)
 template<class FF>
 class FormatLL_DM_S : public FormatLL {
-		const FF ff;
+//		const FF ff;
 	public:
-		FormatLL_DM_S(const CoordBase& cb) : FormatLL(cb)
+//		FormatLL_DM_S(const CoordBase& cb) : FormatLL(cb)
+		FormatLL_DM_S(const Coord& c) : FormatLL(c)
 		{
 		//	cout << "§FormatLL_DM_S<FF>(const CoordBase&) "; _ctrsgn(typeid(*this));
 		}
 		string operator()(string ostr, double n)
 		{
 		//	cout << "@FormatLL_DM_S::operator()\n";
-			return ostr += cb.latlon.size() ? cardpoint(ff.get_decmin(n) < 0, cb.llgt1 ? *ll_it++ : *ll_it) : cardi_b(ff.get_decmin(n) < 0);
+//			return ostr += cb.latlon.size() ? cardpoint(ff.get_decmin(n) < 0, cb.llgt1 ? *ll_it++ : *ll_it) : cardi_b(ff.get_decmin(n) < 0);
+			return ostr += cb.latlon.size() ? cardpoint(c.ff->get_decmin(n) < 0, cb.llgt1 ? *ll_it++ : *ll_it) : cardi_b(c.ff->get_decmin(n) < 0);
 		}
 };
+*/
 
-using formatll_dm = FormatLL_DM_S<FamousFiveDM>;
-using formatll_dms = FormatLL_DM_S<FamousFiveDMS>;
 
-/*
 /// __________________________________________________
 /// __________________________________________________
 /// Create unique_ptr<Coord> to new Coord object
-template<class T, class FF, class FT, class FL, class CV>
+template<class T>
 unique_ptr<const Coord> newconstCoord(const T& t, const CoordType type)
 {
-	cout << "@newconstCoord<T, FF, FT, FL, CV>(const T&, const CoordType) of type " << coordtype_to_int(type) + 1 << endl;
+	cout << "@newconstCoord<T>(const T&, const CoordType) of type " << coordtype_to_int(type) + 1 << endl;
 
 	switch (type)
 	{
@@ -1179,7 +1257,7 @@ unique_ptr<const Coord> newconstCoord(const T& t, const CoordType type)
 		default:
 					stop("newconstCoord<T, FF, FT, FL, CV>(const T&, const CoordType) my bad");
 	}
-} */
+}
 
 
 /// __________________________________________________
@@ -1542,7 +1620,8 @@ NumericVector printcoord(NumericVector& nv)
 	checkinherits(nv, "coords");
 	if (!check_valid(nv))
 		warning("Printing invalid coords!");
-	Rcout << *newconstCoordBase(nv, get_coordtype(nv)) << endl;
+//	Rcout << *newconstCoordBase(nv, get_coordtype(nv)) << endl;
+	Rcout << *newconstCoord(nv, get_coordtype(nv)) << endl;
 	return nv;
 }
 
