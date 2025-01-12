@@ -88,6 +88,9 @@ class FormatLL_DD;
 template<class FF>
 class FormatLL_DM_S;
 
+template<class T, class FF, class FT, class FL, class CV>
+unique_ptr<const Coord<FF, FT, FL, CV>> newconstCoord(const T& , const CoordType);
+
 template<class T>
 unique_ptr<const CoordBase> newconstCoordBase(const T&, const CoordType);
 
@@ -257,33 +260,33 @@ inline string cardi_b(bool negative)
 /// __________________________________________________
 /// Famous five functions class for decimal degrees
 struct FamousFiveDD {
-	int get_deg(double x) const { return int(x); }
-	double get_decdeg(double x) const { return x; }
-	int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
-	double get_decmin(double x) const { return polish(mod1by60(x)); }
-	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
+        int get_deg(double x) const { return int(x); }
+        double get_decdeg(double x) const { return x; }
+        int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
+        double get_decmin(double x) const { return polish(mod1by60(x)); }
+        double get_sec(double x) const { return mod1by60(get_decmin(x)); }
 };
 
 
 /// __________________________________________________
 /// Famous five functions class for degrees and minutes
 struct FamousFiveDM {
-	int get_deg(double x) const { return int(x / 1e2); }
-	double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
-	int get_min(double x) const { return int(x) % int(1e2); }
-	double get_decmin(double x) const { return polish(mod1e2(x)); }
-	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
+        int get_deg(double x) const { return int(x / 1e2); }
+        double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
+        int get_min(double x) const { return int(x) % int(1e2); }
+        double get_decmin(double x) const { return polish(mod1e2(x)); }
+        double get_sec(double x) const { return mod1by60(get_decmin(x)); }
 };
 
 
 /// __________________________________________________
 /// Famous five functions class for degrees minutes and seconds
 struct FamousFiveDMS {
-	int get_deg(double x) const { return int(x / 1e4); }
-	double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
-	int get_min(double x) const { return (int(x) % int(1e4)) / 1e2; }
-	double get_decmin(double x) const { return int(fmod(x, 1e4) / 1e2) + mod1e2(x) / 60; }
-	double get_sec(double x) const { return mod1e2(x); }
+        int get_deg(double x) const { return int(x / 1e4); }
+        double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
+        int get_min(double x) const { return (int(x) % int(1e4)) / 1e2; }
+        double get_decmin(double x) const { return int(fmod(x, 1e4) / 1e2) + mod1e2(x) / 60; }
+        double get_sec(double x) const { return mod1e2(x); }
 };
 
 /// __________________________________________________
@@ -292,6 +295,7 @@ struct FamousFiveDMS {
 template<class FF>
 class Convert {
 	protected:
+//		const FamousFive& ff; 
 		const FF ff; 
 	public:
 /*		Convert()
@@ -462,8 +466,7 @@ class Coord {
 	public:
 		Coord<FF>(const vector<double>, const vector<bool>&, const vector<string>&);
 		Coord<FF>(const NumericVector&);
-		template<class Convert_type>
-		explicit Coord<FF>(const Coord&);
+		Coord<FF>(const Coord<FF, FT, FL, CV>&);
 
 		void validate(bool) const;
 		const vector<double>& get_nv() const;
@@ -503,8 +506,8 @@ Coord<FF, FT, FL, CV>::Coord(const Coord<FF, FT, FL, CV>& c) :
 	Coord<FF, FT, FL, CV>(vector<double>(c.nv.size()), vector<bool>{ c.latlon }, vector<string>{ c.names })
 {
 	cout << "§Coord::Coord<Convert_type>(const Coord&, in_place_type_t<Convert_type>) "; _ctrsgn(typeid(*this));
-	using convert_ff = CV<c::FF>;
-	transform(c.nv.begin(), c.nv.end(), nv.begin(), convert_ff());
+//	using convert_ff = CV<c::FF>;
+	transform(c.nv.begin(), c.nv.end(), nv.begin(), CV());
 }
 
 
@@ -1141,6 +1144,32 @@ class FormatLL_DM_S : public FormatLL {
 			return ostr += cb.latlon.size() ? cardpoint(ff.get_decmin(n) < 0, cb.llgt1 ? *ll_it++ : *ll_it) : cardi_b(ff.get_decmin(n) < 0);
 		}
 };
+
+using formatll_dm = FormatLL_DM_S<FamousFiveDM>;
+using formatll_dms = FormatLL_DM_S<FamousFiveDMS>;
+
+/// __________________________________________________
+/// __________________________________________________
+/// Create unique_ptr<Coord> to new Coord object
+template<class T, class FF, class FT, class FL, class CV>
+unique_ptr<const Coord<FF, FT, FL, CV>> newconstCoord(const T& t, const CoordType type)
+{
+	cout << "@newconstCoord<T, FF, FT, FL, CV>(const T&, const CoordType) of type " << coordtype_to_int(type) + 1 << endl;
+
+	switch (type)
+	{
+		case CoordType::decdeg:
+					return factory<const Coord<FamousFiveDD, format_decdeg, FormatLL_DD, convert_dms_dd>>(t);
+
+		case CoordType::degmin:
+					return factory<const Coord<FamousFiveDM, format_degmin, formatll_dm, convert_dd_dm>>(t);
+
+		case CoordType::degminsec:
+					return factory<const Coord<FamousFiveDMS, format_degminsec, formatll_dms, convert_dm_dms>>(t);
+		default:
+					stop("newconstCoord<T, FF, FT, FL, CV>(const T&, const CoordType) my bad");
+	}
+}
 
 
 /// __________________________________________________
