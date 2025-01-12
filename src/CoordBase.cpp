@@ -72,6 +72,7 @@ using format_degminsec = FormatDMS<FamousFiveDMS>;
 class Coord;
 class newValidator;
 
+/*
 class CoordBase;
 ostream& operator<<(ostream&, const CoordBase&);
 
@@ -81,6 +82,7 @@ class Validator;
 class DecDeg;
 class DegMin;
 class DegMinSec;
+*/
 
 class FormatLL;
 class FormatLL_DD;
@@ -92,8 +94,8 @@ using formatll_dms = FormatLL_DM_S<FamousFiveDMS>;
 template<class T>
 unique_ptr<const Coord> newconstCoord(const T&, const CoordType);
 
-template<class T>
-unique_ptr<const CoordBase> newconstCoordBase(const T&, const CoordType);
+//template<class T>
+//unique_ptr<const CoordBase> newconstCoordBase(const T&, const CoordType);
 
 class WayPoint;
 template<class T>
@@ -380,11 +382,11 @@ class Format {
 		const FF ff;
 		ostringstream outstrstr;
 	public:
-/*		Format()
+		Format()
 		{
 			cout << "§Format<class FF>() "; _ctrsgn(typeid(*this));
-		} */
-		Format() = default;
+		}
+//		Format() = default;
 		Format(const Format&) = delete;				// Disallow copying
 		Format& operator=(const Format&) = delete;	//  ——— ditto ———
 		Format(Format&&) = delete;					// Disallow transfer ownership
@@ -393,7 +395,7 @@ class Format {
 };
 
 template<class FF>
-inline Format<FF>::~Format() { /* cout << "§Format::~Format() "; _ctrsgn(typeid(*this), true); */ }
+inline Format<FF>::~Format() {  cout << "§Format::~Format() "; _ctrsgn(typeid(*this), true);  }
 
 
 /// __________________________________________________
@@ -401,16 +403,16 @@ inline Format<FF>::~Format() { /* cout << "§Format::~Format() "; _ctrsgn(typeid
 template<class FF>
 class FormatDD : public Format<FF> {
 	public:
-/*		FormatDD()
+		FormatDD()
 		{
 			cout << "§FormatDD<class FF>() "; _ctrsgn(typeid(*this));
-		} */
-		FormatDD() = default;
+		}
+//		FormatDD() = default;
 	    using Format<FF>::outstrstr;
 	    using Format<FF>::ff;
 		string operator()(double n)
 		{
-		//	cout << "@FormatDD::operator()\n";
+			cout << "@FormatDD::operator()\n";
 			outstrstr.str("");
 			outstrstr << setw(11) << setfill(' ')  << fixed << setprecision(6) << ff.get_decdeg(n) << "\u00B0";
 			return outstrstr.str();
@@ -423,16 +425,16 @@ class FormatDD : public Format<FF> {
 template<class FF>
 class FormatDM : public Format<FF> {
 	public:
-/*		FormatDM()
+		FormatDM()
 		{
 			cout << "§FormatDM<class FF>() "; _ctrsgn(typeid(*this));
-		} */
-		FormatDM() = default;
+		}
+//		FormatDM() = default;
 	    using Format<FF>::outstrstr;
 	    using Format<FF>::ff;
 		string operator()(double n)
 		{
-		//	cout << "@FormatDM::operator()\n";
+			cout << "@FormatDM::operator()\n";
 			outstrstr.str("");
 			outstrstr << setw(3) << setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
 					  << setw(7) << setfill('0') << fixed << setprecision(4) << abs(ff.get_decmin(n)) << "'";
@@ -446,16 +448,16 @@ class FormatDM : public Format<FF> {
 template<class FF>
 class FormatDMS : public Format<FF> {
 	public:
-/*		FormatDMS()
+		FormatDMS()
 		{
 			cout << "§FormatDMS<class FF>() "; _ctrsgn(typeid(*this));
-		} */
-		FormatDMS() = default;
+		}
+//		FormatDMS() = default;
 	    using Format<FF>::outstrstr;
 	    using Format<FF>::ff;
 		string operator()(double n)
 		{
-		//	cout << "@FormatDMS::operator()\n";
+			cout << "@FormatDMS::operator()\n";
 			outstrstr.str("");
 			outstrstr << setw(3) << setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
 					  << setw(2) << setfill('0') << abs(ff.get_min(n)) << "'"
@@ -511,7 +513,7 @@ template<class FF>
 Coord::Coord(const vector<double> n, in_place_type_t<FF>, const vector<bool>& ll, const vector<string>& _names) :
 	nv(std::move(n)), ff(std::move(unique_ptr<FF>(new FF))), latlon{ ll }, names{ std::move(_names) }, llgt1(latlon.size() > 1)
 {
-	cout << "§Coord::Coord(const vector<double>, const LogicalVector&, const vector<string>&) "; _ctrsgn(typeid(*this));
+	cout << "§Coord::Coord<FF>(const vector<double>, const LogicalVector&, const vector<string>&) "; _ctrsgn(typeid(*this));
 }
 
 
@@ -523,7 +525,7 @@ Coord::Coord(const NumericVector& nv, in_place_type_t<FF>) :
 		nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>()
 	)
 {
-	cout << "§Coord::Coord(const NumericVector&, in_place_type_t<FF>) "; _ctrsgn(typeid(*this));
+	cout << "§Coord::Coord<FF>(const NumericVector&, in_place_type_t<FF>) "; _ctrsgn(typeid(*this));
 }
 
 /*
@@ -652,7 +654,7 @@ class FormatLL {
 		virtual ~FormatLL() = 0;
 };
 
-inline FormatLL::~FormatLL() { /* cout << "§FormatLL::~FormatLL() "; _ctrsgn(typeid(*this), true); */ }
+inline FormatLL::~FormatLL() {  cout << "§FormatLL::~FormatLL() "; _ctrsgn(typeid(*this), true);  }
 
 /// __________________________________________________
 /// FormatLL functor for latitude and longitude strings for decimal degrees
@@ -699,8 +701,10 @@ vector<string> Coord::format() const
 	vector<string> out(nv.size());
 //	transform(nv.begin(), nv.end(), out.begin(), FT());
 //	transform(out.begin(), out.end(), nv.begin(), out.begin(), FL(*this));
-	transform(nv.begin(), nv.end(), out.begin(), format_degmin());
-	transform(out.begin(), out.end(), nv.begin(), out.begin(), formatll_dm(*this));
+	transform(nv.begin(), nv.end(), out.begin(), format_decdeg());
+	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL_DD(*this));
+//	transform(nv.begin(), nv.end(), out.begin(), format_degmin());
+//	transform(out.begin(), out.end(), nv.begin(), out.begin(), formatll_dm(*this));
 	return out;
 }
 
@@ -709,7 +713,7 @@ vector<string> Coord::format() const
 /// Print coords vector
 void Coord::print(ostream& stream) const
 {
-//	cout << "@Coord::print() type " << typeid(*this).name() << endl;
+	cout << "@Coord::print() type " << typeid(*this).name() << endl;
 	vector<string> sv(format()); 
 	if (names.size()) {
 		vector<string>::const_iterator nm_it(names.begin());
@@ -724,7 +728,7 @@ void Coord::print(ostream& stream) const
 /// Output Coord derived object to ostream
 ostream& operator<<(ostream& stream, const Coord& c)
 {
-//	cout << "@operator<<(ostream&, const Coord&)\n";
+	cout << "@operator<<(ostream&, const Coord&)\n";
 	c.print(stream);
 	return stream;
 }
@@ -895,6 +899,7 @@ NumericVector coords(NumericVector& nv, int fmt = 1)
 	}
 	nv.attr("fmt") = fmt;
 //	cb1->validate_tmpl();
+	cb1->validate();
 	nv.attr("valid") = cb1->get_valid();
 	return nv;
 }
