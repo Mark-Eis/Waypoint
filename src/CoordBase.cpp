@@ -307,6 +307,55 @@ class FamousFiveDMS : public FamousFive {
 		double get_sec(double x) const { return mod1e2(x); }
 };
 
+
+/// __________________________________________________
+/// __________________________________________________
+/// Famous Five functions
+template<CoordType>
+struct FamouslyFive {
+};
+
+template<>
+struct FamouslyFive<CoordType::decdeg> {
+	FamouslyFive()
+	{
+		cout << "§FamouslyFive<CoordType::decdeg>() "; _ctrsgn(typeid(*this));
+	}	
+	int get_deg(double x) const { return int(x); }
+	double get_decdeg(double x) const { return x; }
+	int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
+	double get_decmin(double x) const { return polish(mod1by60(x)); }
+	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
+};
+
+template<>
+struct FamouslyFive<CoordType::degmin> {
+	FamouslyFive()
+	{
+		cout << "§FamouslyFive<CoordType::degmin>() "; _ctrsgn(typeid(*this));
+	}	
+	int get_deg(double x) const { return int(x / 1e2); }
+	double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
+	int get_min(double x) const { return int(x) % int(1e2); }
+	double get_decmin(double x) const { return polish(mod1e2(x)); }
+	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
+};
+
+template<>
+struct FamouslyFive<CoordType::degminsec> {
+	FamouslyFive()
+	{
+		cout << "§FamouslyFive<CoordType::degminsec>() "; _ctrsgn(typeid(*this));
+	}	
+	int get_deg(double x) const { return int(x / 1e4); }
+	double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
+	int get_min(double x) const { return (int(x) % int(1e4)) / 1e2; }
+	double get_decmin(double x) const { return int(fmod(x, 1e4) / 1e2) + mod1e2(x) / 60; }
+	double get_sec(double x) const { return mod1e2(x); }
+};
+
+
+
 /// __________________________________________________
 /// __________________________________________________
 /// Convert functor base class
@@ -473,7 +522,8 @@ class FormatDMS : public Format<FF> {
 class Coord {
 	protected:
 		vector<double> nv;
-		unique_ptr <FamousFive> ff;
+		unique_ptr<FamousFive> ff;
+		FamouslyFive<CoordType::degmin> fly5;
 		const vector<bool> valid { false };
 		const vector<bool> latlon;
 		const vector<string> names;
@@ -701,10 +751,10 @@ vector<string> Coord::format() const
 	vector<string> out(nv.size());
 //	transform(nv.begin(), nv.end(), out.begin(), FT());
 //	transform(out.begin(), out.end(), nv.begin(), out.begin(), FL(*this));
-	transform(nv.begin(), nv.end(), out.begin(), format_decdeg());
-	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL_DD(*this));
-//	transform(nv.begin(), nv.end(), out.begin(), format_degmin());
-//	transform(out.begin(), out.end(), nv.begin(), out.begin(), formatll_dm(*this));
+//	transform(nv.begin(), nv.end(), out.begin(), format_decdeg());
+//	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL_DD(*this));
+	transform(nv.begin(), nv.end(), out.begin(), format_degmin());
+	transform(out.begin(), out.end(), nv.begin(), out.begin(), formatll_dm(*this));
 	return out;
 }
 
