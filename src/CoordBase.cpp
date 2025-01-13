@@ -28,74 +28,68 @@ inline const int coordtype_to_int(CoordType);
 inline string cardpoint(bool, bool);
 inline string cardi_b(bool);
 
-class FamousFive;
-class FamousFiveDD;
-class FamousFiveDM;
-class FamousFiveDMS;
+enum class CoordType : char { decdeg, degmin, degminsec };
+
+template<CoordType>
+struct FamousFive;
+template<>
+struct FamousFive<CoordType::decdeg>;
+template<>
+struct FamousFive<CoordType::degmin>;
+template<>
+struct FamousFive<CoordType::degminsec>;
 
 template<class FF>
 class Convert;
 
 template<class FF>
 class ConvertDD;
-using convert_dd_dd = ConvertDD<FamousFiveDD>;
-using convert_dm_dd = ConvertDD<FamousFiveDM>;
-using convert_dms_dd = ConvertDD<FamousFiveDMS>;
+using convert_dd_dd = ConvertDD<FamousFive<CoordType::decdeg>>;
+using convert_dm_dd = ConvertDD<FamousFive<CoordType::degmin>>;
+using convert_dms_dd = ConvertDD<FamousFive<CoordType::degminsec>>;
 
 template<class FF>
 class ConvertDM;
-using convert_dd_dm = ConvertDM<FamousFiveDD>;
-using convert_dm_dm = ConvertDM<FamousFiveDM>;
-using convert_dms_dm = ConvertDM<FamousFiveDMS>;
+using convert_dd_dm = ConvertDM<FamousFive<CoordType::decdeg>>;
+using convert_dm_dm = ConvertDM<FamousFive<CoordType::degmin>>;
+using convert_dms_dm = ConvertDM<FamousFive<CoordType::degminsec>>;
 
 template<class FF>
 class ConvertDMS;
-using convert_dd_dms = ConvertDMS<FamousFiveDD>;
-using convert_dm_dms = ConvertDMS<FamousFiveDM>;
-using convert_dms_dms = ConvertDMS<FamousFiveDMS>;
+using convert_dd_dms = ConvertDMS<FamousFive<CoordType::decdeg>>;
+using convert_dm_dms = ConvertDMS<FamousFive<CoordType::degmin>>;
+using convert_dms_dms = ConvertDMS<FamousFive<CoordType::degminsec>>;
 
 template<class FF>
 class Format;
 
 template<class FF>
 class FormatDD;
-using format_decdeg = FormatDD<FamousFiveDD>;
+using format_decdeg = FormatDD<FamousFive<CoordType::decdeg>>;
 
 template<class FF>
 class FormatDM;
-using format_degmin = FormatDM<FamousFiveDM>;
+using format_degmin = FormatDM<FamousFive<CoordType::degmin>>;
 
 template<class FF>
 class FormatDMS;
-using format_degminsec = FormatDMS<FamousFiveDMS>;
+using format_degminsec = FormatDMS<FamousFive<CoordType::degminsec>>;
 
+template<CoordType type>
 class Coord;
+template<CoordType type>
 class newValidator;
 
-/*
-class CoordBase;
-ostream& operator<<(ostream&, const CoordBase&);
 
-template<class FF>
-class Validator;
-
-class DecDeg;
-class DegMin;
-class DegMinSec;
-*/
-
+template<CoordType type>
 class FormatLL;
+template<CoordType type>
 class FormatLL_DD;
-template<class FF>
+template<CoordType type>
 class FormatLL_DM_S;
-using formatll_dm = FormatLL_DM_S<FamousFiveDM>;
-using formatll_dms = FormatLL_DM_S<FamousFiveDMS>;
 
-template<class T>
-unique_ptr<const Coord> newconstCoord(const T&, const CoordType);
-
-//template<class T>
-//unique_ptr<const CoordBase> newconstCoordBase(const T&, const CoordType);
+//template<CoordType type, class T>
+//unique_ptr<const Coord<type>> newconstCoord(const T&, const CoordType);
 
 class WayPoint;
 template<class T>
@@ -210,7 +204,7 @@ factory(A1&& a1, A2&& a2)   // two argument version
 /// __________________________________________________
 /// CoordType enum class
 
-enum class CoordType : char { decdeg, degmin, degminsec };
+// enum class CoordType : char { decdeg, degmin, degminsec };
 
 /// __________________________________________________
 /// Convert int to CoordType enum
@@ -261,65 +255,16 @@ inline string cardi_b(bool negative)
 
 /// __________________________________________________
 /// __________________________________________________
-/// FamousFive abstract base class
-class FamousFive {
-	public:
-		virtual int get_deg(double) const = 0;
-		virtual double get_decdeg(double) const = 0;
-		virtual int get_min(double) const = 0;
-		virtual double get_decmin(double) const = 0;
-		virtual double get_sec(double) const = 0;
-};
-
-
-/// __________________________________________________
-/// Decimal degrees derived class
-class FamousFiveDD : public FamousFive {
-	public:
-		int get_deg(double x) const { return int(x); }
-		double get_decdeg(double x) const { return x; }
-		int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
-		double get_decmin(double x) const { return polish(mod1by60(x)); }
-		double get_sec(double x) const { return mod1by60(get_decmin(x)); }
-};
-
-
-/// __________________________________________________
-/// Degrees and minutes derived class
-class FamousFiveDM : public FamousFive {
-	public:
-		int get_deg(double x) const { return int(x / 1e2); }
-		double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
-		int get_min(double x) const { return int(x) % int(1e2); }
-		double get_decmin(double x) const { return polish(mod1e2(x)); }
-		double get_sec(double x) const { return mod1by60(get_decmin(x)); }
-};
-
-
-/// __________________________________________________
-/// Degrees minutes and seconds derived class
-class FamousFiveDMS : public FamousFive {
-	public:
-		int get_deg(double x) const { return int(x / 1e4); }
-		double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
-		int get_min(double x) const { return (int(x) % int(1e4)) / 1e2; }
-		double get_decmin(double x) const { return int(fmod(x, 1e4) / 1e2) + mod1e2(x) / 60; }
-		double get_sec(double x) const { return mod1e2(x); }
-};
-
-
-/// __________________________________________________
-/// __________________________________________________
 /// Famous Five functions
 template<CoordType>
-struct FamouslyFive {
+struct FamousFive {
 };
 
 template<>
-struct FamouslyFive<CoordType::decdeg> {
-	FamouslyFive()
+struct FamousFive<CoordType::decdeg> {
+	FamousFive()
 	{
-		cout << "§FamouslyFive<CoordType::decdeg>() "; _ctrsgn(typeid(*this));
+		cout << "§FamousFive<CoordType::decdeg>() "; _ctrsgn(typeid(*this));
 	}	
 	int get_deg(double x) const { return int(x); }
 	double get_decdeg(double x) const { return x; }
@@ -329,10 +274,10 @@ struct FamouslyFive<CoordType::decdeg> {
 };
 
 template<>
-struct FamouslyFive<CoordType::degmin> {
-	FamouslyFive()
+struct FamousFive<CoordType::degmin> {
+	FamousFive()
 	{
-		cout << "§FamouslyFive<CoordType::degmin>() "; _ctrsgn(typeid(*this));
+		cout << "§FamousFive<CoordType::degmin>() "; _ctrsgn(typeid(*this));
 	}	
 	int get_deg(double x) const { return int(x / 1e2); }
 	double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
@@ -342,10 +287,10 @@ struct FamouslyFive<CoordType::degmin> {
 };
 
 template<>
-struct FamouslyFive<CoordType::degminsec> {
-	FamouslyFive()
+struct FamousFive<CoordType::degminsec> {
+	FamousFive()
 	{
-		cout << "§FamouslyFive<CoordType::degminsec>() "; _ctrsgn(typeid(*this));
+		cout << "§FamousFive<CoordType::degminsec>() "; _ctrsgn(typeid(*this));
 	}	
 	int get_deg(double x) const { return int(x / 1e4); }
 	double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
@@ -519,11 +464,13 @@ class FormatDMS : public Format<FF> {
 /// __________________________________________________
 /// __________________________________________________
 /// Coordinate class
+template<CoordType type>
 class Coord {
 	protected:
 		vector<double> nv;
-		unique_ptr<FamousFive> ff;
-		FamouslyFive<CoordType::degmin> fly5;
+//		unique_ptr<FamousFive> ff;
+//		FamousFive<CoordType::degmin> fly5;
+		FamousFive<type> ff;
 		const vector<bool> valid { false };
 		const vector<bool> latlon;
 		const vector<string> names;
@@ -532,15 +479,13 @@ class Coord {
 		bool waypoint = false;
 
 	public:
-		template<class FF>
-		Coord(const vector<double>, in_place_type_t<FF>, const vector<bool>&, const vector<string>&);
-		template<class FF>
-		Coord(const NumericVector&, in_place_type_t<FF>);
-		template<class CV>
+		Coord(const vector<double>, const vector<bool>&, const vector<string>&);
+		Coord(const NumericVector&);
+//		template<class CV>
 //		explicit Coord(const Coord&, in_place_type_t<CV>);
-		Coord& operator=(const Coord&) = delete;
+		Coord<type>& operator=(const Coord<type>&) = delete;
 
-		void validate(bool) const;
+		void validate(bool = true) const;
 		const vector<double>& get_nv() const;
 		const vector<bool>& get_valid() const;
 		const vector<string>& get_names() const;
@@ -550,32 +495,31 @@ class Coord {
 		vector<string> format() const;
 		void print(ostream&) const;
 
-		friend class FormatLL;
-		friend class FormatLL_DD;
-		template<class FF>
-		friend class FormatLL_DM_S;
-		friend class newValidator;
+		friend class FormatLL<type>;
+		friend class FormatLL_DD<type>;
+		friend class FormatLL_DM_S<type>;
+		friend class newValidator<type>;
 
 };
 
 
-template<class FF>
-Coord::Coord(const vector<double> n, in_place_type_t<FF>, const vector<bool>& ll, const vector<string>& _names) :
-	nv(std::move(n)), ff(std::move(unique_ptr<FF>(new FF))), latlon{ ll }, names{ std::move(_names) }, llgt1(latlon.size() > 1)
+template<CoordType type>
+Coord<type>::Coord(const vector<double> n, const vector<bool>& ll, const vector<string>& _names) :
+	nv(std::move(n)), latlon{ ll }, names{ std::move(_names) }, llgt1(latlon.size() > 1)
 {
-	cout << "§Coord::Coord<FF>(const vector<double>, const LogicalVector&, const vector<string>&) "; _ctrsgn(typeid(*this));
+	cout << "§Coord<type>::Coord(const vector<double>, const vector<bool>&, const vector<string>&) "; _ctrsgn(typeid(*this));
 }
 
 
-template<class FF>
-Coord::Coord(const NumericVector& nv, in_place_type_t<FF>) :
+template<CoordType type>
+Coord<type>::Coord(const NumericVector& nv) :
 	Coord(
-		as<vector<double>>(nv), in_place_type<FF>,
+		as<vector<double>>(nv),
 		nv.hasAttribute("latlon") ? as<vector<bool>>(nv.attr("latlon")) : vector<bool>(),
 		nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>()
 	)
 {
-	cout << "§Coord::Coord<FF>(const NumericVector&, in_place_type_t<FF>) "; _ctrsgn(typeid(*this));
+	cout << "§Coord<type>::Coord(const NumericVector&) "; _ctrsgn(typeid(*this));
 }
 
 /*
@@ -593,29 +537,31 @@ Coord::Coord(const Coord& c, in_place_type_t<CV>) :
 /// __________________________________________________
 /// Validate Coord functor
 
+template<CoordType type>
 class newValidator {
-		const Coord& c; 
+		const Coord<type>& c; 
 		vector<bool>::const_iterator ll_it;
 	public:
-		newValidator(const Coord& _c) : c(_c), ll_it(c.latlon.begin())
+		newValidator(const Coord<type>& _c) : c(_c), ll_it(c.latlon.begin())
 		{
-			cout << "§newValidator(const Coord&) "; _ctrsgn(typeid(*this));
+			cout << "§newValidator(const Coord<type>&) "; _ctrsgn(typeid(*this));
 		}
 		bool operator()(double n)
 		{
 			cout << "@newValidator() " << " n: " << setw(9) << setfill(' ') << n << endl;
-			return !((abs(c.ff->get_decdeg(n)) > (c.latlon.size() && (c.llgt1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
-				(abs(c.ff->get_decmin(n)) >= 60) ||
-				(abs(c.ff->get_sec(n)) >= 60));
+			return !((abs(c.ff.get_decdeg(n)) > (c.latlon.size() && (c.llgt1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
+				(abs(c.ff.get_decmin(n)) >= 60) ||
+				(abs(c.ff.get_sec(n)) >= 60));
 		}
 };
 
 
 /// __________________________________________________
 /// Validate coords vector
-void Coord::validate(bool warn = true) const
+template<CoordType type>
+void Coord<type>::validate(bool warn) const
 {
-	cout << "@Coord::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
+	cout << "@Coord<type>::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
 	vector<bool>& non_const_valid { const_cast<vector<bool>&>(valid) };
 	non_const_valid.assign(nv.size(), {false});
 	transform(nv.begin(), nv.end(), non_const_valid.begin(), newValidator(*this));
@@ -629,25 +575,28 @@ void Coord::validate(bool warn = true) const
 
 /// __________________________________________________
 /// All valid are true
-bool Coord::all_valid() const
+template<CoordType type>
+bool Coord<type>::all_valid() const
 {
-//	cout << "@Coord::all_valid()\n";
+//	cout << "@Coord<type>::all_valid()\n";
 	return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
 }
 
 
 /// __________________________________________________
 /// Get const reference to nv
-inline const vector<double>& Coord::get_nv() const
+template<CoordType type>
+inline const vector<double>& Coord<type>::get_nv() const
 {
-//	cout << "@Coord::get_nv()\n";
+//	cout << "@Coord<type>::get_nv()\n";
 	return nv;
 }
 
 
 /// __________________________________________________
 /// Get const reference to valid
-inline const vector<bool>& Coord::get_valid() const
+template<CoordType type>
+inline const vector<bool>& Coord<type>::get_valid() const
 {
 	return valid;
 }
@@ -655,7 +604,8 @@ inline const vector<bool>& Coord::get_valid() const
 
 /// __________________________________________________
 /// Get const reference to names
-inline const vector<string>& Coord::get_names() const
+template<CoordType type>
+inline const vector<string>& Coord<type>::get_names() const
 {
 	return names;
 }
@@ -663,9 +613,10 @@ inline const vector<string>& Coord::get_names() const
 
 /// __________________________________________________
 /// Warn if any valid are false
-void Coord::warn_invalid() const
+template<CoordType type>
+void Coord<type>::warn_invalid() const
 {
-//	cout << "@Coord::warn_invalid()\n";
+//	cout << "@Coord<type>::warn_invalid()\n";
 	if (!all_valid())
 		warning("Validation failed!");
 }
@@ -673,9 +624,10 @@ void Coord::warn_invalid() const
 
 /// __________________________________________________
 /// Set waypoint flag
-inline void Coord::set_waypoint() const
+template<CoordType type>
+inline void Coord<type>::set_waypoint() const
 {
-//	cout << "@Coord::set_waypoint()\n";
+//	cout << "@Coord<type>::set_waypoint()\n";
 	bool& wpt = const_cast<bool&>(waypoint);
 	wpt = true;
 }
@@ -687,15 +639,16 @@ inline void Coord::set_waypoint() const
 
 /// __________________________________________________
 /// FormatLL functor base class
+template<CoordType type>
 class FormatLL {
 	protected:
-		const Coord& c; 
+		const Coord<type>& c; 
 		vector<bool>::const_iterator ll_it;
 		ostringstream outstrstr;
 	public:
-		FormatLL(const Coord& _c) : c(_c), ll_it(c.latlon.begin())
+		FormatLL(const Coord<type>& _c) : c(_c), ll_it(c.latlon.begin())
 		{
-			cout << "§FormatLL(const Coord&) "; _ctrsgn(typeid(*this));
+			cout << "§FormatLL(const Coord<type>&) "; _ctrsgn(typeid(*this));
 		}
 		FormatLL(const FormatLL&) = delete;				// Disallow copying
 		FormatLL& operator=(const FormatLL&) = delete;	//  ——— ditto ———
@@ -704,16 +657,20 @@ class FormatLL {
 		virtual ~FormatLL() = 0;
 };
 
-inline FormatLL::~FormatLL() {  cout << "§FormatLL::~FormatLL() "; _ctrsgn(typeid(*this), true);  }
+template<CoordType type>
+inline FormatLL<type>::~FormatLL() {  cout << "§FormatLL::~FormatLL() "; _ctrsgn(typeid(*this), true);  }
 
 /// __________________________________________________
 /// FormatLL functor for latitude and longitude strings for decimal degrees
-class FormatLL_DD : public FormatLL {
+template<CoordType type>
+class FormatLL_DD : public FormatLL<type> {
 	public:
-		FormatLL_DD(const Coord& c) : FormatLL(c)
+		FormatLL_DD(const Coord<type>& c) : FormatLL<type>(c)
 		{
-			cout << "§FormatLL_DD<FF>(const Coord&) "; _ctrsgn(typeid(*this));
+			cout << "§FormatLL_DD(const Coord<type>&) "; _ctrsgn(typeid(*this));
 		}
+	    using FormatLL<type>::c;
+	    using FormatLL<type>::ll_it;
 		string operator()(string ostr, double n)
 		{
 			cout << "@FormatLL_DD::operator() c.waypoint " << boolalpha << c.waypoint << endl;
@@ -727,27 +684,33 @@ class FormatLL_DD : public FormatLL {
 
 /// __________________________________________________
 /// FormatLL functor for latitude and longitude strings for degrees, minutes (and seconds)
-template<class FF>
-class FormatLL_DM_S : public FormatLL {
+template<CoordType type>
+class FormatLL_DM_S : public FormatLL<type> {
 	public:
-		FormatLL_DM_S(const Coord& c) : FormatLL(c)
+		FormatLL_DM_S(const Coord<type>& c) : FormatLL<type>(c)
 		{
-			cout << "§FormatLL_DM_S<FF>(const Coord&) "; _ctrsgn(typeid(*this));
+			cout << "§FormatLL_DM_S(const Coord<type>&) "; _ctrsgn(typeid(*this));
 		}
+	    using FormatLL<type>::c;
+	    using FormatLL<type>::ll_it;
 		string operator()(string ostr, double n)
 		{
 			cout << "@FormatLL_DM_S::operator()\n";
-			return ostr += c.latlon.size() ? cardpoint(c.ff->get_decmin(n) < 0, c.llgt1 ? *ll_it++ : *ll_it) : cardi_b(c.ff->get_decmin(n) < 0);
+			return ostr += c.latlon.size() ? cardpoint(c.ff.get_decmin(n) < 0, c.llgt1 ? *ll_it++ : *ll_it) : cardi_b(c.ff.get_decmin(n) < 0);
 		}
 };
 
+using formatll_dd = FormatLL_DD<CoordType::decdeg>;
+using formatll_dm = FormatLL_DM_S<CoordType::degmin>;
+using formatll_dms = FormatLL_DM_S<CoordType::degminsec>;
 
 /// __________________________________________________
 /// Formatted coordinate strings for printing
-vector<string> Coord::format() const
+template<CoordType type>
+vector<string> Coord<type>::format() const
 {
-//	cout << "@Coord::format<FT, FL>()\n";
-	cout << "@Coord::format()\n";
+//	cout << "@Coord<type>::format<FT, FL>()\n";
+	cout << "@Coord<type>::format()\n";
 	vector<string> out(nv.size());
 //	transform(nv.begin(), nv.end(), out.begin(), FT());
 //	transform(out.begin(), out.end(), nv.begin(), out.begin(), FL(*this));
@@ -761,9 +724,10 @@ vector<string> Coord::format() const
 
 /// __________________________________________________
 /// Print coords vector
-void Coord::print(ostream& stream) const
+template<CoordType type>
+void Coord<type>::print(ostream& stream) const
 {
-	cout << "@Coord::print() type " << typeid(*this).name() << endl;
+	cout << "@Coord<type>::print() type " << typeid(*this).name() << endl;
 	vector<string> sv(format()); 
 	if (names.size()) {
 		vector<string>::const_iterator nm_it(names.begin());
@@ -776,37 +740,49 @@ void Coord::print(ostream& stream) const
 
 /// __________________________________________________
 /// Output Coord derived object to ostream
-ostream& operator<<(ostream& stream, const Coord& c)
+template<CoordType type>
+ostream& operator<<(ostream& stream, const Coord<type>& c)
 {
-	cout << "@operator<<(ostream&, const Coord&)\n";
+	cout << "@operator<<(ostream&, const Coord<type>&)\n";
 	c.print(stream);
 	return stream;
+}
+
+/*
+/// __________________________________________________
+/// __________________________________________________
+/// Create unique_ptr<Coord> to new Coord object
+template<CoordType type, class T>
+unique_ptr<const Coord<type>> newconstCoord(const T& t, const CoordType coordtype)
+{
+	cout << "@newconstCoord(const T&, const CoordType) of type " << coordtype_to_int(type) + 1 << endl;
+
+	switch (coordtype)
+	{
+		case CoordType::decdeg:
+					return factory<const Coord<CoordType::decdeg>>(t);
+
+		case CoordType::degmin:
+					return factory<const Coord<CoordType::degmin>>(t);
+
+		case CoordType::degminsec:
+					return factory<const Coord<CoordType::degminsec>>(t);
+		default:
+					stop("newconstCoord(const T&, const CoordType) my bad");
+	}
 }
 
 
 /// __________________________________________________
 /// __________________________________________________
 /// Create unique_ptr<Coord> to new Coord object
-template<class T>
-unique_ptr<const Coord> newconstCoord(const T& t, const CoordType type)
+template<CoordType type, class T>
+unique_ptr<const Coord<type>> newconstCoord(const T& t)
 {
-	cout << "@newconstCoord<T>(const T&, const CoordType) of type " << coordtype_to_int(type) + 1 << endl;
-
-	switch (type)
-	{
-		case CoordType::decdeg:
-					return factory<const Coord>(t, in_place_type<FamousFiveDD>);
-
-		case CoordType::degmin:
-					return factory<const Coord>(t, in_place_type<FamousFiveDM>);
-
-		case CoordType::degminsec:
-					return factory<const Coord>(t, in_place_type<FamousFiveDMS>);
-		default:
-					stop("newconstCoord(const T&, const CoordType) my bad");
-	}
+	cout << "@newconstCoord(const T&, const CoordType) of type " << coordtype_to_int(type) + 1 << endl;
+	return factory<const Coord<type>>(t);
 }
-
+*/
 
 
 /// __________________________________________________
@@ -842,7 +818,7 @@ void colattrset(const T& t, int col, const char* attrib, V&& val)
 	as<NumericVector>(t[col]).attr(attrib) = std::forward<V>(val);
 }
 
-
+/*
 /// __________________________________________________
 /// __________________________________________________
 /// Validation functions
@@ -901,21 +877,22 @@ bool check_valid<NumericVector>(const NumericVector& nv)
 
 /// __________________________________________________
 /// Validate coords vector
+template<CoordType type>
 vector<bool> validatecoord(const NumericVector& nv)
 {
 //	cout << "@validatecoord()\n";
-	unique_ptr<const Coord> c{ newconstCoord(nv, get_coordtype(nv)) };
+	unique_ptr<const Coord<type>> c{ newconstCoord<type>(nv, get_coordtype(nv)) };
 	c->validate();
 	const_cast<NumericVector&>(nv).attr("valid") = c->get_valid();
 	return c->get_valid();
 }
-
+*/
 
 /// __________________________________________________
 /// __________________________________________________
 /// Exported functions
 
-
+/*
 /// __________________________________________________
 /// Set R vector object class to coords and return,
 /// or convert format of R coords object and return  !!!!!!! Template and Specialise [with waypoints()] !!!!!!!
@@ -938,10 +915,11 @@ NumericVector coords(NumericVector& nv, int fmt = 1)
 		}
 	}
 //	unique_ptr<const CoordBase> cb1{ newconstCoordBase(nv, inheritscoords ? oldtype : newtype) };
-	unique_ptr<const Coord> cb1{ newconstCoord(nv, inheritscoords ? oldtype : newtype) };
+//	unique_ptr<const Coord<CoordType::degmin>> cb1{ newconstCoord<CoordType::degmin>(nv, inheritscoords ? oldtype : newtype) };
+	unique_ptr<const Coord<CoordType::degmin>> cb1{ newconstCoord<CoordType::degmin>(nv, CoordType::degmin) };
 	if (inheritscoords) {
 //		unique_ptr<const CoordBase> cb2{ cb1->convert(newtype) };
-		unique_ptr<const Coord> cb2{ newconstCoord(nv, inheritscoords ? oldtype : newtype) };  // Placeholder for compiler…
+		unique_ptr<const Coord<CoordType::degmin>> cb2{ newconstCoord<CoordType::degmin>(nv, CoordType::degmin) };  // Placeholder for compiler…
 		cb1.swap(cb2);
 		copy((cb1->get_nv()).begin(), (cb1->get_nv()).end(), nv.begin());
 	} else {
@@ -962,7 +940,7 @@ NumericVector coords_replace(NumericVector& nv, int value)
 {
 //	cout << "——Rcpp::export——`coords_replace()<-`\n";
 	return coords(nv, value);
-}
+} */
 
 
 /// __________________________________________________
@@ -976,7 +954,7 @@ NumericVector latlon(NumericVector& nv, LogicalVector& value)
 		stop("value must be either length 1 or length(nv)");
 	else
 		nv.attr("latlon") = value;
-	validatecoord(nv);
+//	validatecoord(nv);
 	return nv;
 }
 
@@ -988,14 +966,16 @@ NumericVector printcoord(NumericVector& nv)
 {
 //	cout << "——Rcpp::export——printcoord() format " << get_fmt_attribute(nv) << endl;
 	checkinherits(nv, "coords");
-	if (!check_valid(nv))
-		warning("Printing invalid coords!");
+//	if (!check_valid(nv))
+//		warning("Printing invalid coords!");
 //	Rcout << *newconstCoordBase(nv, get_coordtype(nv)) << endl;
-	Rcout << *newconstCoord(nv, get_coordtype(nv)) << endl;
+//	Rcout << *newconstCoord<CoordType::degmin>(nv, get_coordtype(nv)) << endl;
+    Rcout << Coord<CoordType::degmin>(nv);
+
 	return nv;
 }
 
-
+/*
 /// __________________________________________________
 /// Validate coords vector
 // [[Rcpp::export(name = "validate.coords")]]
@@ -1006,7 +986,7 @@ vector<bool> Rvalidatecoord(NumericVector& nv)
 	return validatecoord(nv);
 }
 
-/*
+
 /// __________________________________________________
 /// Format coords vector - S3 method format.coords()
 // [[Rcpp::export(name = "format.coords")]]
