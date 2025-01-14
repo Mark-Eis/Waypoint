@@ -91,6 +91,9 @@ class FormatLL_DM_S;
 //template<CoordType type, class T>
 //unique_ptr<const Coord<type>> newconstCoord(const T&, const CoordType);
 
+template<CoordType type>
+const Coord<type>&& constCoord(const NumericVector&);
+
 class WayPoint;
 template<class T>
 unique_ptr<const WayPoint> newconstWayPoint(const T&);
@@ -783,6 +786,17 @@ unique_ptr<const Coord<type>> newconstCoord(const T& t)
 	return factory<const Coord<type>>(t);
 }
 */
+
+
+/// __________________________________________________
+/// __________________________________________________
+/// Create Coord<type> object of CoordType type
+template<CoordType type>
+const Coord<type>&& constCoord(const NumericVector& nv)
+{
+	cout << "@constCoord<type>(const T&)\n";
+	return Coord<type>(nv);
+}
 
 
 /// __________________________________________________
