@@ -80,6 +80,14 @@ class Coord;
 template<CoordType type>
 class newValidator;
 
+template<CoordType>
+class Formatly;
+template<>
+class Formatly<CoordType::decdeg>;
+template<>
+class Formatly<CoordType::degmin>;
+template<>
+class Formatly<CoordType::degminsec>;
 
 template<CoordType type>
 class FormatLL;
@@ -501,6 +509,7 @@ class Coord {
 		vector<string> format() const;
 		void print(ostream&) const;
 
+		friend class Formatly<type>;
 		friend class FormatLL<type>;
 		friend class FormatLL_DD<type>;
 		friend class FormatLL_DM_S<type>;
@@ -641,6 +650,97 @@ inline void Coord<type>::set_waypoint() const
 
 /// __________________________________________________
 /// __________________________________________________
+/// Formatting functors
+template<CoordType>
+class Formatly {
+/*	public:
+		Formatly()
+		{
+			cout << "§Formatly<class FF>() "; _ctrsgn(typeid(*this));
+		}
+//		Formatly() = default;
+		Formatly(const Formatly&) = delete;				// Disallow copying
+		Formatly& operator=(const Formatly&) = delete;	//  ——— ditto ———
+		Formatly(Formatly&&) = delete;					// Disallow transfer ownership
+		Formatly& operator=(Formatly&&) = delete;		// Disallow moving
+*/
+};
+
+
+/// __________________________________________________
+/// Formatting functor for decimal degrees
+template<>
+class Formatly<CoordType::decdeg> {
+		const Coord<CoordType::decdeg>& c;
+		ostringstream outstrstr;
+	public:
+		Formatly(const Coord<CoordType::decdeg>& _c) : c(_c)
+		{
+			cout << "§Formatly<CoordType::decdeg>() "; _ctrsgn(typeid(*this));
+		}
+//		Formatly() = default;
+//	    using Formatly::outstrstr;
+		string operator()(double n)
+		{
+			cout << "@Formatly<CoordType::decdeg>::operator()\n";
+			outstrstr.str("");
+			outstrstr << setw(11) << setfill(' ')  << fixed << setprecision(6) << c.ff.get_decdeg(n) << "\u00B0";
+			return outstrstr.str();
+		}
+};
+
+
+/// __________________________________________________
+/// Formatting functor for degrees and minutes
+template<>
+class Formatly<CoordType::degmin> {
+		const Coord<CoordType::degmin>& c;
+		ostringstream outstrstr;
+	public:
+		Formatly(const Coord<CoordType::degmin>& _c) : c(_c)
+		{
+			cout << "§Formatly<CoordType::degmin>() "; _ctrsgn(typeid(*this));
+		}
+//		Formatly() = default;
+//	    using Formatly::outstrstr;
+		string operator()(double n)
+		{
+			cout << "@Formatly<CoordType::degmin>::operator()\n";
+			outstrstr.str("");
+			outstrstr << setw(3) << setfill(' ') << abs(c.ff.get_deg(n)) << "\u00B0"
+					  << setw(7) << setfill('0') << fixed << setprecision(4) << abs(c.ff.get_decmin(n)) << "'";
+			return outstrstr.str();
+		}
+};
+
+
+/// __________________________________________________
+/// Formatting functor for degrees, minutes and seconds
+template<>
+class Formatly<CoordType::degminsec> {
+		const Coord<CoordType::degminsec>& c;
+		ostringstream outstrstr;
+	public:
+		Formatly(const Coord<CoordType::degminsec>& _c) : c(_c)
+		{
+			cout << "§Formatly<CoordType::degminsec>() "; _ctrsgn(typeid(*this));
+		}
+//		Formatly() = default;
+//	    using Formatly::outstrstr;
+		string operator()(double n)
+		{
+			cout << "@Formatly<CoordType::degminsec>::operator()\n";
+			outstrstr.str("");
+			outstrstr << setw(3) << setfill(' ') << abs(c.ff.get_deg(n)) << "\u00B0"
+					  << setw(2) << setfill('0') << abs(c.ff.get_min(n)) << "'"
+					  << setw(5) << fixed << setprecision(2) << abs(c.ff.get_sec(n)) << "\"";
+			return outstrstr.str();
+		}
+};
+
+
+/// __________________________________________________
+/// __________________________________________________
 /// Formatting functors for Latitude and Longitude
 
 /// __________________________________________________
@@ -715,13 +815,14 @@ using formatll_dms = FormatLL_DM_S<CoordType::degminsec>;
 template<CoordType type>
 vector<string> Coord<type>::format() const
 {
-//	cout << "@Coord<type>::format<FT, FL>()\n";
 	cout << "@Coord<type>::format()\n";
 	vector<string> out(nv.size());
+
 //	transform(nv.begin(), nv.end(), out.begin(), FT());
 //	transform(out.begin(), out.end(), nv.begin(), out.begin(), FL(*this));
 //	transform(nv.begin(), nv.end(), out.begin(), format_decdeg());
 //	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL_DD(*this));
+
 	transform(nv.begin(), nv.end(), out.begin(), format_degmin());
 	transform(out.begin(), out.end(), nv.begin(), out.begin(), formatll_dm(*this));
 	return out;
@@ -792,7 +893,7 @@ unique_ptr<const Coord<type>> newconstCoord(const T& t)
 
 
 /// __________________________________________________
-/// __________________________________________________
+/// __________________________________________________ ///////// Needed? does nothing…
 /// R-value reference to Coord<type> object
 template<CoordType type>
 const Coord<type>&& constCoord(const NumericVector& nv)
@@ -981,15 +1082,36 @@ NumericVector latlon(NumericVector& nv, LogicalVector& value)
 // [[Rcpp::export(name = "print.coords", invisible = true)]]
 NumericVector printcoord(NumericVector& nv)
 {
-//	cout << "——Rcpp::export——printcoord() format " << get_fmt_attribute(nv) << endl;
+	cout << "——Rcpp::export——printcoord() format " << get_fmt_attribute(nv) << endl;
 	checkinherits(nv, "coords");
 //	if (!check_valid(nv))
 //		warning("Printing invalid coords!");
-//	Rcout << *newconstCoord<CoordType::degmin>(nv, get_coordtype(nv)) << endl;
 
-//	Rcout << Coord<CoordType::degmin>(nv);
-	Coord<CoordType::degmin> c(nv);
-//	Rcout << constCoord<CoordType::degmin>(nv);
+	switch (get_coordtype(nv))
+	{
+		case CoordType::decdeg:
+//			Rcout << Coord<CoordType::decdeg>(nv);
+			break;
+
+		case CoordType::degmin:
+			Rcout << Coord<CoordType::degmin>(nv);
+			break;
+
+		case CoordType::degminsec:
+//			Rcout << Coord<CoordType::degminsec>(nv);
+			break;
+
+		default:
+			stop("printcoord(NumericVector&) my bad");
+	}
+	
+/*	constexpr CoordType ct = CoordType::degmin;
+
+	Rcout << "Coord<ct>(nv)\n" << Coord<ct>(nv) << endl;
+
+	using coord_dm = Coord<CoordType::degmin>;
+	Rcout << "coord_dm(nv)\n" << coord_dm(nv);
+*/
 	return nv;
 }
 
