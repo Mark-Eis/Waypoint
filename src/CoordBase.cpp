@@ -641,7 +641,6 @@ class FormatLL {
 	protected:
 		const Coord<type>& c; 
 		vector<bool>::const_iterator ll_it;
-		ostringstream outstrstr;
 	public:
 		FormatLL(const Coord<type>& _c) : c(_c), ll_it(c.latlon.begin())
 		{
