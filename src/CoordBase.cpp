@@ -76,10 +76,12 @@ class Format<CoordType::degminsec>;
 
 template<CoordType type>
 class FormatLL;
-template<CoordType type>
-class FormatLL_DD;
-template<CoordType type>
-class FormatLL_DM_S;
+template<>
+class FormatLL<CoordType::decdeg>;
+template<>
+class FormatLL<CoordType::degmin>;
+template<>
+class FormatLL<CoordType::degminsec>;
 
 //template<CoordType type, class T>
 //unique_ptr<const Coord<type>> newconstCoord(const T&, const CoordType);
@@ -402,8 +404,8 @@ class Coord {
 
 		friend class Format<type>;
 		friend class FormatLL<type>;
-		friend class FormatLL_DD<type>;
-		friend class FormatLL_DM_S<type>;
+//		friend class FormatLL_DD<type>;
+//		friend class FormatLL_DM_S<type>;
 		friend class newValidator<type>;
 
 };
@@ -633,43 +635,34 @@ class Format<CoordType::degminsec> {
 /// __________________________________________________
 /// __________________________________________________
 /// Formatting functors for Latitude and Longitude
-
-/// __________________________________________________
-/// FormatLL functor base class
 template<CoordType type>
 class FormatLL {
-	protected:
-		const Coord<type>& c; 
-		vector<bool>::const_iterator ll_it;
-	public:
-		FormatLL(const Coord<type>& _c) : c(_c), ll_it(c.latlon.begin())
-		{
-			cout << "§FormatLL(const Coord<type>&) "; _ctrsgn(typeid(*this));
-		}
-		FormatLL(const FormatLL&) = delete;				// Disallow copying
-		FormatLL& operator=(const FormatLL&) = delete;	//  ——— ditto ———
-		FormatLL(FormatLL&&) = delete;					// Disallow transfer ownership
-		FormatLL& operator=(FormatLL&&) = delete;	    // Disallow moving
-		virtual ~FormatLL() = 0;
+/*	FormatLL(const Coord<type>& _c) : c(_c), ll_it(c.latlon.begin())
+	{
+	        cout << "§FormatLL(const Coord<type>&) "; _ctrsgn(typeid(*this));
+	}
+	FormatLL(const FormatLL&) = delete;	             // Disallow copying
+	FormatLL& operator=(const FormatLL&) = delete;  //  ——— ditto ———
+	FormatLL(FormatLL&&) = delete;		  // Disallow transfer ownership
+	FormatLL& operator=(FormatLL&&) = delete;           // Disallow moving
+*/
 };
 
-template<CoordType type>
-inline FormatLL<type>::~FormatLL() {  cout << "§FormatLL::~FormatLL() "; _ctrsgn(typeid(*this), true);  }
 
 /// __________________________________________________
-/// FormatLL functor for latitude and longitude strings for decimal degrees
-template<CoordType type>
-class FormatLL_DD : public FormatLL<type> {
+/// Format functor for latitude and longitude strings for decimal degrees
+template<>
+class FormatLL<CoordType::decdeg> {
+		const Coord<CoordType::decdeg>& c; 
+		vector<bool>::const_iterator ll_it;
 	public:
-		FormatLL_DD(const Coord<type>& c) : FormatLL<type>(c)
+		FormatLL(const Coord<CoordType::decdeg>& _c) : c(_c)
 		{
-			cout << "§FormatLL_DD(const Coord<type>&) "; _ctrsgn(typeid(*this));
+			cout << "§FormatLL<CoordType::decdeg>(const Coord<type>&) "; _ctrsgn(typeid(*this));
 		}
-	    using FormatLL<type>::c;
-	    using FormatLL<type>::ll_it;
 		string operator()(string ostr, double n)
 		{
-			cout << "@FormatLL_DD::operator() c.waypoint " << boolalpha << c.waypoint << endl;
+			cout << "@FormatLL<CoordType::decdeg>::operator() c.waypoint " << boolalpha << c.waypoint << endl;
 			if (c.latlon.size() && !c.waypoint)
 				return ostr += ((c.llgt1 ? *ll_it++ : *ll_it) ? " lat" : " lon");
 			else
@@ -679,26 +672,42 @@ class FormatLL_DD : public FormatLL<type> {
 
 
 /// __________________________________________________
-/// FormatLL functor for latitude and longitude strings for degrees, minutes (and seconds)
-template<CoordType type>
-class FormatLL_DM_S : public FormatLL<type> {
+/// Format functor for latitude and longitude strings for degrees and minutes
+template<>
+class FormatLL<CoordType::degmin> {
+		const Coord<CoordType::degmin>& c; 
+		vector<bool>::const_iterator ll_it;
 	public:
-		FormatLL_DM_S(const Coord<type>& c) : FormatLL<type>(c)
+		FormatLL(const Coord<CoordType::degmin>& _c) : c(_c)
 		{
-			cout << "§FormatLL_DM_S(const Coord<type>&) "; _ctrsgn(typeid(*this));
+			cout << "§FormatLL<CoordType::degmin>(const Coord<type>&) "; _ctrsgn(typeid(*this));
 		}
-	    using FormatLL<type>::c;
-	    using FormatLL<type>::ll_it;
 		string operator()(string ostr, double n)
 		{
-			cout << "@FormatLL_DM_S::operator()\n";
+			cout << "@FormatLL<CoordType::degmins>::operator()\n";
 			return ostr += c.latlon.size() ? cardpoint(c.ff.get_decmin(n) < 0, c.llgt1 ? *ll_it++ : *ll_it) : cardi_b(c.ff.get_decmin(n) < 0);
 		}
 };
 
-using formatll_dd = FormatLL_DD<CoordType::decdeg>;
-using formatll_dm = FormatLL_DM_S<CoordType::degmin>;
-using formatll_dms = FormatLL_DM_S<CoordType::degminsec>;
+
+/// __________________________________________________
+/// Format functor for latitude and longitude strings for degrees and minutes
+template<>
+class FormatLL<CoordType::degminsec> {
+		const Coord<CoordType::degminsec>& c; 
+		vector<bool>::const_iterator ll_it;
+	public:
+		FormatLL(const Coord<CoordType::degminsec>& _c) : c(_c)
+		{
+			cout << "§FormatLL<CoordType::degminsec>(const Coord<type>&) "; _ctrsgn(typeid(*this));
+		}
+		string operator()(string ostr, double n)
+		{
+			cout << "@FormatLL<CoordType::degminsec>::operator()\n";
+			return ostr += c.latlon.size() ? cardpoint(c.ff.get_decmin(n) < 0, c.llgt1 ? *ll_it++ : *ll_it) : cardi_b(c.ff.get_decmin(n) < 0);
+		}
+};
+
 
 /// __________________________________________________
 /// Formatted coordinate strings for printing
@@ -708,7 +717,7 @@ vector<string> Coord<type>::format() const
 	cout << "@Coord<type>::format()\n";
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), Format<type>(*this));
-	transform(out.begin(), out.end(), nv.begin(), out.begin(), formatll_dm(*this));
+	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<type>(*this));
 	return out;
 }
 
@@ -974,7 +983,7 @@ NumericVector printcoord(NumericVector& nv)
 	switch (get_coordtype(nv))
 	{
 		case CoordType::decdeg:
-//			Rcout << Coord<CoordType::decdeg>(nv);
+			Rcout << Coord<CoordType::decdeg>(nv);
 			break;
 
 		case CoordType::degmin:
@@ -982,7 +991,7 @@ NumericVector printcoord(NumericVector& nv)
 			break;
 
 		case CoordType::degminsec:
-//			Rcout << Coord<CoordType::degminsec>(nv);
+			Rcout << Coord<CoordType::degminsec>(nv);
 			break;
 
 		default:
