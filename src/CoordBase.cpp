@@ -487,6 +487,9 @@ class Coord {
 //		template<class CV>
 //		explicit Coord(const Coord&, in_place_type_t<CV>);
 		Coord<type>& operator=(const Coord<type>&) = delete;
+		~Coord<type>() {
+			cout << "§Coord<type>::~Coord() "; _ctrsgn(typeid(*this), true);		
+		}
 
 		void validate(bool = true) const;
 		const vector<double>& get_nv() const;
@@ -790,7 +793,7 @@ unique_ptr<const Coord<type>> newconstCoord(const T& t)
 
 /// __________________________________________________
 /// __________________________________________________
-/// Create Coord<type> object of CoordType type
+/// R-value reference to Coord<type> object
 template<CoordType type>
 const Coord<type>&& constCoord(const NumericVector& nv)
 {
@@ -982,10 +985,11 @@ NumericVector printcoord(NumericVector& nv)
 	checkinherits(nv, "coords");
 //	if (!check_valid(nv))
 //		warning("Printing invalid coords!");
-//	Rcout << *newconstCoordBase(nv, get_coordtype(nv)) << endl;
 //	Rcout << *newconstCoord<CoordType::degmin>(nv, get_coordtype(nv)) << endl;
-    Rcout << Coord<CoordType::degmin>(nv);
 
+//	Rcout << Coord<CoordType::degmin>(nv);
+	Coord<CoordType::degmin> c(nv);
+//	Rcout << constCoord<CoordType::degmin>(nv);
 	return nv;
 }
 
