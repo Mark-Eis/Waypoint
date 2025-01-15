@@ -71,9 +71,6 @@ class Format;
 template<CoordType type>
 class FormatLL;
 
-template<CoordType type, class T>
-unique_ptr<const Coord<type>> newconstCoord(const T&, const CoordType);
-
 class WayPoint;
 template<class T>
 unique_ptr<const WayPoint> newconstWayPoint(const T&);
@@ -683,32 +680,6 @@ ostream& operator<<(ostream& stream, const Coord<type>& c)
 	c.print(stream);
 	return stream;
 }
-
-/*
-/// __________________________________________________
-/// __________________________________________________
-/// Create unique_ptr<Coord> to new Coord object
-template<CoordType type, class T>
-unique_ptr<const Coord<type>> newconstCoord(const T& t, const CoordType coordtype)
-{
-	cout << "@newconstCoord(const T&, const CoordType) of type " << coordtype_to_int(type) + 1 << endl;
-
-	switch (coordtype)
-	{
-		case CoordType::decdeg:
-					return factory<const Coord<CoordType::decdeg>>(t);
-
-		case CoordType::degmin:
-					return factory<const Coord<CoordType::degmin>>(t);
-
-		case CoordType::degminsec:
-					return factory<const Coord<CoordType::degminsec>>(t);
-		default:
-					stop("newconstCoord(const T&, const CoordType) my bad");
-	}
-}
-
-*/
 
 
 /// __________________________________________________
