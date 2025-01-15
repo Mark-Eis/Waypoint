@@ -70,12 +70,6 @@ class Format;
 
 template<CoordType type>
 class FormatLL;
-template<>
-class FormatLL<CoordType::decdeg>;
-template<>
-class FormatLL<CoordType::degmin>;
-template<>
-class FormatLL<CoordType::degminsec>;
 
 //template<CoordType type, class T>
 //unique_ptr<const Coord<type>> newconstCoord(const T&, const CoordType);
@@ -606,76 +600,51 @@ string Format<CoordType::degminsec>::operator()(double n)
 /// Formatting functors for Latitude and Longitude
 template<CoordType type>
 class FormatLL {
-/*	FormatLL(const Coord<type>& _c) : c(_c), ll_it(c.latlon.begin())
-	{
-	        cout << "§FormatLL(const Coord<type>&) "; _ctrsgn(typeid(*this));
-	}
-	FormatLL(const FormatLL&) = delete;	             // Disallow copying
-	FormatLL& operator=(const FormatLL&) = delete;  //  ——— ditto ———
-	FormatLL(FormatLL&&) = delete;		  // Disallow transfer ownership
-	FormatLL& operator=(FormatLL&&) = delete;           // Disallow moving
-*/
+		const Coord<type>& c; 
+		vector<bool>::const_iterator ll_it;
+	public:
+		FormatLL(const Coord<type>& _c);
+		FormatLL(const FormatLL&) = delete;				// Disallow copying
+		FormatLL& operator=(const FormatLL&) = delete;	//  ——— ditto ———
+		FormatLL(FormatLL&&) = delete;					// Disallow transfer ownership
+		FormatLL& operator=(FormatLL&&) = delete;		// Disallow moving
+		~FormatLL();
+		string operator()(string, double);
 };
+
+template<CoordType type>
+FormatLL<type>::FormatLL(const Coord<type>& _c) : c(_c), ll_it(c.latlon.begin())
+{
+	cout << "§FormatLL(const Coord<type>&) "; _ctrsgn(typeid(*this));
+}
+
+template<CoordType type>
+FormatLL<type>::~FormatLL()
+{
+	cout << "§FormatLL::~FormatLL() "; _ctrsgn(typeid(*this), true);		
+}
+
+/// __________________________________________________
+/// Default operator(), for degrees, minutes (and seconds)
+template<CoordType type>
+string FormatLL<type>::operator()(string ostr, double n)
+{
+	cout << "@FormatLL<type>::operator(string, double) [default for CoordType::degmin and CoordType::degminsec]\n";
+	return ostr += c.latlon.size() ? cardpoint(c.ff.get_decmin(n) < 0, c.llgt1 ? *ll_it++ : *ll_it) : cardi_b(c.ff.get_decmin(n) < 0);
+}
 
 
 /// __________________________________________________
-/// Format functor for latitude and longitude strings for decimal degrees
+/// Specialised operator(), for decimal degrees
 template<>
-class FormatLL<CoordType::decdeg> {
-		const Coord<CoordType::decdeg>& c; 
-		vector<bool>::const_iterator ll_it;
-	public:
-		FormatLL(const Coord<CoordType::decdeg>& _c) : c(_c)
-		{
-			cout << "§FormatLL<CoordType::decdeg>(const Coord<type>&) "; _ctrsgn(typeid(*this));
-		}
-		string operator()(string ostr, double n)
-		{
-			cout << "@FormatLL<CoordType::decdeg>::operator() c.waypoint " << boolalpha << c.waypoint << " ostr " << ostr << " n " << n << endl;
-			if (c.latlon.size() && !c.waypoint)
-				return ostr += ((c.llgt1 ? *ll_it++ : *ll_it) ? " lat" : " lon");
-			else
-				return ostr;
-		}
-};
-
-
-/// __________________________________________________
-/// Format functor for latitude and longitude strings for degrees and minutes
-template<>
-class FormatLL<CoordType::degmin> {
-		const Coord<CoordType::degmin>& c; 
-		vector<bool>::const_iterator ll_it;
-	public:
-		FormatLL(const Coord<CoordType::degmin>& _c) : c(_c)
-		{
-			cout << "§FormatLL<CoordType::degmin>(const Coord<type>&) "; _ctrsgn(typeid(*this));
-		}
-		string operator()(string ostr, double n)
-		{
-			cout << "@FormatLL<CoordType::degmin>::operator()\n";
-			return ostr += c.latlon.size() ? cardpoint(c.ff.get_decmin(n) < 0, c.llgt1 ? *ll_it++ : *ll_it) : cardi_b(c.ff.get_decmin(n) < 0);
-		}
-};
-
-
-/// __________________________________________________
-/// Format functor for latitude and longitude strings for degrees and minutes
-template<>
-class FormatLL<CoordType::degminsec> {
-		const Coord<CoordType::degminsec>& c; 
-		vector<bool>::const_iterator ll_it;
-	public:
-		FormatLL(const Coord<CoordType::degminsec>& _c) : c(_c)
-		{
-			cout << "§FormatLL<CoordType::degminsec>(const Coord<type>&) "; _ctrsgn(typeid(*this));
-		}
-		string operator()(string ostr, double n)
-		{
-			cout << "@FormatLL<CoordType::degminsec>::operator()\n";
-			return ostr += c.latlon.size() ? cardpoint(c.ff.get_decmin(n) < 0, c.llgt1 ? *ll_it++ : *ll_it) : cardi_b(c.ff.get_decmin(n) < 0);
-		}
-};
+string FormatLL<CoordType::decdeg>::operator()(string ostr, double n)
+{
+	cout << "@FormatLL<CoordType::decdeg>::operator(string, double) c.waypoint " << boolalpha << c.waypoint << " ostr " << ostr << " n " << n << endl;
+	if (c.latlon.size() && !c.waypoint)
+		return ostr += ((c.llgt1 ? *ll_it++ : *ll_it) ? " lat" : " lon");
+	else
+		return ostr;
+}
 
 
 /// __________________________________________________
@@ -685,8 +654,8 @@ vector<string> Coord<type>::format() const
 {
 	cout << "@Coord<type>::format()\n";
 	vector<string> out(nv.size());
-//	transform(nv.begin(), nv.end(), out.begin(), Format<type>(*this));
 	transform(nv.begin(), nv.end(), out.begin(), Format<type>(*this));
+	cout << endl;
 	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<type>(*this));
 	return out;
 }
