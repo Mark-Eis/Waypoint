@@ -90,6 +90,7 @@ bool check_valid(const T&);
 template<>
 bool check_valid<NumericVector>(const NumericVector&);
 template<CoordType type>
+vector<bool> validatelet(const NumericVector&);
 vector<bool> validatecoord(const NumericVector&);
 
 // exported
@@ -766,22 +767,42 @@ bool check_valid<NumericVector>(const NumericVector& nv)
 		return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
 	else {
 		warning("Unvalidated coords! Revalidating…");
-//		validatecoord(nv);
+		validatecoord(nv);
 		return check_valid(nv);
 	}
+}
+
+template<CoordType type>
+vector<bool> validatelet(const NumericVector& nv)
+{
+	cout << "@validatelet(const NumericVector&)\n";
+	Coord<type> c(nv);
+	c.validate();
+	const_cast<NumericVector&>(nv).attr("valid") = c.get_valid();
+	return c.get_valid();	
 }
 
 
 /// __________________________________________________
 /// Validate coords vector
-template<CoordType type>
 vector<bool> validatecoord(const NumericVector& nv)
 {
 	cout << "@validatecoord()\n";
-	Coord<type> c(nv);
-	c.validate();
-	const_cast<NumericVector&>(nv).attr("valid") = c.get_valid();
-	return c.get_valid();
+
+	switch (get_coordtype(nv))
+	{
+		case CoordType::decdeg:
+			return validatelet<CoordType::decdeg>(nv);
+
+		case CoordType::degmin:
+			return validatelet<CoordType::degmin>(nv);
+
+		case CoordType::degminsec:
+			return validatelet<CoordType::degminsec>(nv);
+
+		default:
+			stop("validatecoord(const NumericVector&) my bad");
+	}
 }
 
 
@@ -887,7 +908,7 @@ NumericVector printcoord(NumericVector& nv)
 	return nv;
 }
 
-/*
+
 /// __________________________________________________
 /// Validate coords vector
 // [[Rcpp::export(name = "validate.coords")]]
@@ -898,7 +919,7 @@ vector<bool> Rvalidatecoord(NumericVector& nv)
 	return validatecoord(nv);
 }
 
-
+/*
 /// __________________________________________________
 /// Format coords vector - S3 method format.coords()
 // [[Rcpp::export(name = "format.coords")]]
