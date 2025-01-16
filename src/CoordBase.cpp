@@ -63,7 +63,7 @@ using convert_dms_dms = ConvertDMS<FamousFive<CoordType::degminsec>>;
 template<CoordType type>
 class Coord;
 template<CoordType type>
-class newValidator;
+class Validator;
 
 template<CoordType type>
 class Format;
@@ -386,7 +386,7 @@ class Coord {
 
 		friend class Format<type>;
 		friend class FormatLL<type>;
-		friend class newValidator<type>;
+		friend class Validator<type>;
 
 };
 
@@ -426,17 +426,17 @@ Coord::Coord(const Coord& c, in_place_type_t<CV>) :
 /// Validate Coord functor
 
 template<CoordType type>
-class newValidator {
+class Validator {
 		const Coord<type>& c; 
 		vector<bool>::const_iterator ll_it;
 	public:
-		newValidator(const Coord<type>& _c) : c(_c), ll_it(c.latlon.begin())
+		Validator(const Coord<type>& _c) : c(_c), ll_it(c.latlon.begin())
 		{
-			cout << "§newValidator(const Coord<type>&) "; _ctrsgn(typeid(*this));
+			cout << "§Validator(const Coord<type>&) "; _ctrsgn(typeid(*this));
 		}
 		bool operator()(double n)
 		{
-			cout << "@newValidator() " << " n: " << setw(9) << setfill(' ') << n << endl;
+			cout << "@Validator() " << " validating: " << setw(9) << setfill(' ') << n << endl;
 			return !((abs(c.ff.get_decdeg(n)) > (c.latlon.size() && (c.llgt1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
 				(abs(c.ff.get_decmin(n)) >= 60) ||
 				(abs(c.ff.get_sec(n)) >= 60));
@@ -452,7 +452,7 @@ void Coord<type>::validate(bool warn) const
 	cout << "@Coord<type>::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
 	vector<bool>& non_const_valid { const_cast<vector<bool>&>(valid) };
 	non_const_valid.assign(nv.size(), {false});
-	transform(nv.begin(), nv.end(), non_const_valid.begin(), newValidator(*this));
+	transform(nv.begin(), nv.end(), non_const_valid.begin(), Validator(*this));
 	if (all_valid())
 		non_const_valid.assign({true});
 	else
