@@ -356,8 +356,6 @@ template<CoordType type>
 class Coord {
 	protected:
 		vector<double> nv;
-//		unique_ptr<FamousFive> ff;
-//		FamousFive<CoordType::degmin> fly5;
 		FamousFive<type> ff;
 		const vector<bool> valid { false };
 		const vector<bool> latlon;
