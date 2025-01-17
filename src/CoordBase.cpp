@@ -391,10 +391,12 @@ class Coord {
 		vector<string> format() const;
 		void print(ostream&) const;
 
+		friend class Coord<CoordType::decdeg>;
+		friend class Coord<CoordType::degmin>;
+		friend class Coord<CoordType::degminsec>;
 		friend class Format<type>;
 		friend class FormatLL<type>;
 		friend class Validator<type>;
-
 };
 
 
@@ -801,18 +803,33 @@ vector<bool> validatecoord(const NumericVector& nv)
 }
 
 
-template<CoordType newtype>
-NumericVector& coordlet(NumericVector& nv, CoordType oldtype)
+template<CoordType type>
+NumericVector& coordlet(NumericVector& nv, CoordType newtype)
 {
-	cout << "@coordlet(NumericVector&, CoordType) newtype " << coordtype_to_int(newtype) << " oldtype " << coordtype_to_int(oldtype) << endl;
-	Coord<newtype> c(nv);
-	if (newtype == oldtype) {
+	cout << "@coordlet(NumericVector&, CoordType) type " << coordtype_to_int(type) << " newtype " << coordtype_to_int(newtype) << endl;
+	Coord<type> c(nv);
+	if (type == newtype) {
 		nv.attr("class") = "coords";
 	} else {
-/*		unique_ptr<const CoordBase> cb2{ cb1->convert(newtype) };
-		Coord<type> c2(nv);
-		cb1.swap(cb2);
-		copy((cb1->get_nv()).begin(), (cb1->get_nv()).end(), nv.begin()); */
+		switch (newtype)
+		{
+			case CoordType::decdeg:
+				{Coord<CoordType::decdeg> d(c);}
+				break;
+/*
+				Coord<type> c2(nv);
+				cb1.swap(cb2);
+				copy((cb1->get_nv()).begin(), (cb1->get_nv()).end(), nv.begin());
+
+			case CoordType::degmin:
+				return coordlet<CoordType::degmin>(nv, oldtype);
+	
+			case CoordType::degminsec:
+				return coordlet<CoordType::degminsec>(nv, oldtype);
+*/	
+			default:
+				stop("coords(NumericVector& nv, int) my bad");
+		}
 	}
 	nv.attr("fmt") = coordtype_to_int(newtype) + 1;
 	c.validate();
@@ -828,37 +845,37 @@ NumericVector& coordlet(NumericVector& nv, CoordType oldtype)
 
 /// __________________________________________________
 /// Set R vector object class to coords and return,
-/// or convert format of R coords object and return  !!!!!!! Template and Specialise [with waypoints()] !!!!!!!
+/// or convert format of R coords object and return
 // [[Rcpp::export]]
 NumericVector coords(NumericVector& nv, int fmt = 1)
 {
 	cout << "——Rcpp::export——coords()\n";
 	CoordType newtype = get_coordtype(fmt);
 	const bool inheritscoords { nv.inherits("coords") };
-	CoordType oldtype ;
+	CoordType type ;
 	if (inheritscoords) {
-		oldtype = get_coordtype(nv);
+		type = get_coordtype(nv);
 		cout <<  "coords() argument nv is already a \"coords\" vector of type "
-			 << coordtype_to_int(oldtype) + 1 << endl;
-		if (newtype == oldtype) {
+			 << coordtype_to_int(type) + 1 << endl;
+		if (newtype == type) {
 			cout << "——fmt out == fmt in!——" << endl;
 			if (!check_valid(nv))
 				warning("Invalid coords!");
 			return nv;
 		}
 	} else
-		oldtype = newtype;
+		type = newtype;
 
-	switch (newtype)
+	switch (type)
 	{
 		case CoordType::decdeg:
-			return coordlet<CoordType::decdeg>(nv, oldtype);
+			return coordlet<CoordType::decdeg>(nv, newtype);
 
 		case CoordType::degmin:
-			return coordlet<CoordType::degmin>(nv, oldtype);
+			return coordlet<CoordType::degmin>(nv, newtype);
 
 		case CoordType::degminsec:
-			return coordlet<CoordType::degminsec>(nv, oldtype);
+			return coordlet<CoordType::degminsec>(nv, newtype);
 
 		default:
 			stop("coords(NumericVector& nv, int) my bad");
