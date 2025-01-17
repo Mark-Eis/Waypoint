@@ -92,6 +92,8 @@ bool check_valid<NumericVector>(const NumericVector&);
 template<CoordType type>
 vector<bool> validatelet(const NumericVector&);
 vector<bool> validatecoord(const NumericVector&);
+template<CoordType type>
+NumericVector& coordlet(NumericVector&, bool);
 
 // exported
 NumericVector coords(NumericVector&, int);
@@ -799,37 +801,75 @@ vector<bool> validatecoord(const NumericVector& nv)
 }
 
 
+template<CoordType type>
+NumericVector& coordlet(NumericVector& nv, bool inheritscoords)
+{
+	cout << "@coordlet(NumericVector&, bool inheritscoords)\n";
+	Coord<type> c(nv);
+	if (inheritscoords) {
+/*		unique_ptr<const CoordBase> cb2{ cb1->convert(newtype) };
+		unique_ptr<const Coord<CoordType::degmin>> cb2{ newconstCoord<CoordType::degmin>(nv, CoordType::degmin) };  // Placeholder for compiler…
+		cb1.swap(cb2);
+		copy((cb1->get_nv()).begin(), (cb1->get_nv()).end(), nv.begin()); */
+	} else {
+		nv.attr("class") = "coords";
+		nv.attr("fmt") = coordtype_to_int(type) + 1;
+	}
+	c.validate();
+	nv.attr("valid") = c.get_valid();
+	return nv;	
+}
+
+
 /// __________________________________________________
 /// __________________________________________________
 /// Exported functions
 
-/*
+
 /// __________________________________________________
 /// Set R vector object class to coords and return,
 /// or convert format of R coords object and return  !!!!!!! Template and Specialise [with waypoints()] !!!!!!!
 // [[Rcpp::export]]
 NumericVector coords(NumericVector& nv, int fmt = 1)
 {
-//	cout << "——Rcpp::export——coords()\n";
+	cout << "——Rcpp::export——coords()\n";
 	CoordType newtype = get_coordtype(fmt);
 	CoordType oldtype;
 	const bool inheritscoords { nv.inherits("coords") };
 	if (inheritscoords) {
 		oldtype = get_coordtype(nv);
-//		cout <<  "coords() argument nv is already a \"coords\" vector of type "
-//			 << coordtype_to_int(oldtype) + 1 << endl;
+		cout <<  "coords() argument nv is already a \"coords\" vector of type "
+			 << coordtype_to_int(oldtype) + 1 << endl;
 		if (newtype == oldtype) {
-//			cout << "——fmt out == fmt in!——" << endl;
+			cout << "——fmt out == fmt in!——" << endl;
 			if (!check_valid(nv))
 				warning("Invalid coords!");
 			return nv;
 		}
 	}
+
+	switch (inheritscoords ? oldtype : newtype)
+	{
+		case CoordType::decdeg:
+			return coordlet<CoordType::decdeg>(nv, inheritscoords);
+
+		case CoordType::degmin:
+			return coordlet<CoordType::degmin>(nv, inheritscoords);
+
+		case CoordType::degminsec:
+			return coordlet<CoordType::degminsec>(nv, inheritscoords);
+
+		default:
+			stop("coords(NumericVector& nv, int) my bad");
+	}
+
+
+
+/*
 //	unique_ptr<const CoordBase> cb1{ newconstCoordBase(nv, inheritscoords ? oldtype : newtype) };
-//	unique_ptr<const Coord<CoordType::degmin>> cb1{ newconstCoord<CoordType::degmin>(nv, inheritscoords ? oldtype : newtype) };
-	unique_ptr<const Coord<CoordType::degmin>> cb1{ newconstCoord<CoordType::degmin>(nv, CoordType::degmin) };
+	Coord<CoordType::decdeg> c(nv);
 	if (inheritscoords) {
-//		unique_ptr<const CoordBase> cb2{ cb1->convert(newtype) };
+		unique_ptr<const CoordBase> cb2{ cb1->convert(newtype) };
 		unique_ptr<const Coord<CoordType::degmin>> cb2{ newconstCoord<CoordType::degmin>(nv, CoordType::degmin) };  // Placeholder for compiler…
 		cb1.swap(cb2);
 		copy((cb1->get_nv()).begin(), (cb1->get_nv()).end(), nv.begin());
@@ -837,10 +877,9 @@ NumericVector coords(NumericVector& nv, int fmt = 1)
 		nv.attr("class") = "coords";
 	}
 	nv.attr("fmt") = fmt;
-//	cb1->validate_tmpl();
-	cb1->validate();
-	nv.attr("valid") = cb1->get_valid();
-	return nv;
+	c.validate();
+	nv.attr("valid") = c.get_valid();
+	return nv;*/
 }
 
 
@@ -849,9 +888,9 @@ NumericVector coords(NumericVector& nv, int fmt = 1)
 // [[Rcpp::export(name = "`coords<-`")]]
 NumericVector coords_replace(NumericVector& nv, int value)
 {
-//	cout << "——Rcpp::export——`coords_replace()<-`\n";
+	cout << "——Rcpp::export——`coords_replace()<-`\n";
 	return coords(nv, value);
-} */
+}
 
 
 /// __________________________________________________
