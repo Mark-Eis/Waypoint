@@ -92,8 +92,8 @@ bool check_valid<NumericVector>(const NumericVector&);
 template<CoordType type>
 vector<bool> validatelet(const NumericVector&);
 vector<bool> validatecoord(const NumericVector&);
-template<CoordType type>
-NumericVector& coordlet(NumericVector&, bool);
+template<CoordType newtype>
+NumericVector& coordlet(NumericVector&, CoordType oldtype);
 
 // exported
 NumericVector coords(NumericVector&, int);
@@ -801,20 +801,20 @@ vector<bool> validatecoord(const NumericVector& nv)
 }
 
 
-template<CoordType type>
-NumericVector& coordlet(NumericVector& nv, bool inheritscoords)
+template<CoordType newtype>
+NumericVector& coordlet(NumericVector& nv, CoordType oldtype)
 {
-	cout << "@coordlet(NumericVector&, bool inheritscoords)\n";
-	Coord<type> c(nv);
-	if (inheritscoords) {
+	cout << "@coordlet(NumericVector&, CoordType) newtype " << coordtype_to_int(newtype) << " oldtype " << coordtype_to_int(oldtype) << endl;
+	Coord<newtype> c(nv);
+	if (newtype == oldtype) {
+		nv.attr("class") = "coords";
+	} else {
 /*		unique_ptr<const CoordBase> cb2{ cb1->convert(newtype) };
-		unique_ptr<const Coord<CoordType::degmin>> cb2{ newconstCoord<CoordType::degmin>(nv, CoordType::degmin) };  // Placeholder for compiler…
+		Coord<type> c2(nv);
 		cb1.swap(cb2);
 		copy((cb1->get_nv()).begin(), (cb1->get_nv()).end(), nv.begin()); */
-	} else {
-		nv.attr("class") = "coords";
-		nv.attr("fmt") = coordtype_to_int(type) + 1;
 	}
+	nv.attr("fmt") = coordtype_to_int(newtype) + 1;
 	c.validate();
 	nv.attr("valid") = c.get_valid();
 	return nv;	
@@ -834,8 +834,8 @@ NumericVector coords(NumericVector& nv, int fmt = 1)
 {
 	cout << "——Rcpp::export——coords()\n";
 	CoordType newtype = get_coordtype(fmt);
-	CoordType oldtype;
 	const bool inheritscoords { nv.inherits("coords") };
+	CoordType oldtype ;
 	if (inheritscoords) {
 		oldtype = get_coordtype(nv);
 		cout <<  "coords() argument nv is already a \"coords\" vector of type "
@@ -846,18 +846,19 @@ NumericVector coords(NumericVector& nv, int fmt = 1)
 				warning("Invalid coords!");
 			return nv;
 		}
-	}
+	} else
+		oldtype = newtype;
 
-	switch (inheritscoords ? oldtype : newtype)
+	switch (newtype)
 	{
 		case CoordType::decdeg:
-			return coordlet<CoordType::decdeg>(nv, inheritscoords);
+			return coordlet<CoordType::decdeg>(nv, oldtype);
 
 		case CoordType::degmin:
-			return coordlet<CoordType::degmin>(nv, inheritscoords);
+			return coordlet<CoordType::degmin>(nv, oldtype);
 
 		case CoordType::degminsec:
-			return coordlet<CoordType::degminsec>(nv, inheritscoords);
+			return coordlet<CoordType::degminsec>(nv, oldtype);
 
 		default:
 			stop("coords(NumericVector& nv, int) my bad");
