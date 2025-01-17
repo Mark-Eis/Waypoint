@@ -641,7 +641,7 @@ inline string FormatLL<CoordType::decdeg>::operator()(string ostr, double n)
 template<CoordType type>
 vector<string> Coord<type>::format() const
 {
-	cout << "@Coord<type>::format()\n";
+	cout << "@Coord<type>::format() " << typeid(*this).name() << endl;
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), Format<type>(*this));
 	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<type>(*this));
@@ -654,7 +654,7 @@ vector<string> Coord<type>::format() const
 template<CoordType type>
 void Coord<type>::print(ostream& stream) const
 {
-	cout << "@Coord<type>::print() type " << typeid(*this).name() << endl;
+	cout << "@Coord<type>::print() " << typeid(*this).name() << endl;
 	vector<string> sv(format()); 
 	if (names.size()) {
 		vector<string>::const_iterator nm_it(names.begin());
@@ -865,7 +865,7 @@ NumericVector latlon(NumericVector& nv, LogicalVector& value)
 		stop("value must be either length 1 or length(nv)");
 	else
 		nv.attr("latlon") = value;
-//	validatecoord(nv);
+	validatecoord(nv);
 	return nv;
 }
 
