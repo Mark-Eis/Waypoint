@@ -287,20 +287,20 @@ struct FamousFive<CoordType::degminsec> {
 /// Convert functor base class
 template<class FF>
 class Convert {
-        protected:
-//              const FamousFive& ff; 
-                const FF ff; 
-        public:
-/*              Convert()
-                {
-                        cout << "§Convert<class FF>() "; _ctrsgn(typeid(*this));
-                } */
-                Convert() = default;
-                Convert(const Convert&) = delete;                               // Disallow copying
-                Convert& operator=(const Convert&) = delete;    //  ——— ditto ———
-                Convert(Convert&&) = delete;                                    // Disallow transfer ownership
-                Convert& operator=(Convert&&) = delete;                 // Disallow moving
-                virtual ~Convert() = 0;
+	protected:
+//		  const FamousFive& ff; 
+		const FF ff; 
+	public:
+/*		  Convert()
+		{
+			cout << "§Convert<class FF>() "; _ctrsgn(typeid(*this));
+		} */
+		Convert() = default;
+		Convert(const Convert&) = delete;				   // Disallow copying
+		Convert& operator=(const Convert&) = delete;	//  ——— ditto ———
+		Convert(Convert&&) = delete;					// Disallow transfer ownership
+		Convert& operator=(Convert&&) = delete;		 // Disallow moving
+		virtual ~Convert() = 0;
 };
 
 template<class FF>
@@ -311,13 +311,13 @@ inline Convert<FF>::~Convert() { /* cout << "§Convert::~Convert() "; _ctrsgn(ty
 /// Convert functor for decimal degrees
 template<class FF>
 class ConvertDD : public Convert<FF> {
-        public:
-                ConvertDD()
-                {
-                        cout << "§ConvertDD<class FF>() "; _ctrsgn(typeid(*this));
-                }
-            using Convert<FF>::ff;
-                double operator()(double n) { cout << "@ConvertDD::operator()(double)\n"; return ff.get_decdeg(n); }
+	public:
+		ConvertDD()
+		{
+			cout << "§ConvertDD<class FF>() "; _ctrsgn(typeid(*this));
+		}
+		using Convert<FF>::ff;
+		double operator()(double n) { cout << "@ConvertDD::operator()(double)\n"; return ff.get_decdeg(n); }
 };
 
 
@@ -325,13 +325,13 @@ class ConvertDD : public Convert<FF> {
 /// Convert functor for degrees and minutes
 template<class FF>
 class ConvertDM : public Convert<FF> { 
-        public:
-                ConvertDM()
-                {
-                        cout << "§ConvertDM<class FF>() "; _ctrsgn(typeid(*this));
-                }
-            using Convert<FF>::ff;
-                double operator()(double n) { cout << "@ConvertDM::operator()(double)\n"; return ff.get_deg(n) * 1e2 + ff.get_decmin(n); }
+	public:
+		ConvertDM()
+		{
+			cout << "§ConvertDM<class FF>() "; _ctrsgn(typeid(*this));
+		}
+		using Convert<FF>::ff;
+		double operator()(double n) { cout << "@ConvertDM::operator()(double)\n"; return ff.get_deg(n) * 1e2 + ff.get_decmin(n); }
 };
 
 
@@ -339,13 +339,13 @@ class ConvertDM : public Convert<FF> {
 /// Convert functor for degrees, minutes and seconds
 template<class FF>
 class ConvertDMS : public Convert<FF> { 
-        public:
-                ConvertDMS()
-                {
-                        cout << "§ConvertDMS<class FF>() "; _ctrsgn(typeid(*this));
-                }
-            using Convert<FF>::ff;
-                double operator()(double n) { cout << "@ConvertDMS::operator()(double)\n"; return ff.get_deg(n) * 1e4 + ff.get_min(n) * 1e2 + ff.get_sec(n); }
+	public:
+		ConvertDMS()
+		{
+			cout << "§ConvertDMS<class FF>() "; _ctrsgn(typeid(*this));
+		}
+		using Convert<FF>::ff;
+		double operator()(double n) { cout << "@ConvertDMS::operator()(double)\n"; return ff.get_deg(n) * 1e4 + ff.get_min(n) * 1e2 + ff.get_sec(n); }
 };
 
 
@@ -367,8 +367,13 @@ class Coord {
 	public:
 		Coord(const vector<double>, const vector<bool>&, const vector<string>&);
 		Coord(const NumericVector&);
-//		template<class CV>
-//		explicit Coord(const Coord&, in_place_type_t<CV>);
+		template<CoordType oldtype>
+		explicit Coord<type>(const Coord<oldtype>& c) : Coord(vector<double>(c.nv.size()), vector<bool>{ c.latlon }, vector<string>{ c.names })
+		{
+			cout << "§Coord::Coord<type>(const Coord<oldtype>& c) "; _ctrsgn(typeid(*this));
+		//	transform(c.nv.begin(), c.nv.end(), nv.begin(), CV());
+		}
+
 		Coord<type>& operator=(const Coord<type>&) = delete;
 		~Coord<type>() {
 			cout << "§Coord<type>::~Coord() "; _ctrsgn(typeid(*this), true);		
@@ -409,16 +414,6 @@ Coord<type>::Coord(const NumericVector& nv) :
 {
 	cout << "§Coord<type>::Coord(const NumericVector&) "; _ctrsgn(typeid(*this));
 }
-
-/*
-template<class CV>
-Coord::Coord(const Coord& c, in_place_type_t<CV>) :
-	Coord(vector<double>(c.nv.size()), vector<bool>{ c.latlon }, vector<string>{ c.names })
-{
-	cout << "§Coord::Coord<Convert_type>(const Coord&, in_place_type_t<Convert_type>) "; _ctrsgn(typeid(*this));
-//	using convert_ff = CV<c::FF>;
-	transform(c.nv.begin(), c.nv.end(), nv.begin(), CV());
-} */
 
 
 /// __________________________________________________
@@ -730,7 +725,7 @@ inline bool validcoord(NumericVector& nv)
 
 
 /// __________________________________________________
-/// Return "valid" attribute or empty LogicalVector    !!!!!!! Generalise with template and specialisation !!!!!!!
+/// Return "valid" attribute or empty LogicalVector	!!!!!!! Generalise with template and specialisation !!!!!!!
 inline LogicalVector get_valid(const NumericVector& nv)
 {
 //	cout << "@get_valid(const NumericVector&) has attr \"valid\" " << boolalpha << nv.hasAttribute("valid") << endl;
@@ -876,7 +871,7 @@ NumericVector latlon(NumericVector& nv, LogicalVector& value)
 
 
 /// __________________________________________________
-/// Print coords vector - S3 method print.coords()      /////// "invisible" not working ///////
+/// Print coords vector - S3 method print.coords()	  /////// "invisible" not working ///////
 // [[Rcpp::export(name = "print.coords", invisible = true)]]
 NumericVector printcoord(NumericVector& nv)
 {
@@ -1061,7 +1056,7 @@ DataFrame waypoints_replace(DataFrame& df, int value)
 
 
 /// __________________________________________________
-/// Print waypoints vector - S3 method print.waypoints()      /////// "invisible" not working ///////
+/// Print waypoints vector - S3 method print.waypoints()	  /////// "invisible" not working ///////
 // [[Rcpp::export(name = "print.waypoints", invisible = true)]]
 DataFrame printwaypoint(DataFrame& df)
 {
