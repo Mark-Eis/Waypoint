@@ -282,42 +282,42 @@ struct FamousFive<CoordType::degminsec> {
 };
 
 
-
 /// __________________________________________________
 /// __________________________________________________
 /// Convert functor base class
 template<class FF>
 class Convert {
-	protected:
-//		const FamousFive& ff; 
-		const FF ff; 
-	public:
-/*		Convert()
-		{
-			cout << "§Convert<class FF>() "; _ctrsgn(typeid(*this));
-		} */
-		Convert() = default;
-		Convert(const Convert&) = delete;				// Disallow copying
-		Convert& operator=(const Convert&) = delete;	//  ——— ditto ———
-		Convert(Convert&&) = delete;					// Disallow transfer ownership
-		Convert& operator=(Convert&&) = delete;			// Disallow moving
-		virtual ~Convert() = 0;
+        protected:
+//              const FamousFive& ff; 
+                const FF ff; 
+        public:
+/*              Convert()
+                {
+                        cout << "§Convert<class FF>() "; _ctrsgn(typeid(*this));
+                } */
+                Convert() = default;
+                Convert(const Convert&) = delete;                               // Disallow copying
+                Convert& operator=(const Convert&) = delete;    //  ——— ditto ———
+                Convert(Convert&&) = delete;                                    // Disallow transfer ownership
+                Convert& operator=(Convert&&) = delete;                 // Disallow moving
+                virtual ~Convert() = 0;
 };
 
 template<class FF>
 inline Convert<FF>::~Convert() { /* cout << "§Convert::~Convert() "; _ctrsgn(typeid(*this), true); */ }
 
+
 /// __________________________________________________
 /// Convert functor for decimal degrees
 template<class FF>
 class ConvertDD : public Convert<FF> {
-	public:
-		ConvertDD()
-		{
-			cout << "§ConvertDD<class FF>() "; _ctrsgn(typeid(*this));
-		}
-	    using Convert<FF>::ff;
-		double operator()(double n) { cout << "@ConvertDD::operator()(double)\n"; return ff.get_decdeg(n); }
+        public:
+                ConvertDD()
+                {
+                        cout << "§ConvertDD<class FF>() "; _ctrsgn(typeid(*this));
+                }
+            using Convert<FF>::ff;
+                double operator()(double n) { cout << "@ConvertDD::operator()(double)\n"; return ff.get_decdeg(n); }
 };
 
 
@@ -325,13 +325,13 @@ class ConvertDD : public Convert<FF> {
 /// Convert functor for degrees and minutes
 template<class FF>
 class ConvertDM : public Convert<FF> { 
-	public:
-		ConvertDM()
-		{
-			cout << "§ConvertDM<class FF>() "; _ctrsgn(typeid(*this));
-		}
-	    using Convert<FF>::ff;
-		double operator()(double n) { cout << "@ConvertDM::operator()(double)\n"; return ff.get_deg(n) * 1e2 + ff.get_decmin(n); }
+        public:
+                ConvertDM()
+                {
+                        cout << "§ConvertDM<class FF>() "; _ctrsgn(typeid(*this));
+                }
+            using Convert<FF>::ff;
+                double operator()(double n) { cout << "@ConvertDM::operator()(double)\n"; return ff.get_deg(n) * 1e2 + ff.get_decmin(n); }
 };
 
 
@@ -339,13 +339,13 @@ class ConvertDM : public Convert<FF> {
 /// Convert functor for degrees, minutes and seconds
 template<class FF>
 class ConvertDMS : public Convert<FF> { 
-	public:
-		ConvertDMS()
-		{
-			cout << "§ConvertDMS<class FF>() "; _ctrsgn(typeid(*this));
-		}
-	    using Convert<FF>::ff;
-		double operator()(double n) { cout << "@ConvertDMS::operator()(double)\n"; return ff.get_deg(n) * 1e4 + ff.get_min(n) * 1e2 + ff.get_sec(n); }
+        public:
+                ConvertDMS()
+                {
+                        cout << "§ConvertDMS<class FF>() "; _ctrsgn(typeid(*this));
+                }
+            using Convert<FF>::ff;
+                double operator()(double n) { cout << "@ConvertDMS::operator()(double)\n"; return ff.get_deg(n) * 1e4 + ff.get_min(n) * 1e2 + ff.get_sec(n); }
 };
 
 
