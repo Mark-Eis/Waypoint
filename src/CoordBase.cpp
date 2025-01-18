@@ -39,26 +39,8 @@ struct FamousFive<CoordType::degmin>;
 template<>
 struct FamousFive<CoordType::degminsec>;
 
-template<class FF>
-class Convert;
-
-template<class FF>
-class ConvertDD;
-using convert_dd_dd = ConvertDD<FamousFive<CoordType::decdeg>>;
-using convert_dm_dd = ConvertDD<FamousFive<CoordType::degmin>>;
-using convert_dms_dd = ConvertDD<FamousFive<CoordType::degminsec>>;
-
-template<class FF>
-class ConvertDM;
-using convert_dd_dm = ConvertDM<FamousFive<CoordType::decdeg>>;
-using convert_dm_dm = ConvertDM<FamousFive<CoordType::degmin>>;
-using convert_dms_dm = ConvertDM<FamousFive<CoordType::degminsec>>;
-
-template<class FF>
-class ConvertDMS;
-using convert_dd_dms = ConvertDMS<FamousFive<CoordType::decdeg>>;
-using convert_dm_dms = ConvertDMS<FamousFive<CoordType::degmin>>;
-using convert_dms_dms = ConvertDMS<FamousFive<CoordType::degminsec>>;
+template<CoordType type>
+class Convertor;
 
 template<CoordType type>
 class Coord;
@@ -287,28 +269,26 @@ struct FamousFive<CoordType::degminsec> {
 /// __________________________________________________
 /// __________________________________________________
 /// Convert functor base class
-template<class FF>
-class Convert {
+template<CoordType type>
+class Convertor {
 	protected:
-//		  const FamousFive& ff; 
-		const FF ff; 
+		const Coord<type>& c; 
 	public:
-/*		  Convert()
+		Convertor(Coord<type>& _c) : c(_c)
 		{
-			cout << "§Convert<class FF>() "; _ctrsgn(typeid(*this));
-		} */
-		Convert() = default;
-		Convert(const Convert&) = delete;				   // Disallow copying
-		Convert& operator=(const Convert&) = delete;	//  ——— ditto ———
-		Convert(Convert&&) = delete;					// Disallow transfer ownership
-		Convert& operator=(Convert&&) = delete;		 // Disallow moving
-		virtual ~Convert() = 0;
+			cout << "§Convertor<CoordType type>(Coord<type>&) "; _ctrsgn(typeid(*this));
+		}
+		Convertor(const Convertor&) = delete;					// Disallow copying
+		Convertor& operator=(const Convertor&) = delete;			//  ——— ditto ———
+		Convertor(Convertor&&) = delete;							// Disallow transfer ownership
+		Convertor& operator=(Convertor&&) = delete;				// Disallow moving
+		virtual ~Convertor() = 0;
 };
 
-template<class FF>
-inline Convert<FF>::~Convert() { /* cout << "§Convert::~Convert() "; _ctrsgn(typeid(*this), true); */ }
+template<CoordType type>
+inline Convertor<type>::~Convertor() { /* cout << "§Convertor<type>::~Convertor() "; _ctrsgn(typeid(*this), true); */ }
 
-
+/*
 /// __________________________________________________
 /// Convert functor for decimal degrees
 template<class FF>
@@ -349,7 +329,7 @@ class ConvertDMS : public Convert<FF> {
 		using Convert<FF>::ff;
 		double operator()(double n) { cout << "@ConvertDMS::operator()(double)\n"; return ff.get_deg(n) * 1e4 + ff.get_min(n) * 1e2 + ff.get_sec(n); }
 };
-
+*/
 
 /// __________________________________________________
 /// __________________________________________________
@@ -373,7 +353,7 @@ class Coord {
 		explicit Coord<type>(const Coord<oldtype>& c) : Coord(vector<double>(c.nv.size()), vector<bool>{ c.latlon }, vector<string>{ c.names })
 		{
 			cout << "§Coord::Coord<type>(const Coord<oldtype>& c) "; _ctrsgn(typeid(*this));
-			transform(c.nv.begin(), c.nv.end(), nv.begin(), [](double x){ return x; });
+			transform(c.nv.begin(), c.nv.end(), nv.begin(), [&c](double x){ return c.ff.get_decdeg(x); });
 		}
 
 		Coord<type>& operator=(const Coord<type>&) = delete;
