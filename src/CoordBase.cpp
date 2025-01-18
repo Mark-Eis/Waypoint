@@ -274,7 +274,7 @@ class Convertor {
 	protected:
 		const Coord<type>& c; 
 	public:
-		Convertor(Coord<type>& _c) : c(_c)
+		Convertor(const Coord<type>& _c) : c(_c)
 		{
 			cout << "§Convertor<CoordType type>(Coord<type>&) "; _ctrsgn(typeid(*this));
 		}
@@ -282,7 +282,8 @@ class Convertor {
 		Convertor& operator=(const Convertor&) = delete;			//  ——— ditto ———
 		Convertor(Convertor&&) = delete;							// Disallow transfer ownership
 		Convertor& operator=(Convertor&&) = delete;				// Disallow moving
-		virtual ~Convertor() = 0;
+		~Convertor();
+		double operator()(double n) { cout << "@Convertor::operator()(double)\n"; return c.ff.get_decdeg(n); }
 };
 
 template<CoordType type>
@@ -353,7 +354,8 @@ class Coord {
 		explicit Coord<type>(const Coord<oldtype>& c) : Coord(vector<double>(c.nv.size()), vector<bool>{ c.latlon }, vector<string>{ c.names })
 		{
 			cout << "§Coord::Coord<type>(const Coord<oldtype>& c) "; _ctrsgn(typeid(*this));
-			transform(c.nv.begin(), c.nv.end(), nv.begin(), [&c](double x){ return c.ff.get_decdeg(x); });
+//			transform(c.nv.begin(), c.nv.end(), nv.begin(), [&c](double x){ return c.ff.get_decdeg(x); });
+			transform(c.nv.begin(), c.nv.end(), nv.begin(), Convertor(c));
 		}
 
 		Coord<type>& operator=(const Coord<type>&) = delete;
@@ -374,6 +376,7 @@ class Coord {
 		friend class Coord<CoordType::decdeg>;
 		friend class Coord<CoordType::degmin>;
 		friend class Coord<CoordType::degminsec>;
+		friend class Convertor<type>;
 		friend class Format<type>;
 		friend class FormatLL<type>;
 		friend class Validator<type>;
