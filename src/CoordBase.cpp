@@ -373,7 +373,7 @@ class Coord {
 		explicit Coord<type>(const Coord<oldtype>& c) : Coord(vector<double>(c.nv.size()), vector<bool>{ c.latlon }, vector<string>{ c.names })
 		{
 			cout << "§Coord::Coord<type>(const Coord<oldtype>& c) "; _ctrsgn(typeid(*this));
-		//	transform(c.nv.begin(), c.nv.end(), nv.begin(), CV());
+			transform(c.nv.begin(), c.nv.end(), nv.begin(), [](double x){ return x; });
 		}
 
 		Coord<type>& operator=(const Coord<type>&) = delete;
@@ -806,34 +806,44 @@ vector<bool> validatecoord(const NumericVector& nv)
 template<CoordType type>
 NumericVector& coordlet(NumericVector& nv, CoordType newtype)
 {
-	cout << "@coordlet(NumericVector&, CoordType) type " << coordtype_to_int(type) << " newtype " << coordtype_to_int(newtype) << endl;
+	cout << "@coordlet(NumericVector&, CoordType) type " << coordtype_to_int(type) + 1 << " newtype " << coordtype_to_int(newtype) + 1 << endl;
 	Coord<type> c(nv);
 	if (type == newtype) {
+		c.validate();
+		nv.attr("valid") = c.get_valid();
 		nv.attr("class") = "coords";
 	} else {
 		switch (newtype)
 		{
-			case CoordType::decdeg:
-				{Coord<CoordType::decdeg> d(c);}
-				break;
-/*
-				Coord<type> c2(nv);
-				cb1.swap(cb2);
-				copy((cb1->get_nv()).begin(), (cb1->get_nv()).end(), nv.begin());
+			case CoordType::decdeg: {
+				Coord<CoordType::decdeg> d(c);
+				cout << d;
+				d.validate();
+				copy((d.get_nv()).begin(), (d.get_nv()).end(), nv.begin());
+				nv.attr("valid") = d.get_valid();
+			} break;
 
-			case CoordType::degmin:
-				return coordlet<CoordType::degmin>(nv, oldtype);
-	
-			case CoordType::degminsec:
-				return coordlet<CoordType::degminsec>(nv, oldtype);
-*/	
+			case CoordType::degmin: {
+				Coord<CoordType::degmin> d(c);
+				cout << d;
+				d.validate();
+				copy((d.get_nv()).begin(), (d.get_nv()).end(), nv.begin());
+				nv.attr("valid") = d.get_valid();
+			} break;
+
+			case CoordType::degminsec: {
+				Coord<CoordType::degminsec> d(c);
+				cout << d;
+				d.validate();
+				copy((d.get_nv()).begin(), (d.get_nv()).end(), nv.begin());
+				nv.attr("valid") = d.get_valid();
+			} break;
+
 			default:
 				stop("coords(NumericVector& nv, int) my bad");
 		}
 	}
 	nv.attr("fmt") = coordtype_to_int(newtype) + 1;
-	c.validate();
-	nv.attr("valid") = c.get_valid();
 	return nv;	
 }
 
