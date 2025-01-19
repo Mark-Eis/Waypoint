@@ -75,9 +75,9 @@ template<CoordType type>
 vector<bool> validatelet(const NumericVector&);
 vector<bool> validatecoord(const NumericVector&);
 template<CoordType newtype>
-NumericVector& coordlet(NumericVector&, CoordType oldtype);
+void coordlet(NumericVector&, CoordType oldtype);
 template<CoordType type, CoordType newtype>
-const vector<bool>& convertlet(NumericVector&, Coord<type>&);
+void convertlet(NumericVector&, Coord<type>&);
 
 // exported
 NumericVector coords(NumericVector&, int);
@@ -770,10 +770,10 @@ vector<bool> validatecoord(const NumericVector& nv)
 
 /// __________________________________________________
 /// __________________________________________________
-/// Convertion functions
+/// Conversion functions
 
 template<CoordType type>
-NumericVector& coordlet(NumericVector& nv, CoordType newtype)
+void coordlet(NumericVector& nv, CoordType newtype)
 {
 	cout << "@coordlet(NumericVector&, CoordType) type " << coordtype_to_int(type) + 1 << " newtype " << coordtype_to_int(newtype) + 1 << endl;
 	Coord<type> c(nv);
@@ -800,19 +800,17 @@ NumericVector& coordlet(NumericVector& nv, CoordType newtype)
 				stop("coords(NumericVector& nv, int) my bad");
 		}
 	}
-	nv.attr("fmt") = coordtype_to_int(newtype) + 1;
-	return nv;	
 }
 
 
 template<CoordType type, CoordType newtype>
-const vector<bool>& convertlet(NumericVector& nv, Coord<type>& c)
+void convertlet(NumericVector& nv, Coord<type>& c)
 {
 		Coord<newtype> d(c);
 		transform(c.get_nv().begin(), c.get_nv().end(), const_cast<vector<double>&>(d.get_nv()).begin(), Convertor(c));
 		d.validate();
 		copy((d.get_nv()).begin(), (d.get_nv()).end(), nv.begin());
-		return d.get_valid();
+		nv.attr("valid") = d.get_valid();
 }
 
 
@@ -847,17 +845,22 @@ NumericVector coords(NumericVector& nv, int fmt = 1)
 	switch (type)
 	{
 		case CoordType::decdeg:
-			return coordlet<CoordType::decdeg>(nv, newtype);
+			coordlet<CoordType::decdeg>(nv, newtype);
+			break;
 
 		case CoordType::degmin:
-			return coordlet<CoordType::degmin>(nv, newtype);
+			coordlet<CoordType::degmin>(nv, newtype);
+			break;
 
 		case CoordType::degminsec:
-			return coordlet<CoordType::degminsec>(nv, newtype);
+			coordlet<CoordType::degminsec>(nv, newtype);
+			break;
 
 		default:
 			stop("coords(NumericVector& nv, int) my bad");
 	}
+	nv.attr("fmt") = coordtype_to_int(newtype) + 1;
+	return nv;
 }
 
 
