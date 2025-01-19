@@ -351,10 +351,6 @@ class Coord {
 		Coord(const vector<double>, const vector<bool>&, const vector<string>&);
 		Coord(const NumericVector&);
 		template<CoordType oldtype>
-		explicit Coord<type>(const Coord<oldtype>& c) : Coord(vector<double>(c.nv.size()), vector<bool>{ c.latlon }, vector<string>{ c.names })
-		{
-			cout << "§Coord::Coord<type>(const Coord<oldtype>& c) "; _ctrsgn(typeid(*this));
-		}
 		Coord<type>& operator=(const Coord<type>&) = delete;
 		~Coord<type>() {
 			cout << "§Coord<type>::~Coord() "; _ctrsgn(typeid(*this), true);		
@@ -777,10 +773,8 @@ void coordlet(NumericVector& nv, CoordType newtype)
 {
 	cout << "@coordlet(NumericVector&, CoordType) type " << coordtype_to_int(type) + 1 << " newtype " << coordtype_to_int(newtype) + 1 << endl;
 	Coord<type> c(nv);
+	c.validate();
 	if (type == newtype) {
-		c.validate();
-		nv.attr("valid") = c.get_valid();
-		nv.attr("class") = "coords";
 	} else {
 		switch (newtype)
 		{
@@ -800,17 +794,15 @@ void coordlet(NumericVector& nv, CoordType newtype)
 				stop("coords(NumericVector& nv, int) my bad");
 		}
 	}
+	nv.attr("valid") = c.get_valid();
+	nv.attr("class") = "coords";
 }
 
 
 template<CoordType type, CoordType newtype>
 void convertlet(NumericVector& nv, Coord<type>& c)
 {
-		Coord<newtype> d(c);
-		transform(c.get_nv().begin(), c.get_nv().end(), const_cast<vector<double>&>(d.get_nv()).begin(), Convertor(c));
-		d.validate();
-		copy((d.get_nv()).begin(), (d.get_nv()).end(), nv.begin());
-		nv.attr("valid") = d.get_valid();
+	transform(c.get_nv().begin(), c.get_nv().end(), nv.begin(), Convertor(c));
 }
 
 
