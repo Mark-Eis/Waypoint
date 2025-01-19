@@ -39,8 +39,12 @@ struct FamousFive<CoordType::degmin>;
 template<>
 struct FamousFive<CoordType::degminsec>;
 
-template<CoordType type>
+template<CoordType type, CoordType newtype>
 class Convertor;
+template<CoordType type>
+class Convertor<type, CoordType::degmin>;
+template<CoordType type>
+class Convertor<type, CoordType::degminsec>;
 
 template<CoordType type>
 class Coord;
@@ -270,67 +274,89 @@ struct FamousFive<CoordType::degminsec> {
 
 /// __________________________________________________
 /// __________________________________________________
-/// Convert Coord functor
-template<CoordType type>
+/// Convert Coord functor for decimal degrees (default)
+template<CoordType type, CoordType newtype>
 class Convertor {
 	protected:
 		const Coord<type>& c; 
 	public:
 		Convertor(const Coord<type>& _c) : c(_c)
 		{
-			cout << "§Convertor<type>::Convertor(const Coord<type>&) "; _ctrsgn(typeid(*this));
+			cout << "§Convertor<type, newtype>::Convertor(const Coord<type>&) "; _ctrsgn(typeid(*this));
 		}
 		Convertor(const Convertor&) = delete;					// Disallow copying
 		Convertor& operator=(const Convertor&) = delete;			//  ——— ditto ———
 		Convertor(Convertor&&) = delete;							// Disallow transfer ownership
 		Convertor& operator=(Convertor&&) = delete;				// Disallow moving
 //		~Convertor() = default;
-		~Convertor() { cout << "§Convertor<type>::~Convertor() "; _ctrsgn(typeid(*this), true); }
-		double operator()(double n) { cout << "@Convertor<type>::operator()(double)\n"; return c.ff.get_decdeg(n); }
+		~Convertor() { cout << "§Convertor<type, newtype>::~Convertor() "; _ctrsgn(typeid(*this), true); }
+		double operator()(double);
 };
 
-/*
-/// __________________________________________________
-/// Convert functor for decimal degrees
-template<class FF>
-class ConvertDD : public Convert<FF> {
-	public:
-		ConvertDD()
-		{
-			cout << "§ConvertDD<class FF>() "; _ctrsgn(typeid(*this));
-		}
-		using Convert<FF>::ff;
-		double operator()(double n) { cout << "@ConvertDD::operator()(double)\n"; return ff.get_decdeg(n); }
-};
+
+template<CoordType type, CoordType newtype>
+double Convertor<type, newtype>::operator()(double n)
+{
+//	cout << "@Convertor<type, newtype>::operator()(double)\n";
+	return c.ff.get_decdeg(n);
+}
 
 
 /// __________________________________________________
 /// Convert functor for degrees and minutes
-template<class FF>
-class ConvertDM : public Convert<FF> { 
+template<CoordType type>
+class Convertor<type, CoordType::degmin> {
+	protected:
+		const Coord<type>& c; 
 	public:
-		ConvertDM()
+		Convertor(const Coord<type>& _c) : c(_c)
 		{
-			cout << "§ConvertDM<class FF>() "; _ctrsgn(typeid(*this));
+			cout << "§Convertor<type, CoordType::degmin>::Convertor(const Coord<type>&) "; _ctrsgn(typeid(*this));
 		}
-		using Convert<FF>::ff;
-		double operator()(double n) { cout << "@ConvertDM::operator()(double)\n"; return ff.get_deg(n) * 1e2 + ff.get_decmin(n); }
+		Convertor(const Convertor&) = delete;					// Disallow copying
+		Convertor& operator=(const Convertor&) = delete;			//  ——— ditto ———
+		Convertor(Convertor&&) = delete;							// Disallow transfer ownership
+		Convertor& operator=(Convertor&&) = delete;				// Disallow moving
+//		~Convertor() = default;
+		~Convertor() { cout << "§Convertor<type, CoordType::degmin>::~Convertor() "; _ctrsgn(typeid(*this), true); }
+		double operator()(double);
 };
+
+template<CoordType type>
+double Convertor<type, CoordType::degmin>::operator()(double n)
+{
+//	cout << "@Convertor<type, CoordType::degmin>::operator()(double)\n";
+	return c.ff.get_deg(n) * 1e2 + c.ff.get_decmin(n);;
+}
 
 
 /// __________________________________________________
 /// Convert functor for degrees, minutes and seconds
-template<class FF>
-class ConvertDMS : public Convert<FF> { 
+template<CoordType type>
+class Convertor<type, CoordType::degminsec> {
+	protected:
+		const Coord<type>& c; 
 	public:
-		ConvertDMS()
+		Convertor(const Coord<type>& _c) : c(_c)
 		{
-			cout << "§ConvertDMS<class FF>() "; _ctrsgn(typeid(*this));
+			cout << "§Convertor<type, CoordType::degminsec>::Convertor(const Coord<type>&) "; _ctrsgn(typeid(*this));
 		}
-		using Convert<FF>::ff;
-		double operator()(double n) { cout << "@ConvertDMS::operator()(double)\n"; return ff.get_deg(n) * 1e4 + ff.get_min(n) * 1e2 + ff.get_sec(n); }
+		Convertor(const Convertor&) = delete;					// Disallow copying
+		Convertor& operator=(const Convertor&) = delete;			//  ——— ditto ———
+		Convertor(Convertor&&) = delete;							// Disallow transfer ownership
+		Convertor& operator=(Convertor&&) = delete;				// Disallow moving
+//		~Convertor() = default;
+		~Convertor() { cout << "§Convertor<type, CoordType::degminsec>::~Convertor() "; _ctrsgn(typeid(*this), true); }
+		double operator()(double);
 };
-*/
+
+template<CoordType type>
+double Convertor<type, CoordType::degminsec>::operator()(double n)
+{
+//	cout << "@Convertor<type, CoordType::degminsec>::operator()(double)\n";
+	return c.ff.get_deg(n) * 1e4 + c.ff.get_min(n) * 1e2 + c.ff.get_sec(n);
+}
+
 
 /// __________________________________________________
 /// __________________________________________________
@@ -368,7 +394,15 @@ class Coord {
 		friend class Coord<CoordType::decdeg>;
 		friend class Coord<CoordType::degmin>;
 		friend class Coord<CoordType::degminsec>;
-		friend class Convertor<type>;
+		friend class Convertor<CoordType::decdeg, CoordType::decdeg>;
+		friend class Convertor<CoordType::decdeg, CoordType::degmin>;
+		friend class Convertor<CoordType::decdeg, CoordType::degminsec>;
+		friend class Convertor<CoordType::degmin, CoordType::decdeg>;
+		friend class Convertor<CoordType::degmin, CoordType::degmin>;
+		friend class Convertor<CoordType::degmin, CoordType::degminsec>;
+		friend class Convertor<CoordType::degminsec, CoordType::decdeg>;
+		friend class Convertor<CoordType::degminsec, CoordType::degmin>;
+		friend class Convertor<CoordType::degminsec, CoordType::degminsec>;
 		friend class Format<type>;
 		friend class FormatLL<type>;
 		friend class Validator<type>;
@@ -802,7 +836,7 @@ void coordlet(NumericVector& nv, CoordType newtype)
 template<CoordType type, CoordType newtype>
 void convertlet(NumericVector& nv, Coord<type>& c)
 {
-	transform(c.get_nv().begin(), c.get_nv().end(), nv.begin(), Convertor(c));
+	transform(c.get_nv().begin(), c.get_nv().end(), nv.begin(), Convertor<type, newtype>(c));
 }
 
 
