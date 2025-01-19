@@ -74,8 +74,8 @@ bool check_valid<NumericVector>(const NumericVector&);
 template<CoordType type>
 vector<bool> validatelet(const NumericVector&);
 vector<bool> validatecoord(const NumericVector&);
-template<CoordType newtype>
-void coordlet(NumericVector&, CoordType oldtype);
+template<CoordType type>
+void coordlet(NumericVector&, CoordType);
 template<CoordType type, CoordType newtype>
 void convertlet(NumericVector&, Coord<type>&);
 
@@ -791,7 +791,7 @@ void coordlet(NumericVector& nv, CoordType newtype)
 			} break;
 
 			default:
-				stop("coords(NumericVector& nv, int) my bad");
+				stop("coordlet(NumericVector&, CoordType) my bad");
 		}
 	}
 	nv.attr("valid") = c.get_valid();
