@@ -76,6 +76,8 @@ vector<bool> validatelet(const NumericVector&);
 vector<bool> validatecoord(const NumericVector&);
 template<CoordType newtype>
 NumericVector& coordlet(NumericVector&, CoordType oldtype);
+template<CoordType type, CoordType newtype>
+const vector<bool>& convertlet(NumericVector&, Coord<type>&);
 
 // exported
 NumericVector coords(NumericVector&, int);
@@ -276,14 +278,14 @@ class Convertor {
 	public:
 		Convertor(const Coord<type>& _c) : c(_c)
 		{
-			cout << "§Convertor<CoordType type>(Coord<type>&) "; _ctrsgn(typeid(*this));
+			cout << "§Convertor(const Coord<type>&) "; _ctrsgn(typeid(*this));
 		}
 		Convertor(const Convertor&) = delete;					// Disallow copying
 		Convertor& operator=(const Convertor&) = delete;			//  ——— ditto ———
 		Convertor(Convertor&&) = delete;							// Disallow transfer ownership
 		Convertor& operator=(Convertor&&) = delete;				// Disallow moving
 		~Convertor();
-		double operator()(double n) { cout << "@Convertor::operator()(double)\n"; return c.ff.get_decdeg(n); }
+		double operator()(double n) { cout << "@Convertor<type>::operator()(double)\n"; return c.ff.get_decdeg(n); }
 };
 
 template<CoordType type>
@@ -354,15 +356,11 @@ class Coord {
 		explicit Coord<type>(const Coord<oldtype>& c) : Coord(vector<double>(c.nv.size()), vector<bool>{ c.latlon }, vector<string>{ c.names })
 		{
 			cout << "§Coord::Coord<type>(const Coord<oldtype>& c) "; _ctrsgn(typeid(*this));
-//			transform(c.nv.begin(), c.nv.end(), nv.begin(), [&c](double x){ return c.ff.get_decdeg(x); });
-			transform(c.nv.begin(), c.nv.end(), nv.begin(), Convertor(c));
 		}
-
 		Coord<type>& operator=(const Coord<type>&) = delete;
 		~Coord<type>() {
 			cout << "§Coord<type>::~Coord() "; _ctrsgn(typeid(*this), true);		
 		}
-
 		void validate(bool = true) const;
 		const vector<double>& get_nv() const;
 		const vector<bool>& get_valid() const;
@@ -418,7 +416,7 @@ class Validator {
 		}
 		bool operator()(double n)
 		{
-			cout << "@Validator() " << " validating: " << setw(9) << setfill(' ') << n << endl;
+		//	cout << "@Validator() " << " validating: " << setw(9) << setfill(' ') << n << endl;
 			return !((abs(c.ff.get_decdeg(n)) > (c.latlon.size() && (c.llgt1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
 				(abs(c.ff.get_decmin(n)) >= 60) ||
 				(abs(c.ff.get_sec(n)) >= 60));
@@ -799,27 +797,15 @@ NumericVector& coordlet(NumericVector& nv, CoordType newtype)
 		switch (newtype)
 		{
 			case CoordType::decdeg: {
-				Coord<CoordType::decdeg> d(c);
-				cout << d;
-				d.validate();
-				copy((d.get_nv()).begin(), (d.get_nv()).end(), nv.begin());
-				nv.attr("valid") = d.get_valid();
+				convertlet<type, CoordType::decdeg>(nv, c);
 			} break;
 
 			case CoordType::degmin: {
-				Coord<CoordType::degmin> d(c);
-				cout << d;
-				d.validate();
-				copy((d.get_nv()).begin(), (d.get_nv()).end(), nv.begin());
-				nv.attr("valid") = d.get_valid();
+				convertlet<type, CoordType::decdeg>(nv, c);
 			} break;
 
 			case CoordType::degminsec: {
-				Coord<CoordType::degminsec> d(c);
-				cout << d;
-				d.validate();
-				copy((d.get_nv()).begin(), (d.get_nv()).end(), nv.begin());
-				nv.attr("valid") = d.get_valid();
+				convertlet<type, CoordType::decdeg>(nv, c);
 			} break;
 
 			default:
@@ -828,6 +814,19 @@ NumericVector& coordlet(NumericVector& nv, CoordType newtype)
 	}
 	nv.attr("fmt") = coordtype_to_int(newtype) + 1;
 	return nv;	
+}
+
+
+template<CoordType type, CoordType newtype>
+const vector<bool>& convertlet(NumericVector& nv, Coord<type>& c)
+{
+		Coord<newtype> d(c);
+		vector<double>& non_const_nv { const_cast<vector<double>&>(d.get_nv()) };
+		transform(c.get_nv().begin(), c.get_nv().end(), non_const_nv.begin(), Convertor(c));
+		cout << d;
+		d.validate();
+		copy((d.get_nv()).begin(), (d.get_nv()).end(), nv.begin());
+		return d.get_valid();
 }
 
 
