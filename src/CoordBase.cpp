@@ -270,7 +270,7 @@ struct FamousFive<CoordType::degminsec> {
 
 /// __________________________________________________
 /// __________________________________________________
-/// Convert functor base class
+/// Convert Coord functor
 template<CoordType type>
 class Convertor {
 	protected:
@@ -278,18 +278,16 @@ class Convertor {
 	public:
 		Convertor(const Coord<type>& _c) : c(_c)
 		{
-			cout << "§Convertor(const Coord<type>&) "; _ctrsgn(typeid(*this));
+			cout << "§Convertor<type>::Convertor(const Coord<type>&) "; _ctrsgn(typeid(*this));
 		}
 		Convertor(const Convertor&) = delete;					// Disallow copying
 		Convertor& operator=(const Convertor&) = delete;			//  ——— ditto ———
 		Convertor(Convertor&&) = delete;							// Disallow transfer ownership
 		Convertor& operator=(Convertor&&) = delete;				// Disallow moving
-		~Convertor();
+//		~Convertor() = default;
+		~Convertor() { cout << "§Convertor<type>::~Convertor() "; _ctrsgn(typeid(*this), true); }
 		double operator()(double n) { cout << "@Convertor<type>::operator()(double)\n"; return c.ff.get_decdeg(n); }
 };
-
-template<CoordType type>
-inline Convertor<type>::~Convertor() { /* cout << "§Convertor<type>::~Convertor() "; _ctrsgn(typeid(*this), true); */ }
 
 /*
 /// __________________________________________________
@@ -412,8 +410,10 @@ class Validator {
 	public:
 		Validator(const Coord<type>& _c) : c(_c), ll_it(c.latlon.begin())
 		{
-			cout << "§Validator(const Coord<type>&) "; _ctrsgn(typeid(*this));
+			cout << "§Validator<type>::Validator(const Coord<type>&) "; _ctrsgn(typeid(*this));
 		}
+//		~Validator() = default;
+		~Validator() { cout << "§Validator<type>::~Validator(const Coord<type>&) "; _ctrsgn(typeid(*this), true); }
 		bool operator()(double n)
 		{
 		//	cout << "@Validator() " << " validating: " << setw(9) << setfill(' ') << n << endl;
@@ -510,26 +510,18 @@ class Format {
 		const Coord<type>& c;
 		ostringstream outstrstr;
 	public:
-		Format(const Coord<type>&);
+		Format(const Coord<type>& _c) : c(_c)
+		{
+			cout << "§Format<type>::Format(const Coord<type>&) "; _ctrsgn(typeid(*this));
+		}
 		Format(const Format&) = delete;				// Disallow copying
 		Format& operator=(const Format&) = delete;	//  ——— ditto ———
 		Format(Format&&) = delete;					// Disallow transfer ownership
 		Format& operator=(Format&&) = delete;		// Disallow moving
-		~Format();
+//		~Format() = default;
+		~Format() { cout << "§Format<type>::~Format() "; _ctrsgn(typeid(*this), true); }
 		string operator()(double n);
 };
-
-template<CoordType type>
-Format<type>::Format(const Coord<type>& _c) : c(_c)
-{
-	cout << "§Format(const Coord<type>&) "; _ctrsgn(typeid(*this));
-}
-
-template<CoordType type>
-Format<type>::~Format()
-{
-	cout << "§Format::~Format() "; _ctrsgn(typeid(*this), true);		
-}
 
 /// __________________________________________________
 /// Default operator(), for decimal degrees
@@ -577,26 +569,18 @@ class FormatLL {
 		const Coord<type>& c; 
 		vector<bool>::const_iterator ll_it;
 	public:
-		FormatLL(const Coord<type>& _c);
+		FormatLL(const Coord<type>& _c) : c(_c), ll_it(c.latlon.begin())
+		{
+			cout << "§FormatLL<type>::FormatLL(const Coord<type>&) "; _ctrsgn(typeid(*this));
+		}
 		FormatLL(const FormatLL&) = delete;				// Disallow copying
 		FormatLL& operator=(const FormatLL&) = delete;	//  ——— ditto ———
 		FormatLL(FormatLL&&) = delete;					// Disallow transfer ownership
 		FormatLL& operator=(FormatLL&&) = delete;		// Disallow moving
-		~FormatLL();
+//		~FormatLL() = default;
+		~FormatLL() { cout << "§FormatLL<type>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
 		string operator()(string, double);
 };
-
-template<CoordType type>
-FormatLL<type>::FormatLL(const Coord<type>& _c) : c(_c), ll_it(c.latlon.begin())
-{
-	cout << "§FormatLL(const Coord<type>&) "; _ctrsgn(typeid(*this));
-}
-
-template<CoordType type>
-FormatLL<type>::~FormatLL()
-{
-	cout << "§FormatLL::~FormatLL() "; _ctrsgn(typeid(*this), true);		
-}
 
 /// __________________________________________________
 /// Default operator(), for degrees, minutes (and seconds)
@@ -784,6 +768,10 @@ vector<bool> validatecoord(const NumericVector& nv)
 }
 
 
+/// __________________________________________________
+/// __________________________________________________
+/// Convertion functions
+
 template<CoordType type>
 NumericVector& coordlet(NumericVector& nv, CoordType newtype)
 {
@@ -801,11 +789,11 @@ NumericVector& coordlet(NumericVector& nv, CoordType newtype)
 			} break;
 
 			case CoordType::degmin: {
-				convertlet<type, CoordType::decdeg>(nv, c);
+				convertlet<type, CoordType::degmin>(nv, c);
 			} break;
 
 			case CoordType::degminsec: {
-				convertlet<type, CoordType::decdeg>(nv, c);
+				convertlet<type, CoordType::degminsec>(nv, c);
 			} break;
 
 			default:
@@ -821,9 +809,7 @@ template<CoordType type, CoordType newtype>
 const vector<bool>& convertlet(NumericVector& nv, Coord<type>& c)
 {
 		Coord<newtype> d(c);
-		vector<double>& non_const_nv { const_cast<vector<double>&>(d.get_nv()) };
-		transform(c.get_nv().begin(), c.get_nv().end(), non_const_nv.begin(), Convertor(c));
-		cout << d;
+		transform(c.get_nv().begin(), c.get_nv().end(), const_cast<vector<double>&>(d.get_nv()).begin(), Convertor(c));
 		d.validate();
 		copy((d.get_nv()).begin(), (d.get_nv()).end(), nv.begin());
 		return d.get_valid();
@@ -872,24 +858,6 @@ NumericVector coords(NumericVector& nv, int fmt = 1)
 		default:
 			stop("coords(NumericVector& nv, int) my bad");
 	}
-
-
-
-/*
-//	unique_ptr<const CoordBase> cb1{ newconstCoordBase(nv, inheritscoords ? oldtype : newtype) };
-	Coord<CoordType::decdeg> c(nv);
-	if (inheritscoords) {
-		unique_ptr<const CoordBase> cb2{ cb1->convert(newtype) };
-		unique_ptr<const Coord<CoordType::degmin>> cb2{ newconstCoord<CoordType::degmin>(nv, CoordType::degmin) };  // Placeholder for compiler…
-		cb1.swap(cb2);
-		copy((cb1->get_nv()).begin(), (cb1->get_nv()).end(), nv.begin());
-	} else {
-		nv.attr("class") = "coords";
-	}
-	nv.attr("fmt") = fmt;
-	c.validate();
-	nv.attr("valid") = c.get_valid();
-	return nv;*/
 }
 
 
