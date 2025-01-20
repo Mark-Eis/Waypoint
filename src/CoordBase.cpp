@@ -293,10 +293,6 @@ class Convertor<type, CoordType::decdeg> {
 		{
 			cout << "§Convertor<type, CoordType::decdeg>::Convertor(const Coord<type>&) "; _ctrsgn(typeid(*this));
 		}
-		Convertor(const Convertor&) = delete;					// Disallow copying
-		Convertor& operator=(const Convertor&) = delete;			//  ——— ditto ———
-		Convertor(Convertor&&) = delete;							// Disallow transfer ownership
-		Convertor& operator=(Convertor&&) = delete;				// Disallow moving
 //		~Convertor() = default;
 		~Convertor() { cout << "§Convertor<type, CoordType::decdeg>::~Convertor() "; _ctrsgn(typeid(*this), true); }
 		double operator()(double n) { return c.ff.get_decdeg(n); }
@@ -313,10 +309,6 @@ class Convertor<type, CoordType::degmin> {
 		{
 			cout << "§Convertor<type, CoordType::degmin>::Convertor(const Coord<type>&) "; _ctrsgn(typeid(*this));
 		}
-		Convertor(const Convertor&) = delete;					// Disallow copying
-		Convertor& operator=(const Convertor&) = delete;			//  ——— ditto ———
-		Convertor(Convertor&&) = delete;							// Disallow transfer ownership
-		Convertor& operator=(Convertor&&) = delete;				// Disallow moving
 //		~Convertor() = default;
 		~Convertor() { cout << "§Convertor<type, CoordType::degmin>::~Convertor() "; _ctrsgn(typeid(*this), true); }
 		double operator()(double n) { return c.ff.get_deg(n) * 1e2 + c.ff.get_decmin(n); }
@@ -333,10 +325,6 @@ class Convertor<type, CoordType::degminsec> {
 		{
 			cout << "§Convertor<type, CoordType::degminsec>::Convertor(const Coord<type>&) "; _ctrsgn(typeid(*this));
 		}
-		Convertor(const Convertor&) = delete;					// Disallow copying
-		Convertor& operator=(const Convertor&) = delete;			//  ——— ditto ———
-		Convertor(Convertor&&) = delete;							// Disallow transfer ownership
-		Convertor& operator=(Convertor&&) = delete;				// Disallow moving
 //		~Convertor() = default;
 		~Convertor() { cout << "§Convertor<type, CoordType::degminsec>::~Convertor() "; _ctrsgn(typeid(*this), true); }
 		double operator()(double n) { return c.ff.get_deg(n) * 1e4 + c.ff.get_min(n) * 1e2 + c.ff.get_sec(n); }
@@ -520,10 +508,6 @@ class Format {
 		{
 			cout << "§Format<type>::Format(const Coord<type>&) "; _ctrsgn(typeid(*this));
 		}
-		Format(const Format&) = delete;				// Disallow copying
-		Format& operator=(const Format&) = delete;	//  ——— ditto ———
-		Format(Format&&) = delete;					// Disallow transfer ownership
-		Format& operator=(Format&&) = delete;		// Disallow moving
 //		~Format() = default;
 		~Format() { cout << "§Format<type>::~Format() "; _ctrsgn(typeid(*this), true); }
 		string operator()(double n);
@@ -578,10 +562,6 @@ class FormatLL {
 		{
 			cout << "§FormatLL<type>::FormatLL(const Coord<type>&) "; _ctrsgn(typeid(*this));
 		}
-		FormatLL(const FormatLL&) = delete;				// Disallow copying
-		FormatLL& operator=(const FormatLL&) = delete;	//  ——— ditto ———
-		FormatLL(FormatLL&&) = delete;					// Disallow transfer ownership
-		FormatLL& operator=(FormatLL&&) = delete;		// Disallow moving
 //		~FormatLL() = default;
 		~FormatLL() { cout << "§FormatLL<type>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
 		string operator()(string, double);
