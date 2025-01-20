@@ -58,10 +58,12 @@ class Format;
 template<CoordType type>
 class FormatLL;
 
+template<CoordType type>
 class WayPoint;
-template<class T>
-unique_ptr<const WayPoint> newconstWayPoint(const T&);
-ostream& operator<<(ostream&, const WayPoint&);
+
+//template<class T>
+//unique_ptr<const WayPoint> newconstWayPoint(const T&);
+//ostream& operator<<(ostream&, const WayPoint&);
 
 // convenience
 template<class T>
@@ -576,7 +578,6 @@ inline string FormatLL<type>::operator()(string ostr, double n)
 	return ostr += c.latlon.size() ? cardpoint(c.ff.get_decmin(n) < 0, c.llgt1 ? *ll_it++ : *ll_it) : cardi_b(c.ff.get_decmin(n) < 0);
 }
 
-
 /// __________________________________________________
 /// Specialised operator(), for decimal degrees
 template<>
@@ -792,6 +793,57 @@ inline void convertlet(NumericVector& nv, Coord<type>& c)
 {
 	transform(c.get_nv().begin(), c.get_nv().end(), nv.begin(), Convertor<type, newtype>(c));
 }
+
+
+/// __________________________________________________
+/// __________________________________________________
+/// Waypoint class
+
+template<CoordType type>
+class WayPoint {
+	protected:
+//		unique_ptr<const CoordBase> cbp_lat;
+//		unique_ptr<const CoordBase> cbp_lon;
+		const Coord<type> c_lat;
+		const Coord<type> c_lon;
+		const vector<bool> &validlat;
+		const vector<bool> &validlon;
+	public:
+		explicit WayPoint(const Coord<type>, const Coord<type>);
+//		explicit WayPoint(const WayPoint&, CoordType);
+//		~WayPoint() = default;
+		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
+
+		const Coord<type> &get_c(bool) const;
+		unique_ptr<const WayPoint> convert(const CoordType) const;
+		void validate(bool) const;
+		const vector<bool> &get_valid(bool) const;
+		void warn_invalid() const;
+		void print(ostream& stream) const;
+		vector<string> format() const;
+		friend ostream& operator<<(ostream&, const WayPoint&);
+};
+
+
+template<CoordType type>
+WayPoint<type>::WayPoint(const Coord<type> _c_lat, const Coord<type> _c_lon) :
+	c_lat{std::move(_c_lat)}, c_lon{std::move(_c_lon)},
+	validlat(c_lat.get_valid()), validlon(c_lon.get_valid())
+{
+	cout << "§WayPoint<type>::WayPoint(const Coord<type>, const Coord<type>) "; _ctrsgn(typeid(*this));
+	c_lat.set_waypoint();
+	c_lon.set_waypoint();
+}
+
+/*
+WayPoint::WayPoint(const WayPoint &wp, CoordType type) :
+	WayPoint{ wp.get_cbp(true).convert(type), wp.get_cbp(false).convert(type) }
+{
+	cout << "§WayPoint(const WayPoint&) "; _ctrsgn(typeid(*this));
+} */
+
+
+
 
 
 /// __________________________________________________
