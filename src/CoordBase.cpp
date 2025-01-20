@@ -304,16 +304,8 @@ class Convertor<type, CoordType::decdeg> {
 		Convertor& operator=(Convertor&&) = delete;				// Disallow moving
 //		~Convertor() = default;
 		~Convertor() { cout << "§Convertor<type, CoordType::decdeg>::~Convertor() "; _ctrsgn(typeid(*this), true); }
-		double operator()(double);
+		double operator()(double n) { return c.ff.get_decdeg(n); }
 };
-
-
-template<CoordType type>
-double Convertor<type, CoordType::decdeg>::operator()(double n)
-{
-//	cout << "@Convertor<type, CoordType::decdeg>::operator()(double)\n";
-	return c.ff.get_decdeg(n);
-}
 
 
 /// __________________________________________________
@@ -333,15 +325,8 @@ class Convertor<type, CoordType::degmin> {
 		Convertor& operator=(Convertor&&) = delete;				// Disallow moving
 //		~Convertor() = default;
 		~Convertor() { cout << "§Convertor<type, CoordType::degmin>::~Convertor() "; _ctrsgn(typeid(*this), true); }
-		double operator()(double);
+		double operator()(double n) { return c.ff.get_deg(n) * 1e2 + c.ff.get_decmin(n); }
 };
-
-template<CoordType type>
-double Convertor<type, CoordType::degmin>::operator()(double n)
-{
-//	cout << "@Convertor<type, CoordType::degmin>::operator()(double)\n";
-	return c.ff.get_deg(n) * 1e2 + c.ff.get_decmin(n);;
-}
 
 
 /// __________________________________________________
@@ -361,15 +346,8 @@ class Convertor<type, CoordType::degminsec> {
 		Convertor& operator=(Convertor&&) = delete;				// Disallow moving
 //		~Convertor() = default;
 		~Convertor() { cout << "§Convertor<type, CoordType::degminsec>::~Convertor() "; _ctrsgn(typeid(*this), true); }
-		double operator()(double);
+		double operator()(double n) { return c.ff.get_deg(n) * 1e4 + c.ff.get_min(n) * 1e2 + c.ff.get_sec(n); }
 };
-
-template<CoordType type>
-double Convertor<type, CoordType::degminsec>::operator()(double n)
-{
-//	cout << "@Convertor<type, CoordType::degminsec>::operator()(double)\n";
-	return c.ff.get_deg(n) * 1e4 + c.ff.get_min(n) * 1e2 + c.ff.get_sec(n);
-}
 
 
 /// __________________________________________________
@@ -868,7 +846,7 @@ NumericVector coords(NumericVector& nv, int fmt = 1)
 	cout << "——Rcpp::export——coords()\n";
 	CoordType newtype = get_coordtype(fmt);
 	const bool inheritscoords { nv.inherits("coords") };
-	CoordType type ;
+	CoordType type;
 	if (inheritscoords) {
 		type = get_coordtype(nv);
 		cout <<  "coords() argument nv is already a \"coords\" vector of type "
