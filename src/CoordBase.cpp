@@ -359,18 +359,18 @@ class Coord {
 		bool waypoint = false;
 
 	public:
-		Coord(const vector<double>, const vector<bool>&, const vector<string>&);
 		Coord(const NumericVector&);
-		template<CoordType oldtype>
-		Coord<type>& operator=(const Coord<type>&) = delete;
-		~Coord<type>() {
-			cout << "§Coord<type>::~Coord() "; _ctrsgn(typeid(*this), true);		
-		}
+		Coord(const Coord&) = delete;					// Disallow copying
+		Coord& operator=(const Coord&) = delete;			//  ——— ditto ———
+		Coord(Coord&&) = delete;							// Disallow transfer ownership
+		Coord& operator=(Coord&&) = delete;				// Disallow moving
+//		~Coord() = default;
+		~Coord<type>() { cout << "§Coord<type>::~Coord() "; _ctrsgn(typeid(*this), true); }
+
 		void validate(bool = true) const;
 		const vector<double>& get_nv() const;
 		const vector<bool>& get_valid() const;
 		const vector<string>& get_names() const;
-
 		void warn_invalid() const;
 		void set_waypoint() const;
 		vector<string> format() const;
@@ -395,20 +395,11 @@ class Coord {
 
 
 template<CoordType type>
-Coord<type>::Coord(const vector<double> n, const vector<bool>& ll, const vector<string>& _names) :
-	nv(std::move(n)), latlon{ ll }, names{ std::move(_names) }, llgt1(latlon.size() > 1)
-{
-	cout << "§Coord<type>::Coord(const vector<double>, const vector<bool>&, const vector<string>&) latlon.size() " << latlon.size() << " "; _ctrsgn(typeid(*this));
-}
-
-
-template<CoordType type>
 Coord<type>::Coord(const NumericVector& nv) :
-	Coord(
-		as<vector<double>>(nv),
-		nv.hasAttribute("latlon") ? as<vector<bool>>(nv.attr("latlon")) : vector<bool>(),
-		nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>()
-	)
+	nv(as<vector<double>>(nv)),
+	latlon{ nv.hasAttribute("latlon") ? as<vector<bool>>(nv.attr("latlon")) : vector<bool>() },
+	names{ nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>() },
+	llgt1(latlon.size() > 1)
 {
 	cout << "§Coord<type>::Coord(const NumericVector&) "; _ctrsgn(typeid(*this));
 }
