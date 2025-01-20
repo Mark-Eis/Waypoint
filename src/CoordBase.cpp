@@ -18,8 +18,8 @@ inline unique_ptr<T> factory(A1&&);
 template<class T, class A1, class A2>
 inline unique_ptr<T> factory(A1&&, A2&&);
 
+enum class CoordType : char { decdeg, degmin, degminsec };
 
-enum class CoordType : char;
 inline const CoordType get_coordtype(int);
 template<class T>
 inline const CoordType get_coordtype(const T&);
@@ -27,8 +27,6 @@ inline const int coordtype_to_int(CoordType);
 
 inline string cardpoint(bool, bool);
 inline string cardi_b(bool);
-
-enum class CoordType : char { decdeg, degmin, degminsec };
 
 template<CoordType>
 struct FamousFive;
@@ -182,8 +180,6 @@ factory(A1&& a1, A2&& a2)   // two argument version
 /// __________________________________________________
 /// __________________________________________________
 /// CoordType enum class
-
-// enum class CoordType : char { decdeg, degmin, degminsec };
 
 /// __________________________________________________
 /// Convert int to CoordType enum
