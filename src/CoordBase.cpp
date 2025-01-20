@@ -281,14 +281,13 @@ struct FamousFive<CoordType::degminsec> {
 
 /// __________________________________________________
 /// __________________________________________________
-/// Convert Coord functor (default)
+/// Templated Coord conversion functors
 template<CoordType type, CoordType newtype>
 class Convertor {
 };
 
-
 /// __________________________________________________
-/// Convert Coord functor for decimal degrees
+/// Specialised Coord conversion functor for decimal degrees
 template<CoordType type>
 class Convertor<type, CoordType::decdeg> {
 	protected:
@@ -307,9 +306,8 @@ class Convertor<type, CoordType::decdeg> {
 		double operator()(double n) { return c.ff.get_decdeg(n); }
 };
 
-
 /// __________________________________________________
-/// Convert functor for degrees and minutes
+/// Specialised Coord conversion functor for degrees and minutes
 template<CoordType type>
 class Convertor<type, CoordType::degmin> {
 	protected:
@@ -328,9 +326,8 @@ class Convertor<type, CoordType::degmin> {
 		double operator()(double n) { return c.ff.get_deg(n) * 1e2 + c.ff.get_decmin(n); }
 };
 
-
 /// __________________________________________________
-/// Convert functor for degrees, minutes and seconds
+/// Specialised Coord conversion functor for degrees, minutes and seconds
 template<CoordType type>
 class Convertor<type, CoordType::degminsec> {
 	protected:
@@ -567,7 +564,6 @@ inline string Format<CoordType::degmin>::operator()(double n)
 					  << setw(7) << setfill('0') << fixed << setprecision(4) << abs(c.ff.get_decmin(n)) << "'";
 	return outstrstr.str();
 }
-
 
 /// __________________________________________________
 /// Specialised operator() for degrees, minutes and seconds
