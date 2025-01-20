@@ -42,12 +42,15 @@ struct FamousFive<CoordType::degminsec>;
 template<CoordType type, CoordType newtype>
 class Convertor;
 template<CoordType type>
+class Convertor<type, CoordType::decdeg>;
+template<CoordType type>
 class Convertor<type, CoordType::degmin>;
 template<CoordType type>
 class Convertor<type, CoordType::degminsec>;
 
 template<CoordType type>
 class Coord;
+
 template<CoordType type>
 class Validator;
 
@@ -62,6 +65,7 @@ template<class T>
 unique_ptr<const WayPoint> newconstWayPoint(const T&);
 ostream& operator<<(ostream&, const WayPoint&);
 
+// convenience
 template<class T>
 inline int get_fmt_attribute(const T&);
 template<class T>
@@ -69,6 +73,7 @@ inline void checkinherits(T&, const char*);
 template<class T, class V>
 void colattrset(const T&, int, const char*, V&&);
 
+// validation
 inline bool validcoord(NumericVector&);
 inline LogicalVector get_valid(const NumericVector&);
 template<class T>
@@ -78,10 +83,12 @@ bool check_valid<NumericVector>(const NumericVector&);
 template<CoordType type>
 vector<bool> validatelet(const NumericVector&);
 vector<bool> validatecoord(const NumericVector&);
+
+// conversion
 template<CoordType type>
 void coordlet(NumericVector&, CoordType);
 template<CoordType type, CoordType newtype>
-void convertlet(NumericVector&, Coord<type>&);
+inline void convertlet(NumericVector&, Coord<type>&);
 
 // exported
 NumericVector coords(NumericVector&, int);
@@ -274,30 +281,37 @@ struct FamousFive<CoordType::degminsec> {
 
 /// __________________________________________________
 /// __________________________________________________
-/// Convert Coord functor for decimal degrees (default)
+/// Convert Coord functor (default)
 template<CoordType type, CoordType newtype>
 class Convertor {
+};
+
+
+/// __________________________________________________
+/// Convert Coord functor for decimal degrees
+template<CoordType type>
+class Convertor<type, CoordType::decdeg> {
 	protected:
 		const Coord<type>& c; 
 	public:
 		Convertor(const Coord<type>& _c) : c(_c)
 		{
-			cout << "§Convertor<type, newtype>::Convertor(const Coord<type>&) "; _ctrsgn(typeid(*this));
+			cout << "§Convertor<type, CoordType::decdeg>::Convertor(const Coord<type>&) "; _ctrsgn(typeid(*this));
 		}
 		Convertor(const Convertor&) = delete;					// Disallow copying
 		Convertor& operator=(const Convertor&) = delete;			//  ——— ditto ———
 		Convertor(Convertor&&) = delete;							// Disallow transfer ownership
 		Convertor& operator=(Convertor&&) = delete;				// Disallow moving
 //		~Convertor() = default;
-		~Convertor() { cout << "§Convertor<type, newtype>::~Convertor() "; _ctrsgn(typeid(*this), true); }
+		~Convertor() { cout << "§Convertor<type, CoordType::decdeg>::~Convertor() "; _ctrsgn(typeid(*this), true); }
 		double operator()(double);
 };
 
 
-template<CoordType type, CoordType newtype>
-double Convertor<type, newtype>::operator()(double n)
+template<CoordType type>
+double Convertor<type, CoordType::decdeg>::operator()(double n)
 {
-//	cout << "@Convertor<type, newtype>::operator()(double)\n";
+//	cout << "@Convertor<type, CoordType::decdeg>::operator()(double)\n";
 	return c.ff.get_decdeg(n);
 }
 
@@ -834,7 +848,7 @@ void coordlet(NumericVector& nv, CoordType newtype)
 
 
 template<CoordType type, CoordType newtype>
-void convertlet(NumericVector& nv, Coord<type>& c)
+inline void convertlet(NumericVector& nv, Coord<type>& c)
 {
 	transform(c.get_nv().begin(), c.get_nv().end(), nv.begin(), Convertor<type, newtype>(c));
 }
