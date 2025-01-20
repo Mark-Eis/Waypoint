@@ -796,21 +796,20 @@ void coordlet(NumericVector& nv, CoordType newtype)
 	cout << "@coordlet(NumericVector&, CoordType) type " << coordtype_to_int(type) + 1 << " newtype " << coordtype_to_int(newtype) + 1 << endl;
 	Coord<type> c(nv);
 	c.validate();
-	if (type == newtype) {
-	} else {
+	if (type != newtype) {
 		switch (newtype)
 		{
-			case CoordType::decdeg: {
+			case CoordType::decdeg:
 				convertlet<type, CoordType::decdeg>(nv, c);
-			} break;
+				break;
 
-			case CoordType::degmin: {
+			case CoordType::degmin:
 				convertlet<type, CoordType::degmin>(nv, c);
-			} break;
+				break;
 
-			case CoordType::degminsec: {
+			case CoordType::degminsec:
 				convertlet<type, CoordType::degminsec>(nv, c);
-			} break;
+				break;
 
 			default:
 				stop("coordlet(NumericVector&, CoordType) my bad");
