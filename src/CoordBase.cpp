@@ -59,11 +59,7 @@ template<CoordType type>
 class FormatLL;
 
 template<CoordType type>
-class WayPoint;
-
-//template<class T>
-//unique_ptr<const WayPoint> newconstWayPoint(const T&);
-//ostream& operator<<(ostream&, const WayPoint&);
+ostream& operator<<(ostream&, const Coord<type>&);
 
 // convenience
 template<class T>
@@ -89,6 +85,13 @@ template<CoordType type>
 void coordlet(NumericVector&, CoordType);
 template<CoordType type, CoordType newtype>
 inline void convertlet(NumericVector&, Coord<type>&);
+
+// waypoint
+template<CoordType type>
+class WayPoint;
+
+template<CoordType type>
+ostream& operator<<(ostream&, const WayPoint<type>&);
 
 // exported
 NumericVector coords(NumericVector&, int);
@@ -813,7 +816,7 @@ class WayPoint {
 		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
 
 		const Coord<type> &get_c(bool) const;
-		unique_ptr<const WayPoint> convert(const CoordType) const;
+//		unique_ptr<const WayPoint> convert(const CoordType) const;
 		void validate(bool = true) const;
 		const vector<bool> &get_valid(bool) const;
 		void warn_invalid() const;
@@ -925,6 +928,15 @@ void WayPoint<type>::print(ostream& stream) const
 }
 
 
+/// __________________________________________________
+/// Output WayPoint to ostream
+template<CoordType type>
+ostream& operator<<(ostream& stream, const WayPoint<type>& wp)
+{
+//	cout << "@operator<<(ostream&, const WayPoint<type>&)\n";
+	wp.print(stream);
+	return stream;
+}
 
 
 
