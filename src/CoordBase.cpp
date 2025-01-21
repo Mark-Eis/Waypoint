@@ -814,7 +814,7 @@ class WayPoint {
 
 		const Coord<type> &get_c(bool) const;
 		unique_ptr<const WayPoint> convert(const CoordType) const;
-		void validate(bool) const;
+		void validate(bool = true) const;
 		const vector<bool> &get_valid(bool) const;
 		void warn_invalid() const;
 		void print(ostream& stream) const;
@@ -849,6 +849,43 @@ inline const Coord<type>& WayPoint<type>::get_c(bool latlon) const
 //	cout << "@WayPoint<type>::get_c(bool) const\n";
 	return latlon ? c_lat.get_nv() : c_lon.get_nv();
 }
+
+
+/// __________________________________________________
+/// Validate WayPoint
+template<CoordType type>
+void WayPoint<type>::validate(bool warn) const
+{
+//	cout << "@WayPoint<type>::validate(bool)\n";
+	c_lat.validate(warn);
+	c_lon.validate(warn);
+}
+
+
+/// __________________________________________________
+/// WayPoint validity
+template<CoordType type>
+const vector<bool> &WayPoint<type>::get_valid(bool latlon) const
+{
+//	cout << "@WayPoint<type>::get_valid(bool)\n";
+	return latlon ? validlat : validlon;
+}
+
+
+/// __________________________________________________
+/// WayPoint validity warning
+template<CoordType type>
+void WayPoint<type>::warn_invalid() const
+{
+//	cout << "@WayPoint<type>::warn_invalid()\n";
+	if (any_of(validlat.begin(), validlat.end(), [](bool v) { return !v;})) {
+		warning("Invalid latitude");
+	}
+	if (any_of(validlon.begin(), validlon.end(), [](bool v) { return !v;})) {
+		warning("Invalid longitude");
+	}
+}
+
 
 
 
