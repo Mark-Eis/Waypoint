@@ -938,6 +938,40 @@ ostream& operator<<(ostream& stream, const WayPoint<type>& wp)
 }
 
 
+/// __________________________________________________
+/// __________________________________________________
+/// Conversion function
+/*
+template<class T, CoordType type>
+void waypointlet(T& t, CoordType newtype)
+{
+	cout << "@waypointlet<t, type>(T&, CoordType) type " << coordtype_to_int(type) + 1 << " newtype " << coordtype_to_int(newtype) + 1 << endl;
+	WayPoint<type> wp(as<NumericVector>(t[0]), as<NumericVector>(t[1]));
+	wp.validate();
+	if (type != newtype) {
+		switch (newtype)
+		{
+			case CoordType::decdeg:
+				convertlet<type, CoordType::decdeg>(t[0], c);
+				break;
+
+			case CoordType::degmin:
+				convertlet<type, CoordType::degmin>(nv, c);
+				break;
+
+			case CoordType::degminsec:
+				convertlet<type, CoordType::degminsec>(nv, c);
+				break;
+
+			default:
+				stop("coordlet(NumericVector&, CoordType) my bad");
+		}
+	}
+	nv.attr("valid") = c.get_valid();
+	nv.attr("class") = "coords";
+}
+*/
+
 
 
 
@@ -986,7 +1020,7 @@ NumericVector coords(NumericVector& nv, int fmt = 1)
 		default:
 			stop("coords(NumericVector& nv, int) my bad");
 	}
-	nv.attr("fmt") = coordtype_to_int(newtype) + 1;
+	nv.attr("fmt") = fmt;
 	return nv;
 }
 
