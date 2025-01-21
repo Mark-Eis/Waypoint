@@ -810,13 +810,12 @@ class WayPoint {
 		const vector<bool> &validlat;
 		const vector<bool> &validlon;
 	public:
-		explicit WayPoint(const Coord<type>, const Coord<type>);
+		explicit WayPoint(const NumericVector&, const NumericVector&);
 //		explicit WayPoint(const WayPoint&, CoordType);
 //		~WayPoint() = default;
 		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
 
 		const Coord<type> &get_c(bool) const;
-//		unique_ptr<const WayPoint> convert(const CoordType) const;
 		void validate(bool = true) const;
 		const vector<bool> &get_valid(bool) const;
 		void warn_invalid() const;
@@ -827,9 +826,8 @@ class WayPoint {
 
 
 template<CoordType type>
-WayPoint<type>::WayPoint(const Coord<type> _c_lat, const Coord<type> _c_lon) :
-	c_lat{std::move(_c_lat)}, c_lon{std::move(_c_lon)},
-	validlat(c_lat.get_valid()), validlon(c_lon.get_valid())
+WayPoint<type>::WayPoint(const NumericVector& _nv_lat, const NumericVector& _nv_lon) :
+	c_lat(_nv_lat), c_lon(_nv_lon), 	validlat(c_lat.get_valid()), validlon(c_lon.get_valid())
 {
 	cout << "§WayPoint<type>::WayPoint(const Coord<type>, const Coord<type>) "; _ctrsgn(typeid(*this));
 	c_lat.set_waypoint();
@@ -837,6 +835,7 @@ WayPoint<type>::WayPoint(const Coord<type> _c_lat, const Coord<type> _c_lon) :
 }
 
 /*
+
 WayPoint::WayPoint(const WayPoint &wp, CoordType type) :
 	WayPoint{ wp.get_cbp(true).convert(type), wp.get_cbp(false).convert(type) }
 {
@@ -1169,10 +1168,29 @@ DataFrame waypoints(DataFrame& df, int fmt = 1)
 		for (const auto x : llcols)
 			setcolattr(df, x, "latlon", vector<bool>(1, llcols[1] - x));
 	}
+	setcolattr(df, llcols[0], "names", df[0]);				// !!!!!!!! Temporary Solution !!!!!!
+
+    switch (type)
+	{
+    		case CoordType::decdeg:
+//        		waypointlet<CoordType::decdeg>(nv, newtype);
+			{WayPoint<CoordType::decdeg> wp1(as<NumericVector>(df[1]), as<NumericVector>(df[1]));}
+            break;
+
+		case CoordType::degmin:
+//			waypointlet<CoordType::degmin>(nv, newtype);
+			break;
+
+		case CoordType::degminsec:
+//			waypointlet<CoordType::degminsec>(nv, newtype);
+			break;
+
+		default:
+			stop("waypoints(DataFrame&, int) my bad");
+	}
 
 /*
 
-	setcolattr(df, llcols[0], "names", df[0]);				// !!!!!!!! Temporary Solution !!!!!!
 	unique_ptr<const WayPoint> wp1{ newconstWaypoint(df) };
 	if (inheritswaypoints) {
 		unique_ptr<const WayPoint> wp2{ wp1->convert(newtype) };
