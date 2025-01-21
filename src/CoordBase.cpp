@@ -67,7 +67,7 @@ inline int get_fmt_attribute(const T&);
 template<class T>
 inline void checkinherits(T&, const char*);
 template<class T, class V>
-void colattrset(const T&, int, const char*, V&&);
+void setcolattr(const T&, int, const char*, V&&);
 
 // validation
 inline bool validcoord(NumericVector&);
@@ -661,9 +661,9 @@ inline void checkinherits(T& t, const char* classname)
 /// __________________________________________________
 /// set attributes for vector column within object
 template<class T, class V>
-void colattrset(const T& t, int col, const char* attrib, V&& val)
+void setcolattr(const T& t, int col, const char* attrib, V&& val)
 {
-//	cout << "@colattrset(const T&, int, const char*, V&&) attrib " << attrib << ", col " << col << endl;
+//	cout << "@setcolattr(const T&, int, const char*, V&&) attrib " << attrib << ", col " << col << endl;
 	as<NumericVector>(t[col]).attr(attrib) = std::forward<V>(val);
 }
 
@@ -1142,7 +1142,7 @@ vector<double> get_sec(NumericVector& nv)
 	transform(nv.begin(), nv.end(), out.begin(), [&c](double n) { return c->get_sec(n); });
 	return out;
 }
-
+*/
 
 /// __________________________________________________
 /// Add "waypoints" to R data.frame object class and validate. !!!!!!! Template and Specialise !!!!!!!
@@ -1153,23 +1153,26 @@ DataFrame waypoints(DataFrame& df, int fmt = 1)
 	bool boolio;
 	vector<int> llcols { 1, 2 };
 	CoordType newtype = get_coordtype(fmt);
-	CoordType oldtype;
+	CoordType type;
 	const bool inheritswaypoints { df.inherits("waypoints") };
 	if (inheritswaypoints) {
-		oldtype = get_coordtype(df);
-//		cout << "argument df is already a \"waypoints\" vector of type " << coordtype_to_int(oldtype) + 1 << endl;
+		type = get_coordtype(df);
+		cout << "argument df is already a \"waypoints\" vector of type " << coordtype_to_int(type) + 1 << endl;
 		if (!check_valid(df))
 			stop("Invalid waypoints!");
-		if (newtype == oldtype) {
-//			cout << "——fmt out == fmt in!——" << endl;
+		if (newtype == type) {
+			cout << "——fmt out == fmt in!——" << endl;
 			return df;
 		}
 	} else {
-		df.attr("fmt") = fmt;
+		type = newtype;
 		for (const auto x : llcols)
-			colattrset(df, x, "latlon", vector<bool>(1, llcols[1] - x));
+			setcolattr(df, x, "latlon", vector<bool>(1, llcols[1] - x));
 	}
-	colattrset(df, llcols[0], "names", df[0]);				// !!!!!!!! Temporary Solution !!!!!!
+
+/*
+
+	setcolattr(df, llcols[0], "names", df[0]);				// !!!!!!!! Temporary Solution !!!!!!
 	unique_ptr<const WayPoint> wp1{ newconstWaypoint(df) };
 	if (inheritswaypoints) {
 		unique_ptr<const WayPoint> wp2{ wp1->convert(newtype) };
@@ -1185,9 +1188,12 @@ DataFrame waypoints(DataFrame& df, int fmt = 1)
 	wp1->warn_invalid();
 	for (const auto x : llcols) {
 		boolio = llcols[2] - x;
-		colattrset(df, x, "valid", LogicalVector(wrap(wp1->get_valid(boolio))));
-		colattrset(df, x, "fmt", fmt);
+		setcolattr(df, x, "valid", LogicalVector(wrap(wp1->get_valid(boolio))));
+		setcolattr(df, x, "fmt", fmt);
 	}
+
+*/
+
 	df.attr("fmt") = fmt;
 	return df;
 }
@@ -1202,7 +1208,7 @@ DataFrame waypoints_replace(DataFrame& df, int value)
 	return waypoints(df, value);
 }
 
-
+/*
 /// __________________________________________________
 /// Print waypoints vector - S3 method print.waypoints()	  /////// "invisible" not working ///////
 // [[Rcpp::export(name = "print.waypoints", invisible = true)]]
@@ -1229,7 +1235,7 @@ const DataFrame validatewaypoint(DataFrame& df)
 	wp->warn_invalid();
 	vector<int> llcols { 1, 2 };
 	for (const auto x : llcols)
-		colattrset(df, x, "valid", wp->get_valid(llcols[2] - x));
+		setcolattr(df, x, "valid", wp->get_valid(llcols[2] - x));
 	return df;
 }
 */
