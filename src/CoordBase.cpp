@@ -802,8 +802,6 @@ inline void convertlet(NumericVector& nv, Coord<type>& c)
 template<CoordType type>
 class WayPoint {
 	protected:
-//		unique_ptr<const CoordBase> cbp_lat;
-//		unique_ptr<const CoordBase> cbp_lon;
 		const Coord<type> c_lat;
 		const Coord<type> c_lon;
 		const vector<bool> &validlat;
@@ -841,6 +839,17 @@ WayPoint::WayPoint(const WayPoint &wp, CoordType type) :
 {
 	cout << "§WayPoint(const WayPoint&) "; _ctrsgn(typeid(*this));
 } */
+
+
+/// __________________________________________________
+/// Get const reference to c_lat or c_lon
+template<CoordType type>
+inline const Coord<type>& WayPoint<type>::get_c(bool latlon) const
+{
+//	cout << "@WayPoint<type>::get_c(bool) const\n";
+	return latlon ? c_lat.get_nv() : c_lon.get_nv();
+}
+
 
 
 
