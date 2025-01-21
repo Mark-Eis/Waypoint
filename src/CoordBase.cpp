@@ -887,6 +887,44 @@ void WayPoint<type>::warn_invalid() const
 }
 
 
+/// __________________________________________________
+/// Formatted character strings for printing
+template<CoordType type>
+vector<string> WayPoint<type>::format() const
+{
+//	cout << "@WayPoint<type>::format()\n";
+	vector<string> sv_lat{ c_lat.format() };
+	vector<string> sv_lon{ c_lon.format() };
+	vector<string> out(sv_lat.size());
+	transform(
+		sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(),
+		[](string &latstr, string &lonstr) { return latstr + "  " + lonstr; }
+	);
+	if (c_lat.get_names().size())
+		transform(
+			out.begin(), out.end(), c_lat.get_names().begin(), out.begin(),
+			[](string &lls, const string &name) { return lls + "  " + name; }
+		);
+	return out;
+}
+
+
+/// __________________________________________________
+/// Print WayPoint
+template<CoordType type>
+void WayPoint<type>::print(ostream& stream) const
+{
+//	cout << "@WayPoint<type>::print() " << typeid(*this).name() << endl;
+	const int i { coordtype_to_int(c_lat->getfmt()) };
+	vector<int> spacing { 5, 7, 8, 11, 13, 14, 2, 2, 2 };
+	stream << " Latitude" << string(spacing[i], ' ') << "Longitude\n"
+		   << string(1, ' ') << string(spacing[i + 3], '_')
+		   << string(spacing[i + 6], ' ') << string(spacing[i + 3] + 1, '_') << endl;
+	vector<string> sv(format());
+	for_each(sv.begin(), sv.end(), [&stream](const string &s) { stream << s << "\n"; });
+}
+
+
 
 
 
