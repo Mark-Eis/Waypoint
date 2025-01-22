@@ -817,7 +817,6 @@ class WayPoint {
 		const vector<bool> &validlon;
 	public:
 		explicit WayPoint(const NumericVector&, const NumericVector&);
-//		explicit WayPoint(const WayPoint&, CoordType);
 //		~WayPoint() = default;
 		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
 
@@ -840,14 +839,6 @@ WayPoint<type>::WayPoint(const NumericVector& _nv_lat, const NumericVector& _nv_
 	c_lon.set_waypoint();
 }
 
-/*
-
-WayPoint::WayPoint(const WayPoint &wp, CoordType type) :
-	WayPoint{ wp.get_cbp(true).convert(type), wp.get_cbp(false).convert(type) }
-{
-	cout << "§WayPoint(const WayPoint&) "; _ctrsgn(typeid(*this));
-} */
-
 
 /// __________________________________________________
 /// Get const reference to c_lat or c_lon
@@ -855,7 +846,7 @@ template<CoordType type>
 inline const Coord<type>& WayPoint<type>::get_c(bool latlon) const
 {
 	cout << "@WayPoint<type>::get_c(bool) const\n";
-	return latlon ? c_lat.get_nv() : c_lon.get_nv();
+	return latlon ? c_lat : c_lon;
 }
 
 
@@ -946,7 +937,7 @@ ostream& operator<<(ostream& stream, const WayPoint<type>& wp)
 
 /// __________________________________________________
 /// __________________________________________________
-/// Conversion function
+/// Conversion functions
 
 template<CoordType type>
 void waypointlet(DataFrame& df, CoordType newtype)
@@ -954,25 +945,24 @@ void waypointlet(DataFrame& df, CoordType newtype)
 	cout << "@waypointlet<type>(DataFrame&, CoordType) type " << coordtype_to_int(type) + 1 << " newtype " << coordtype_to_int(newtype) + 1 << endl;
 	WayPoint<type> wp(as<NumericVector>(df[1]), as<NumericVector>(df[2]));
 	wp.validate();
-	wp. warn_invalid();
-
+	wp.warn_invalid();
 
 	if (type != newtype) {
 		switch (newtype)
 		{
 			case CoordType::decdeg:
 				cout << "@waypointlet<type>(DataFrame&, CoordType) switch (newtype) " << coordtype_to_int(newtype) + 1 << endl;
-//				convertlet<type, CoordType::decdeg>(df[0], c);
+				wpconvertlet<type, CoordType::decdeg>(df, wp);
 				break;
 
 			case CoordType::degmin:
 				cout << "@waypointlet<type>(DataFrame&, CoordType) switch (newtype) " << coordtype_to_int(newtype) + 1 << endl;
-//				convertlet<type, CoordType::degmin>(df[0], c);
+				wpconvertlet<type, CoordType::degmin>(df, wp);
 				break;
 
 			case CoordType::degminsec:
 				cout << "@waypointlet<type>(DataFrame&, CoordType) switch (newtype) " << coordtype_to_int(newtype) + 1 << endl;
-//				convertlet<type, CoordType::degminsec>(df[0], c);
+				wpconvertlet<type, CoordType::degminsec>(df, wp);
 				break;
 
 			default:
@@ -983,7 +973,7 @@ void waypointlet(DataFrame& df, CoordType newtype)
 	vector<int> llcols { 1, 2 };
 	for (const auto x : llcols) {
 		setcolattr(df, x, "valid", LogicalVector(wrap(wp.get_valid(llcols[1] - x))));
-		setcolattr(df, x, "fmt", coordtype_to_int(newtype));
+		setcolattr(df, x, "fmt", coordtype_to_int(newtype) + 1);
 	}
 	df.attr("class") = CharacterVector{"waypoints", "data.frame"};
 }
@@ -992,7 +982,11 @@ void waypointlet(DataFrame& df, CoordType newtype)
 template<CoordType type, CoordType newtype>
 inline void wpconvertlet(DataFrame& df, WayPoint<type>& wp)
 {
-//	transform(c.get_nv().begin(), c.get_nv().end(), nv.begin(), Convertor<type, newtype>(c));
+	vector<int> llcols { 1, 2 };							// !!!!!!!! Temporary Solution !!!!!!
+	for (const auto x : llcols) {
+		const Coord<type>& c(wp.get_c(llcols[1] - x));
+		transform(c.get_nv().begin(), c.get_nv().end(), as<NumericVector>(df[x]).begin(), Convertor<type, newtype>(c));
+	}
 }
 
 
@@ -1199,12 +1193,12 @@ vector<double> get_sec(NumericVector& nv)
 */
 
 /// __________________________________________________
-/// Add "waypoints" to R data.frame object class and validate. !!!!!!! Template and Specialise !!!!!!!
+/// Add "waypoints" to R data.frame object class and validate
 // [[Rcpp::export]]
 DataFrame waypoints(DataFrame& df, int fmt = 1)
 {
 	cout << "——Rcpp::export——waypoints()\n";
-	vector<int> llcols { 1, 2 };
+	vector<int> llcols { 1, 2 };								// !!!!!!!! Temporary Solution !!!!!!
 	CoordType newtype = get_coordtype(fmt);
 	CoordType type;
 	const bool inheritswaypoints { df.inherits("waypoints") };
@@ -1241,29 +1235,6 @@ DataFrame waypoints(DataFrame& df, int fmt = 1)
 		default:
 			stop("waypoints(DataFrame&, int) my bad");
 	}
-
-/*
-
-	unique_ptr<const WayPoint> wp1{ newconstWaypoint(df) };
-	if (inheritswaypoints) {
-		unique_ptr<const WayPoint> wp2{ wp1->convert(newtype) };
-		wp1.swap(wp2);
-		for (const auto x : llcols) {
-			boolio = llcols[2] - x;
-			copy((wp1->get_cbp(boolio).get_nv()).begin(), (wp1->get_cbp(boolio).get_nv()).end(), as<NumericVector>(df[x]).begin());
-		}
-	} else {
-		df.attr("class") = CharacterVector{"waypoints", "data.frame"};
-	}
-	wp1->validate(true);
-	wp1->warn_invalid();
-	for (const auto x : llcols) {
-		boolio = llcols[2] - x;
-		setcolattr(df, x, "valid", LogicalVector(wrap(wp1->get_valid(boolio))));
-		setcolattr(df, x, "fmt", fmt);
-	}
-
-*/
 
 	df.attr("fmt") = fmt;
 	return df;
