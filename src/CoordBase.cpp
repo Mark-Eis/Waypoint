@@ -93,6 +93,9 @@ class WayPoint;
 template<CoordType type>
 ostream& operator<<(ostream&, const WayPoint<type>&);
 
+template<CoordType type>
+void waypointlet(CoordType newtype);
+
 // exported
 NumericVector coords(NumericVector&, int);
 NumericVector coords_replace(NumericVector&, int);
@@ -848,7 +851,7 @@ WayPoint::WayPoint(const WayPoint &wp, CoordType type) :
 template<CoordType type>
 inline const Coord<type>& WayPoint<type>::get_c(bool latlon) const
 {
-//	cout << "@WayPoint<type>::get_c(bool) const\n";
+	cout << "@WayPoint<type>::get_c(bool) const\n";
 	return latlon ? c_lat.get_nv() : c_lon.get_nv();
 }
 
@@ -858,7 +861,7 @@ inline const Coord<type>& WayPoint<type>::get_c(bool latlon) const
 template<CoordType type>
 void WayPoint<type>::validate(bool warn) const
 {
-//	cout << "@WayPoint<type>::validate(bool)\n";
+	cout << "@WayPoint<type>::validate(bool)\n";
 	c_lat.validate(warn);
 	c_lon.validate(warn);
 }
@@ -869,7 +872,7 @@ void WayPoint<type>::validate(bool warn) const
 template<CoordType type>
 const vector<bool> &WayPoint<type>::get_valid(bool latlon) const
 {
-//	cout << "@WayPoint<type>::get_valid(bool)\n";
+	cout << "@WayPoint<type>::get_valid(bool)\n";
 	return latlon ? validlat : validlon;
 }
 
@@ -879,7 +882,7 @@ const vector<bool> &WayPoint<type>::get_valid(bool latlon) const
 template<CoordType type>
 void WayPoint<type>::warn_invalid() const
 {
-//	cout << "@WayPoint<type>::warn_invalid()\n";
+	cout << "@WayPoint<type>::warn_invalid()\n";
 	if (any_of(validlat.begin(), validlat.end(), [](bool v) { return !v;})) {
 		warning("Invalid latitude");
 	}
@@ -894,7 +897,7 @@ void WayPoint<type>::warn_invalid() const
 template<CoordType type>
 vector<string> WayPoint<type>::format() const
 {
-//	cout << "@WayPoint<type>::format()\n";
+	cout << "@WayPoint<type>::format()\n";
 	vector<string> sv_lat{ c_lat.format() };
 	vector<string> sv_lon{ c_lon.format() };
 	vector<string> out(sv_lat.size());
@@ -916,7 +919,7 @@ vector<string> WayPoint<type>::format() const
 template<CoordType type>
 void WayPoint<type>::print(ostream& stream) const
 {
-//	cout << "@WayPoint<type>::print() " << typeid(*this).name() << endl;
+	cout << "@WayPoint<type>::print() " << typeid(*this).name() << endl;
 	const int i { coordtype_to_int(c_lat->getfmt()) };
 	vector<int> spacing { 5, 7, 8, 11, 13, 14, 2, 2, 2 };
 	stream << " Latitude" << string(spacing[i], ' ') << "Longitude\n"
@@ -932,7 +935,7 @@ void WayPoint<type>::print(ostream& stream) const
 template<CoordType type>
 ostream& operator<<(ostream& stream, const WayPoint<type>& wp)
 {
-//	cout << "@operator<<(ostream&, const WayPoint<type>&)\n";
+	cout << "@operator<<(ostream&, const WayPoint<type>&)\n";
 	wp.print(stream);
 	return stream;
 }
@@ -941,36 +944,40 @@ ostream& operator<<(ostream& stream, const WayPoint<type>& wp)
 /// __________________________________________________
 /// __________________________________________________
 /// Conversion function
-/*
-template<class T, CoordType type>
-void waypointlet(T& t, CoordType newtype)
+
+template<CoordType type>
+void waypointlet(DataFrame& df, CoordType newtype)
 {
-	cout << "@waypointlet<t, type>(T&, CoordType) type " << coordtype_to_int(type) + 1 << " newtype " << coordtype_to_int(newtype) + 1 << endl;
-	WayPoint<type> wp(as<NumericVector>(t[0]), as<NumericVector>(t[1]));
+	cout << "@waypointlet<type>(DataFrame&, CoordType) type " << coordtype_to_int(type) + 1 << " newtype " << coordtype_to_int(newtype) + 1 << endl;
+	WayPoint<type> wp(as<NumericVector>(df[1]), as<NumericVector>(df[2]));
 	wp.validate();
+	wp. warn_invalid();
 	if (type != newtype) {
 		switch (newtype)
 		{
 			case CoordType::decdeg:
-				convertlet<type, CoordType::decdeg>(t[0], c);
+				cout << "@waypointlet<type>(DataFrame&, CoordType) switch (newtype) " << coordtype_to_int(newtype) + 1 << endl;
+//				convertlet<type, CoordType::decdeg>(df[0], c);
 				break;
 
 			case CoordType::degmin:
-				convertlet<type, CoordType::degmin>(nv, c);
+				cout << "@waypointlet<type>(DataFrame&, CoordType) switch (newtype) " << coordtype_to_int(newtype) + 1 << endl;
+//				convertlet<type, CoordType::degmin>(df[0], c);
 				break;
 
 			case CoordType::degminsec:
-				convertlet<type, CoordType::degminsec>(nv, c);
+				cout << "@waypointlet<type>(DataFrame&, CoordType) switch (newtype) " << coordtype_to_int(newtype) + 1 << endl;
+//				convertlet<type, CoordType::degminsec>(df[0], c);
 				break;
 
 			default:
-				stop("coordlet(NumericVector&, CoordType) my bad");
+				stop("@waypointlet<type>(DataFrame&, CoordType) my bad");
 		}
 	}
-	nv.attr("valid") = c.get_valid();
-	nv.attr("class") = "coords";
+//	df.attr("valid") = wp.get_valid();
+	df.attr("class") = CharacterVector{"waypoints", "data.frame"};
 }
-*/
+
 
 
 
@@ -1182,7 +1189,7 @@ vector<double> get_sec(NumericVector& nv)
 // [[Rcpp::export]]
 DataFrame waypoints(DataFrame& df, int fmt = 1)
 {
-//	cout << "——Rcpp::export——waypoints()\n";
+	cout << "——Rcpp::export——waypoints()\n";
 	bool boolio;
 	vector<int> llcols { 1, 2 };
 	CoordType newtype = get_coordtype(fmt);
@@ -1207,16 +1214,16 @@ DataFrame waypoints(DataFrame& df, int fmt = 1)
     switch (type)
 	{
     		case CoordType::decdeg:
-//        		waypointlet<CoordType::decdeg>(nv, newtype);
-			{WayPoint<CoordType::decdeg> wp1(as<NumericVector>(df[1]), as<NumericVector>(df[1]));}
+       		waypointlet<CoordType::decdeg>(df, newtype);
+//			{WayPoint<CoordType::decdeg> wp1(as<NumericVector>(df[1]), as<NumericVector>(df[1]));}
             break;
 
 		case CoordType::degmin:
-//			waypointlet<CoordType::degmin>(nv, newtype);
+			waypointlet<CoordType::degmin>(df, newtype);
 			break;
 
 		case CoordType::degminsec:
-//			waypointlet<CoordType::degminsec>(nv, newtype);
+			waypointlet<CoordType::degminsec>(df, newtype);
 			break;
 
 		default:
