@@ -96,6 +96,9 @@ ostream& operator<<(ostream&, const WayPoint<type>&);
 template<CoordType type>
 void waypointlet(CoordType newtype);
 
+template<CoordType type, CoordType newtype>
+inline void wpconvertlet(DataFrame&, WayPoint<type>&);
+
 // exported
 NumericVector coords(NumericVector&, int);
 NumericVector coords_replace(NumericVector&, int);
@@ -988,7 +991,11 @@ void waypointlet(DataFrame& df, CoordType newtype)
 }
 
 
-
+template<CoordType type, CoordType newtype>
+inline void wpconvertlet(DataFrame& df, WayPoint<type>& wp)
+{
+//	transform(c.get_nv().begin(), c.get_nv().end(), nv.begin(), Convertor<type, newtype>(c));
+}
 
 
 /// __________________________________________________
