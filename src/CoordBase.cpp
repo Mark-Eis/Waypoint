@@ -980,11 +980,9 @@ void waypointlet(DataFrame& df, CoordType newtype)
 		}
 	}
 
-	bool boolio;
 	vector<int> llcols { 1, 2 };
 	for (const auto x : llcols) {
-		boolio = llcols[1] - x;
-		setcolattr(df, x, "valid", LogicalVector(wrap(wp.get_valid(boolio))));
+		setcolattr(df, x, "valid", LogicalVector(wrap(wp.get_valid(llcols[1] - x))));
 		setcolattr(df, x, "fmt", coordtype_to_int(newtype));
 	}
 	df.attr("class") = CharacterVector{"waypoints", "data.frame"};
