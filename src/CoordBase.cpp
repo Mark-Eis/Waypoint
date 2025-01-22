@@ -980,7 +980,7 @@ void waypointlet(DataFrame& df, CoordType newtype)
 	bool boolio;
 	vector<int> llcols { 1, 2 };
 	for (const auto x : llcols) {
-		boolio = llcols[2] - x;
+		boolio = llcols[1] - x;
 		setcolattr(df, x, "valid", LogicalVector(wrap(wp.get_valid(boolio))));
 		setcolattr(df, x, "fmt", coordtype_to_int(newtype));
 	}
@@ -1223,7 +1223,6 @@ DataFrame waypoints(DataFrame& df, int fmt = 1)
 	{
     		case CoordType::decdeg:
        		waypointlet<CoordType::decdeg>(df, newtype);
-//			{WayPoint<CoordType::decdeg> wp1(as<NumericVector>(df[1]), as<NumericVector>(df[1]));}
             break;
 
 		case CoordType::degmin:
