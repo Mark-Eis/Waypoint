@@ -28,6 +28,7 @@ inline const int coordtype_to_int(CoordType);
 inline string cardpoint(bool, bool);
 inline string cardi_b(bool);
 
+//Coord
 template<CoordType>
 struct FamousFive;
 template<>
@@ -61,6 +62,13 @@ class FormatLL;
 template<CoordType type>
 ostream& operator<<(ostream&, const Coord<type>&);
 
+// waypoint
+template<CoordType type>
+class WayPoint;
+
+template<CoordType type>
+ostream& operator<<(ostream&, const WayPoint<type>&);
+
 // convenience
 template<class T>
 inline int get_fmt_attribute(const T&);
@@ -83,15 +91,9 @@ vector<bool> validatecoord(const NumericVector&);
 // conversion
 template<CoordType type>
 void coordlet(NumericVector&, CoordType);
+
 template<CoordType type, CoordType newtype>
 inline void convertlet(NumericVector&, Coord<type>&);
-
-// waypoint
-template<CoordType type>
-class WayPoint;
-
-template<CoordType type>
-ostream& operator<<(ostream&, const WayPoint<type>&);
 
 template<CoordType type>
 void waypointlet(CoordType newtype);
@@ -642,6 +644,137 @@ ostream& operator<<(ostream& stream, const Coord<type>& c)
 
 /// __________________________________________________
 /// __________________________________________________
+/// Waypoint class
+
+template<CoordType type>
+class WayPoint {
+	protected:
+		const Coord<type> c_lat;
+		const Coord<type> c_lon;
+		const vector<bool> &validlat;
+		const vector<bool> &validlon;
+	public:
+		explicit WayPoint(const NumericVector&, const NumericVector&);
+//		~WayPoint() = default;
+		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
+
+		const Coord<type> &get_c(bool) const;
+		void validate(bool = true) const;
+		const vector<bool> &get_valid(bool) const;
+		void warn_invalid() const;
+		void print(ostream& stream) const;
+		vector<string> format() const;
+		friend ostream& operator<<(ostream&, const WayPoint&);
+};
+
+
+template<CoordType type>
+WayPoint<type>::WayPoint(const NumericVector& _nv_lat, const NumericVector& _nv_lon) :
+	c_lat(_nv_lat), c_lon(_nv_lon), 	validlat(c_lat.get_valid()), validlon(c_lon.get_valid())
+{
+	cout << "§WayPoint<type>::WayPoint(const Coord<type>, const Coord<type>) "; _ctrsgn(typeid(*this));
+	c_lat.set_waypoint();
+	c_lon.set_waypoint();
+}
+
+
+/// __________________________________________________
+/// Get const reference to c_lat or c_lon
+template<CoordType type>
+inline const Coord<type>& WayPoint<type>::get_c(bool latlon) const
+{
+	cout << "@WayPoint<type>::get_c(bool) const\n";
+	return latlon ? c_lat : c_lon;
+}
+
+
+/// __________________________________________________
+/// Validate WayPoint
+template<CoordType type>
+void WayPoint<type>::validate(bool warn) const
+{
+	cout << "@WayPoint<type>::validate(bool)\n";
+	c_lat.validate(warn);
+	c_lon.validate(warn);
+}
+
+
+/// __________________________________________________
+/// WayPoint validity
+template<CoordType type>
+const vector<bool> &WayPoint<type>::get_valid(bool latlon) const
+{
+	cout << "@WayPoint<type>::get_valid(bool)\n";
+	return latlon ? validlat : validlon;
+}
+
+
+/// __________________________________________________
+/// WayPoint validity warning
+template<CoordType type>
+void WayPoint<type>::warn_invalid() const
+{
+	cout << "@WayPoint<type>::warn_invalid()\n";
+	if (any_of(validlat.begin(), validlat.end(), [](bool v) { return !v;})) {
+		warning("Invalid latitude");
+	}
+	if (any_of(validlon.begin(), validlon.end(), [](bool v) { return !v;})) {
+		warning("Invalid longitude");
+	}
+}
+
+
+/// __________________________________________________
+/// Formatted character strings for printing
+template<CoordType type>
+vector<string> WayPoint<type>::format() const
+{
+	cout << "@WayPoint<type>::format()\n";
+	vector<string> sv_lat{ c_lat.format() };
+	vector<string> sv_lon{ c_lon.format() };
+	vector<string> out(sv_lat.size());
+	transform(
+		sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(),
+		[](string &latstr, string &lonstr) { return latstr + "  " + lonstr; }
+	);
+	if (c_lat.get_names().size())
+		transform(
+			out.begin(), out.end(), c_lat.get_names().begin(), out.begin(),
+			[](string &lls, const string &name) { return lls + "  " + name; }
+		);
+	return out;
+}
+
+
+/// __________________________________________________
+/// Print WayPoint
+template<CoordType type>
+void WayPoint<type>::print(ostream& stream) const
+{
+	cout << "@WayPoint<type>::print() " << typeid(*this).name() << endl;
+	const int i { coordtype_to_int(c_lat->getfmt()) };
+	vector<int> spacing { 5, 7, 8, 11, 13, 14, 2, 2, 2 };
+	stream << " Latitude" << string(spacing[i], ' ') << "Longitude\n"
+		   << string(1, ' ') << string(spacing[i + 3], '_')
+		   << string(spacing[i + 6], ' ') << string(spacing[i + 3] + 1, '_') << endl;
+	vector<string> sv(format());
+	for_each(sv.begin(), sv.end(), [&stream](const string &s) { stream << s << "\n"; });
+}
+
+
+/// __________________________________________________
+/// Output WayPoint to ostream
+template<CoordType type>
+ostream& operator<<(ostream& stream, const WayPoint<type>& wp)
+{
+	cout << "@operator<<(ostream&, const WayPoint<type>&)\n";
+	wp.print(stream);
+	return stream;
+}
+
+
+/// __________________________________________________
+/// __________________________________________________
 /// Convenience functions
 
 /// __________________________________________________
@@ -803,141 +936,6 @@ inline void convertlet(NumericVector& nv, Coord<type>& c)
 	transform(c.get_nv().begin(), c.get_nv().end(), nv.begin(), Convertor<type, newtype>(c));
 }
 
-
-/// __________________________________________________
-/// __________________________________________________
-/// Waypoint class
-
-template<CoordType type>
-class WayPoint {
-	protected:
-		const Coord<type> c_lat;
-		const Coord<type> c_lon;
-		const vector<bool> &validlat;
-		const vector<bool> &validlon;
-	public:
-		explicit WayPoint(const NumericVector&, const NumericVector&);
-//		~WayPoint() = default;
-		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
-
-		const Coord<type> &get_c(bool) const;
-		void validate(bool = true) const;
-		const vector<bool> &get_valid(bool) const;
-		void warn_invalid() const;
-		void print(ostream& stream) const;
-		vector<string> format() const;
-		friend ostream& operator<<(ostream&, const WayPoint&);
-};
-
-
-template<CoordType type>
-WayPoint<type>::WayPoint(const NumericVector& _nv_lat, const NumericVector& _nv_lon) :
-	c_lat(_nv_lat), c_lon(_nv_lon), 	validlat(c_lat.get_valid()), validlon(c_lon.get_valid())
-{
-	cout << "§WayPoint<type>::WayPoint(const Coord<type>, const Coord<type>) "; _ctrsgn(typeid(*this));
-	c_lat.set_waypoint();
-	c_lon.set_waypoint();
-}
-
-
-/// __________________________________________________
-/// Get const reference to c_lat or c_lon
-template<CoordType type>
-inline const Coord<type>& WayPoint<type>::get_c(bool latlon) const
-{
-	cout << "@WayPoint<type>::get_c(bool) const\n";
-	return latlon ? c_lat : c_lon;
-}
-
-
-/// __________________________________________________
-/// Validate WayPoint
-template<CoordType type>
-void WayPoint<type>::validate(bool warn) const
-{
-	cout << "@WayPoint<type>::validate(bool)\n";
-	c_lat.validate(warn);
-	c_lon.validate(warn);
-}
-
-
-/// __________________________________________________
-/// WayPoint validity
-template<CoordType type>
-const vector<bool> &WayPoint<type>::get_valid(bool latlon) const
-{
-	cout << "@WayPoint<type>::get_valid(bool)\n";
-	return latlon ? validlat : validlon;
-}
-
-
-/// __________________________________________________
-/// WayPoint validity warning
-template<CoordType type>
-void WayPoint<type>::warn_invalid() const
-{
-	cout << "@WayPoint<type>::warn_invalid()\n";
-	if (any_of(validlat.begin(), validlat.end(), [](bool v) { return !v;})) {
-		warning("Invalid latitude");
-	}
-	if (any_of(validlon.begin(), validlon.end(), [](bool v) { return !v;})) {
-		warning("Invalid longitude");
-	}
-}
-
-
-/// __________________________________________________
-/// Formatted character strings for printing
-template<CoordType type>
-vector<string> WayPoint<type>::format() const
-{
-	cout << "@WayPoint<type>::format()\n";
-	vector<string> sv_lat{ c_lat.format() };
-	vector<string> sv_lon{ c_lon.format() };
-	vector<string> out(sv_lat.size());
-	transform(
-		sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(),
-		[](string &latstr, string &lonstr) { return latstr + "  " + lonstr; }
-	);
-	if (c_lat.get_names().size())
-		transform(
-			out.begin(), out.end(), c_lat.get_names().begin(), out.begin(),
-			[](string &lls, const string &name) { return lls + "  " + name; }
-		);
-	return out;
-}
-
-
-/// __________________________________________________
-/// Print WayPoint
-template<CoordType type>
-void WayPoint<type>::print(ostream& stream) const
-{
-	cout << "@WayPoint<type>::print() " << typeid(*this).name() << endl;
-	const int i { coordtype_to_int(c_lat->getfmt()) };
-	vector<int> spacing { 5, 7, 8, 11, 13, 14, 2, 2, 2 };
-	stream << " Latitude" << string(spacing[i], ' ') << "Longitude\n"
-		   << string(1, ' ') << string(spacing[i + 3], '_')
-		   << string(spacing[i + 6], ' ') << string(spacing[i + 3] + 1, '_') << endl;
-	vector<string> sv(format());
-	for_each(sv.begin(), sv.end(), [&stream](const string &s) { stream << s << "\n"; });
-}
-
-
-/// __________________________________________________
-/// Output WayPoint to ostream
-template<CoordType type>
-ostream& operator<<(ostream& stream, const WayPoint<type>& wp)
-{
-	cout << "@operator<<(ostream&, const WayPoint<type>&)\n";
-	wp.print(stream);
-	return stream;
-}
-
-
-/// __________________________________________________
-/// __________________________________________________
-/// Conversion functions
 
 template<CoordType type>
 void waypointlet(DataFrame& df, CoordType newtype)
