@@ -952,6 +952,8 @@ void waypointlet(DataFrame& df, CoordType newtype)
 	WayPoint<type> wp(as<NumericVector>(df[1]), as<NumericVector>(df[2]));
 	wp.validate();
 	wp. warn_invalid();
+
+
 	if (type != newtype) {
 		switch (newtype)
 		{
@@ -974,7 +976,14 @@ void waypointlet(DataFrame& df, CoordType newtype)
 				stop("@waypointlet<type>(DataFrame&, CoordType) my bad");
 		}
 	}
-//	df.attr("valid") = wp.get_valid();
+
+	bool boolio;
+	vector<int> llcols { 1, 2 };
+	for (const auto x : llcols) {
+		boolio = llcols[2] - x;
+		setcolattr(df, x, "valid", LogicalVector(wrap(wp.get_valid(boolio))));
+		setcolattr(df, x, "fmt", coordtype_to_int(newtype));
+	}
 	df.attr("class") = CharacterVector{"waypoints", "data.frame"};
 }
 
@@ -1190,7 +1199,6 @@ vector<double> get_sec(NumericVector& nv)
 DataFrame waypoints(DataFrame& df, int fmt = 1)
 {
 	cout << "——Rcpp::export——waypoints()\n";
-	bool boolio;
 	vector<int> llcols { 1, 2 };
 	CoordType newtype = get_coordtype(fmt);
 	CoordType type;
