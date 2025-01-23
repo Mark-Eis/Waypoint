@@ -101,6 +101,11 @@ void waypointlet(CoordType newtype);
 template<CoordType type, CoordType newtype>
 inline void wpconvertlet(DataFrame&, WayPoint<type>&);
 
+// ??
+template<CoordType type>
+inline void wpprintlet(DataFrame&);
+
+
 // exported
 NumericVector coords(NumericVector&, int);
 NumericVector coords_replace(NumericVector&, int);
@@ -664,7 +669,6 @@ class WayPoint {
 		void warn_invalid() const;
 		void print(ostream& stream) const;
 		vector<string> format() const;
-		friend ostream& operator<<(ostream&, const WayPoint&);
 };
 
 
@@ -752,7 +756,7 @@ template<CoordType type>
 void WayPoint<type>::print(ostream& stream) const
 {
 	cout << "@WayPoint<type>::print() " << typeid(*this).name() << endl;
-	const int i { coordtype_to_int(c_lat->getfmt()) };
+	const int i { coordtype_to_int(type) };
 	vector<int> spacing { 5, 7, 8, 11, 13, 14, 2, 2, 2 };
 	stream << " Latitude" << string(spacing[i], ' ') << "Longitude\n"
 		   << string(1, ' ') << string(spacing[i + 3], '_')
@@ -986,6 +990,16 @@ inline void wpconvertlet(DataFrame& df, WayPoint<type>& wp)
 		const Coord<type>& c(wp.get_c(llcols[1] - x));
 		transform(c.get_nv().begin(), c.get_nv().end(), as<NumericVector>(df[x]).begin(), Convertor<type, newtype>(c));
 	}
+}
+
+
+template<CoordType type>
+inline void wpprintlet(DataFrame& df)
+{
+	cout << "@wpprintlet<type>(DataFrame&)\n";
+	vector<int> llcols { 1, 2 };							// !!!!!!!! Temporary Solution !!!!!!
+	Rcout << WayPoint<type>(as<NumericVector>(df[llcols[0]]), as<NumericVector>(df[llcols[1]]));
+//	WayPoint<type>(as<NumericVector>(df[llcols[0]]), as<NumericVector>(df[llcols[1]]));
 }
 
 
@@ -1249,7 +1263,7 @@ DataFrame waypoints_replace(DataFrame& df, int value)
 	return waypoints(df, value);
 }
 
-/*
+
 /// __________________________________________________
 /// Print waypoints vector - S3 method print.waypoints()	  /////// "invisible" not working ///////
 // [[Rcpp::export(name = "print.waypoints", invisible = true)]]
@@ -1259,11 +1273,28 @@ DataFrame printwaypoint(DataFrame& df)
 	checkinherits(df, "waypoints");
 	if (!check_valid(df))
 		warning("Invalid waypoints!");
-	Rcout << *newconstWaypoint(df) << endl;
+    switch (get_coordtype(df))
+	{
+   		case CoordType::decdeg:
+       		wpprintlet<CoordType::decdeg>(df);
+            break;
+
+		case CoordType::degmin:
+			wpprintlet<CoordType::degmin>(df);
+			break;
+
+		case CoordType::degminsec:
+			wpprintlet<CoordType::degminsec>(df);
+			break;
+
+		default:
+			stop("printwaypoint(DataFrame&) my bad");
+	}
+
 	return df;
 }
 
-
+/*
 /// __________________________________________________
 /// Validate waypoints vector
 // [[Rcpp::export(name = "validate.waypoints")]]
