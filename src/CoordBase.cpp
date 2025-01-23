@@ -941,7 +941,9 @@ template<CoordType type>
 void waypointlet(DataFrame& df, CoordType newtype)
 {
 	cout << "@waypointlet<type>(DataFrame&, CoordType) type " << coordtype_to_int(type) + 1 << " newtype " << coordtype_to_int(newtype) + 1 << endl;
-	WayPoint<type> wp(as<NumericVector>(df[1]), as<NumericVector>(df[2]));
+	vector<int> llcols { 1, 2 };
+
+	WayPoint<type> wp(as<NumericVector>(df[llcols[0]]), as<NumericVector>(df[llcols[1]]));
 	wp.validate();
 	wp.warn_invalid();
 
@@ -968,7 +970,6 @@ void waypointlet(DataFrame& df, CoordType newtype)
 		}
 	}
 
-	vector<int> llcols { 1, 2 };
 	for (const auto x : llcols) {
 		setcolattr(df, x, "valid", LogicalVector(wrap(wp.get_valid(llcols[1] - x))));
 		setcolattr(df, x, "fmt", coordtype_to_int(newtype) + 1);
