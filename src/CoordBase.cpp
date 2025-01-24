@@ -660,6 +660,7 @@ class WayPoint {
 		const vector<bool> &validlon;
 	public:
 		explicit WayPoint(const NumericVector&, const NumericVector&);
+		WayPoint(const DataFrame&, const vector<int>&);
 //		~WayPoint() = default;
 		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
 
@@ -679,6 +680,14 @@ WayPoint<type>::WayPoint(const NumericVector& _nv_lat, const NumericVector& _nv_
 	cout << "§WayPoint<type>::WayPoint(const Coord<type>, const Coord<type>) "; _ctrsgn(typeid(*this));
 	c_lat.set_waypoint();
 	c_lon.set_waypoint();
+}
+
+
+template<CoordType type>
+WayPoint<type>::WayPoint(const DataFrame& df, const vector<int> &llcols) :
+	WayPoint<type>(as<NumericVector>(df[llcols[0]]), as<NumericVector>(df[llcols[1]]))
+{
+	cout << "§WayPoint<type>::WayPoint(const DataFrame&, const vector<int>&) "; _ctrsgn(typeid(*this));
 }
 
 
@@ -1269,7 +1278,7 @@ DataFrame waypoints_replace(DataFrame& df, int value)
 // [[Rcpp::export(name = "print.waypoints", invisible = true)]]
 DataFrame printwaypoint(DataFrame& df)
 {
-//	cout << "——Rcpp::export——printwaypoint() format " << get_fmt_attribute(df) << endl;
+	cout << "——Rcpp::export——printwaypoint() format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
 	if (!check_valid(df))
 		warning("Invalid waypoints!");
