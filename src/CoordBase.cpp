@@ -1176,7 +1176,8 @@ vector<double> get_sec(NumericVector& nv)
 */
 
 /// __________________________________________________
-/// Add "waypoints" to R data.frame object class and validate
+/// Add "waypoints" to R data.frame object class and validate,
+/// or convert format of R waypoints object and return
 // [[Rcpp::export]]
 DataFrame waypoints(DataFrame& df, int fmt = 1)
 {
