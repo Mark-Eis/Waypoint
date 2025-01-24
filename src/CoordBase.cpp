@@ -1266,18 +1266,20 @@ DataFrame printwaypoint(DataFrame& df)
 	checkinherits(df, "waypoints");
 	if (!check_valid(df))
 		warning("Invalid waypoints!");
+
+	const vector<int> llcols { 1, 2 };								// !!!!!!!! Temporary Solution !!!!!!
     switch (get_coordtype(df))
 	{
    		case CoordType::decdeg:
-			Rcout << WayPoint<CoordType::decdeg>(df, vector<int> { 1, 2 });
+			Rcout << WayPoint<CoordType::decdeg>(df, llcols);
             break;
 
 		case CoordType::degmin:
-			Rcout << WayPoint<CoordType::degmin>(df, vector<int> { 1, 2 });
+			Rcout << WayPoint<CoordType::degmin>(df, llcols);
 			break;
 
 		case CoordType::degminsec:
-			Rcout << WayPoint<CoordType:: degminsec>(df, vector<int> { 1, 2 });
+			Rcout << WayPoint<CoordType:: degminsec>(df, llcols);
 			break;
 
 		default:
@@ -1292,7 +1294,7 @@ DataFrame printwaypoint(DataFrame& df)
 // [[Rcpp::export(name = "validate.waypoints")]]
 const DataFrame validatewaypoint(DataFrame& df)
 {
-//	cout << "——Rcpp::export——validatewaypoint()\n";
+//	cout << "——Rcpp::export——validatewaypoint() format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
 	unique_ptr<const WayPoint> wp{ newconstWaypoint(df) };
 	wp->validate(true);
