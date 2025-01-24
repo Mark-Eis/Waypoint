@@ -99,7 +99,7 @@ template<CoordType type>
 void waypointlet(CoordType newtype);
 
 template<CoordType type, CoordType newtype>
-inline void wpconvertlet(DataFrame&, WayPoint<type>&);
+inline void wpconvertlet(DataFrame&, const vector<int>&, WayPoint<type>&);
 
 // exported
 NumericVector coords(NumericVector&, int);
@@ -946,10 +946,10 @@ inline void convertlet(NumericVector& nv, Coord<type>& c)
 
 
 template<CoordType type>
-void waypointlet(DataFrame& df, CoordType newtype)
+void waypointlet(DataFrame& df, const vector<int>& llcols, CoordType newtype)
 {
-	cout << "@waypointlet<type>(DataFrame&, CoordType) type " << coordtype_to_int(type) + 1 << " newtype " << coordtype_to_int(newtype) + 1 << endl;
-	vector<int> llcols { 1, 2 };
+	cout << "@waypointlet<type>(DataFrame&, const vector<int>&, CoordType) type " << coordtype_to_int(type) + 1
+		 << " newtype " << coordtype_to_int(newtype) + 1 << endl;
 
 	WayPoint<type> wp(df, llcols);
 	wp.validate();
@@ -960,17 +960,17 @@ void waypointlet(DataFrame& df, CoordType newtype)
 		{
 			case CoordType::decdeg:
 				cout << "@waypointlet<type>(DataFrame&, CoordType) switch (newtype) " << coordtype_to_int(newtype) + 1 << endl;
-				wpconvertlet<type, CoordType::decdeg>(df, wp);
+				wpconvertlet<type, CoordType::decdeg>(df, llcols, wp);
 				break;
 
 			case CoordType::degmin:
 				cout << "@waypointlet<type>(DataFrame&, CoordType) switch (newtype) " << coordtype_to_int(newtype) + 1 << endl;
-				wpconvertlet<type, CoordType::degmin>(df, wp);
+				wpconvertlet<type, CoordType::degmin>(df, llcols, wp);
 				break;
 
 			case CoordType::degminsec:
 				cout << "@waypointlet<type>(DataFrame&, CoordType) switch (newtype) " << coordtype_to_int(newtype) + 1 << endl;
-				wpconvertlet<type, CoordType::degminsec>(df, wp);
+				wpconvertlet<type, CoordType::degminsec>(df, llcols, wp);
 				break;
 
 			default:
@@ -987,9 +987,8 @@ void waypointlet(DataFrame& df, CoordType newtype)
 
 
 template<CoordType type, CoordType newtype>
-inline void wpconvertlet(DataFrame& df, WayPoint<type>& wp)
+inline void wpconvertlet(DataFrame& df, const vector<int>& llcols, WayPoint<type>& wp)
 {
-	vector<int> llcols { 1, 2 };							// !!!!!!!! Temporary Solution !!!!!!
 	for (const auto x : llcols) {
 		const Coord<type>& c(wp.get_c(llcols[1] - x));
 		transform(c.get_nv().begin(), c.get_nv().end(), as<NumericVector>(df[x]).begin(), Convertor<type, newtype>(c));
@@ -1205,7 +1204,7 @@ vector<double> get_sec(NumericVector& nv)
 DataFrame waypoints(DataFrame& df, int fmt = 1)
 {
 	cout << "——Rcpp::export——waypoints()\n";
-	vector<int> llcols { 1, 2 };								// !!!!!!!! Temporary Solution !!!!!!
+	const vector<int> llcols { 1, 2 };								// !!!!!!!! Temporary Solution !!!!!!
 	CoordType newtype = get_coordtype(fmt);
 	CoordType type;
 	const bool inheritswaypoints { df.inherits("waypoints") };
@@ -1228,15 +1227,15 @@ DataFrame waypoints(DataFrame& df, int fmt = 1)
     switch (type)
 	{
     		case CoordType::decdeg:
-       		waypointlet<CoordType::decdeg>(df, newtype);
+       		waypointlet<CoordType::decdeg>(df, llcols, newtype);
             break;
 
 		case CoordType::degmin:
-			waypointlet<CoordType::degmin>(df, newtype);
+			waypointlet<CoordType::degmin>(df, llcols, newtype);
 			break;
 
 		case CoordType::degminsec:
-			waypointlet<CoordType::degminsec>(df, newtype);
+			waypointlet<CoordType::degminsec>(df, llcols, newtype);
 			break;
 
 		default:
@@ -1284,7 +1283,6 @@ DataFrame printwaypoint(DataFrame& df)
 		default:
 			stop("printwaypoint(DataFrame&) my bad");
 	}
-
 	return df;
 }
 
