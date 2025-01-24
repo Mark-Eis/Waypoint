@@ -80,13 +80,20 @@ void setcolattr(const T&, int, const char*, V&&);
 // validation
 inline bool validcoord(NumericVector&);
 inline LogicalVector get_valid(const NumericVector&);
+
 template<class T>
 bool check_valid(const T&);
+
 template<>
 bool check_valid<NumericVector>(const NumericVector&);
+
 template<CoordType type>
 vector<bool> validatelet(const NumericVector&);
+
 vector<bool> validatecoord(const NumericVector&);
+
+template<CoordType type>
+void wpvalidatelet(DataFrame&, const vector<int>&);
 
 // conversion
 template<CoordType type>
@@ -885,7 +892,7 @@ vector<bool> validatelet(const NumericVector& nv)
 /// Validate coords vector
 vector<bool> validatecoord(const NumericVector& nv)
 {
-	cout << "@validatecoord()\n";
+	cout << "@validatecoord(const NumericVector&)\n";
 
 	switch (get_coordtype(nv))
 	{
@@ -901,6 +908,17 @@ vector<bool> validatecoord(const NumericVector& nv)
 		default:
 			stop("validatecoord(const NumericVector&) my bad");
 	}
+}
+
+
+template<CoordType type>
+void wpvalidatelet(DataFrame& df, const vector<int>& llcols)
+{
+	WayPoint<type> wp(df, llcols);
+	wp.validate(true);
+	wp.warn_invalid();
+	for (const auto x : llcols)
+		setcolattr(df, x, "valid", wp.get_valid(llcols[2] - x));
 }
 
 
@@ -1288,22 +1306,35 @@ DataFrame printwaypoint(DataFrame& df)
 	return df;
 }
 
-/*
+
 /// __________________________________________________
 /// Validate waypoints vector
 // [[Rcpp::export(name = "validate.waypoints")]]
 const DataFrame validatewaypoint(DataFrame& df)
 {
-//	cout << "——Rcpp::export——validatewaypoint() format " << get_fmt_attribute(df) << endl;
+	cout << "——Rcpp::export——validatewaypoint(DataFrame&) format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
-	unique_ptr<const WayPoint> wp{ newconstWaypoint(df) };
-	wp->validate(true);
-	wp->warn_invalid();
-	vector<int> llcols { 1, 2 };
-	for (const auto x : llcols)
-		setcolattr(df, x, "valid", wp->get_valid(llcols[2] - x));
+
+	const vector<int> llcols { 1, 2 };								// !!!!!!!! Temporary Solution !!!!!!
+    switch (get_coordtype(df))
+	{
+   		case CoordType::decdeg:
+			wpvalidatelet<CoordType::decdeg>(df, llcols);
+            break;
+
+		case CoordType::degmin:
+			wpvalidatelet<CoordType::degmin>(df, llcols);
+			break;
+
+		case CoordType::degminsec:
+			wpvalidatelet<CoordType:: degminsec>(df, llcols);
+			break;
+
+		default:
+			stop("validatewaypoint(DataFrame&) my bad");
+	}
 	return df;
 }
-*/
+
 /// __________________________________________________
 /// __________________________________________________
