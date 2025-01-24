@@ -13,11 +13,6 @@ inline double mod1e2(double);
 inline double round2(double, int);
 inline double polish(double);
 
-template<class T, class A1>
-inline unique_ptr<T> factory(A1&&);
-template<class T, class A1, class A2>
-inline unique_ptr<T> factory(A1&&, A2&&);
-
 enum class CoordType : char { decdeg, degmin, degminsec };
 
 inline const CoordType get_coordtype(int);
@@ -170,30 +165,6 @@ inline double round2(double x, int n = 2)
 inline double polish(double x)
 {
 	return round(x * 1e10) / 1e10;
-}
-
-
-/// __________________________________________________
-/// __________________________________________________
-/// Generic factory functions returning unique_ptr
-/// see: Perfect Forwarding (http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2006/n2027.html)
-
-template<class T, class A1>
-inline unique_ptr<T>
-factory(A1&& a1)   // one argument version
-{
-///§
-	cout << "@factory(A1& a1)\n";
-	return unique_ptr<T>(new T(std::forward<A1>(a1)));
-}
-
-template<class T, class A1, class A2>
-inline unique_ptr<T>
-factory(A1&& a1, A2&& a2)   // two argument version
-{
-///§
-	cout << "@factory(A1& a1, A2& a2)\n";
-	return unique_ptr<T>(new T(std::forward<A1>(a1), std::forward<A2>(a2)));
 }
 
 
@@ -658,17 +629,17 @@ class WayPoint {
 	protected:
 		const Coord<type> c_lat;
 		const Coord<type> c_lon;
-		const vector<bool> &validlat;
-		const vector<bool> &validlon;
+		const vector<bool>& validlat;
+		const vector<bool>& validlon;
 	public:
 		explicit WayPoint(const NumericVector&, const NumericVector&);
 		WayPoint(const DataFrame&, const vector<int>&);
 //		~WayPoint() = default;
 		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
 
-		const Coord<type> &get_c(bool) const;
+		const Coord<type>& get_c(bool) const;
 		void validate(bool = true) const;
-		const vector<bool> &get_valid(bool) const;
+		const vector<bool>& get_valid(bool) const;
 		void warn_invalid() const;
 		void print(ostream& stream) const;
 		vector<string> format() const;
@@ -686,7 +657,7 @@ WayPoint<type>::WayPoint(const NumericVector& _nv_lat, const NumericVector& _nv_
 
 
 template<CoordType type>
-WayPoint<type>::WayPoint(const DataFrame& df, const vector<int> &llcols) :
+WayPoint<type>::WayPoint(const DataFrame& df, const vector<int>& llcols) :
 	WayPoint<type>(as<NumericVector>(df[llcols[0]]), as<NumericVector>(df[llcols[1]]))
 {
 	cout << "§WayPoint<type>::WayPoint(const DataFrame&, const vector<int>&) "; _ctrsgn(typeid(*this));
@@ -717,7 +688,7 @@ void WayPoint<type>::validate(bool warn) const
 /// __________________________________________________
 /// WayPoint validity
 template<CoordType type>
-const vector<bool> &WayPoint<type>::get_valid(bool latlon) const
+const vector<bool>& WayPoint<type>::get_valid(bool latlon) const
 {
 	cout << "@WayPoint<type>::get_valid(bool)\n";
 	return latlon ? validlat : validlon;
@@ -750,12 +721,12 @@ vector<string> WayPoint<type>::format() const
 	vector<string> out(sv_lat.size());
 	transform(
 		sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(),
-		[](string &latstr, string &lonstr) { return latstr + "  " + lonstr; }
+		[](string& latstr, string& lonstr) { return latstr + "  " + lonstr; }
 	);
 	if (c_lat.get_names().size())
 		transform(
 			out.begin(), out.end(), c_lat.get_names().begin(), out.begin(),
-			[](string &lls, const string &name) { return lls + "  " + name; }
+			[](string& lls, const string& name) { return lls + "  " + name; }
 		);
 	return out;
 }
@@ -773,7 +744,7 @@ void WayPoint<type>::print(ostream& stream) const
 		   << string(1, ' ') << string(spacing[i + 3], '_')
 		   << string(spacing[i + 6], ' ') << string(spacing[i + 3] + 1, '_') << endl;
 	vector<string> sv(format());
-	for_each(sv.begin(), sv.end(), [&stream](const string &s) { stream << s << "\n"; });
+	for_each(sv.begin(), sv.end(), [&stream](const string& s) { stream << s << "\n"; });
 }
 
 
@@ -1320,7 +1291,7 @@ const DataFrame validatewaypoint(DataFrame& df)
 	{
    		case CoordType::decdeg:
 			wpvalidatelet<CoordType::decdeg>(df, llcols);
-            break;
+			break;
 
 		case CoordType::degmin:
 			wpvalidatelet<CoordType::degmin>(df, llcols);
