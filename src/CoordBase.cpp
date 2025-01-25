@@ -1295,22 +1295,17 @@ const DataFrame validatewaypoint(DataFrame& df)
 //	cout << "——Rcpp::export——validatewaypoint(DataFrame&) format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
 
-//	const vector<int> llcols { 1, 2 };								// !!!!!!!! Temporary Solution !!!!!!
-
     switch (get_coordtype(df))
 	{
    		case CoordType::decdeg:
-//			wpvalidatelet<CoordType::decdeg>(df, llcols);
 			wpvalidatelet<CoordType::decdeg>(df);
 			break;
 
 		case CoordType::degmin:
-//			wpvalidatelet<CoordType::degmin>(df, llcols);
 			wpvalidatelet<CoordType::degmin>(df);
 			break;
 
 		case CoordType::degminsec:
-//			wpvalidatelet<CoordType:: degminsec>(df, llcols);
 			wpvalidatelet<CoordType:: degminsec>(df);
 			break;
 
