@@ -990,10 +990,10 @@ NumericVector coords(NumericVector& nv, int fmt = 1)
 	CoordType type;
 	if (inheritscoords) {
 		type = get_coordtype(nv);
-		cout <<  "coords() argument nv is already a \"coords\" vector of type "
-			 << coordtype_to_int(type) + 1 << endl;
+//		cout <<  "coords() argument nv is already a \"coords\" vector of type "
+//			 << coordtype_to_int(type) + 1 << endl;
 		if (newtype == type) {
-			cout << "——fmt out == fmt in!——" << endl;
+//			cout << "——fmt out == fmt in!——" << endl;
 			if (!check_valid(nv))
 				warning("Invalid coords!");
 			return nv;
@@ -1091,7 +1091,7 @@ vector<bool> Rvalidatecoord(NumericVector& nv)
 	return validatecoord(nv);
 }
 
-/*
+
 /// __________________________________________________
 /// Format coords vector - S3 method format.coords()
 // [[Rcpp::export(name = "format.coords")]]
@@ -1101,10 +1101,24 @@ vector<string> formatcoord(NumericVector& nv)
 	checkinherits(nv, "coords");
 	if (!check_valid(nv))
 		warning("Formatting invalid coords!");
-	return newconstCoordBase(nv, get_coordtype(nv))->fmt_fctr_tmpl();
+
+	switch (get_coordtype(nv))
+	{
+		case CoordType::decdeg:
+			return Coord<CoordType::decdeg>(nv).format();
+
+		case CoordType::degmin:
+			return Coord<CoordType::degmin>(nv).format();
+
+		case CoordType::degminsec:
+			return Coord<CoordType::degminsec>(nv).format();
+
+		default:
+			stop("formatcoord(NumericVector&) my bad");
+	}
 }
 
-
+/*
 /// __________________________________________________
 /// Return degrees as integer
 // [[Rcpp::export]]
