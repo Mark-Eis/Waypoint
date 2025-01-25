@@ -88,7 +88,8 @@ vector<bool> validatelet(const NumericVector&);
 vector<bool> validatecoord(const NumericVector&);
 
 template<CoordType type>
-void wpvalidatelet(DataFrame&, const vector<int>&);
+//void wpvalidatelet(DataFrame&, const vector<int>&);
+void wpvalidatelet(DataFrame&);
 
 // conversion
 template<CoordType type>
@@ -874,13 +875,15 @@ vector<bool> validatecoord(const NumericVector& nv)
 
 
 template<CoordType type>
-void wpvalidatelet(DataFrame& df, const vector<int>& llcols)
+//void wpvalidatelet(DataFrame& df, const vector<int>& llcols)
+void wpvalidatelet(DataFrame& df)
 {
+	const vector<int> llcols = as<vector<int>>(df.attr("llcols"));
 	WayPoint<type> wp(df, llcols);
 	wp.validate(true);
 	wp.warn_invalid();
 	for (const auto x : llcols)
-		setcolattr(df, x, "valid", wp.get_valid(llcols[2] - x));
+		setcolattr(df, x, "valid", wp.get_valid(llcols[1] - x));
 }
 
 
@@ -1235,6 +1238,7 @@ DataFrame waypoints(DataFrame& df, int fmt = 1)
 	}
 
 	df.attr("fmt") = fmt;
+	df.attr("llcols") = llcols;
 	return df;
 }
 
@@ -1259,7 +1263,9 @@ DataFrame printwaypoint(DataFrame& df)
 	if (!check_valid(df))
 		warning("Invalid waypoints!");
 
-	const vector<int> llcols { 1, 2 };								// !!!!!!!! Temporary Solution !!!!!!
+//	const vector<int> llcols { 1, 2 };								// !!!!!!!! Temporary Solution !!!!!!
+	const vector<int> llcols = as<vector<int>>(df.attr("llcols"));
+
     switch (get_coordtype(df))
 	{
    		case CoordType::decdeg:
@@ -1289,19 +1295,23 @@ const DataFrame validatewaypoint(DataFrame& df)
 //	cout << "——Rcpp::export——validatewaypoint(DataFrame&) format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
 
-	const vector<int> llcols { 1, 2 };								// !!!!!!!! Temporary Solution !!!!!!
+//	const vector<int> llcols { 1, 2 };								// !!!!!!!! Temporary Solution !!!!!!
+
     switch (get_coordtype(df))
 	{
    		case CoordType::decdeg:
-			wpvalidatelet<CoordType::decdeg>(df, llcols);
+//			wpvalidatelet<CoordType::decdeg>(df, llcols);
+			wpvalidatelet<CoordType::decdeg>(df);
 			break;
 
 		case CoordType::degmin:
-			wpvalidatelet<CoordType::degmin>(df, llcols);
+//			wpvalidatelet<CoordType::degmin>(df, llcols);
+			wpvalidatelet<CoordType::degmin>(df);
 			break;
 
 		case CoordType::degminsec:
-			wpvalidatelet<CoordType:: degminsec>(df, llcols);
+//			wpvalidatelet<CoordType:: degminsec>(df, llcols);
+			wpvalidatelet<CoordType:: degminsec>(df);
 			break;
 
 		default:
