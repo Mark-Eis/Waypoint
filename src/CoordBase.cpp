@@ -895,12 +895,11 @@ vector<bool> validatecoord(const NumericVector& nv)
 template<CoordType type>
 void wpvalidatelet(DataFrame& df)
 {
-	cout << "@ wpvalidatelet(DataFrame&)\n";
-//	WayPoint<type> wp(df, llcols);
+	cout << "@wpvalidatelet(DataFrame&)\n";
 	WayPoint<type> wp(df);
 	wp.validate(true);
 	wp.warn_invalid();
-	const vector<int> llcols = as<vector<int>>(df.attr("llcols"));
+	const vector<int> llcols = getllcolsattr(df);
 	for (const auto x : llcols)
 		setcolattr(df, x, "valid", wp.get_valid(llcols[1] - x));
 }
