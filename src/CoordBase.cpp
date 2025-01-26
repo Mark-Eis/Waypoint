@@ -1245,7 +1245,6 @@ DataFrame waypoints(DataFrame& df, int fmt = 1)
 	}
 
 	df.attr("fmt") = fmt;
-//	df.attr("llcols") = llcols;
 	return df;
 }
 
