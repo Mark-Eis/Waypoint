@@ -71,6 +71,7 @@ template<class T>
 inline void checkinherits(T&, const char*);
 template<class T, class V>
 void setcolattr(const T&, int, const char*, V&&);
+inline vector<int> getllcolsattr(const DataFrame&);
 
 // validation
 inline bool validcoord(NumericVector&);
@@ -128,7 +129,7 @@ const DataFrame validatewaypoint(DataFrame&);
 /// Report object construction and destruction
 void _ctrsgn(const type_info& obj, bool destruct = false)
 {
-//	cout << (destruct ? "Destroying " : "Constructing ") << obj.name() << endl;
+	cout << (destruct ? "Destroying " : "Constructing ") << obj.name() << endl;
 }
 
 
@@ -626,8 +627,9 @@ class WayPoint {
 	public:
 		explicit WayPoint(const NumericVector&, const NumericVector&);
 		WayPoint(const DataFrame&, const vector<int>&);
-		~WayPoint() = default;
-//		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
+		WayPoint(const DataFrame&);
+//		~WayPoint() = default;
+		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
 
 		const Coord<type>& get_c(bool) const;
 		void validate(bool = true) const;
@@ -642,7 +644,7 @@ template<CoordType type>
 WayPoint<type>::WayPoint(const NumericVector& _nv_lat, const NumericVector& _nv_lon) :
 	c_lat(_nv_lat), c_lon(_nv_lon), 	validlat(c_lat.get_valid()), validlon(c_lon.get_valid())
 {
-//	cout << "§WayPoint<type>::WayPoint(const Coord<type>, const Coord<type>) "; _ctrsgn(typeid(*this));
+	cout << "§WayPoint<type>::WayPoint(const NumericVector&, const NumericVector&) "; _ctrsgn(typeid(*this));
 	c_lat.set_waypoint();
 	c_lon.set_waypoint();
 }
@@ -650,9 +652,17 @@ WayPoint<type>::WayPoint(const NumericVector& _nv_lat, const NumericVector& _nv_
 
 template<CoordType type>
 WayPoint<type>::WayPoint(const DataFrame& df, const vector<int>& llcols) :
-	WayPoint<type>(as<NumericVector>(df[llcols[0]]), as<NumericVector>(df[llcols[1]]))
+        WayPoint<type>(as<NumericVector>(df[llcols[0]]), as<NumericVector>(df[llcols[1]]))
 {
-//	cout << "§WayPoint<type>::WayPoint(const DataFrame&, const vector<int>&) "; _ctrsgn(typeid(*this));
+      cout << "§WayPoint<type>::WayPoint(const DataFrame&, const vector<int>&) "; _ctrsgn(typeid(*this));
+}
+
+
+template<CoordType type>
+WayPoint<type>::WayPoint(const DataFrame& df) :
+	WayPoint<type>(as<NumericVector>(df[getllcolsattr(df)[0]]), as<NumericVector>(df[getllcolsattr(df)[1]]))
+{
+	cout << "§WayPoint<type>::WayPoint(const DataFrame) "; _ctrsgn(typeid(*this));
 }
 
 
@@ -782,6 +792,14 @@ void setcolattr(const T& t, int col, const char* attrib, V&& val)
 {
 //	cout << "@setcolattr(const T&, int, const char*, V&&) attrib " << attrib << ", col " << col << endl;
 	as<NumericVector>(t[col]).attr(attrib) = std::forward<V>(val);
+}
+
+
+/// __________________________________________________
+/// get "llcols" attribute for DataFrame object
+inline vector<int> getllcolsattr(const DataFrame& df)
+{
+	return as<vector<int>>(df.attr("llcols"));
 }
 
 
@@ -1264,20 +1282,23 @@ DataFrame printwaypoint(DataFrame& df)
 		warning("Invalid waypoints!");
 
 //	const vector<int> llcols { 1, 2 };								// !!!!!!!! Temporary Solution !!!!!!
-	const vector<int> llcols = as<vector<int>>(df.attr("llcols"));
+//	const vector<int> llcols = as<vector<int>>(df.attr("llcols"));
 
     switch (get_coordtype(df))
 	{
    		case CoordType::decdeg:
-			Rcout << WayPoint<CoordType::decdeg>(df, llcols);
+//			Rcout << WayPoint<CoordType::decdeg>(df, llcols);
+			Rcout << WayPoint<CoordType::decdeg>(df);
             break;
 
 		case CoordType::degmin:
-			Rcout << WayPoint<CoordType::degmin>(df, llcols);
+//			Rcout << WayPoint<CoordType::degmin>(df, llcols);
+			Rcout << WayPoint<CoordType::degmin>(df);
 			break;
 
 		case CoordType::degminsec:
-			Rcout << WayPoint<CoordType:: degminsec>(df, llcols);
+//			Rcout << WayPoint<CoordType:: degminsec>(df, llcols);
+			Rcout << WayPoint<CoordType:: degminsec>(df);
 			break;
 
 		default:
