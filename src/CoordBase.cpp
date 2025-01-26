@@ -1276,28 +1276,22 @@ DataFrame waypoints_replace(DataFrame& df, int value)
 // [[Rcpp::export(name = "print.waypoints", invisible = true)]]
 DataFrame printwaypoint(DataFrame& df)
 {
-//	cout << "——Rcpp::export——printwaypoint() format " << get_fmt_attribute(df) << endl;
+	cout << "——Rcpp::export——printwaypoint() format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
 	if (!check_valid(df))
 		warning("Invalid waypoints!");
 
-//	const vector<int> llcols { 1, 2 };								// !!!!!!!! Temporary Solution !!!!!!
-//	const vector<int> llcols = as<vector<int>>(df.attr("llcols"));
-
     switch (get_coordtype(df))
 	{
    		case CoordType::decdeg:
-//			Rcout << WayPoint<CoordType::decdeg>(df, llcols);
 			Rcout << WayPoint<CoordType::decdeg>(df);
             break;
 
 		case CoordType::degmin:
-//			Rcout << WayPoint<CoordType::degmin>(df, llcols);
 			Rcout << WayPoint<CoordType::degmin>(df);
 			break;
 
 		case CoordType::degminsec:
-//			Rcout << WayPoint<CoordType:: degminsec>(df, llcols);
 			Rcout << WayPoint<CoordType:: degminsec>(df);
 			break;
 
