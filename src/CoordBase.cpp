@@ -89,7 +89,7 @@ vector<bool> validatelet(const NumericVector&);
 vector<bool> validatecoord(const NumericVector&);
 
 template<CoordType type>
-void wpvalidatelet(DataFrame&);
+void wpvalidatelet(const DataFrame&);
 
 // conversion
 template<CoordType type>
@@ -878,7 +878,7 @@ vector<bool> validatecoord(const NumericVector& nv)
 
 
 template<CoordType type>
-void wpvalidatelet(DataFrame& df)
+void wpvalidatelet(const DataFrame& df)
 {
 //	cout << "@wpvalidatelet(DataFrame&)\n";
 	WayPoint<type> wp(df);
