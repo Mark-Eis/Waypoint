@@ -1223,14 +1223,14 @@ DataFrame waypoints(DataFrame& df, int fmt = 1)
 		for (const auto x : llcols)
 			setcolattr(df, x, "latlon", vector<bool>(1, llcols[1] - x));
 	}
-	setcolattr(df, llcols[0], "names", df[0]);				// !!!!!!!! Temporary Solution !!!!!!
+	setcolattr(df, llcols[0], "names", df[0]);						// !!!!!!!! Temporary Solution !!!!!!
 
 	df.attr("llcols") = llcols;
     switch (type)
 	{
     		case CoordType::decdeg:
-       		waypointlet<CoordType::decdeg>(df, newtype);
-            break;
+			waypointlet<CoordType::decdeg>(df, newtype);
+			break;
 
 		case CoordType::degmin:
 			waypointlet<CoordType::degmin>(df, newtype);
