@@ -351,15 +351,6 @@ class Coord {
 		friend class Coord<CoordType::decdeg>;
 		friend class Coord<CoordType::degmin>;
 		friend class Coord<CoordType::degminsec>;
-/*		friend class Convertor<CoordType::decdeg, CoordType::decdeg>;
-		friend class Convertor<CoordType::decdeg, CoordType::degmin>;
-		friend class Convertor<CoordType::decdeg, CoordType::degminsec>;
-		friend class Convertor<CoordType::degmin, CoordType::decdeg>;
-		friend class Convertor<CoordType::degmin, CoordType::degmin>;
-		friend class Convertor<CoordType::degmin, CoordType::degminsec>;
-		friend class Convertor<CoordType::degminsec, CoordType::decdeg>;
-		friend class Convertor<CoordType::degminsec, CoordType::degmin>;
-		friend class Convertor<CoordType::degminsec, CoordType::degminsec>; */
 		friend class Convertor<type, CoordType::decdeg>;
 		friend class Convertor<type, CoordType::degmin>;
 		friend class Convertor<type, CoordType::degminsec>;
