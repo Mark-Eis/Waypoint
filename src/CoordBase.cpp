@@ -89,7 +89,6 @@ vector<bool> validatelet(const NumericVector&);
 vector<bool> validatecoord(const NumericVector&);
 
 template<CoordType type>
-//void wpvalidatelet(DataFrame&, const vector<int>&);
 void wpvalidatelet(DataFrame&);
 
 // conversion
@@ -627,10 +626,9 @@ class WayPoint {
 		const vector<bool>& validlon;
 	public:
 		explicit WayPoint(const NumericVector&, const NumericVector&);
-//		WayPoint(const DataFrame&, const vector<int>&);
 		WayPoint(const DataFrame&);
-//		~WayPoint() = default;
-		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
+		~WayPoint() = default;
+//		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
 
 		const Coord<type>& get_c(bool) const;
 		void validate(bool = true) const;
@@ -645,25 +643,17 @@ template<CoordType type>
 WayPoint<type>::WayPoint(const NumericVector& _nv_lat, const NumericVector& _nv_lon) :
 	c_lat(_nv_lat), c_lon(_nv_lon), 	validlat(c_lat.get_valid()), validlon(c_lon.get_valid())
 {
-	cout << "§WayPoint<type>::WayPoint(const NumericVector&, const NumericVector&) "; _ctrsgn(typeid(*this));
+//	cout << "§WayPoint<type>::WayPoint(const NumericVector&, const NumericVector&) "; _ctrsgn(typeid(*this));
 	c_lat.set_waypoint();
 	c_lon.set_waypoint();
 }
-
-/*
-template<CoordType type>
-WayPoint<type>::WayPoint(const DataFrame& df, const vector<int>& llcols) :
-        WayPoint<type>(as<NumericVector>(df[llcols[0]]), as<NumericVector>(df[llcols[1]]))
-{
-      cout << "§WayPoint<type>::WayPoint(const DataFrame&, const vector<int>&) "; _ctrsgn(typeid(*this));
-} */
 
 
 template<CoordType type>
 WayPoint<type>::WayPoint(const DataFrame& df) :
 	WayPoint<type>(as<NumericVector>(df[getllcolsattr(df)[0]]), as<NumericVector>(df[getllcolsattr(df)[1]]))
 {
-	cout << "§WayPoint<type>::WayPoint(const DataFrame) "; _ctrsgn(typeid(*this));
+//	cout << "§WayPoint<type>::WayPoint(const DataFrame) "; _ctrsgn(typeid(*this));
 }
 
 
@@ -896,7 +886,7 @@ vector<bool> validatecoord(const NumericVector& nv)
 template<CoordType type>
 void wpvalidatelet(DataFrame& df)
 {
-	cout << "@wpvalidatelet(DataFrame&)\n";
+//	cout << "@wpvalidatelet(DataFrame&)\n";
 	WayPoint<type> wp(df);
 	wp.validate(true);
 	wp.warn_invalid();
@@ -954,7 +944,6 @@ void waypointlet(DataFrame& df, CoordType newtype)
 //	cout << "@waypointlet<type>(DataFrame&, const vector<int>&, CoordType) type " << coordtype_to_int(type) + 1
 //		 << " newtype " << coordtype_to_int(newtype) + 1 << endl;
 
-//	WayPoint<type> wp(df, llcols);
 	WayPoint<type> wp(df);
 	wp.validate();
 	wp.warn_invalid();
@@ -963,17 +952,14 @@ void waypointlet(DataFrame& df, CoordType newtype)
 		switch (newtype)
 		{
 			case CoordType::decdeg:
-//				wpconvertlet<type, CoordType::decdeg>(df, llcols, wp);
 				wpconvertlet<type, CoordType::decdeg>(df, wp);
 				break;
 
 			case CoordType::degmin:
-//				wpconvertlet<type, CoordType::degmin>(df, llcols, wp);
 				wpconvertlet<type, CoordType::degmin>(df, wp);
 				break;
 
 			case CoordType::degminsec:
-//				wpconvertlet<type, CoordType::degminsec>(df, llcols, wp);
 				wpconvertlet<type, CoordType::degminsec>(df, wp);
 				break;
 
@@ -1250,17 +1236,14 @@ DataFrame waypoints(DataFrame& df, int fmt = 1)
     switch (type)
 	{
     		case CoordType::decdeg:
-//			waypointlet<CoordType::decdeg>(df, llcols, newtype);
        		waypointlet<CoordType::decdeg>(df, newtype);
             break;
 
 		case CoordType::degmin:
-//			waypointlet<CoordType::degmin>(df, llcols, newtype);
 			waypointlet<CoordType::degmin>(df, newtype);
 			break;
 
 		case CoordType::degminsec:
-//			waypointlet<CoordType::degminsec>(df, llcols, newtype);
 			waypointlet<CoordType::degminsec>(df, newtype);
 			break;
 
@@ -1289,7 +1272,7 @@ DataFrame waypoints_replace(DataFrame& df, int value)
 // [[Rcpp::export(name = "print.waypoints", invisible = true)]]
 DataFrame printwaypoint(DataFrame& df)
 {
-	cout << "——Rcpp::export——printwaypoint() format " << get_fmt_attribute(df) << endl;
+//	cout << "——Rcpp::export——printwaypoint() format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
 	if (!check_valid(df))
 		warning("Invalid waypoints!");
@@ -1320,7 +1303,7 @@ DataFrame printwaypoint(DataFrame& df)
 // [[Rcpp::export(name = "validate.waypoints")]]
 const DataFrame validatewaypoint(DataFrame& df)
 {
-	cout << "——Rcpp::export——validatewaypoint(DataFrame&) format " << get_fmt_attribute(df) << endl;
+//	cout << "——Rcpp::export——validatewaypoint(DataFrame&) format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
 
     switch (get_coordtype(df))
