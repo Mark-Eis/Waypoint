@@ -351,7 +351,7 @@ class Coord {
 		friend class Coord<CoordType::decdeg>;
 		friend class Coord<CoordType::degmin>;
 		friend class Coord<CoordType::degminsec>;
-		friend class Convertor<CoordType::decdeg, CoordType::decdeg>;
+/*		friend class Convertor<CoordType::decdeg, CoordType::decdeg>;
 		friend class Convertor<CoordType::decdeg, CoordType::degmin>;
 		friend class Convertor<CoordType::decdeg, CoordType::degminsec>;
 		friend class Convertor<CoordType::degmin, CoordType::decdeg>;
@@ -359,7 +359,10 @@ class Coord {
 		friend class Convertor<CoordType::degmin, CoordType::degminsec>;
 		friend class Convertor<CoordType::degminsec, CoordType::decdeg>;
 		friend class Convertor<CoordType::degminsec, CoordType::degmin>;
-		friend class Convertor<CoordType::degminsec, CoordType::degminsec>;
+		friend class Convertor<CoordType::degminsec, CoordType::degminsec>; */
+		friend class Convertor<type, CoordType::decdeg>;
+		friend class Convertor<type, CoordType::degmin>;
+		friend class Convertor<type, CoordType::degminsec>;
 		friend class Format<type>;
 		friend class FormatLL<type>;
 		friend class Validator<type>;
@@ -978,7 +981,6 @@ void waypointlet(DataFrame& df, CoordType newtype)
 
 
 template<CoordType type, CoordType newtype>
-//inline void wpconvertlet(DataFrame& df, const vector<int>& llcols, WayPoint<type>& wp)
 inline void wpconvertlet(DataFrame& df, WayPoint<type>& wp)
 {
 	const vector<int> llcols = getllcolsattr(df);
@@ -1281,7 +1283,7 @@ DataFrame printwaypoint(DataFrame& df)
 	{
    		case CoordType::decdeg:
 			Rcout << WayPoint<CoordType::decdeg>(df);
-            break;
+			break;
 
 		case CoordType::degmin:
 			Rcout << WayPoint<CoordType::degmin>(df);
