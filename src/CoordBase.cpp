@@ -893,13 +893,14 @@ vector<bool> validatecoord(const NumericVector& nv)
 
 
 template<CoordType type>
-//void wpvalidatelet(DataFrame& df, const vector<int>& llcols)
 void wpvalidatelet(DataFrame& df)
 {
-	const vector<int> llcols = as<vector<int>>(df.attr("llcols"));
-	WayPoint<type> wp(df, llcols);
+	cout << "@ wpvalidatelet(DataFrame&)\n";
+//	WayPoint<type> wp(df, llcols);
+	WayPoint<type> wp(df);
 	wp.validate(true);
 	wp.warn_invalid();
+	const vector<int> llcols = as<vector<int>>(df.attr("llcols"));
 	for (const auto x : llcols)
 		setcolattr(df, x, "valid", wp.get_valid(llcols[1] - x));
 }
@@ -1307,7 +1308,7 @@ DataFrame printwaypoint(DataFrame& df)
 // [[Rcpp::export(name = "validate.waypoints")]]
 const DataFrame validatewaypoint(DataFrame& df)
 {
-//	cout << "——Rcpp::export——validatewaypoint(DataFrame&) format " << get_fmt_attribute(df) << endl;
+	cout << "——Rcpp::export——validatewaypoint(DataFrame&) format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
 
     switch (get_coordtype(df))
