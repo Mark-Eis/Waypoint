@@ -963,10 +963,8 @@ void waypointlet(DataFrame& df, CoordType newtype)
 	}
 
 	const vector<int> llcols = getllcolsattr(df);
-	for (const auto x : llcols) {
+	for (const auto x : llcols)
 		setcolattr(df, x, "valid", LogicalVector(wrap(wp.get_valid(llcols[1] - x))));
-		setcolattr(df, x, "fmt", coordtype_to_int(newtype) + 1);
-	}
 	df.attr("class") = CharacterVector{"waypoints", "data.frame"};
 }
 
