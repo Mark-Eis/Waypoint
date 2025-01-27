@@ -618,10 +618,9 @@ class WayPoint {
 		const Coord<type> c_lon;
 		const vector<bool>& validlat;
 		const vector<bool>& validlon;
-		const vector<string>& names;
+		const vector<string> names;
 	public:
-//		explicit WayPoint(const NumericVector&, const NumericVector&);
-		explicit WayPoint(const NumericVector&, const NumericVector&, const vector<string>&);
+		explicit WayPoint(const NumericVector&, const NumericVector&, const vector<string>);
 		WayPoint(const DataFrame&);
 		~WayPoint() = default;
 //		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
@@ -634,22 +633,12 @@ class WayPoint {
 		vector<string> format() const;
 };
 
-/*
-template<CoordType type>
-WayPoint<type>::WayPoint(const NumericVector& _nv_lat, const NumericVector& _nv_lon) :
-	c_lat(_nv_lat), c_lon(_nv_lon), 	validlat(c_lat.get_valid()), validlon(c_lon.get_valid())
-{
-//	cout << "§WayPoint<type>::WayPoint(const NumericVector&, const NumericVector&) "; _ctrsgn(typeid(*this));
-	c_lat.set_waypoint();
-	c_lon.set_waypoint();
-} */
-
 
 template<CoordType type>
-WayPoint<type>::WayPoint(const NumericVector& _nv_lat, const NumericVector& _nv_lon, const vector<string>& _names) :
-	c_lat(_nv_lat), c_lon(_nv_lon), 	validlat(c_lat.get_valid()), validlon(c_lon.get_valid()), names(_names)
+WayPoint<type>::WayPoint(const NumericVector& _nv_lat, const NumericVector& _nv_lon, const vector<string> _names) :
+	c_lat(_nv_lat), c_lon(_nv_lon), validlat(c_lat.get_valid()), validlon(c_lon.get_valid()), names(std::move(_names))
 {
-//	cout << "§WayPoint<type>::WayPoint(const NumericVector&, const NumericVector&, const vector<string>*) "; _ctrsgn(typeid(*this));
+	cout << "§WayPoint<type>::WayPoint(const NumericVector&, const NumericVector&, const vector<string>) "; _ctrsgn(typeid(*this));
 	c_lat.set_waypoint();
 	c_lon.set_waypoint();
 }
@@ -657,10 +646,9 @@ WayPoint<type>::WayPoint(const NumericVector& _nv_lat, const NumericVector& _nv_
 
 template<CoordType type>
 WayPoint<type>::WayPoint(const DataFrame& df) :
-//	WayPoint<type>(as<NumericVector>(df[getllcolsattr(df)[0]]), as<NumericVector>(df[getllcolsattr(df)[1]]))
-	WayPoint<type>(as<NumericVector>(df[getllcolsattr(df)[0]]), as<NumericVector>(df[getllcolsattr(df)[1]]), (as<vector<string>>(df[0])))
+	WayPoint<type>(as<NumericVector>(df[getllcolsattr(df)[0]]), as<NumericVector>(df[getllcolsattr(df)[1]]), as<vector<string>>(df[0]))
 {
-//	cout << "§WayPoint<type>::WayPoint(const DataFrame) "; _ctrsgn(typeid(*this));
+	cout << "§WayPoint<type>::WayPoint(const DataFrame) "; _ctrsgn(typeid(*this));
 }
 
 
@@ -716,6 +704,7 @@ template<CoordType type>
 vector<string> WayPoint<type>::format() const
 {
 //	cout << "@WayPoint<type>::format()\n";
+	cout << "@WayPoint<type>::format() names size: " << names.size() << endl;
 	vector<string> sv_lat{ c_lat.format() };
 	vector<string> sv_lon{ c_lon.format() };
 	vector<string> out(sv_lat.size());
@@ -723,7 +712,6 @@ vector<string> WayPoint<type>::format() const
 		sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(),
 		[](string& latstr, string& lonstr) { return latstr + "  " + lonstr; }
 	);
-//	if (c_lat.get_names().size())
 	if (names.size())
 		transform(
 //			out.begin(), out.end(), c_lat.get_names().begin(), out.begin(),
