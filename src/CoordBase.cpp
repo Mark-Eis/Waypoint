@@ -620,8 +620,7 @@ class WayPoint {
 		const vector<bool>& validlon;
 		const vector<string> names;
 	public:
-		explicit WayPoint(const NumericVector&, const NumericVector&, const vector<string>);
-		WayPoint(const DataFrame&);
+		explicit WayPoint(const DataFrame&);
 		~WayPoint() = default;
 //		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
 
@@ -635,20 +634,13 @@ class WayPoint {
 
 
 template<CoordType type>
-WayPoint<type>::WayPoint(const NumericVector& _nv_lat, const NumericVector& _nv_lon, const vector<string> _names) :
-	c_lat(_nv_lat), c_lon(_nv_lon), validlat(c_lat.get_valid()), validlon(c_lon.get_valid()), names(std::move(_names))
+WayPoint<type>::WayPoint(const DataFrame& df) :
+	c_lat(as<NumericVector>(df[getllcolsattr(df)[0]])), c_lon(as<NumericVector>(df[getllcolsattr(df)[1]])),
+	validlat(c_lat.get_valid()), validlon(c_lon.get_valid()), names(as<vector<string>>(df[0]))
 {
-	cout << "§WayPoint<type>::WayPoint(const NumericVector&, const NumericVector&, const vector<string>) "; _ctrsgn(typeid(*this));
+//	cout << "§WayPoint<type>::WayPoint(const DataFrame) "; _ctrsgn(typeid(*this));
 	c_lat.set_waypoint();
 	c_lon.set_waypoint();
-}
-
-
-template<CoordType type>
-WayPoint<type>::WayPoint(const DataFrame& df) :
-	WayPoint<type>(as<NumericVector>(df[getllcolsattr(df)[0]]), as<NumericVector>(df[getllcolsattr(df)[1]]), as<vector<string>>(df[0]))
-{
-	cout << "§WayPoint<type>::WayPoint(const DataFrame) "; _ctrsgn(typeid(*this));
 }
 
 
@@ -704,7 +696,6 @@ template<CoordType type>
 vector<string> WayPoint<type>::format() const
 {
 //	cout << "@WayPoint<type>::format()\n";
-	cout << "@WayPoint<type>::format() names size: " << names.size() << endl;
 	vector<string> sv_lat{ c_lat.format() };
 	vector<string> sv_lon{ c_lon.format() };
 	vector<string> out(sv_lat.size());
@@ -712,9 +703,8 @@ vector<string> WayPoint<type>::format() const
 		sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(),
 		[](string& latstr, string& lonstr) { return latstr + "  " + lonstr; }
 	);
-	if (names.size())
+	if (names.size())								/////// !!! revise this !!! ///////
 		transform(
-//			out.begin(), out.end(), c_lat.get_names().begin(), out.begin(),
 			out.begin(), out.end(), names.begin(), out.begin(),
 			[](string& lls, const string& name) { return lls + "  " + name; }
 		);
