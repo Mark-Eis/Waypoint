@@ -618,9 +618,9 @@ class WayPoint {
 		const Coord<type> c_lon;
 		const vector<bool>& validlat;
 		const vector<bool>& validlon;
-		const vector<string>* const names = nullptr;
+		const vector<string>* const names;
 	public:
-		explicit WayPoint(const NumericVector&, const NumericVector&);
+		explicit WayPoint(const NumericVector&, const NumericVector&, const vector<string>* const = nullptr);
 		WayPoint(const DataFrame&);
 		~WayPoint() = default;
 //		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
@@ -635,8 +635,8 @@ class WayPoint {
 
 
 template<CoordType type>
-WayPoint<type>::WayPoint(const NumericVector& _nv_lat, const NumericVector& _nv_lon) :
-	c_lat(_nv_lat), c_lon(_nv_lon), 	validlat(c_lat.get_valid()), validlon(c_lon.get_valid())
+WayPoint<type>::WayPoint(const NumericVector& _nv_lat, const NumericVector& _nv_lon, const vector<string>* const _names) :
+	c_lat(_nv_lat), c_lon(_nv_lon), 	validlat(c_lat.get_valid()), validlon(c_lon.get_valid()), names(_names)
 {
 //	cout << "§WayPoint<type>::WayPoint(const NumericVector&, const NumericVector&) "; _ctrsgn(typeid(*this));
 	c_lat.set_waypoint();
