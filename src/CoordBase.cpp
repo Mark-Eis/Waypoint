@@ -618,6 +618,7 @@ class WayPoint {
 		const Coord<type> c_lon;
 		const vector<bool>& validlat;
 		const vector<bool>& validlon;
+		const vector<string>* names = nullptr;
 	public:
 		explicit WayPoint(const NumericVector&, const NumericVector&);
 		WayPoint(const DataFrame&);
