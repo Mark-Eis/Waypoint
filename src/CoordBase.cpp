@@ -636,7 +636,7 @@ class WayPoint {
 template<CoordType type>
 WayPoint<type>::WayPoint(const DataFrame& df) :
 	c_lat(as<NumericVector>(df[getllcolsattr(df)[0]])), c_lon(as<NumericVector>(df[getllcolsattr(df)[1]])),
-	validlat(c_lat.get_valid()), validlon(c_lon.get_valid()), names(as<vector<string>>(df[0]))
+	validlat(c_lat.get_valid()), validlon(c_lon.get_valid()), names(as<vector<string>>(df[as<int>(df.attr("namescol"))]))
 {
 //	cout << "§WayPoint<type>::WayPoint(const DataFrame) "; _ctrsgn(typeid(*this));
 	c_lat.set_waypoint();
