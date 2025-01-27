@@ -618,7 +618,7 @@ class WayPoint {
 		const Coord<type> c_lon;
 		const vector<bool>& validlat;
 		const vector<bool>& validlon;
-		const vector<string>* names = nullptr;
+		const vector<string>* const names = nullptr;
 	public:
 		explicit WayPoint(const NumericVector&, const NumericVector&);
 		WayPoint(const DataFrame&);
@@ -711,9 +711,11 @@ vector<string> WayPoint<type>::format() const
 		sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(),
 		[](string& latstr, string& lonstr) { return latstr + "  " + lonstr; }
 	);
-	if (c_lat.get_names().size())
+//	if (c_lat.get_names().size())
+	if (names)
 		transform(
-			out.begin(), out.end(), c_lat.get_names().begin(), out.begin(),
+//			out.begin(), out.end(), c_lat.get_names().begin(), out.begin(),
+			out.begin(), out.end(), names->begin(), out.begin(),
 			[](string& lls, const string& name) { return lls + "  " + name; }
 		);
 	return out;
