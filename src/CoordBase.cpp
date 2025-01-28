@@ -75,7 +75,7 @@ inline vector<int> getllcolsattr(const DataFrame&);
 
 // validation
 inline bool validcoord(NumericVector&);
-inline LogicalVector get_valid(const NumericVector&);
+inline vector<bool> get_valid(const NumericVector&);
 
 bool check_valid(const NumericVector&);
 bool check_valid(const DataFrame&);
@@ -796,11 +796,11 @@ inline bool validcoord(NumericVector& nv)
 
 
 /// __________________________________________________
-/// Return "valid" attribute or empty LogicalVector	!!!!!!! Generalise with template and specialisation !!!!!!!
-inline LogicalVector get_valid(const NumericVector& nv)
+/// Return "valid" attribute or empty vector<bool>	!!!!!!! Generalise with template and specialisation !!!!!!!
+inline vector<bool> get_valid(const NumericVector& nv)
 {
 	cout << "@get_valid(const NumericVector&) has attr \"valid\" " << boolalpha << nv.hasAttribute("valid") << endl;
-	return (nv.hasAttribute("valid") ? LogicalVector(nv.attr("valid")) : LogicalVector());
+	return (nv.hasAttribute("valid") ? as<vector<bool>>(nv.attr("valid")) : vector<bool>());
 }
 
 
@@ -809,7 +809,7 @@ inline LogicalVector get_valid(const NumericVector& nv)
 bool check_valid(const NumericVector& nv)
 {
 	cout << "@check_valid(const NumericVector&)" << endl;
-	LogicalVector valid = std::move(get_valid(nv));
+	const vector<bool> valid = std::move(get_valid(nv));
 	if (valid.size())
 		return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
 	else {
