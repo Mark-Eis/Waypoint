@@ -83,6 +83,8 @@ bool check_valid(const T&);
 template<>
 bool check_valid<NumericVector>(const NumericVector&);
 
+bool check_valid(const DataFrame&);
+
 template<CoordType type>
 vector<bool> validatelet(const NumericVector&);
 
@@ -806,7 +808,7 @@ inline LogicalVector get_valid(const NumericVector& nv)
 	return (nv.hasAttribute("valid") ? LogicalVector(nv.attr("valid")) : LogicalVector());
 }
 
-
+/*
 /// __________________________________________________
 /// Check first two columns have attribute "valid" all true
 template<class T>
@@ -819,6 +821,26 @@ bool check_valid(const T& t)
 	bool boolon = check_valid(as<NumericVector>(t[2]));
 	if (!boolat)
 		warning("Invalid longitude!");
+	return boolat || boolon;
+} */
+
+
+/// __________________________________________________
+/// Check "lat_valid" and "lon_valid attributes of DataFrame are all true
+bool check_valid(const DataFrame& df)
+{
+	cout << "@check_valid(const DataFrame&)\n";
+
+	vector<bool>&& latvalid = as<vector<bool>>(df.attr("lat_valid"));
+	bool boolat = all_of(latvalid.begin(), latvalid.end(), [](bool v) { return v;});
+	if (!boolat)
+		warning("Invalid latitude!");
+
+	vector<bool>&& lonvalid = as<vector<bool>>(df.attr("lon_valid"));
+	bool boolon = all_of(latvalid.begin(), latvalid.end(), [](bool v) { return v;});
+	if (!boolon)
+		warning("Invalid longitude!");
+
 	return boolat || boolon;
 }
 
@@ -1272,7 +1294,7 @@ DataFrame printwaypoint(DataFrame& df)
 	if (!check_valid(df))
 		warning("Invalid waypoints!");
 
-    switch (get_coordtype(df))
+	switch (get_coordtype(df))
 	{
    		case CoordType::decdeg:
 			Rcout << WayPoint<CoordType::decdeg>(df);
