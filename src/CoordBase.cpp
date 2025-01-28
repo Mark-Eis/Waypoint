@@ -614,11 +614,12 @@ ostream& operator<<(ostream& stream, const Coord<type>& c)
 template<CoordType type>
 class WayPoint {
 	protected:
+		const DataFrame& df;
 		const Coord<type> c_lat;
 		const Coord<type> c_lon;
 		const vector<bool>& validlat;
 		const vector<bool>& validlon;
-		const vector<string> names;
+//		const vector<string> names;
 	public:
 		explicit WayPoint(const DataFrame&);
 		~WayPoint() = default;
@@ -632,13 +633,24 @@ class WayPoint {
 		vector<string> format() const;
 };
 
-
+/*
 template<CoordType type>
 WayPoint<type>::WayPoint(const DataFrame& df) :
 	c_lat(as<NumericVector>(df[getllcolsattr(df)[0]])), c_lon(as<NumericVector>(df[getllcolsattr(df)[1]])),
 	validlat(c_lat.get_valid()), validlon(c_lon.get_valid()), names(as<vector<string>>(df[as<int>(df.attr("namescol"))]))
 {
-//	cout << "§WayPoint<type>::WayPoint(const DataFrame) "; _ctrsgn(typeid(*this));
+	cout << "§WayPoint<type>::WayPoint(const DataFrame) "; _ctrsgn(typeid(*this));
+	c_lat.set_waypoint();
+	c_lon.set_waypoint();
+} */
+
+
+template<CoordType type>
+WayPoint<type>::WayPoint(const DataFrame& _df) :
+	df(_df), c_lat(as<NumericVector>(df[getllcolsattr(df)[0]])), c_lon(as<NumericVector>(df[getllcolsattr(df)[1]])),
+	validlat(c_lat.get_valid()), validlon(c_lon.get_valid())
+{
+	cout << "§WayPoint<type>::WayPoint(const DataFrame) "; _ctrsgn(typeid(*this));
 	c_lat.set_waypoint();
 	c_lon.set_waypoint();
 }
@@ -695,7 +707,7 @@ void WayPoint<type>::warn_invalid() const
 template<CoordType type>
 vector<string> WayPoint<type>::format() const
 {
-//	cout << "@WayPoint<type>::format()\n";
+	cout << "@WayPoint<type>::format()\n";
 	vector<string> sv_lat{ c_lat.format() };
 	vector<string> sv_lon{ c_lon.format() };
 	vector<string> out(sv_lat.size());
@@ -703,6 +715,7 @@ vector<string> WayPoint<type>::format() const
 		sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(),
 		[](string& latstr, string& lonstr) { return latstr + "  " + lonstr; }
 	);
+	vector<string> names { as<vector<string>>(df[as<int>(df.attr("namescol"))]) };
 	if (names.size())								/////// !!! revise this !!! ///////
 		transform(
 			out.begin(), out.end(), names.begin(), out.begin(),
@@ -717,7 +730,7 @@ vector<string> WayPoint<type>::format() const
 template<CoordType type>
 void WayPoint<type>::print(ostream& stream) const
 {
-//	cout << "@WayPoint<type>::print() " << typeid(*this).name() << endl;
+	cout << "@WayPoint<type>::print() " << typeid(*this).name() << endl;
 	const int i { coordtype_to_int(type) };
 	vector<int> spacing { 5, 7, 8, 11, 13, 14, 2, 2, 2 };
 	stream << " Latitude" << string(spacing[i], ' ') << "Longitude\n"
@@ -733,7 +746,7 @@ void WayPoint<type>::print(ostream& stream) const
 template<CoordType type>
 ostream& operator<<(ostream& stream, const WayPoint<type>& wp)
 {
-//	cout << "@operator<<(ostream&, const WayPoint<type>&)\n";
+	cout << "@operator<<(ostream&, const WayPoint<type>&)\n";
 	wp.print(stream);
 	return stream;
 }
@@ -1210,11 +1223,11 @@ DataFrame waypoints(DataFrame& df, int fmt = 1)
 		}
 	} else {
 		type = newtype;
-		const vector<int> llcols { 1, 2 };									// !!!!!!!! Temporary Solution !!!!!!
+		const vector<int> llcols { 4, 5 };									// !!!!!!!! Temporary Solution !!!!!!
 		df.attr("llcols") = llcols;
 		for (const auto x : llcols)
 			setcolattr(df, x, "latlon", vector<bool>(1, llcols[1] - x));
-		constexpr int namescol = 0;											// !!!!!!!! Temporary Solution !!!!!!
+		constexpr int namescol = 3;											// !!!!!!!! Temporary Solution !!!!!!
 		df.attr("namescol") = namescol;
 	}
 
@@ -1256,7 +1269,7 @@ DataFrame waypoints_replace(DataFrame& df, int value)
 // [[Rcpp::export(name = "print.waypoints", invisible = true)]]
 DataFrame printwaypoint(DataFrame& df)
 {
-//	cout << "——Rcpp::export——printwaypoint() format " << get_fmt_attribute(df) << endl;
+	cout << "——Rcpp::export——printwaypoint() format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
 	if (!check_valid(df))
 		warning("Invalid waypoints!");
@@ -1272,7 +1285,7 @@ DataFrame printwaypoint(DataFrame& df)
 			break;
 
 		case CoordType::degminsec:
-			Rcout << WayPoint<CoordType:: degminsec>(df);
+			Rcout << WayPoint<CoordType::degminsec>(df);
 			break;
 
 		default:
