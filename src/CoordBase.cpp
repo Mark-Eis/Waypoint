@@ -77,12 +77,7 @@ inline vector<int> getllcolsattr(const DataFrame&);
 inline bool validcoord(NumericVector&);
 inline LogicalVector get_valid(const NumericVector&);
 
-template<class T>
-bool check_valid(const T&);
-
-template<>
-bool check_valid<NumericVector>(const NumericVector&);
-
+bool check_valid(const NumericVector&);
 bool check_valid(const DataFrame&);
 
 template<CoordType type>
@@ -808,21 +803,21 @@ inline LogicalVector get_valid(const NumericVector& nv)
 	return (nv.hasAttribute("valid") ? LogicalVector(nv.attr("valid")) : LogicalVector());
 }
 
-/*
+
 /// __________________________________________________
-/// Check first two columns have attribute "valid" all true
-template<class T>
-bool check_valid(const T& t)
+/// Check "valid" attribute of NumericVector all true
+bool check_valid(const NumericVector& nv)
 {
-	cout << "@check_valid(const T&) fmt " << get_fmt_attribute(t) << endl;
-	bool boolat = check_valid(as<NumericVector>(t[1]));
-	if (!boolat)
-		warning("Invalid latitude!");
-	bool boolon = check_valid(as<NumericVector>(t[2]));
-	if (!boolat)
-		warning("Invalid longitude!");
-	return boolat || boolon;
-} */
+	cout << "@check_valid(const NumericVector&)" << endl;
+	LogicalVector valid = std::move(get_valid(nv));
+	if (valid.size())
+		return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
+	else {
+		warning("Unvalidated coords! Revalidating…");
+		validatecoord(nv);
+		return check_valid(nv);
+	}
+}
 
 
 /// __________________________________________________
@@ -844,22 +839,6 @@ bool check_valid(const DataFrame& df)
 	return boolat || boolon;
 }
 
-
-/// __________________________________________________
-/// Specialisation for <NumericVector>
-template<>
-bool check_valid<NumericVector>(const NumericVector& nv)
-{
-	cout << "@check_valid<NumericVector>(const NumericVector&)" << endl;
-	LogicalVector valid = std::move(get_valid(nv));
-	if (valid.size())
-		return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
-	else {
-		warning("Unvalidated coords! Revalidating…");
-		validatecoord(nv);
-		return check_valid(nv);
-	}
-}
 
 template<CoordType type>
 vector<bool> validatelet(const NumericVector& nv)
