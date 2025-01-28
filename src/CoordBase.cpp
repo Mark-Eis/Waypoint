@@ -1208,7 +1208,7 @@ vector<double> get_sec(NumericVector& nv)
 // [[Rcpp::export]]
 DataFrame waypoints(DataFrame& df, int fmt = 1)
 {
-//	cout << "——Rcpp::export——waypoints()\n";
+	cout << "——Rcpp::export——waypoints()\n";
 	CoordType newtype = get_coordtype(fmt);
 	CoordType type;
 	const bool inheritswaypoints { df.inherits("waypoints") };
@@ -1223,11 +1223,11 @@ DataFrame waypoints(DataFrame& df, int fmt = 1)
 		}
 	} else {
 		type = newtype;
-		const vector<int> llcols { 4, 5 };									// !!!!!!!! Temporary Solution !!!!!!
+		const vector<int> llcols { 1, 2 };									// !!!!!!!! Temporary Solution !!!!!!
 		df.attr("llcols") = llcols;
 		for (const auto x : llcols)
 			setcolattr(df, x, "latlon", vector<bool>(1, llcols[1] - x));
-		constexpr int namescol = 3;											// !!!!!!!! Temporary Solution !!!!!!
+		constexpr int namescol = 0;											// !!!!!!!! Temporary Solution !!!!!!
 		df.attr("namescol") = namescol;
 	}
 
