@@ -878,8 +878,11 @@ void wpvalidatelet(const DataFrame& df)
 	wp.validate(true);
 	wp.warn_invalid();
 	const vector<int> llcols = getllcolsattr(df);
-	for (const auto x : llcols)
+	for (const auto x : llcols) {
 		setcolattr(df, x, "valid", wp.get_valid(llcols[1] - x));
+	}
+	const_cast<DataFrame&>(df).attr("lat_valid") = wp.get_valid(true);
+	const_cast<DataFrame&>(df).attr("lon_valid") = wp.get_valid(true);
 }
 
 
