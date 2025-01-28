@@ -619,7 +619,6 @@ class WayPoint {
 		const Coord<type> c_lon;
 		const vector<bool>& validlat;
 		const vector<bool>& validlon;
-//		const vector<string> names;
 	public:
 		explicit WayPoint(const DataFrame&);
 		~WayPoint() = default;
@@ -632,17 +631,6 @@ class WayPoint {
 		void print(ostream& stream) const;
 		vector<string> format() const;
 };
-
-/*
-template<CoordType type>
-WayPoint<type>::WayPoint(const DataFrame& df) :
-	c_lat(as<NumericVector>(df[getllcolsattr(df)[0]])), c_lon(as<NumericVector>(df[getllcolsattr(df)[1]])),
-	validlat(c_lat.get_valid()), validlon(c_lon.get_valid()), names(as<vector<string>>(df[as<int>(df.attr("namescol"))]))
-{
-	cout << "§WayPoint<type>::WayPoint(const DataFrame) "; _ctrsgn(typeid(*this));
-	c_lat.set_waypoint();
-	c_lon.set_waypoint();
-} */
 
 
 template<CoordType type>
@@ -715,12 +703,11 @@ vector<string> WayPoint<type>::format() const
 		sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(),
 		[](string& latstr, string& lonstr) { return latstr + "  " + lonstr; }
 	);
-	vector<string> names { as<vector<string>>(df[as<int>(df.attr("namescol"))]) };
-	if (names.size())								/////// !!! revise this !!! ///////
-		transform(
-			out.begin(), out.end(), names.begin(), out.begin(),
-			[](string& lls, const string& name) { return lls + "  " + name; }
-		);
+	vector<string> names { as<vector<string>>(df[as<int>(df.attr("namescol"))]) };	/////// !!! revise this !!! ///////
+	transform(
+		out.begin(), out.end(), names.begin(), out.begin(),
+		[](string& lls, const string& name) { return lls + "  " + name; }
+	);
 	return out;
 }
 
