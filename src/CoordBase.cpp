@@ -91,6 +91,9 @@ vector<bool> validatecoord(const NumericVector&);
 template<CoordType type>
 void wpvalidatelet(const DataFrame&);
 
+template<CoordType type>
+void dfvalidatelet(const DataFrame&, WayPoint<type>&);
+
 // conversion
 template<CoordType type>
 void coordlet(NumericVector&, CoordType);
@@ -401,7 +404,7 @@ class Validator {
 template<CoordType type>
 void Coord<type>::validate(bool warn) const
 {
-//	cout << "@Coord<type>::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
+	cout << "@Coord<type>::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
 	vector<bool>& non_const_valid { const_cast<vector<bool>&>(valid) };
 	non_const_valid.assign(nv.size(), {false});
 	transform(nv.begin(), nv.end(), non_const_valid.begin(), Validator(*this));
@@ -621,8 +624,8 @@ class WayPoint {
 		const vector<bool>& validlon;
 	public:
 		explicit WayPoint(const DataFrame&);
-		~WayPoint() = default;
-//		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
+//		~WayPoint() = default;
+		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
 
 		const Coord<type>& get_c(bool) const;
 		void validate(bool = true) const;
@@ -659,7 +662,7 @@ inline const Coord<type>& WayPoint<type>::get_c(bool latlon) const
 template<CoordType type>
 void WayPoint<type>::validate(bool warn) const
 {
-//	cout << "@WayPoint<type>::validate(bool)\n";
+	cout << "@WayPoint<type>::validate(bool)\n";
 	c_lat.validate(warn);
 	c_lon.validate(warn);
 }
@@ -670,7 +673,7 @@ void WayPoint<type>::validate(bool warn) const
 template<CoordType type>
 const vector<bool>& WayPoint<type>::get_valid(bool latlon) const
 {
-//	cout << "@WayPoint<type>::get_valid(bool)\n";
+	cout << "@WayPoint<type>::get_valid(bool)\n";
 	return latlon ? validlat : validlon;
 }
 
@@ -680,7 +683,7 @@ const vector<bool>& WayPoint<type>::get_valid(bool latlon) const
 template<CoordType type>
 void WayPoint<type>::warn_invalid() const
 {
-//	cout << "@WayPoint<type>::warn_invalid()\n";
+	cout << "@WayPoint<type>::warn_invalid()\n";
 	if (any_of(validlat.begin(), validlat.end(), [](bool v) { return !v;})) {
 		warning("Invalid latitude");
 	}
@@ -789,7 +792,7 @@ inline vector<int> getllcolsattr(const DataFrame& df)
 /// Has R coords object been validated?
 inline bool validcoord(NumericVector& nv)
 {
-//	cout << "@validcoord(NumericVector&)\n";
+	cout << "@validcoord(NumericVector&)\n";
 	LogicalVector lv { as<LogicalVector>(nv.attr("valid")) };
 	return 1 == lv.size() && lv[0];
 }
@@ -799,7 +802,7 @@ inline bool validcoord(NumericVector& nv)
 /// Return "valid" attribute or empty LogicalVector	!!!!!!! Generalise with template and specialisation !!!!!!!
 inline LogicalVector get_valid(const NumericVector& nv)
 {
-//	cout << "@get_valid(const NumericVector&) has attr \"valid\" " << boolalpha << nv.hasAttribute("valid") << endl;
+	cout << "@get_valid(const NumericVector&) has attr \"valid\" " << boolalpha << nv.hasAttribute("valid") << endl;
 	return (nv.hasAttribute("valid") ? LogicalVector(nv.attr("valid")) : LogicalVector());
 }
 
@@ -809,7 +812,7 @@ inline LogicalVector get_valid(const NumericVector& nv)
 template<class T>
 bool check_valid(const T& t)
 {
-//	cout << "@check_valid(const T&) fmt " << get_fmt_attribute(t) << endl;
+	cout << "@check_valid(const T&) fmt " << get_fmt_attribute(t) << endl;
 	bool boolat = check_valid(as<NumericVector>(t[1]));
 	if (!boolat)
 		warning("Invalid latitude!");
@@ -825,7 +828,7 @@ bool check_valid(const T& t)
 template<>
 bool check_valid<NumericVector>(const NumericVector& nv)
 {
-//	cout << "@check_valid<NumericVector>(const NumericVector&)" << endl;
+	cout << "@check_valid<NumericVector>(const NumericVector&)" << endl;
 	LogicalVector valid = std::move(get_valid(nv));
 	if (valid.size())
 		return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
@@ -839,7 +842,7 @@ bool check_valid<NumericVector>(const NumericVector& nv)
 template<CoordType type>
 vector<bool> validatelet(const NumericVector& nv)
 {
-//	cout << "@validatelet(const NumericVector&)\n";
+	cout << "@validatelet(const NumericVector&)\n";
 	Coord<type> c(nv);
 	c.validate();
 	const_cast<NumericVector&>(nv).attr("valid") = c.get_valid();
@@ -851,7 +854,7 @@ vector<bool> validatelet(const NumericVector& nv)
 /// Validate coords vector
 vector<bool> validatecoord(const NumericVector& nv)
 {
-//	cout << "@validatecoord(const NumericVector&)\n";
+	cout << "@validatecoord(const NumericVector&)\n";
 
 	switch (get_coordtype(nv))
 	{
@@ -873,16 +876,21 @@ vector<bool> validatecoord(const NumericVector& nv)
 template<CoordType type>
 void wpvalidatelet(const DataFrame& df)
 {
-//	cout << "@wpvalidatelet(DataFrame&)\n";
+	cout << "@wpvalidatelet(const DataFrame&)\n";
 	WayPoint<type> wp(df);
 	wp.validate(true);
 	wp.warn_invalid();
-	const vector<int> llcols = getllcolsattr(df);
-	for (const auto x : llcols) {
-		setcolattr(df, x, "valid", wp.get_valid(llcols[1] - x));
-	}
-	const_cast<DataFrame&>(df).attr("lat_valid") = wp.get_valid(true);
-	const_cast<DataFrame&>(df).attr("lon_valid") = wp.get_valid(false);
+	dfvalidatelet(df, wp);
+}
+
+
+template<CoordType type>
+void dfvalidatelet(const DataFrame& df, WayPoint<type>& wp)
+{
+	cout << "@dfvalidatelet(DataFrame&, WayPoint<type>&)\n";
+	DataFrame& non_const_df { const_cast<DataFrame&>(df) };
+	non_const_df.attr("lat_valid") = wp.get_valid(true);
+	non_const_df.attr("lon_valid") = wp.get_valid(false);
 }
 
 
@@ -928,11 +936,10 @@ inline void convertlet(NumericVector& nv, Coord<type>& c)
 
 
 template<CoordType type>
-//void waypointlet(DataFrame& df, const vector<int>& llcols, CoordType newtype)
 void waypointlet(DataFrame& df, CoordType newtype)
 {
-//	cout << "@waypointlet<type>(DataFrame&, const vector<int>&, CoordType) type " << coordtype_to_int(type) + 1
-//		 << " newtype " << coordtype_to_int(newtype) + 1 << endl;
+	cout << "@waypointlet<type>(DataFrame&, const vector<int>&, CoordType) type " << coordtype_to_int(type) + 1
+		 << " newtype " << coordtype_to_int(newtype) + 1 << endl;
 
 	WayPoint<type> wp(df);
 	wp.validate();
@@ -958,9 +965,10 @@ void waypointlet(DataFrame& df, CoordType newtype)
 		}
 	}
 
-	const vector<int> llcols = getllcolsattr(df);
-	for (const auto x : llcols)
-		setcolattr(df, x, "valid", LogicalVector(wrap(wp.get_valid(llcols[1] - x))));
+//	const vector<int> llcols = getllcolsattr(df);
+//	for (const auto x : llcols)
+//		setcolattr(df, x, "valid", LogicalVector(wrap(wp.get_valid(llcols[1] - x))));
+	dfvalidatelet(df, wp);
 	df.attr("class") = CharacterVector{"waypoints", "data.frame"};
 }
 
@@ -1290,7 +1298,7 @@ DataFrame printwaypoint(DataFrame& df)
 // [[Rcpp::export(name = "validate.waypoints")]]
 const DataFrame validatewaypoint(DataFrame& df)
 {
-//	cout << "——Rcpp::export——validatewaypoint(DataFrame&) format " << get_fmt_attribute(df) << endl;
+	cout << "——Rcpp::export——validatewaypoint(DataFrame&) format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
 
     switch (get_coordtype(df))
