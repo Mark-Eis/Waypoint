@@ -674,7 +674,7 @@ void WayPoint<type>::validate(bool warn) const
 template<CoordType type>
 const vector<bool>& WayPoint<type>::get_valid(bool latlon) const
 {
-	cout << "@WayPoint<type>::get_valid(bool)\n";
+	cout << "@WayPoint<type>::get_valid(bool) latlon " << boolalpha << latlon << endl;
 	return latlon ? validlat : validlon;
 }
 
@@ -827,7 +827,7 @@ bool check_valid(const NumericVector& nv)
 
 
 /// __________________________________________________
-/// Check "valid" attribute of object of classs T all true
+/// Check "valid" attribute of object of class T all true
 template<class T>
 bool check_allvalid(const T& t, const char* attrname)
 {
@@ -913,8 +913,8 @@ void dfvalidatelet(const DataFrame& df, WayPoint<type>& wp)
 {
 	cout << "@dfvalidatelet(DataFrame&, WayPoint<type>&)\n";
 	DataFrame& non_const_df { const_cast<DataFrame&>(df) };
-	non_const_df.attr("lat_valid") = wp.get_valid(true);
-	non_const_df.attr("lon_valid") = wp.get_valid(false);
+	for (const auto x : { 0, 1 } )
+		non_const_df.attr(vector<string>{ "lat_valid", "lon_valid" }[x]) = wp.get_valid(1 - x);
 }
 
 
@@ -1322,7 +1322,7 @@ const DataFrame validatewaypoint(DataFrame& df)
 	cout << "——Rcpp::export——validatewaypoint(DataFrame&) format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
 
-    switch (get_coordtype(df))
+	switch (get_coordtype(df))
 	{
    		case CoordType::decdeg:
 			wpvalidatelet<CoordType::decdeg>(df);
