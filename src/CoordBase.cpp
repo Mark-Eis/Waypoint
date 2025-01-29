@@ -81,6 +81,9 @@ inline bool validcoord(NumericVector&);
 bool check_valid(const NumericVector&);
 bool check_valid(const DataFrame&);
 
+template<class T>
+bool check_allvalid(const T&, const char*);
+
 template<CoordType type>
 vector<bool> validatelet(const NumericVector&);
 
@@ -824,6 +827,23 @@ bool check_valid(const NumericVector& nv)
 
 
 /// __________________________________________________
+/// Check "valid" attribute of object of classs T all true
+template<class T>
+bool check_allvalid(const T& t, const char* attrname)
+{
+	cout << "@check_allvalid(const T&, const char*)" << endl;
+	const vector<bool>&& valid = get_attr(t, attrname);
+	if (valid.size())
+		return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
+	else {
+		warning("Unvalidated %s! Revalidating…", typeid(t).name());
+//		validatecoord(t);								/////// ??????? ///////
+		return check_allvalid(t);
+	}
+}
+
+
+/// __________________________________________________
 /// Check "lat_valid" and "lon_valid attributes of DataFrame are all true
 bool check_valid(const DataFrame& df)
 {
@@ -969,9 +989,6 @@ void waypointlet(DataFrame& df, CoordType newtype)
 		}
 	}
 
-//	const vector<int> llcols = getllcolsattr(df);
-//	for (const auto x : llcols)
-//		setcolattr(df, x, "valid", LogicalVector(wrap(wp.get_valid(llcols[1] - x))));
 	dfvalidatelet(df, wp);
 	df.attr("class") = CharacterVector{"waypoints", "data.frame"};
 }
