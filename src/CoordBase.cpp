@@ -77,7 +77,6 @@ inline vector<int> getllcolsattr(const DataFrame&);
 
 // validation
 inline bool validcoord(NumericVector&);
-inline vector<bool> get_valid(const NumericVector&);
 
 bool check_valid(const NumericVector&);
 bool check_valid(const DataFrame&);
@@ -805,15 +804,6 @@ inline bool validcoord(NumericVector& nv)
 	cout << "@validcoord(NumericVector&)\n";
 	LogicalVector lv { as<LogicalVector>(nv.attr("valid")) };
 	return 1 == lv.size() && lv[0];
-}
-
-
-/// __________________________________________________
-/// Return "valid" attribute or empty vector<bool>
-inline vector<bool> get_valid(const NumericVector& nv)
-{
-	cout << "@get_valid(const NumericVector&) has attr \"valid\" " << boolalpha << nv.hasAttribute("valid") << endl;
-	return (nv.hasAttribute("valid") ? as<vector<bool>>(nv.attr("valid")) : vector<bool>());
 }
 
 
