@@ -822,7 +822,7 @@ inline vector<bool> get_valid(const NumericVector& nv)
 bool check_valid(const NumericVector& nv)
 {
 	cout << "@check_valid(const NumericVector&)" << endl;
-	const vector<bool> valid = std::move(get_valid(nv));
+	const vector<bool>&& valid = get_attr(nv, "valid");
 	if (valid.size())
 		return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
 	else {
@@ -839,12 +839,12 @@ bool check_valid(const DataFrame& df)
 {
 	cout << "@check_valid(const DataFrame&)\n";
 
-	vector<bool>&& latvalid = get_attr(df, "lat_valid");
+	const vector<bool>&& latvalid = get_attr(df, "lat_valid");
 	bool boolat = all_of(latvalid.begin(), latvalid.end(), [](bool v) { return v;});
 	if (!boolat)
 		warning("Invalid latitude!");
 
-	vector<bool>&& lonvalid = get_attr(df, "lon_valid");
+	const vector<bool>&& lonvalid = get_attr(df, "lon_valid");
 	bool boolon = all_of(lonvalid.begin(), lonvalid.end(), [](bool v) { return v;});
 	if (!boolon)
 		warning("Invalid longitude!");
