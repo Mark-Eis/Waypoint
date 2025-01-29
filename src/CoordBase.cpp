@@ -65,12 +65,14 @@ template<CoordType type>
 ostream& operator<<(ostream&, const WayPoint<type>&);
 
 // convenience
+template<class T> 
+inline vector<bool> get_attr(const T&, const char*);
 template<class T>
 inline int get_fmt_attribute(const T&);
 template<class T>
 inline void checkinherits(T&, const char*);
 template<class T, class V>
-void setcolattr(const T&, int, const char*, V&&);
+void setcolattr(const T&, int, const char*, V&&);			/////// deprecate ///////
 inline vector<int> getllcolsattr(const DataFrame&);
 
 // validation
@@ -743,6 +745,17 @@ ostream& operator<<(ostream& stream, const WayPoint<type>& wp)
 /// __________________________________________________
 /// Convenience functions
 
+
+/// __________________________________________________
+/// Return named attribute as vector<bool> or empty vector<bool>
+template<class T> 
+inline vector<bool> get_attr(const T& t, const char* attrname)
+{
+	cout << "@get_attr<>(const T&, const char*) has attr \"" << attrname << "\" " << boolalpha << t.hasAttribute(attrname) << endl;
+	return (t.hasAttribute(attrname) ? as<vector<bool>>(t.attr(attrname)) : vector<bool>());
+}
+
+
 /// __________________________________________________
 /// Return "fmt" attribute as int
 template<class T>
@@ -796,7 +809,7 @@ inline bool validcoord(NumericVector& nv)
 
 
 /// __________________________________________________
-/// Return "valid" attribute or empty vector<bool>	!!!!!!! Generalise with template and specialisation !!!!!!!
+/// Return "valid" attribute or empty vector<bool>
 inline vector<bool> get_valid(const NumericVector& nv)
 {
 	cout << "@get_valid(const NumericVector&) has attr \"valid\" " << boolalpha << nv.hasAttribute("valid") << endl;
