@@ -78,11 +78,11 @@ inline vector<int> getllcolsattr(const DataFrame&);
 // validation
 inline bool validcoord(NumericVector&);
 
-bool check_valid(const NumericVector&);
+inline bool check_valid(const NumericVector&);
 bool check_valid(const DataFrame&);
 
 template<class T>
-bool check_allvalid(const T&, const char*);
+bool check_valid(const T&, const char*);
 
 template<CoordType type>
 vector<bool> validatelet(const NumericVector&);
@@ -753,7 +753,7 @@ ostream& operator<<(ostream& stream, const WayPoint<type>& wp)
 template<class T> 
 inline vector<bool> get_attr(const T& t, const char* attrname)
 {
-	cout << "@get_attr<>(const T&, const char*) has attr \"" << attrname << "\" " << boolalpha << t.hasAttribute(attrname) << endl;
+	cout << "@get_attr<>(const T&, const char*) attr \"" << attrname << "\" " << boolalpha << t.hasAttribute(attrname) << endl;
 	return (t.hasAttribute(attrname) ? as<vector<bool>>(t.attr(attrname)) : vector<bool>());
 }
 
@@ -809,7 +809,7 @@ inline bool validcoord(NumericVector& nv)
 	return 1 == lv.size() && lv[0];
 }
 
-
+/*
 /// __________________________________________________
 /// Check "valid" attribute of NumericVector all true
 bool check_valid(const NumericVector& nv)
@@ -823,22 +823,31 @@ bool check_valid(const NumericVector& nv)
 		validatecoord(nv);
 		return check_valid(nv);
 	}
+} */
+
+
+/// __________________________________________________
+/// Check "valid" attribute of NumericVector all true
+inline bool check_valid(const NumericVector& nv)
+{
+	cout << "@check_valid(const NumericVector&)" << endl;
+	return check_valid(nv, "valid");
 }
 
 
 /// __________________________________________________
 /// Check "valid" attribute of object of class T all true
 template<class T>
-bool check_allvalid(const T& t, const char* attrname)
+bool check_valid(const T& t, const char* attrname)
 {
-	cout << "@check_allvalid(const T&, const char*)" << endl;
+	cout << "@check_valid(const T&, const char*)" << endl;
 	const vector<bool>&& valid = get_attr(t, attrname);
 	if (valid.size())
 		return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
 	else {
 		warning("Unvalidated %s! Revalidating…", typeid(t).name());
-//		validatecoord(t);								/////// ??????? ///////
-		return check_allvalid(t);
+		validatecoord(t);								/////// ??????? ///////
+		return check_valid(t, attrname);
 	}
 }
 
