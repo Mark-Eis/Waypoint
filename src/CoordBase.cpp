@@ -839,13 +839,13 @@ bool check_valid(const DataFrame& df)
 {
 	cout << "@check_valid(const DataFrame&)\n";
 
-	vector<bool>&& latvalid = as<vector<bool>>(df.attr("lat_valid"));
+	vector<bool>&& latvalid = get_attr(df, "lat_valid");
 	bool boolat = all_of(latvalid.begin(), latvalid.end(), [](bool v) { return v;});
 	if (!boolat)
 		warning("Invalid latitude!");
 
-	vector<bool>&& lonvalid = as<vector<bool>>(df.attr("lon_valid"));
-	bool boolon = all_of(latvalid.begin(), latvalid.end(), [](bool v) { return v;});
+	vector<bool>&& lonvalid = get_attr(df, "lon_valid");
+	bool boolon = all_of(lonvalid.begin(), lonvalid.end(), [](bool v) { return v;});
 	if (!boolon)
 		warning("Invalid longitude!");
 
