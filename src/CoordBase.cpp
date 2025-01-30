@@ -858,7 +858,7 @@ bool check_valid(const DataFrame& df)
 
 
 /// __________________________________________________
-/// Validate object
+/// Validate DataFrame or NumericVector
 template<class T>
 vector<bool> validate(const T& t)
 {
@@ -1113,9 +1113,9 @@ NumericVector printcoord(NumericVector& nv)
 /// __________________________________________________
 /// Validate coords vector
 // [[Rcpp::export(name = "validate.coords")]]
-vector<bool> Rvalidatecoord(NumericVector& nv)
+vector<bool> validatecoord(NumericVector& nv)
 {
-	cout << "——Rcpp::export——Rvalidatecoord()\n";
+	cout << "——Rcpp::export——validatecoord()\n";
 	checkinherits(nv, "coords");
 	return validate(nv);
 }
