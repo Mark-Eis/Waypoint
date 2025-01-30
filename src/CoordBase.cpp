@@ -91,7 +91,7 @@ template<CoordType type>
 vector<bool> validatelet(const NumericVector&);
 
 template<CoordType type>
-void wpvalidatelet(const DataFrame&);
+vector<bool> validatelet(const DataFrame&);
 
 template<CoordType type>
 void dfvalidatelet(const DataFrame&, WayPoint<type>&);
@@ -895,13 +895,14 @@ vector<bool> validatelet(const NumericVector& nv)
 
 
 template<CoordType type>
-void wpvalidatelet(const DataFrame& df)
+vector<bool> validatelet(const DataFrame& df)
 {
-	cout << "@wpvalidatelet(const DataFrame&)\n";
+	cout << "@validatelet(const DataFrame&)\n";
 	WayPoint<type> wp(df);
 	wp.validate(true);
 	wp.warn_invalid();
 	dfvalidatelet(df, wp);
+	return vector<bool>();							/////// temporary solution ///////
 }
 
 
@@ -1318,25 +1319,7 @@ const DataFrame validatewaypoint(DataFrame& df)
 {
 	cout << "——Rcpp::export——validatewaypoint(DataFrame&) format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
-
-	switch (get_coordtype(df))
-	{
-   		case CoordType::decdeg:
-			wpvalidatelet<CoordType::decdeg>(df);
-			break;
-
-		case CoordType::degmin:
-			wpvalidatelet<CoordType::degmin>(df);
-			break;
-
-		case CoordType::degminsec:
-			wpvalidatelet<CoordType:: degminsec>(df);
-			break;
-
-		default:
-			stop("validatewaypoint(DataFrame&) my bad");
-	}
-	return df;
+	return validate(df);
 }
 
 /// __________________________________________________
