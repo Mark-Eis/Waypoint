@@ -103,11 +103,13 @@ void coordlet(NumericVector&, CoordType);
 template<CoordType type, CoordType newtype>
 inline void convertlet(NumericVector&, const Coord<type>&);
 
+template<CoordType type, CoordType newtype>
+inline void convertlet(NumericVector&&, const Coord<type>&);
+
 template<CoordType type>
 void waypointlet(DataFrame&, CoordType newtype);
 
 template<CoordType type, CoordType newtype>
-//inline void wpconvertlet(DataFrame&, const vector<int>&, WayPoint<type>&);
 inline void wpconvertlet(DataFrame&, WayPoint<type>&);
 
 // exported
@@ -923,7 +925,7 @@ void dfvalidatelet(const DataFrame& df, WayPoint<type>& wp)
 template<CoordType type>
 void coordlet(NumericVector& nv, CoordType newtype)
 {
-//	cout << "@coordlet(NumericVector&, CoordType) type " << coordtype_to_int(type) + 1 << " newtype " << coordtype_to_int(newtype) + 1 << endl;
+	cout << "@coordlet(NumericVector&, CoordType) type " << coordtype_to_int(type) + 1 << " newtype " << coordtype_to_int(newtype) + 1 << endl;
 	Coord<type> c(nv);
 	c.validate();
 	if (type != newtype) {
@@ -953,6 +955,15 @@ void coordlet(NumericVector& nv, CoordType newtype)
 template<CoordType type, CoordType newtype>
 inline void convertlet(NumericVector& nv, const Coord<type>& c)
 {
+	cout << "@convertlet(NumericVector&, const Coord<type>&) type " << coordtype_to_int(type) + 1 << " newtype " << coordtype_to_int(newtype) + 1 << endl;
+	transform(c.get_nv().begin(), c.get_nv().end(), nv.begin(), Convertor<type, newtype>(c));
+}
+
+
+template<CoordType type, CoordType newtype>
+inline void convertlet(NumericVector&& nv, const Coord<type>& c)
+{
+	cout << "@convertlet(NumericVector&&, const Coord<type>&) type " << coordtype_to_int(type) + 1 << " newtype " << coordtype_to_int(newtype) + 1 << endl;
 	transform(c.get_nv().begin(), c.get_nv().end(), nv.begin(), Convertor<type, newtype>(c));
 }
 
@@ -998,8 +1009,7 @@ inline void wpconvertlet(DataFrame& df, WayPoint<type>& wp)
 	cout << "@wpconvertlet(DataFrame&, WayPoint<type>&)\n";
 	const vector<int> llcols = getllcolsattr(df);
 	for (const auto x : llcols) {
-		const Coord<type>& c(wp.get_c(llcols[1] - x));
-		transform(c.get_nv().begin(), c.get_nv().end(), as<NumericVector>(df[x]).begin(), Convertor<type, newtype>(c));
+		convertlet<type, newtype>(as<NumericVector>(df[x]), wp.get_c(llcols[1] - x));
 	}
 }
 
@@ -1015,7 +1025,7 @@ inline void wpconvertlet(DataFrame& df, WayPoint<type>& wp)
 // [[Rcpp::export]]
 NumericVector coords(NumericVector& nv, int fmt = 1)
 {
-//	cout << "——Rcpp::export——coords()\n";
+	cout << "——Rcpp::export——coords()\n";
 	CoordType newtype = get_coordtype(fmt);
 	const bool inheritscoords { nv.inherits("coords") };
 	CoordType type;
