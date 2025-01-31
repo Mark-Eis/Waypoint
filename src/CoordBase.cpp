@@ -101,7 +101,7 @@ template<CoordType type>
 void coordlet(NumericVector&, CoordType);
 
 template<CoordType type, CoordType newtype>
-inline void convertlet(NumericVector&, Coord<type>&);
+inline void convertlet(NumericVector&, const Coord<type>&);
 
 template<CoordType type>
 void waypointlet(DataFrame&, CoordType newtype);
@@ -951,7 +951,7 @@ void coordlet(NumericVector& nv, CoordType newtype)
 
 
 template<CoordType type, CoordType newtype>
-inline void convertlet(NumericVector& nv, Coord<type>& c)
+inline void convertlet(NumericVector& nv, const Coord<type>& c)
 {
 	transform(c.get_nv().begin(), c.get_nv().end(), nv.begin(), Convertor<type, newtype>(c));
 }
@@ -995,6 +995,7 @@ void waypointlet(DataFrame& df, CoordType newtype)
 template<CoordType type, CoordType newtype>
 inline void wpconvertlet(DataFrame& df, WayPoint<type>& wp)
 {
+	cout << "@wpconvertlet(DataFrame&, WayPoint<type>&)\n";
 	const vector<int> llcols = getllcolsattr(df);
 	for (const auto x : llcols) {
 		const Coord<type>& c(wp.get_c(llcols[1] - x));
