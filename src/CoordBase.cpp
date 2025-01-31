@@ -94,7 +94,10 @@ template<CoordType type>
 vector<bool> validatelet(const DataFrame&);
 
 template<CoordType type>
-void dfvalidatelet(const DataFrame&, WayPoint<type>&);
+void setvalidattr(const NumericVector&, Coord<type>&);
+
+template<CoordType type>
+void setvalidattr(const DataFrame&, WayPoint<type>&);
 
 // conversion
 template<CoordType type>
@@ -891,7 +894,7 @@ vector<bool> validatelet(const NumericVector& nv)
 	cout << "@validatelet(const NumericVector&)\n";
 	Coord<type> c(nv);
 	c.validate();
-	const_cast<NumericVector&>(nv).attr("valid") = c.get_valid();
+	setvalidattr(nv, c);
 	return c.get_valid();	
 }
 
@@ -903,15 +906,23 @@ vector<bool> validatelet(const DataFrame& df)
 	WayPoint<type> wp(df);
 	wp.validate(true);
 	wp.warn_invalid();
-	dfvalidatelet(df, wp);
+	setvalidattr(df, wp);
 	return vector<bool>();							/////// temporary solution ///////
 }
 
 
 template<CoordType type>
-void dfvalidatelet(const DataFrame& df, WayPoint<type>& wp)
+void setvalidattr(const NumericVector& nv, Coord<type>& c)
 {
-	cout << "@dfvalidatelet(DataFrame&, WayPoint<type>&)\n";
+	cout << "@setvalidattr(const NumericVector&, Coord<type>&)\n";
+	const_cast<NumericVector&>(nv).attr("valid") = c.get_valid();
+}
+
+
+template<CoordType type>
+void setvalidattr(const DataFrame& df, WayPoint<type>& wp)
+{
+	cout << "@setvalidattr(DataFrame&, WayPoint<type>&)\n";
 	DataFrame& non_const_df { const_cast<DataFrame&>(df) };
 	for (const auto x : { 0, 1 } )
 		non_const_df.attr(vector<string>{ "lat_valid", "lon_valid" }[x]) = wp.get_valid(1 - x);
@@ -947,7 +958,8 @@ void coordlet(NumericVector& nv, CoordType newtype)
 				stop("coordlet(NumericVector&, CoordType) my bad");
 		}
 	}
-	nv.attr("valid") = c.get_valid();
+
+	setvalidattr(nv, c);
 	nv.attr("class") = "coords";
 }
 
@@ -998,7 +1010,7 @@ void waypointlet(DataFrame& df, CoordType newtype)
 		}
 	}
 
-	dfvalidatelet(df, wp);
+	setvalidattr(df, wp);
 	df.attr("class") = CharacterVector{"waypoints", "data.frame"};
 }
 
@@ -1033,10 +1045,10 @@ NumericVector coords(NumericVector& nv, int fmt = 1)
 		type = get_coordtype(nv);
 //		cout <<  "coords() argument nv is already a \"coords\" vector of type "
 //			 << coordtype_to_int(type) + 1 << endl;
+		if (!check_valid(nv))
+			stop("Invalid coords!");
 		if (newtype == type) {
 //			cout << "——fmt out == fmt in!——" << endl;
-			if (!check_valid(nv))
-				warning("Invalid coords!");
 			return nv;
 		}
 	} else
@@ -1259,7 +1271,7 @@ DataFrame waypoints(DataFrame& df, int fmt = 1)
 		df.attr("namescol") = namescol;
 	}
 
-    switch (type)
+	switch (type)
 	{
     		case CoordType::decdeg:
 			waypointlet<CoordType::decdeg>(df, newtype);
