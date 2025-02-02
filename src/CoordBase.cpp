@@ -485,10 +485,10 @@ class Format {
 	public:
 		Format(const Coord& _c) : c(_c)
 		{
-			cout << "§Format<type>::Format(const Coord&) "; _ctrsgn(typeid(*this));
+			cout << "§Format<CoordType>::Format(const Coord&) "; _ctrsgn(typeid(*this));
 		}
 //		~Format() = default;
-		~Format() { cout << "§Format<type>::~Format() "; _ctrsgn(typeid(*this), true); }
+		~Format() { cout << "§Format<CoordType>::~Format() "; _ctrsgn(typeid(*this), true); }
 		string operator()(double n);
 };
 
@@ -539,10 +539,10 @@ class FormatLL {
 	public:
 		FormatLL(const Coord& _c) : c(_c), ll_it(c.latlon.begin())
 		{
-			cout << "§FormatLL<type>::FormatLL(const Coord&) "; _ctrsgn(typeid(*this));
+			cout << "§FormatLL<CoordType>::FormatLL(const Coord&) "; _ctrsgn(typeid(*this));
 		}
 //		~FormatLL() = default;
-		~FormatLL() { cout << "§FormatLL<type>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
+		~FormatLL() { cout << "§FormatLL<CoordType>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
 		string operator()(string, double);
 };
 
