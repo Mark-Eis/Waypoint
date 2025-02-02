@@ -450,16 +450,11 @@ inline const vector<string>& Coord::get_names() const
 }
 
 
-/**************************
-
-
-
 /// __________________________________________________
 /// Warn if any valid are false
-template<CoordType type>
-void Coord<type>::warn_invalid() const
+void Coord::warn_invalid() const
 {
-//	cout << "@Coord<type>::warn_invalid()\n";
+//	cout << "@Coord::warn_invalid()\n";
 	if (!all_valid())
 		warning("Validation failed!");
 }
@@ -467,13 +462,16 @@ void Coord<type>::warn_invalid() const
 
 /// __________________________________________________
 /// Set waypoint flag
-template<CoordType type>
-inline void Coord<type>::set_waypoint() const
+inline void Coord::set_waypoint() const
 {
-//	cout << "@Coord<type>::set_waypoint()\n";
+//	cout << "@Coord::set_waypoint()\n";
 	bool& wpt = const_cast<bool&>(waypoint);
 	wpt = true;
 }
+
+/**************************
+
+
 
 
 /// __________________________________________________
@@ -1032,6 +1030,7 @@ vector<bool> dummy(NumericVector& nv)
 	cout << "——Rcpp::export——`dummy(NumericVector&)`\n";
 	Coord c(nv, ff_degmin);
 	c.validate();
+	c.warn_invalid();
 	return c.get_valid();
 //	return nv;
 }
