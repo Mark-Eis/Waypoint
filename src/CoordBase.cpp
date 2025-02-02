@@ -293,7 +293,6 @@ class Coord {
 		bool waypoint = false;
 
 	public:
-//		Coord(const NumericVector&);
 		Coord(const NumericVector&, const FamousFive& = ff_decdeg);				/////// !!! deprecate default !!! ///////
 		Coord(const Coord&) = delete;					// Disallow copying
 		Coord& operator=(const Coord&) = delete;			//  ——— ditto ———
@@ -311,12 +310,6 @@ class Coord {
 		vector<string> format() const;
 		void print(ostream&) const;
 
-/*		friend class Coord<CoordType::decdeg>;
-		friend class Coord<CoordType::degmin>;
-		friend class Coord<CoordType::degminsec>;
-		friend class Convertor<type, CoordType::decdeg>;
-		friend class Convertor<type, CoordType::degmin>;
-		friend class Convertor<type, CoordType::degminsec>; */
 		friend class Convertor<CoordType::decdeg>;
 		friend class Convertor<CoordType::degmin>;
 		friend class Convertor<CoordType::degminsec>;
