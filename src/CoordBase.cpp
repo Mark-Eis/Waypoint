@@ -41,13 +41,12 @@ class Validator;
 template<CoordType type>
 class Format;
 
-/*
-
 template<CoordType type>
 class FormatLL;
 
-template<CoordType type>
-ostream& operator<<(ostream&, const Coord<type>&);
+ostream& operator<<(ostream&, const Coord&);
+
+/*
 
 // waypoint
 template<CoordType type>
@@ -316,7 +315,9 @@ class Coord {
 		friend class Format<CoordType::decdeg>;
 		friend class Format<CoordType::degmin>;
 		friend class Format<CoordType::degminsec>;
-/*		friend class FormatLL<type>; */
+		friend class FormatLL<CoordType::decdeg>;
+		friend class FormatLL<CoordType::degmin>;
+		friend class FormatLL<CoordType::degminsec>;
 		friend class Validator;
 };
 
@@ -392,7 +393,7 @@ class Validator {
 			cout << "§Validator::Validator(const Coord&) "; _ctrsgn(typeid(*this));
 		}
 //		~Validator() = default;
-		~Validator() { cout << "§Validator<type>::~Validator(const Coord&) "; _ctrsgn(typeid(*this), true); }
+		~Validator() { cout << "§Validator::~Validator(const Coord&) "; _ctrsgn(typeid(*this), true); }
 		bool operator()(double n)
 		{
 		//	cout << "@Validator() " << " validating: " << setw(9) << setfill(' ') << n << endl;
@@ -484,7 +485,7 @@ class Format {
 	public:
 		Format(const Coord& _c) : c(_c)
 		{
-			cout << "§Format<type>::Format(const Coord<type>&) "; _ctrsgn(typeid(*this));
+			cout << "§Format<type>::Format(const Coord&) "; _ctrsgn(typeid(*this));
 		}
 //		~Format() = default;
 		~Format() { cout << "§Format<type>::~Format() "; _ctrsgn(typeid(*this), true); }
@@ -528,24 +529,20 @@ inline string Format<CoordType::degminsec>::operator()(double n)
 }
 
 
-/**************************
-
-
-
 /// __________________________________________________
 /// __________________________________________________
 /// Formatting functors for Latitude and Longitude
 template<CoordType type>
 class FormatLL {
-		const Coord<type>& c; 
+		const Coord& c; 
 		vector<bool>::const_iterator ll_it;
 	public:
-		FormatLL(const Coord<type>& _c) : c(_c), ll_it(c.latlon.begin())
+		FormatLL(const Coord& _c) : c(_c), ll_it(c.latlon.begin())
 		{
-		//	cout << "§FormatLL<type>::FormatLL(const Coord<type>&) "; _ctrsgn(typeid(*this));
+			cout << "§FormatLL<type>::FormatLL(const Coord&) "; _ctrsgn(typeid(*this));
 		}
-		~FormatLL() = default;
-//		~FormatLL() { cout << "§FormatLL<type>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
+//		~FormatLL() = default;
+		~FormatLL() { cout << "§FormatLL<type>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
 		string operator()(string, double);
 };
 
@@ -554,7 +551,7 @@ class FormatLL {
 template<CoordType type>
 inline string FormatLL<type>::operator()(string ostr, double n)
 {
-//	cout << "@FormatLL<type>::operator(string, double) [default for CoordType::degmin and CoordType::degminsec]\n";
+	cout << "@FormatLL<type>::operator(string, double) [default for CoordType::degmin and CoordType::degminsec]\n";
 	return ostr += c.latlon.size() ? cardpoint(c.ff.get_decmin(n) < 0, c.llgt1 ? *ll_it++ : *ll_it) : cardi_b(c.ff.get_decmin(n) < 0);
 }
 
@@ -563,14 +560,14 @@ inline string FormatLL<type>::operator()(string ostr, double n)
 template<>
 inline string FormatLL<CoordType::decdeg>::operator()(string ostr, double n)
 {
-//	cout << "@FormatLL<CoordType::decdeg>::operator(string, double) c.waypoint " << boolalpha << c.waypoint << endl;
+	cout << "@FormatLL<CoordType::decdeg>::operator(string, double) c.waypoint " << boolalpha << c.waypoint << endl;
 	if (c.latlon.size() && !c.waypoint)
 		return ostr += ((c.llgt1 ? *ll_it++ : *ll_it) ? " lat" : " lon");
 	else
 		return ostr;
 }
 
-*/
+
 /// __________________________________________________
 /// Formatted coordinate strings for printing
 template<CoordType type>
@@ -579,7 +576,7 @@ vector<string> Coord::format() const
 	cout << "@Coord::format() " << typeid(*this).name() << endl;
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), Format<type>(*this));
-//	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<type>(*this));
+	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<type>(*this));
 	return out;
 }
 
@@ -607,7 +604,10 @@ ostream& operator<<(ostream& stream, const Coord& c)
 	c.print(stream);
 	return stream;
 }
-/*
+
+
+/**************************
+
 
 /// __________________________________________________
 /// __________________________________________________
