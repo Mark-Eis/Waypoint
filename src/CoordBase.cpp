@@ -23,37 +23,18 @@ inline const int coordtype_to_int(CoordType);
 inline string cardpoint(bool, bool);
 inline string cardi_b(bool);
 
-//Coord
-template<CoordType>
+//FamousFive
 struct FamousFive;
-template<>
-struct FamousFive<CoordType::decdeg>;
-template<>
-struct FamousFive<CoordType::degmin>;
-template<>
-struct FamousFive<CoordType::degminsec>;
+struct FF_decdeg;
+struct FF_degmin;
+struct FF_degminsec;
 
-//FamouslyFive
-struct FamouslyFive;
-struct FyF_decdeg;
-struct FyF_degmin;
-struct FyF_degminsec;
-
-
-//Convertorly
+//Convertor
 template<CoordType type>
-class Convertorly;
-template<>
-class Convertorly<CoordType::decdeg>;
-template<>
-class Convertorly<CoordType::degmin>;
-template<>
-class Convertorly<CoordType::degminsec>;
+class Convertor;
 
 //Coord
 class Coord;
-
-
 
 
 /*
@@ -246,49 +227,11 @@ inline string cardi_b(bool negative)
 
 /// __________________________________________________
 /// __________________________________________________
-/// Famous Five functions
-template<CoordType>
-struct FamousFive {
-};
-
-template<>
-struct FamousFive<CoordType::decdeg> {
-//	FamousFive() { cout << "§FamousFive<CoordType::decdeg>() "; _ctrsgn(typeid(*this)); 	}	
-	int get_deg(double x) const { return int(x); }
-	double get_decdeg(double x) const { return x; }
-	int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
-	double get_decmin(double x) const { return polish(mod1by60(x)); }
-	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
-};
-
-template<>
-struct FamousFive<CoordType::degmin> {
-//	FamousFive() { cout << "§FamousFive<CoordType::degmin>() "; _ctrsgn(typeid(*this)); 	}	
-	int get_deg(double x) const { return int(x / 1e2); }
-	double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
-	int get_min(double x) const { return int(x) % int(1e2); }
-	double get_decmin(double x) const { return polish(mod1e2(x)); }
-	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
-};
-
-template<>
-struct FamousFive<CoordType::degminsec> {
-//	FamousFive() { cout << "§FamousFive<CoordType::degminsec>() "; _ctrsgn(typeid(*this)); }	
-	int get_deg(double x) const { return int(x / 1e4); }
-	double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
-	int get_min(double x) const { return (int(x) % int(1e4)) / 1e2; }
-	double get_decmin(double x) const { return int(fmod(x, 1e4) / 1e2) + mod1e2(x) / 60; }
-	double get_sec(double x) const { return mod1e2(x); }
-};
-
-
-/// __________________________________________________
-/// __________________________________________________
 /// Famously Five Class and Derived Classes
 
-struct FamouslyFive {
-	FamouslyFive() { cout << "§FamouslyFive() "; _ctrsgn(typeid(*this)); }
-	virtual ~FamouslyFive() = 0;	
+struct FamousFive {
+	FamousFive() { cout << "§FamousFive() "; _ctrsgn(typeid(*this)); }
+	virtual ~FamousFive() = 0;	
 	virtual int get_deg(double x) const = 0;
 	virtual double get_decdeg(double x) const = 0;
 	virtual int get_min(double x) const = 0;
@@ -296,13 +239,13 @@ struct FamouslyFive {
 	virtual double get_sec(double x) const = 0;
 };
 
-FamouslyFive::~FamouslyFive() { cout << "§~FamouslyFive(CoordType) "; _ctrsgn(typeid(*this), true); }	
+FamousFive::~FamousFive() { cout << "§~FamousFive(CoordType) "; _ctrsgn(typeid(*this), true); }	
 
 	
-struct FyF_decdeg : public FamouslyFive {
-	FyF_decdeg() { cout << "§FyF_decdeg() "; _ctrsgn(typeid(*this)); }	
-//	~FyF_decdeg() = default;
-	~FyF_decdeg() { cout << "§~FyF_decdeg::FyF_decdeg() "; _ctrsgn(typeid(*this), true); }
+struct FF_decdeg : public FamousFive {
+	FF_decdeg() { cout << "§FF_decdeg() "; _ctrsgn(typeid(*this)); }	
+//	~FF_decdeg() = default;
+	~FF_decdeg() { cout << "§~FF_decdeg::FF_decdeg() "; _ctrsgn(typeid(*this), true); }
 	int get_deg(double x) const { return int(x); }
 	double get_decdeg(double x) const { return x; }
 	int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
@@ -311,10 +254,10 @@ struct FyF_decdeg : public FamouslyFive {
 } ff_decdeg;
 
 
-struct FyF_degmin : public FamouslyFive {
-	FyF_degmin() { cout << "§FyF_degmin() "; _ctrsgn(typeid(*this)); }	
-//	~FyF_degmin() = default;
-	~FyF_degmin() { cout << "§~FyF_degmin::FyF_degmin() "; _ctrsgn(typeid(*this), true); }
+struct FF_degmin : public FamousFive {
+	FF_degmin() { cout << "§FF_degmin() "; _ctrsgn(typeid(*this)); }	
+//	~FF_degmin() = default;
+	~FF_degmin() { cout << "§~FF_degmin::FF_degmin() "; _ctrsgn(typeid(*this), true); }
 	int get_deg(double x) const { return int(x / 1e2); }
 	double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
 	int get_min(double x) const { return int(x) % int(1e2); }
@@ -323,10 +266,10 @@ struct FyF_degmin : public FamouslyFive {
 } ff_degmin;
 
 
-struct FyF_degminsec : public FamouslyFive {
-	FyF_degminsec() { cout << "§FyF_degminsec() "; _ctrsgn(typeid(*this)); }	
-//	~FyF_degminsec() = default;
-	~FyF_degminsec() { cout << "§~FyF_degminsec::FyF_degminsec() "; _ctrsgn(typeid(*this), true); }
+struct FF_degminsec : public FamousFive {
+	FF_degminsec() { cout << "§FF_degminsec() "; _ctrsgn(typeid(*this)); }	
+//	~FF_degminsec() = default;
+	~FF_degminsec() { cout << "§~FF_degminsec::FF_degminsec() "; _ctrsgn(typeid(*this), true); }
 	int get_deg(double x) const { return int(x / 1e4); }
 	double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
 	int get_min(double x) const { return (int(x) % int(1e4)) / 1e2; }
@@ -341,8 +284,7 @@ struct FyF_degminsec : public FamouslyFive {
 class Coord {
 	protected:
 		vector<double> nv;
-//		FamousFive<type> ff;
-		const FamouslyFive& fyf;
+		const FamousFive& ff;
 		const vector<bool> valid { false };
 		const vector<bool> latlon;
 		const vector<string> names;
@@ -352,7 +294,7 @@ class Coord {
 
 	public:
 //		Coord(const NumericVector&);
-		Coord(const NumericVector&, const FamouslyFive& = ff_decdeg);				/////// !!! deprecate default !!! ///////
+		Coord(const NumericVector&, const FamousFive& = ff_decdeg);				/////// !!! deprecate default !!! ///////
 		Coord(const Coord&) = delete;					// Disallow copying
 		Coord& operator=(const Coord&) = delete;			//  ——— ditto ———
 		Coord(Coord&&) = delete;							// Disallow transfer ownership
@@ -375,17 +317,17 @@ class Coord {
 		friend class Convertor<type, CoordType::decdeg>;
 		friend class Convertor<type, CoordType::degmin>;
 		friend class Convertor<type, CoordType::degminsec>; */
-		friend class Convertorly<CoordType::decdeg>;
-		friend class Convertorly<CoordType::degmin>;
-		friend class Convertorly<CoordType::degminsec>;
+		friend class Convertor<CoordType::decdeg>;
+		friend class Convertor<CoordType::degmin>;
+		friend class Convertor<CoordType::degminsec>;
 /*		friend class Format<type>;
 		friend class FormatLL<type>;
 		friend class Validator<type>; */
 };
 
 
-Coord::Coord(const NumericVector& nv, const FamouslyFive& _fyf) :
-	nv(as<vector<double>>(nv)), fyf(_fyf),
+Coord::Coord(const NumericVector& nv, const FamousFive& _ff) :
+	nv(as<vector<double>>(nv)), ff(_ff),
 	latlon{ nv.hasAttribute("latlon") ? as<vector<bool>>(nv.attr("latlon")) : vector<bool>() },
 	names{ nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>() },
 	llgt1(latlon.size() > 1)
@@ -394,6 +336,52 @@ Coord::Coord(const NumericVector& nv, const FamouslyFive& _fyf) :
 }
 
 
+/// __________________________________________________
+/// __________________________________________________
+/// Templated Coord conversion functors
+template<CoordType type>
+class Convertor {
+	protected:
+		const Coord& c; 
+	public:
+		Convertor(const Coord& _c) : c(_c)
+		{
+		      cout << "§Convertor<type>::Convertor(const Coord&) "; _ctrsgn(typeid(*this));
+		}
+//		~Convertor() = default;
+		~Convertor() { cout << "§Convertor<type>::~Convertor() "; _ctrsgn(typeid(*this), true); }
+		double operator()(double n);
+};
+
+
+/// __________________________________________________
+/// Default operator(), for decimal degrees
+template<CoordType type>
+inline double Convertor<type>::operator()(double n)
+{
+	cout << "@Convertor<type>::operator() [default for CoordType::decdeg]\n";
+	return c.ff.get_decdeg(n);
+}
+
+
+/// __________________________________________________
+/// Specialised operator() for degrees and minutes
+template<>
+inline double Convertor<CoordType::degmin>::operator()(double n)
+{
+	cout << "@Convertor<CoordType::degmin>::operator()\n";
+	return c.ff.get_deg(n) * 1e2 + c.ff.get_decmin(n);
+}
+
+
+/// __________________________________________________
+/// Specialised operator() for degrees, minutes and seconds
+template<>
+inline double Convertor<CoordType::degminsec>::operator()(double n)
+{
+	cout << "@Convertor<CoordType::degminsec>::operator()\n";
+	return c.ff.get_deg(n) * 1e4 + c.ff.get_min(n) * 1e2 + c.ff.get_sec(n);
+}
 
 /**************************
 
