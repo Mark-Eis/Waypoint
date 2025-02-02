@@ -1114,22 +1114,22 @@ NumericVector coords_replace(NumericVector& nv, int value)
 	return coords(nv, value);
 }
 
-
+*/
 /// __________________________________________________
 /// Set latlon attribute on "coords" NumericVector and revalidate
 // [[Rcpp::export(name = "`latlon<-`")]]
 NumericVector latlon(NumericVector& nv, LogicalVector& value)
 {
-//	cout << "——Rcpp::export——set_latlon()\n";
-	checkinherits(nv, "coords");
+	cout << "——Rcpp::export——set_latlon()\n";
+//	checkinherits(nv, "coords");
 	if (value.size() != nv.size() && value.size() != 1)
 		stop("value must be either length 1 or length(nv)");
 	else
 		nv.attr("latlon") = value;
-	validate(nv);
+//	validate(nv);
 	return nv;
 }
-
+/*
 
 /// __________________________________________________
 /// Print coords vector - S3 method print.coords()	  /////// "invisible" not working ///////
