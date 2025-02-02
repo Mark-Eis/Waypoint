@@ -281,6 +281,7 @@ struct FF_degminsec : public FamousFive {
 /// Coordinate class
 class Coord {
 	protected:
+		CoordType ct = CoordType::degminsec;
 		vector<double> nv;
 		const FamousFive& ff;
 		const vector<bool> valid { false };
@@ -587,7 +588,7 @@ void Coord::print(ostream& stream) const
 {
 	cout << "@Coord::print() " << typeid(*this).name() << endl;
 	vector<string> sv; 
-	switch (CoordType::degmin)
+	switch (ct)
 	{
 		case CoordType::decdeg:
 			sv = format<CoordType::decdeg>();
