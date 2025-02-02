@@ -115,8 +115,8 @@ NumericVector coords_replace(NumericVector&, int);
 NumericVector latlon(NumericVector&, LogicalVector&);
 NumericVector printcoord(NumericVector&);
 vector<bool> Rvalidatecoord(NumericVector&);
-/*
 vector<string> formatcoord(NumericVector&);
+/*
 vector<int> get_deg(NumericVector&);
 vector<double> get_decdeg(NumericVector&);
 vector<int> get_min(NumericVector&);
@@ -1160,7 +1160,7 @@ vector<bool> validatecoord(NumericVector& nv)
 	setvalidattr(nv, c);
 	return c.get_valid();	
 }
-/*
+
 
 /// __________________________________________________
 /// Format coords vector - S3 method format.coords()
@@ -1171,24 +1171,25 @@ vector<string> formatcoord(NumericVector& nv)
 	checkinherits(nv, "coords");
 	if (!check_valid(nv))
 		warning("Formatting invalid coords!");
+	Coord c(nv, get_coordtype(nv));
 
 	switch (get_coordtype(nv))
 	{
 		case CoordType::decdeg:
-			return Coord<CoordType::decdeg>(nv).format();
+			return c.format<CoordType::decdeg>();
 
 		case CoordType::degmin:
-			return Coord<CoordType::degmin>(nv).format();
+			return c.format<CoordType::degmin>();
 
 		case CoordType::degminsec:
-			return Coord<CoordType::degminsec>(nv).format();
+			return c.format<CoordType::degminsec>();
 
 		default:
 			stop("formatcoord(NumericVector&) my bad");
 	}
 }
 
-*/
+
 /*
 /// __________________________________________________
 /// Return degrees as integer
