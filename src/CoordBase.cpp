@@ -33,6 +33,13 @@ struct FamousFive<CoordType::degmin>;
 template<>
 struct FamousFive<CoordType::degminsec>;
 
+//FamouslyFive
+struct FamouslyFive;
+struct FyF_decdeg;
+struct FyF_degmin;
+struct FyF_degminsec;
+
+//Convertor
 template<CoordType type, CoordType newtype>
 class Convertor;
 template<CoordType type>
@@ -42,6 +49,7 @@ class Convertor<type, CoordType::degmin>;
 template<CoordType type>
 class Convertor<type, CoordType::degminsec>;
 
+//Coord
 template<CoordType type>
 class Coord;
 
@@ -271,6 +279,57 @@ struct FamousFive<CoordType::degminsec> {
 
 /// __________________________________________________
 /// __________________________________________________
+/// Famously Five Class and Derived Classes
+
+struct FamouslyFive {
+	FamouslyFive() { cout << "§FamouslyFive() "; _ctrsgn(typeid(*this)); }
+	virtual ~FamouslyFive() = 0;	
+	virtual int get_deg(double x) const = 0;
+	virtual double get_decdeg(double x) const = 0;
+	virtual int get_min(double x) const = 0;
+	virtual double get_decmin(double x) const = 0;
+	virtual double get_sec(double x) const = 0;
+};
+
+FamouslyFive::~FamouslyFive() { cout << "§~FamouslyFive(CoordType) "; _ctrsgn(typeid(*this), true); }	
+
+	
+struct FyF_decdeg : public FamouslyFive {
+	FyF_decdeg() { cout << "§FyF_decdeg() "; _ctrsgn(typeid(*this)); }	
+//	~FyF_decdeg() = default;
+	~FyF_decdeg() { cout << "§~FyF_decdeg::FyF_decdeg() "; _ctrsgn(typeid(*this), true); }
+	int get_deg(double x) const { return int(x); }
+	double get_decdeg(double x) const { return x; }
+	int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
+	double get_decmin(double x) const { return polish(mod1by60(x)); }
+	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
+} ff_decdeg;
+
+struct FyF_degmin : public FamouslyFive {
+	FyF_degmin() { cout << "§FyF_degmin() "; _ctrsgn(typeid(*this)); }	
+//	~FyF_degmin() = default;
+	~FyF_degmin() { cout << "§~FyF_degmin::FyF_degmin() "; _ctrsgn(typeid(*this), true); }
+	int get_deg(double x) const { return int(x / 1e2); }
+	double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
+	int get_min(double x) const { return int(x) % int(1e2); }
+	double get_decmin(double x) const { return polish(mod1e2(x)); }
+	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
+} ff_degmin;
+
+struct FyF_degminsec : public FamouslyFive {
+	FyF_degminsec() { cout << "§FyF_degminsec() "; _ctrsgn(typeid(*this)); }	
+//	~FyF_degminsec() = default;
+	~FyF_degminsec() { cout << "§~FyF_degminsec::FyF_degminsec() "; _ctrsgn(typeid(*this), true); }
+	int get_deg(double x) const { return int(x / 1e4); }
+	double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
+	int get_min(double x) const { return (int(x) % int(1e4)) / 1e2; }
+	double get_decmin(double x) const { return int(fmod(x, 1e4) / 1e2) + mod1e2(x) / 60; }
+	double get_sec(double x) const { return mod1e2(x); }
+} ff_degminsec;
+
+
+/// __________________________________________________
+/// __________________________________________________
 /// Templated Coord conversion functors
 template<CoordType type, CoordType newtype>
 class Convertor {
@@ -333,6 +392,7 @@ class Coord {
 	protected:
 		vector<double> nv;
 		FamousFive<type> ff;
+		const FamouslyFive& fyf;
 		const vector<bool> valid { false };
 		const vector<bool> latlon;
 		const vector<string> names;
@@ -341,7 +401,8 @@ class Coord {
 		bool waypoint = false;
 
 	public:
-		Coord(const NumericVector&);
+//		Coord(const NumericVector&);
+		Coord(const NumericVector&, const FamouslyFive& = ff_decdeg);				/////// !!! deprecate default !!! ///////
 		Coord(const Coord&) = delete;					// Disallow copying
 		Coord& operator=(const Coord&) = delete;			//  ——— ditto ———
 		Coord(Coord&&) = delete;							// Disallow transfer ownership
@@ -369,10 +430,21 @@ class Coord {
 		friend class Validator<type>;
 };
 
-
+/*
 template<CoordType type>
 Coord<type>::Coord(const NumericVector& nv) :
 	nv(as<vector<double>>(nv)),
+	latlon{ nv.hasAttribute("latlon") ? as<vector<bool>>(nv.attr("latlon")) : vector<bool>() },
+	names{ nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>() },
+	llgt1(latlon.size() > 1)
+{
+//	cout << "§Coord<type>::Coord(const NumericVector&) "; _ctrsgn(typeid(*this));
+} */
+
+
+template<CoordType type>
+Coord<type>::Coord(const NumericVector& nv, const FamouslyFive& _fyf) :
+	nv(as<vector<double>>(nv)), fyf(_fyf),
 	latlon{ nv.hasAttribute("latlon") ? as<vector<bool>>(nv.attr("latlon")) : vector<bool>() },
 	names{ nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>() },
 	llgt1(latlon.size() > 1)
