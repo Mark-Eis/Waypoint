@@ -275,13 +275,14 @@ struct FF_degminsec : public FamousFive {
 	double get_sec(double x) const { return mod1e2(x); }
 } ff_degminsec;
 
+vector<FamousFive*> vff { &ff_decdeg, &ff_degmin, &ff_degminsec };
 
 /// __________________________________________________
 /// __________________________________________________
 /// Coordinate class
 class Coord {
 	protected:
-		CoordType ct = CoordType::degminsec;
+		CoordType ct;
 		vector<double> nv;
 		const FamousFive& ff;
 		const vector<bool> valid { false };
@@ -292,7 +293,7 @@ class Coord {
 		bool waypoint = false;
 
 	public:
-		Coord(const NumericVector&, const FamousFive&);
+		Coord(const NumericVector&, CoordType _ct);
 		Coord(const Coord&) = delete;					// Disallow copying
 		Coord& operator=(const Coord&) = delete;			//  ——— ditto ———
 		Coord(Coord&&) = delete;							// Disallow transfer ownership
@@ -323,13 +324,13 @@ class Coord {
 };
 
 
-Coord::Coord(const NumericVector& nv, const FamousFive& _ff) :
-	nv(as<vector<double>>(nv)), ff(_ff),
+Coord::Coord(const NumericVector& nv, CoordType _ct) :
+	ct(_ct), nv(as<vector<double>>(nv)), ff(*vff[coordtype_to_int(ct)]),
 	latlon{ nv.hasAttribute("latlon") ? as<vector<bool>>(nv.attr("latlon")) : vector<bool>() },
 	names{ nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>() },
 	llgt1(latlon.size() > 1)
 {
-	cout << "§Coord::Coord(const NumericVector&, const FamousFive&) "; _ctrsgn(typeid(*this));
+	cout << "§Coord::Coord(const NumericVector&, CoordType) "; _ctrsgn(typeid(*this));
 }
 
 
@@ -1045,13 +1046,15 @@ inline void wpconvertlet(DataFrame& df, WayPoint<type>& wp)
 /// __________________________________________________
 /// dummy() exported function
 // [[Rcpp::export]]
-vector<bool> dummy(NumericVector& nv)
+vector<bool> dummy(NumericVector& nv, int fmt)
 {
 	cout << "——Rcpp::export——`dummy(NumericVector&)`\n";
-	Coord c(nv, ff_degmin);
+//	Coord c(nv, ff_degmin);
+	CoordType newtype = get_coordtype(fmt);
+	Coord c(nv, newtype);
 	c.validate();
 	c.warn_invalid();
-	cout << c << endl;
+	cout << c;
 	return c.get_valid();
 //	return nv;
 }
