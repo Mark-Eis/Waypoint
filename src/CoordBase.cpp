@@ -38,10 +38,10 @@ class Coord;
 
 class Validator;
 
-/*
-
 template<CoordType type>
 class Format;
+
+/*
 
 template<CoordType type>
 class FormatLL;
@@ -312,8 +312,10 @@ class Coord {
 		friend class Convertor<CoordType::decdeg>;
 		friend class Convertor<CoordType::degmin>;
 		friend class Convertor<CoordType::degminsec>;
-/*		friend class Format<type>;
-		friend class FormatLL<type>; */
+		friend class Format<CoordType::decdeg>;
+		friend class Format<CoordType::degmin>;
+		friend class Format<CoordType::degminsec>;
+/*		friend class FormatLL<type>; */
 		friend class Validator;
 };
 
@@ -389,7 +391,7 @@ class Validator {
 			cout << "§Validator::Validator(const Coord&) "; _ctrsgn(typeid(*this));
 		}
 //		~Validator() = default;
-		~Validator() { cout << "§Validator<type>::~Validator(const Coord<type>&) "; _ctrsgn(typeid(*this), true); }
+		~Validator() { cout << "§Validator<type>::~Validator(const Coord&) "; _ctrsgn(typeid(*this), true); }
 		bool operator()(double n)
 		{
 		//	cout << "@Validator() " << " validating: " << setw(9) << setfill(' ') << n << endl;
@@ -469,10 +471,6 @@ inline void Coord::set_waypoint() const
 	wpt = true;
 }
 
-/**************************
-
-
-
 
 /// __________________________________________________
 /// __________________________________________________
@@ -480,10 +478,10 @@ inline void Coord::set_waypoint() const
 template<CoordType type>
 class Format {
 	protected:
-		const Coord<type>& c;
+		const Coord& c;
 		ostringstream outstrstr;
 	public:
-		Format(const Coord<type>& _c) : c(_c)
+		Format(const Coord& _c) : c(_c)
 		{
 		//	cout << "§Format<type>::Format(const Coord<type>&) "; _ctrsgn(typeid(*this));
 		}
@@ -527,6 +525,10 @@ inline string Format<CoordType::degminsec>::operator()(double n)
 					  << setw(5) << fixed << setprecision(2) << abs(c.ff.get_sec(n)) << "\"";
 	return outstrstr.str();
 }
+
+
+/**************************
+
 
 
 /// __________________________________________________
