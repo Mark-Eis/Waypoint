@@ -36,10 +36,9 @@ class Convertor;
 //Coord
 class Coord;
 
+class Validator;
 
 /*
-template<CoordType type>
-class Validator;
 
 template<CoordType type>
 class Format;
@@ -314,8 +313,8 @@ class Coord {
 		friend class Convertor<CoordType::degmin>;
 		friend class Convertor<CoordType::degminsec>;
 /*		friend class Format<type>;
-		friend class FormatLL<type>;
-		friend class Validator<type>; */
+		friend class FormatLL<type>; */
+		friend class Validator;
 };
 
 
@@ -339,7 +338,7 @@ class Convertor {
 	public:
 		Convertor(const Coord& _c) : c(_c)
 		{
-		      cout << "§Convertor<type>::Convertor(const Coord&) "; _ctrsgn(typeid(*this));
+			cout << "§Convertor<type>::Convertor(const Coord&) "; _ctrsgn(typeid(*this));
 		}
 //		~Convertor() = default;
 		~Convertor() { cout << "§Convertor<type>::~Convertor() "; _ctrsgn(typeid(*this), true); }
@@ -376,24 +375,21 @@ inline double Convertor<CoordType::degminsec>::operator()(double n)
 	return c.ff.get_deg(n) * 1e4 + c.ff.get_min(n) * 1e2 + c.ff.get_sec(n);
 }
 
-/**************************
-
 
 /// __________________________________________________
 /// __________________________________________________
 /// Validate Coord functor
 
-template<CoordType type>
 class Validator {
-		const Coord<type>& c; 
+		const Coord& c; 
 		vector<bool>::const_iterator ll_it;
 	public:
-		Validator(const Coord<type>& _c) : c(_c), ll_it(c.latlon.begin())
+		Validator(const Coord& _c) : c(_c), ll_it(c.latlon.begin())
 		{
-		//	cout << "§Validator<type>::Validator(const Coord<type>&) "; _ctrsgn(typeid(*this));
+			cout << "§Validator::Validator(const Coord&) "; _ctrsgn(typeid(*this));
 		}
-		~Validator() = default;
-//		~Validator() { cout << "§Validator<type>::~Validator(const Coord<type>&) "; _ctrsgn(typeid(*this), true); }
+//		~Validator() = default;
+		~Validator() { cout << "§Validator<type>::~Validator(const Coord<type>&) "; _ctrsgn(typeid(*this), true); }
 		bool operator()(double n)
 		{
 		//	cout << "@Validator() " << " validating: " << setw(9) << setfill(' ') << n << endl;
@@ -402,6 +398,10 @@ class Validator {
 				(abs(c.ff.get_sec(n)) >= 60));
 		}
 };
+
+
+/**************************
+
 
 
 /// __________________________________________________
