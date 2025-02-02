@@ -292,7 +292,7 @@ class Coord {
 		bool waypoint = false;
 
 	public:
-		Coord(const NumericVector&, const FamousFive& = ff_decdeg);				/////// !!! deprecate default !!! ///////
+		Coord(const NumericVector&, const FamousFive&);
 		Coord(const Coord&) = delete;					// Disallow copying
 		Coord& operator=(const Coord&) = delete;			//  ——— ditto ———
 		Coord(Coord&&) = delete;							// Disallow transfer ownership
@@ -324,7 +324,7 @@ Coord::Coord(const NumericVector& nv, const FamousFive& _ff) :
 	names{ nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>() },
 	llgt1(latlon.size() > 1)
 {
-	cout << "§Coord::Coord(const NumericVector&) "; _ctrsgn(typeid(*this));
+	cout << "§Coord::Coord(const NumericVector&, const FamousFive&) "; _ctrsgn(typeid(*this));
 }
 
 
@@ -400,16 +400,11 @@ class Validator {
 };
 
 
-/**************************
-
-
-
 /// __________________________________________________
 /// Validate coords vector
-template<CoordType type>
-void Coord<type>::validate(bool warn) const
+void Coord::validate(bool warn) const
 {
-//	cout << "@Coord<type>::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
+	cout << "@Coord::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
 	vector<bool>& non_const_valid { const_cast<vector<bool>&>(valid) };
 	non_const_valid.assign(nv.size(), {false});
 	transform(nv.begin(), nv.end(), non_const_valid.begin(), Validator(*this));
@@ -423,12 +418,15 @@ void Coord<type>::validate(bool warn) const
 
 /// __________________________________________________
 /// All valid are true
-template<CoordType type>
-bool Coord<type>::all_valid() const
+bool Coord::all_valid() const
 {
-//	cout << "@Coord<type>::all_valid()\n";
+	cout << "@Coord::all_valid()\n";
 	return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
 }
+
+
+/**************************
+
 
 
 /// __________________________________________________
@@ -1035,7 +1033,8 @@ inline void wpconvertlet(DataFrame& df, WayPoint<type>& wp)
 NumericVector dummy(NumericVector& nv)
 {
 	cout << "——Rcpp::export——`dummy(NumericVector&)`\n";
-	Coord c(nv);
+	Coord c(nv, ff_degmin);
+	c.validate();
 	return nv;
 }
 /*
