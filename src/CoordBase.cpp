@@ -39,20 +39,24 @@ struct FyF_decdeg;
 struct FyF_degmin;
 struct FyF_degminsec;
 
-//Convertor
-template<CoordType type, CoordType newtype>
-class Convertor;
+
+//Convertorly
 template<CoordType type>
-class Convertor<type, CoordType::decdeg>;
-template<CoordType type>
-class Convertor<type, CoordType::degmin>;
-template<CoordType type>
-class Convertor<type, CoordType::degminsec>;
+class Convertorly;
+template<>
+class Convertorly<CoordType::decdeg>;
+template<>
+class Convertorly<CoordType::degmin>;
+template<>
+class Convertorly<CoordType::degminsec>;
 
 //Coord
-template<CoordType type>
 class Coord;
 
+
+
+
+/*
 template<CoordType type>
 class Validator;
 
@@ -139,6 +143,7 @@ DataFrame waypoints(DataFrame&, int);
 DataFrame waypoints_replace(DataFrame& df, int value);
 DataFrame printwaypoint(DataFrame&);
 const DataFrame validatewaypoint(DataFrame&);
+*/
 
 /// __________________________________________________
 /// __________________________________________________
@@ -305,6 +310,7 @@ struct FyF_decdeg : public FamouslyFive {
 	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
 } ff_decdeg;
 
+
 struct FyF_degmin : public FamouslyFive {
 	FyF_degmin() { cout << "§FyF_degmin() "; _ctrsgn(typeid(*this)); }	
 //	~FyF_degmin() = default;
@@ -315,6 +321,7 @@ struct FyF_degmin : public FamouslyFive {
 	double get_decmin(double x) const { return polish(mod1e2(x)); }
 	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
 } ff_degmin;
+
 
 struct FyF_degminsec : public FamouslyFive {
 	FyF_degminsec() { cout << "§FyF_degminsec() "; _ctrsgn(typeid(*this)); }	
@@ -330,68 +337,11 @@ struct FyF_degminsec : public FamouslyFive {
 
 /// __________________________________________________
 /// __________________________________________________
-/// Templated Coord conversion functors
-template<CoordType type, CoordType newtype>
-class Convertor {
-};
-
-/// __________________________________________________
-/// Specialised Coord conversion functor for decimal degrees
-template<CoordType type>
-class Convertor<type, CoordType::decdeg> {
-	protected:
-		const Coord<type>& c; 
-	public:
-		Convertor(const Coord<type>& _c) : c(_c)
-		{
-//			cout << "§Convertor<type, CoordType::decdeg>::Convertor(const Coord<type>&) "; _ctrsgn(typeid(*this));
-		}
-		~Convertor() = default;
-//		~Convertor() { cout << "§Convertor<type, CoordType::decdeg>::~Convertor() "; _ctrsgn(typeid(*this), true); }
-		double operator()(double n) { return c.ff.get_decdeg(n); }
-};
-
-/// __________________________________________________
-/// Specialised Coord conversion functor for degrees and minutes
-template<CoordType type>
-class Convertor<type, CoordType::degmin> {
-	protected:
-		const Coord<type>& c; 
-	public:
-		Convertor(const Coord<type>& _c) : c(_c)
-		{
-//			cout << "§Convertor<type, CoordType::degmin>::Convertor(const Coord<type>&) "; _ctrsgn(typeid(*this));
-		}
-		~Convertor() = default;
-//		~Convertor() { cout << "§Convertor<type, CoordType::degmin>::~Convertor() "; _ctrsgn(typeid(*this), true); }
-		double operator()(double n) { return c.ff.get_deg(n) * 1e2 + c.ff.get_decmin(n); }
-};
-
-/// __________________________________________________
-/// Specialised Coord conversion functor for degrees, minutes and seconds
-template<CoordType type>
-class Convertor<type, CoordType::degminsec> {
-	protected:
-		const Coord<type>& c; 
-	public:
-		Convertor(const Coord<type>& _c) : c(_c)
-		{
-//			cout << "§Convertor<type, CoordType::degminsec>::Convertor(const Coord<type>&) "; _ctrsgn(typeid(*this));
-		}
-		~Convertor() = default;
-//		~Convertor() { cout << "§Convertor<type, CoordType::degminsec>::~Convertor() "; _ctrsgn(typeid(*this), true); }
-		double operator()(double n) { return c.ff.get_deg(n) * 1e4 + c.ff.get_min(n) * 1e2 + c.ff.get_sec(n); }
-};
-
-
-/// __________________________________________________
-/// __________________________________________________
 /// Coordinate class
-template<CoordType type>
 class Coord {
 	protected:
 		vector<double> nv;
-		FamousFive<type> ff;
+//		FamousFive<type> ff;
 		const FamouslyFive& fyf;
 		const vector<bool> valid { false };
 		const vector<bool> latlon;
@@ -407,8 +357,8 @@ class Coord {
 		Coord& operator=(const Coord&) = delete;			//  ——— ditto ———
 		Coord(Coord&&) = delete;							// Disallow transfer ownership
 		Coord& operator=(Coord&&) = delete;				// Disallow moving
-		~Coord() = default;
-//		~Coord<type>() { cout << "§Coord<type>::~Coord() "; _ctrsgn(typeid(*this), true); }
+//		~Coord() = default;
+		~Coord() { cout << "§Coord<type>::~Coord() "; _ctrsgn(typeid(*this), true); }
 
 		void validate(bool = true) const;
 		const vector<double>& get_nv() const;
@@ -419,38 +369,33 @@ class Coord {
 		vector<string> format() const;
 		void print(ostream&) const;
 
-		friend class Coord<CoordType::decdeg>;
+/*		friend class Coord<CoordType::decdeg>;
 		friend class Coord<CoordType::degmin>;
 		friend class Coord<CoordType::degminsec>;
 		friend class Convertor<type, CoordType::decdeg>;
 		friend class Convertor<type, CoordType::degmin>;
-		friend class Convertor<type, CoordType::degminsec>;
-		friend class Format<type>;
+		friend class Convertor<type, CoordType::degminsec>; */
+		friend class Convertorly<CoordType::decdeg>;
+		friend class Convertorly<CoordType::degmin>;
+		friend class Convertorly<CoordType::degminsec>;
+/*		friend class Format<type>;
 		friend class FormatLL<type>;
-		friend class Validator<type>;
+		friend class Validator<type>; */
 };
 
-/*
-template<CoordType type>
-Coord<type>::Coord(const NumericVector& nv) :
-	nv(as<vector<double>>(nv)),
-	latlon{ nv.hasAttribute("latlon") ? as<vector<bool>>(nv.attr("latlon")) : vector<bool>() },
-	names{ nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>() },
-	llgt1(latlon.size() > 1)
-{
-//	cout << "§Coord<type>::Coord(const NumericVector&) "; _ctrsgn(typeid(*this));
-} */
 
-
-template<CoordType type>
-Coord<type>::Coord(const NumericVector& nv, const FamouslyFive& _fyf) :
+Coord::Coord(const NumericVector& nv, const FamouslyFive& _fyf) :
 	nv(as<vector<double>>(nv)), fyf(_fyf),
 	latlon{ nv.hasAttribute("latlon") ? as<vector<bool>>(nv.attr("latlon")) : vector<bool>() },
 	names{ nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>() },
 	llgt1(latlon.size() > 1)
 {
-//	cout << "§Coord<type>::Coord(const NumericVector&) "; _ctrsgn(typeid(*this));
+	cout << "§Coord::Coord(const NumericVector&) "; _ctrsgn(typeid(*this));
 }
+
+
+
+/**************************
 
 
 /// __________________________________________________
@@ -1097,11 +1042,22 @@ inline void wpconvertlet(DataFrame& df, WayPoint<type>& wp)
 	}
 }
 
-
+*/
 /// __________________________________________________
 /// __________________________________________________
 /// Exported functions
 
+
+/// __________________________________________________
+/// dummy() exported function
+// [[Rcpp::export]]
+NumericVector dummy(NumericVector& nv)
+{
+	cout << "——Rcpp::export——`dummy(NumericVector&)`\n";
+	Coord c(nv);
+	return nv;
+}
+/*
 
 /// __________________________________________________
 /// Set R vector object class to coords and return,
@@ -1243,6 +1199,7 @@ vector<string> formatcoord(NumericVector& nv)
 	}
 }
 
+*/
 /*
 /// __________________________________________________
 /// Return degrees as integer
@@ -1313,6 +1270,7 @@ vector<double> get_sec(NumericVector& nv)
 	return out;
 }
 */
+/*
 
 /// __________________________________________________
 /// Add "waypoints" to R data.frame object class and validate,
@@ -1416,6 +1374,9 @@ const DataFrame validatewaypoint(DataFrame& df)
 	checkinherits(df, "waypoints");
 	return validate(df);
 }
+
+**************************/
+
 
 /// __________________________________________________
 /// __________________________________________________
