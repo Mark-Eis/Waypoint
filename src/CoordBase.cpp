@@ -67,7 +67,6 @@ template<class T, class V>
 void setcolattr(const T&, int, const char*, V&&);			/////// deprecate ///////
 inline vector<int> getllcolsattr(const DataFrame&);
 
-/*
 // validation
 inline bool validcoord(NumericVector&);
 
@@ -77,6 +76,7 @@ bool check_valid(const DataFrame&);
 template<class T>
 bool check_valid(const T&, const char*);
 
+/*
 template<class T>
 vector<bool> validate(const T&);
 
@@ -111,9 +111,11 @@ inline void wpconvertlet(DataFrame&, WayPoint<type>&);
 // exported
 NumericVector coords(NumericVector&, int);
 NumericVector coords_replace(NumericVector&, int);
+*/
 NumericVector latlon(NumericVector&, LogicalVector&);
 NumericVector printcoord(NumericVector&);
 vector<bool> Rvalidatecoord(NumericVector&);
+/*
 vector<string> formatcoord(NumericVector&);
 vector<int> get_deg(NumericVector&);
 vector<double> get_decdeg(NumericVector&);
@@ -815,7 +817,7 @@ inline vector<int> getllcolsattr(const DataFrame& df)
 	return as<vector<int>>(df.attr("llcols"));
 }
 
-/*
+
 /// __________________________________________________
 /// __________________________________________________
 /// Validation functions
@@ -850,12 +852,13 @@ bool check_valid(const T& t, const char* attrname)
 		return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
 	else {
 		warning("Unvalidated %s! Revalidating…", typeid(t).name());
-		validate(t);	
+		stop("Unvalidated %s! Revalidating…", typeid(t).name());
+//		validate(t);	
 		return check_valid(t, attrname);
 	}
 }
 
-
+/*
 /// __________________________________________________
 /// Check "lat_valid" and "lon_valid attributes of DataFrame are all true
 bool check_valid(const DataFrame& df)
@@ -1047,7 +1050,7 @@ inline void wpconvertlet(DataFrame& df, WayPoint<type>& wp)
 /// __________________________________________________
 /// dummy() exported function
 // [[Rcpp::export]]
-vector<bool> dummy(NumericVector& nv, int fmt)
+NumericVector dummy(NumericVector& nv, int fmt)
 {
 	cout << "——Rcpp::export——`dummy(NumericVector&)`\n";
 	CoordType newtype = get_coordtype(fmt);
@@ -1055,8 +1058,8 @@ vector<bool> dummy(NumericVector& nv, int fmt)
 	c.validate();
 	c.warn_invalid();
 	cout << c;
-	return c.get_valid();
-//	return nv;
+	nv.attr("fmt") = fmt;
+	return nv;
 }
 /*
 
@@ -1129,40 +1132,22 @@ NumericVector latlon(NumericVector& nv, LogicalVector& value)
 //	validate(nv);
 	return nv;
 }
-/*
+
 
 /// __________________________________________________
 /// Print coords vector - S3 method print.coords()	  /////// "invisible" not working ///////
 // [[Rcpp::export(name = "print.coords", invisible = true)]]
 NumericVector printcoord(NumericVector& nv)
 {
-//	cout << "——Rcpp::export——printcoord() format " << get_fmt_attribute(nv) << endl;
+	cout << "——Rcpp::export——printcoord() format " << get_fmt_attribute(nv) << endl;
 	checkinherits(nv, "coords");
 	if (!check_valid(nv))
 		warning("Printing invalid coords!");
-
-	switch (get_coordtype(nv))
-	{
-		case CoordType::decdeg:
-			Rcout << Coord<CoordType::decdeg>(nv);
-			break;
-
-		case CoordType::degmin:
-			Rcout << Coord<CoordType::degmin>(nv);
-			break;
-
-		case CoordType::degminsec:
-			Rcout << Coord<CoordType::degminsec>(nv);
-			break;
-
-		default:
-			stop("printcoord(NumericVector&) my bad");
-	}
-	
+	Rcout << Coord(nv, get_coordtype(nv));
 	return nv;
 }
 
-*/
+
 /// __________________________________________________
 /// Validate coords vector
 // [[Rcpp::export(name = "validate.coords")]]
@@ -1170,7 +1155,7 @@ vector<bool> validatecoord(NumericVector& nv)
 {
 	cout << "——Rcpp::export——validatecoord()\n";
 	checkinherits(nv, "coords");
-	Coord c(nv, get_coordtype(/* nv */ 2));
+	Coord c(nv, get_coordtype(nv));
 	c.validate();
 	setvalidattr(nv, c);
 	return c.get_valid();	
