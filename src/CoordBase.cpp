@@ -54,6 +54,7 @@ class WayPoint;
 
 template<CoordType type>
 ostream& operator<<(ostream&, const WayPoint<type>&);
+*/
 
 // convenience
 template<class T> 
@@ -66,6 +67,7 @@ template<class T, class V>
 void setcolattr(const T&, int, const char*, V&&);			/////// deprecate ///////
 inline vector<int> getllcolsattr(const DataFrame&);
 
+/*
 // validation
 inline bool validcoord(NumericVector&);
 
@@ -760,7 +762,7 @@ ostream& operator<<(ostream& stream, const WayPoint<type>& wp)
 	return stream;
 }
 
-
+*/
 /// __________________________________________________
 /// __________________________________________________
 /// Convenience functions
@@ -813,7 +815,7 @@ inline vector<int> getllcolsattr(const DataFrame& df)
 	return as<vector<int>>(df.attr("llcols"));
 }
 
-
+/*
 /// __________________________________________________
 /// __________________________________________________
 /// Validation functions
@@ -922,14 +924,13 @@ vector<bool> validatelet(const DataFrame& df)
 	return vector<bool>();							/////// temporary solution ///////
 }
 
-
-template<CoordType type>
-void setvalidattr(const NumericVector& nv, Coord<type>& c)
+*/
+void setvalidattr(const NumericVector& nv, Coord& c)
 {
-//	cout << "@setvalidattr(const NumericVector&, Coord<type>&)\n";
+	cout << "@setvalidattr(const NumericVector&, Coord&)\n";
 	const_cast<NumericVector&>(nv).attr("valid") = c.get_valid();
 }
-
+/*
 
 template<CoordType type>
 void setvalidattr(const DataFrame& df, WayPoint<type>& wp)
@@ -1049,7 +1050,6 @@ inline void wpconvertlet(DataFrame& df, WayPoint<type>& wp)
 vector<bool> dummy(NumericVector& nv, int fmt)
 {
 	cout << "——Rcpp::export——`dummy(NumericVector&)`\n";
-//	Coord c(nv, ff_degmin);
 	CoordType newtype = get_coordtype(fmt);
 	Coord c(nv, newtype);
 	c.validate();
@@ -1121,7 +1121,7 @@ NumericVector coords_replace(NumericVector& nv, int value)
 NumericVector latlon(NumericVector& nv, LogicalVector& value)
 {
 	cout << "——Rcpp::export——set_latlon()\n";
-//	checkinherits(nv, "coords");
+	checkinherits(nv, "coords");
 	if (value.size() != nv.size() && value.size() != 1)
 		stop("value must be either length 1 or length(nv)");
 	else
@@ -1162,17 +1162,20 @@ NumericVector printcoord(NumericVector& nv)
 	return nv;
 }
 
-
+*/
 /// __________________________________________________
 /// Validate coords vector
 // [[Rcpp::export(name = "validate.coords")]]
 vector<bool> validatecoord(NumericVector& nv)
 {
-//	cout << "——Rcpp::export——validatecoord()\n";
+	cout << "——Rcpp::export——validatecoord()\n";
 	checkinherits(nv, "coords");
-	return validate(nv);
+	Coord c(nv, get_coordtype(/* nv */ 2));
+	c.validate();
+	setvalidattr(nv, c);
+	return c.get_valid();	
 }
-
+/*
 
 /// __________________________________________________
 /// Format coords vector - S3 method format.coords()
