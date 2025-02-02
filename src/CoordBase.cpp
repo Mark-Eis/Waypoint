@@ -586,7 +586,25 @@ vector<string> Coord::format() const
 void Coord::print(ostream& stream) const
 {
 	cout << "@Coord::print() " << typeid(*this).name() << endl;
-	vector<string> sv(format<CoordType::degmin>()); 
+	vector<string> sv; 
+	switch (CoordType::degmin)
+	{
+		case CoordType::decdeg:
+			sv = format<CoordType::decdeg>();
+			break;
+
+		case CoordType::degmin:
+			sv = format<CoordType::degmin>();
+			break;
+
+		case CoordType::degminsec:
+			sv = format<CoordType::degminsec>();
+			break;
+
+		default:
+			stop("Coord::print(ostream&) my bad");
+	}
+
 	if (names.size()) {
 		vector<string>::const_iterator nm_it(names.begin());
 		for_each(sv.begin(), sv.end(),
