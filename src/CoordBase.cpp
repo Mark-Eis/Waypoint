@@ -306,6 +306,7 @@ class Coord {
 		const vector<string>& get_names() const;
 		void warn_invalid() const;
 		void set_waypoint() const;
+		template<CoordType type>
 		vector<string> format() const;
 		void print(ostream&) const;
 
@@ -483,10 +484,10 @@ class Format {
 	public:
 		Format(const Coord& _c) : c(_c)
 		{
-		//	cout << "§Format<type>::Format(const Coord<type>&) "; _ctrsgn(typeid(*this));
+			cout << "§Format<type>::Format(const Coord<type>&) "; _ctrsgn(typeid(*this));
 		}
-		~Format() = default;
-//		~Format() { cout << "§Format<type>::~Format() "; _ctrsgn(typeid(*this), true); }
+//		~Format() = default;
+		~Format() { cout << "§Format<type>::~Format() "; _ctrsgn(typeid(*this), true); }
 		string operator()(double n);
 };
 
@@ -495,7 +496,7 @@ class Format {
 template<CoordType type>
 inline string Format<type>::operator()(double n)
 {
-//	cout << "@Format<type>::operator() [default for CoordType::decdeg]\n";
+	cout << "@Format<type>::operator() [default for CoordType::decdeg]\n";
 	outstrstr.str("");
 	outstrstr << setw(11) << setfill(' ')  << fixed << setprecision(6) << c.ff.get_decdeg(n) << "\u00B0";
 	return outstrstr.str();
@@ -506,7 +507,7 @@ inline string Format<type>::operator()(double n)
 template<>
 inline string Format<CoordType::degmin>::operator()(double n)
 {
-//	cout << "@Format<CoordType::degmin>::operator()\n";
+	cout << "@Format<CoordType::degmin>::operator()\n";
 	outstrstr.str("");
 	outstrstr << setw(3) << setfill(' ') << abs(c.ff.get_deg(n)) << "\u00B0"
 					  << setw(7) << setfill('0') << fixed << setprecision(4) << abs(c.ff.get_decmin(n)) << "'";
@@ -518,7 +519,7 @@ inline string Format<CoordType::degmin>::operator()(double n)
 template<>
 inline string Format<CoordType::degminsec>::operator()(double n)
 {
-//	cout << "@Format<CoordType::degminsec>::operator()\n";
+	cout << "@Format<CoordType::degminsec>::operator()\n";
 	outstrstr.str("");
 	outstrstr << setw(3) << setfill(' ') << abs(c.ff.get_deg(n)) << "\u00B0"
 					  << setw(2) << setfill('0') << abs(c.ff.get_min(n)) << "'"
@@ -569,27 +570,26 @@ inline string FormatLL<CoordType::decdeg>::operator()(string ostr, double n)
 		return ostr;
 }
 
-
+*/
 /// __________________________________________________
 /// Formatted coordinate strings for printing
 template<CoordType type>
-vector<string> Coord<type>::format() const
+vector<string> Coord::format() const
 {
-//	cout << "@Coord<type>::format() " << typeid(*this).name() << endl;
+	cout << "@Coord::format() " << typeid(*this).name() << endl;
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), Format<type>(*this));
-	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<type>(*this));
+//	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<type>(*this));
 	return out;
 }
 
 
 /// __________________________________________________
 /// Print coords vector
-template<CoordType type>
-void Coord<type>::print(ostream& stream) const
+void Coord::print(ostream& stream) const
 {
-//	cout << "@Coord<type>::print() " << typeid(*this).name() << endl;
-	vector<string> sv(format()); 
+	cout << "@Coord::print() " << typeid(*this).name() << endl;
+	vector<string> sv(format<CoordType::degmin>()); 
 	if (names.size()) {
 		vector<string>::const_iterator nm_it(names.begin());
 		for_each(sv.begin(), sv.end(),
@@ -601,14 +601,13 @@ void Coord<type>::print(ostream& stream) const
 
 /// __________________________________________________
 /// Output Coord derived object to ostream
-template<CoordType type>
-ostream& operator<<(ostream& stream, const Coord<type>& c)
+ostream& operator<<(ostream& stream, const Coord& c)
 {
-//	cout << "@operator<<(ostream&, const Coord<type>&)\n";
+	cout << "@operator<<(ostream&, const Coord&)\n";
 	c.print(stream);
 	return stream;
 }
-
+/*
 
 /// __________________________________________________
 /// __________________________________________________
@@ -1033,6 +1032,7 @@ vector<bool> dummy(NumericVector& nv)
 	Coord c(nv, ff_degmin);
 	c.validate();
 	c.warn_invalid();
+	cout << c << endl;
 	return c.get_valid();
 //	return nv;
 }
