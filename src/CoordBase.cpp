@@ -425,14 +425,9 @@ bool Coord::all_valid() const
 }
 
 
-/**************************
-
-
-
 /// __________________________________________________
 /// Get const reference to nv
-template<CoordType type>
-inline const vector<double>& Coord<type>::get_nv() const
+inline const vector<double>& Coord::get_nv() const
 {
 //	cout << "@Coord<type>::get_nv()\n";
 	return nv;
@@ -441,8 +436,7 @@ inline const vector<double>& Coord<type>::get_nv() const
 
 /// __________________________________________________
 /// Get const reference to valid
-template<CoordType type>
-inline const vector<bool>& Coord<type>::get_valid() const
+inline const vector<bool>& Coord::get_valid() const
 {
 	return valid;
 }
@@ -450,11 +444,14 @@ inline const vector<bool>& Coord<type>::get_valid() const
 
 /// __________________________________________________
 /// Get const reference to names
-template<CoordType type>
-inline const vector<string>& Coord<type>::get_names() const
+inline const vector<string>& Coord::get_names() const
 {
 	return names;
 }
+
+
+/**************************
+
 
 
 /// __________________________________________________
@@ -1030,12 +1027,13 @@ inline void wpconvertlet(DataFrame& df, WayPoint<type>& wp)
 /// __________________________________________________
 /// dummy() exported function
 // [[Rcpp::export]]
-NumericVector dummy(NumericVector& nv)
+vector<bool> dummy(NumericVector& nv)
 {
 	cout << "——Rcpp::export——`dummy(NumericVector&)`\n";
 	Coord c(nv, ff_degmin);
 	c.validate();
-	return nv;
+	return c.get_valid();
+//	return nv;
 }
 /*
 
