@@ -1033,9 +1033,8 @@ NumericVector coords(NumericVector& nv, const int fmt = 1)
 {
 	cout << "——Rcpp::export——coords()\n";
 	CoordType newtype = get_coordtype(fmt);
-	const bool inheritscoords { nv.inherits("coords") };
 	CoordType type;
-	if (inheritscoords) {
+	if (nv.inherits("coords")) {
 		type = get_coordtype(nv);
 		cout <<  "@coords() nv is already a \"coords\" vector of type " << coordtype_to_int(type) + 1 << endl;
 		if (!check_valid(nv))
