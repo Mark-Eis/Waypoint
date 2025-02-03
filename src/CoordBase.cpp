@@ -15,8 +15,8 @@ inline double round2(double, int);
 inline double polish(double);
 
 // Utility
-template<class T> 
-inline vector<bool> get_attr(const T&, const char*);
+template<class T, class U> 
+inline vector<U> get_vec_attr(const T&, const char*);
 template<class T>
 inline int get_fmt_attribute(const T&);
 template<class T>
@@ -178,12 +178,12 @@ inline double polish(double x)
 /// Utility functions
 
 /// __________________________________________________
-/// Return named attribute as vector<bool> or empty vector<bool>
-template<class T> 
-inline vector<bool> get_attr(const T& t, const char* attrname)
+/// Return named attribute as vector<U> or empty vector<U>
+template<class T, class U> 
+inline vector<U> get_vec_attr(const T& t, const char* attrname)
 {
-//	cout << "@get_attr<>(const T&, const char*) attr \"" << attrname << "\" " << boolalpha << t.hasAttribute(attrname) << endl;
-	return (t.hasAttribute(attrname) ? as<vector<bool>>(t.attr(attrname)) : vector<bool>());
+	cout << "@get_vec_attr<T, U>(const T&, const char*) attr \"" << attrname << "\" " << boolalpha << t.hasAttribute(attrname) << endl;
+	return t.hasAttribute(attrname) ? as<vector<U>>(t.attr(attrname)) : vector<U>();
 }
 
 
@@ -378,8 +378,8 @@ class Coord {
 
 Coord::Coord(const NumericVector& nv, CoordType _ct) :
 	ct(_ct), nv(nv), ff(*vff[coordtype_to_int(ct)]),
-	latlon{ nv.hasAttribute("latlon") ? as<vector<bool>>(nv.attr("latlon")) : vector<bool>() },
-	names{ nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>() },
+	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") },
+	names{ get_vec_attr<NumericVector, string>(nv, "names") },
 	llgt1(latlon.size() > 1)
 {
 	cout << "§Coord::Coord(const NumericVector&, CoordType) "; _ctrsgn(typeid(*this));
@@ -836,7 +836,7 @@ template<class T>
 bool check_valid(T& t, const char* attrname)
 {
 	cout << "@check_valid(T&, const char*)" << endl;
-	const vector<bool>&& valid = get_attr(t, attrname);
+	const vector<bool>&& valid = get_vec_attr<T, bool>(t, attrname);
 	if (valid.size())
 		return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
 	else {
@@ -865,12 +865,12 @@ bool check_valid(const DataFrame& df)
 {
 //	cout << "@check_valid(const DataFrame&)\n";
 
-	const vector<bool>&& latvalid = get_attr(df, "lat_valid");
+	const vector<bool>&& latvalid = get_vecbool_attr(df, "lat_valid");
 	bool boolat = all_of(latvalid.begin(), latvalid.end(), [](bool v) { return v;});
 	if (!boolat)
 		warning("Invalid latitude!");
 
-	const vector<bool>&& lonvalid = get_attr(df, "lon_valid");
+	const vector<bool>&& lonvalid = get_vecbool_attr(df, "lon_valid");
 	bool boolon = all_of(lonvalid.begin(), lonvalid.end(), [](bool v) { return v;});
 	if (!boolon)
 		warning("Invalid longitude!");
