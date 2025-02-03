@@ -76,7 +76,9 @@ inline bool check_valid(const NumericVector&);
 bool check_valid(const DataFrame&);
 
 template<class T>
-bool check_valid(const T&, const char*);
+bool check_valid(T&, const char*);
+
+const vector<bool> validate(const NumericVector&);
 
 /*
 template<class T>
@@ -334,17 +336,16 @@ vector<FamousFive*> vff { &ff_decdeg, &ff_degmin, &ff_degminsec };
 class Coord {
 	protected:
 		CoordType ct;
-		NumericVector& nv;
+		const NumericVector& nv;
 		const FamousFive& ff;
 		const vector<bool> valid { false };
 		const vector<bool> latlon;
 		const vector<string> names;
 		const bool llgt1 = false;
-		bool all_valid() const;
 		bool waypoint = false;
 
 	public:
-		Coord(NumericVector&, CoordType _ct);
+		Coord(const NumericVector&, CoordType _ct);
 		Coord(const Coord&) = delete;					// Disallow copying
 		Coord& operator=(const Coord&) = delete;			//  ——— ditto ———
 		Coord(Coord&&) = delete;							// Disallow transfer ownership
@@ -356,7 +357,7 @@ class Coord {
 		const NumericVector& get_nv() const;
 		const vector<bool>& get_valid() const;
 		const vector<string>& get_names() const;
-		void warn_invalid() const;
+		bool all_valid() const;
 		void set_waypoint() const;
 		template<CoordType type>
 		vector<string> format() const;
@@ -375,7 +376,7 @@ class Coord {
 };
 
 
-Coord::Coord(NumericVector& nv, CoordType _ct) :
+Coord::Coord(const NumericVector& nv, CoordType _ct) :
 	ct(_ct), nv(nv), ff(*vff[coordtype_to_int(ct)]),
 	latlon{ nv.hasAttribute("latlon") ? as<vector<bool>>(nv.attr("latlon")) : vector<bool>() },
 	names{ nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>() },
@@ -470,7 +471,7 @@ void Coord::validate(bool warn) const
 	else
 		if (warn)
 			warning("Validation failed!");
-	nv.attr("valid") = valid;
+	const_cast<NumericVector&>(nv).attr("valid") = valid;
 }
 
 
@@ -506,16 +507,6 @@ inline const vector<bool>& Coord::get_valid() const
 inline const vector<string>& Coord::get_names() const
 {
 	return names;
-}
-
-
-/// __________________________________________________
-/// Warn if any valid are false
-void Coord::warn_invalid() const
-{
-//	cout << "@Coord::warn_invalid()\n";
-	if (!all_valid())
-		warning("Validation failed!");
 }
 
 
@@ -834,7 +825,7 @@ inline bool validcoord(NumericVector& nv)
 /// Check "valid" attribute of NumericVector all true
 inline bool check_valid(const NumericVector& nv)
 {
-//	cout << "@check_valid(const NumericVector&)" << endl;
+	cout << "@check_valid(const NumericVector&)" << endl;
 	return check_valid(nv, "valid");
 }
 
@@ -842,19 +833,30 @@ inline bool check_valid(const NumericVector& nv)
 /// __________________________________________________
 /// Check "valid" attribute of object of class T all true
 template<class T>
-bool check_valid(const T& t, const char* attrname)
+bool check_valid(T& t, const char* attrname)
 {
-//	cout << "@check_valid(const T&, const char*)" << endl;
+	cout << "@check_valid(T&, const char*)" << endl;
 	const vector<bool>&& valid = get_attr(t, attrname);
 	if (valid.size())
 		return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
 	else {
 		warning("Unvalidated %s! Revalidating…", typeid(t).name());
-		stop("Unvalidated %s! Revalidating…", typeid(t).name());
-//		validate(t);	
+		validate(t);	
 		return check_valid(t, attrname);
 	}
 }
+
+
+/// __________________________________________________
+/// Validate NumericVector
+const vector<bool> validate(const NumericVector& nv)
+{
+	cout << "@validate(const NumericVector&)\n";
+	Coord c(nv, get_coordtype(nv));
+	c.validate();
+	return c.get_valid();	
+}
+
 
 /*
 /// __________________________________________________
@@ -1008,23 +1010,6 @@ inline void wpconvertlet(DataFrame& df, WayPoint<type>& wp)
 /// __________________________________________________
 /// Exported functions
 
-
-/// __________________________________________________
-/// dummy() exported function
-// [[Rcpp::export]]
-NumericVector dummy(NumericVector& nv, int fmt)
-{
-	cout << "——Rcpp::export——`dummy(NumericVector&)`\n";
-	CoordType newtype = get_coordtype(fmt);
-	Coord c(nv, newtype);
-	c.validate();
-	c.warn_invalid();
-	cout << c;
-	nv.attr("fmt") = fmt;
-	return nv;
-}
-
-
 /// __________________________________________________
 /// Set R vector object class to coords and return,
 /// or convert format of R coords object and return
@@ -1037,10 +1022,10 @@ NumericVector coords(NumericVector& nv, const int fmt = 1)
 	if (nv.inherits("coords")) {
 		type = get_coordtype(nv);
 		cout <<  "@coords() nv is already a \"coords\" vector of type " << coordtype_to_int(type) + 1 << endl;
-		if (!check_valid(nv))
-			stop("Invalid coords!");
 		if (newtype == type) {
 			cout << "——fmt out == fmt in!——" << endl;
+			if (!check_valid(nv))
+				stop("Invalid coords!");
 			return nv;
 		}
 	} else
@@ -1096,7 +1081,7 @@ NumericVector latlon(NumericVector& nv, LogicalVector& value)
 		stop("value must be either length 1 or length(nv)");
 	else
 		nv.attr("latlon") = value;
-//	validate(nv);
+	validate(nv);
 	return nv;
 }
 
@@ -1122,9 +1107,7 @@ const vector<bool> validatecoord(NumericVector& nv)
 {
 	cout << "——Rcpp::export——validatecoord()\n";
 	checkinherits(nv, "coords");
-	Coord c(nv, get_coordtype(nv));
-	c.validate();
-	return c.get_valid();
+	return validate(nv);
 }
 
 
