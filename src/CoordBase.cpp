@@ -357,9 +357,8 @@ class Coord {
 //		~Coord() = default;
 		~Coord() { cout << "§Coord::~Coord() "; _ctrsgn(typeid(*this), true); }
 
-//		void validate(bool = true) const;
+		void validate(bool warn = true) const;
 		const vector<double>& get_nv() const;
-		const vector<bool> validate(bool) const;
 		const vector<bool>& get_valid() const;
 		const vector<string>& get_names() const;
 		void warn_invalid() const;
@@ -466,40 +465,26 @@ class Validator {
 
 /// __________________________________________________
 /// Validate coords vector
-/* void Coord::validate(bool warn) const
+void Coord::validate(bool warn) const
 {
 	cout << "@Coord::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
 	vector<bool>& non_const_valid { const_cast<vector<bool>&>(valid) };
 	non_const_valid.assign(nv.size(), {false});
-	transform(nv.begin(), nv.end(), non_const_valid.begin(), Validator(*this));
+	transform(nv2.begin(), nv2.end(), non_const_valid.begin(), Validator(*this));
 	if (all_valid())
 		non_const_valid.assign({true});
 	else
 		if (warn)
 			warning("Validation failed!");
-} */
-
-
-const vector<bool> Coord::validate(bool warn = true) const
-{
-	cout << "@Coord::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
-	vector<bool> valid2(nv.size(), { false });
-	transform(nv2.begin(), nv2.end(), valid2.begin(), Validator(*this));
-	if (all_of(valid2.begin(), valid2.end(), [](bool v) { return v; }))
-		valid2.assign({true});
-	else
-		if (warn)
-			warning("Validation failed!");
-	nv2.attr("valid") = valid2;
-	return valid2;
+	nv2.attr("valid") = valid;
 }
 
 
 /// __________________________________________________
 /// All valid are true
-bool Coord::all_valid() const
+inline bool Coord::all_valid() const
 {
-	cout << "@Coord::all_valid()\n";
+//	cout << "@Coord::all_valid()\n";
 	return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
 }
 
@@ -1154,10 +1139,8 @@ const vector<bool> validatecoord(NumericVector& nv)
 	cout << "——Rcpp::export——validatecoord()\n";
 	checkinherits(nv, "coords");
 	Coord c(nv, get_coordtype(nv));
-//	c.validate();
-//	setvalidattr(nv, c);
-//	return c.get_valid();	
-	return c.validate();
+	c.validate();
+	return c.get_valid();
 }
 
 
