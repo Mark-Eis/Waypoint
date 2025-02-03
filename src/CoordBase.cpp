@@ -14,6 +14,17 @@ inline double mod1e2(double);
 inline double round2(double, int);
 inline double polish(double);
 
+// Utility
+template<class T> 
+inline vector<bool> get_attr(const T&, const char*);
+template<class T>
+inline int get_fmt_attribute(const T&);
+template<class T>
+inline void checkinherits(T&, const char*);
+template<class T, class V>
+void setcolattr(const T&, int, const char*, V&&);			/////// deprecate ///////
+inline vector<int> getllcolsattr(const DataFrame&);
+
 //CoordType
 enum class CoordType : char { decdeg, degmin, degminsec };
 
@@ -58,17 +69,6 @@ template<CoordType type>
 ostream& operator<<(ostream&, const WayPoint<type>&);
 */
 
-// Utility
-template<class T> 
-inline vector<bool> get_attr(const T&, const char*);
-template<class T>
-inline int get_fmt_attribute(const T&);
-template<class T>
-inline void checkinherits(T&, const char*);
-template<class T, class V>
-void setcolattr(const T&, int, const char*, V&&);			/////// deprecate ///////
-inline vector<int> getllcolsattr(const DataFrame&);
-
 // validation
 inline bool validcoord(NumericVector&);
 
@@ -93,27 +93,23 @@ void setvalidattr(const NumericVector&, Coord<type>&);
 
 template<CoordType type>
 void setvalidattr(const DataFrame&, WayPoint<type>&);
+*/
 
 // conversion
-template<CoordType type>
-void coordlet(NumericVector&, CoordType);
+template<CoordType newtype>
+inline void convertlet(const Coord&, NumericVector&);
 
-template<CoordType type, CoordType newtype>
-inline void convertlet(const Coord<type>&, NumericVector&);
-
-template<CoordType type, CoordType newtype>
-inline void convertlet(const Coord<type>&, NumericVector&&);
-
+/*
 template<CoordType type>
 void waypointlet(DataFrame&, CoordType newtype);
 
 template<CoordType type, CoordType newtype>
 inline void wpconvertlet(DataFrame&, WayPoint<type>&);
+*/
 
 // exported
-NumericVector coords(NumericVector&, int);
+NumericVector coords(NumericVector&, const int);
 NumericVector coords_replace(NumericVector&, int);
-*/
 NumericVector latlon(NumericVector&, LogicalVector&);
 NumericVector printcoord(NumericVector&);
 vector<bool> Rvalidatecoord(NumericVector&);
@@ -175,6 +171,58 @@ inline double round2(double x, int n = 2)
 inline double polish(double x)
 {
 	return round(x * 1e10) / 1e10;
+}
+
+
+/// __________________________________________________
+/// __________________________________________________
+/// Utility functions
+
+/// __________________________________________________
+/// Return named attribute as vector<bool> or empty vector<bool>
+template<class T> 
+inline vector<bool> get_attr(const T& t, const char* attrname)
+{
+//	cout << "@get_attr<>(const T&, const char*) attr \"" << attrname << "\" " << boolalpha << t.hasAttribute(attrname) << endl;
+	return (t.hasAttribute(attrname) ? as<vector<bool>>(t.attr(attrname)) : vector<bool>());
+}
+
+
+/// __________________________________________________
+/// Return "fmt" attribute as int
+template<class T>
+inline int get_fmt_attribute(const T& t)
+{
+//	cout << "@get_fmt_attribute<T>(const T&) " << as<int>(t.attr("fmt")) << endl;
+	return as<int>(t.attr("fmt"));
+}
+
+
+/// __________________________________________________
+/// Does object inherit given class?
+template<class T>
+inline void checkinherits(T& t, const char* classname)
+{
+//	cout << "checkinherits(T& t, const char* classname) t " << typeid(t).name() << " classname " << classname << endl;
+	if (!t.inherits(classname)) stop("Argument must be a \"%s\" object", classname);
+}
+
+
+/// __________________________________________________
+/// set attributes for vector column within object
+template<class T, class V>
+void setcolattr(const T& t, int col, const char* attrib, V&& val)
+{
+//	cout << "@setcolattr(const T&, int, const char*, V&&) attrib " << attrib << ", col " << col << endl;
+	as<NumericVector>(t[col]).attr(attrib) = std::forward<V>(val);
+}
+
+
+/// __________________________________________________
+/// get "llcols" attribute for DataFrame object
+inline vector<int> getllcolsattr(const DataFrame& df)
+{
+	return as<vector<int>>(df.attr("llcols"));
 }
 
 
@@ -768,56 +816,6 @@ ostream& operator<<(ostream& stream, const WayPoint<type>& wp)
 }
 
 */
-/// __________________________________________________
-/// __________________________________________________
-/// Utility functions
-
-/// __________________________________________________
-/// Return named attribute as vector<bool> or empty vector<bool>
-template<class T> 
-inline vector<bool> get_attr(const T& t, const char* attrname)
-{
-//	cout << "@get_attr<>(const T&, const char*) attr \"" << attrname << "\" " << boolalpha << t.hasAttribute(attrname) << endl;
-	return (t.hasAttribute(attrname) ? as<vector<bool>>(t.attr(attrname)) : vector<bool>());
-}
-
-
-/// __________________________________________________
-/// Return "fmt" attribute as int
-template<class T>
-inline int get_fmt_attribute(const T& t)
-{
-//	cout << "@get_fmt_attribute<T>(const T&) " << as<int>(t.attr("fmt")) << endl;
-	return as<int>(t.attr("fmt"));
-}
-
-
-/// __________________________________________________
-/// Does object inherit given class?
-template<class T>
-inline void checkinherits(T& t, const char* classname)
-{
-//	cout << "checkinherits(T& t, const char* classname) t " << typeid(t).name() << " classname " << classname << endl;
-	if (!t.inherits(classname)) stop("Argument must be a \"%s\" object", classname);
-}
-
-
-/// __________________________________________________
-/// set attributes for vector column within object
-template<class T, class V>
-void setcolattr(const T& t, int col, const char* attrib, V&& val)
-{
-//	cout << "@setcolattr(const T&, int, const char*, V&&) attrib " << attrib << ", col " << col << endl;
-	as<NumericVector>(t[col]).attr(attrib) = std::forward<V>(val);
-}
-
-
-/// __________________________________________________
-/// get "llcols" attribute for DataFrame object
-inline vector<int> getllcolsattr(const DataFrame& df)
-{
-	return as<vector<int>>(df.attr("llcols"));
-}
 
 
 /// __________________________________________________
@@ -945,49 +943,20 @@ void setvalidattr(const DataFrame& df, WayPoint<type>& wp)
 	for (const auto x : { 0, 1 } )
 		non_const_df.attr(vector<string>{ "lat_valid", "lon_valid" }[x]) = wp.get_valid(1 - x);
 }
+*/
 
 
 /// __________________________________________________
 /// __________________________________________________
 /// Conversion functions
 
-template<CoordType type>
-void coordlet(NumericVector& nv, CoordType newtype)
+template<CoordType newtype>
+inline void convertlet(const Coord& c, NumericVector& nv)
 {
-//	cout << "@coordlet(NumericVector&, CoordType) type " << coordtype_to_int(type) + 1 << " newtype " << coordtype_to_int(newtype) + 1 << endl;
-	Coord<type> c(nv);
-	c.validate();
-	if (type != newtype) {
-		switch (newtype)
-		{
-			case CoordType::decdeg:
-				convertlet<type, CoordType::decdeg>(c, nv);
-				break;
-
-			case CoordType::degmin:
-				convertlet<type, CoordType::degmin>(c, nv);
-				break;
-
-			case CoordType::degminsec:
-				convertlet<type, CoordType::degminsec>(c, nv);
-				break;
-
-			default:
-				stop("coordlet(NumericVector&, CoordType) my bad");
-		}
-	}
-
-	setvalidattr(nv, c);
-	nv.attr("class") = "coords";
+	cout << "@convertlet<CoordType newtype>(const Coord&, NumericVector&) newtype " << coordtype_to_int(newtype) + 1 << endl;
+	transform(c.get_nv().begin(), c.get_nv().end(), nv.begin(), Convertor<newtype>(c));
 }
-
-
-template<CoordType type, CoordType newtype>
-inline void convertlet(const Coord<type>& c, NumericVector& nv)
-{
-//	cout << "@convertlet(const Coord<type>&, NumericVector&) type " << coordtype_to_int(type) + 1 << " newtype " << coordtype_to_int(newtype) + 1 << endl;
-	transform(c.get_nv().begin(), c.get_nv().end(), nv.begin(), Convertor<type, newtype>(c));
-}
+/*
 
 
 template<CoordType type, CoordType newtype>
@@ -1063,13 +1032,13 @@ NumericVector dummy(NumericVector& nv, int fmt)
 	nv.attr("fmt") = fmt;
 	return nv;
 }
-/*
+
 
 /// __________________________________________________
 /// Set R vector object class to coords and return,
 /// or convert format of R coords object and return
 // [[Rcpp::export]]
-NumericVector coords(NumericVector& nv, int fmt = 1)
+NumericVector coords(NumericVector& nv, const int fmt = 1)
 {
 //	cout << "——Rcpp::export——coords()\n";
 	CoordType newtype = get_coordtype(fmt);
@@ -1088,23 +1057,31 @@ NumericVector coords(NumericVector& nv, int fmt = 1)
 	} else
 		type = newtype;
 
-	switch (type)
-	{
-		case CoordType::decdeg:
-			coordlet<CoordType::decdeg>(nv, newtype);
-			break;
+	Coord c(nv, type);
+	c.validate();
 
-		case CoordType::degmin:
-			coordlet<CoordType::degmin>(nv, newtype);
-			break;
+	if (type != newtype) {
+		switch (newtype)
+		{
+			case CoordType::decdeg:
+				convertlet<CoordType::decdeg>(c, nv);
+				break;
 
-		case CoordType::degminsec:
-			coordlet<CoordType::degminsec>(nv, newtype);
-			break;
+			case CoordType::degmin:
+				convertlet<CoordType::degmin>(c, nv);
+				break;
 
-		default:
-			stop("coords(NumericVector& nv, int) my bad");
+			case CoordType::degminsec:
+				convertlet<CoordType::degminsec>(c, nv);
+				break;
+
+			default:
+				stop("coordlet(NumericVector&, CoordType) my bad");
+		}
 	}
+
+	setvalidattr(nv, c);
+	nv.attr("class") = "coords";
 	nv.attr("fmt") = fmt;
 	return nv;
 }
@@ -1119,7 +1096,7 @@ NumericVector coords_replace(NumericVector& nv, int value)
 	return coords(nv, value);
 }
 
-*/
+
 /// __________________________________________________
 /// Set latlon attribute on "coords" NumericVector and revalidate
 // [[Rcpp::export(name = "`latlon<-`")]]
