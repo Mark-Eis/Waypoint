@@ -632,8 +632,8 @@ template<CoordType type>
 vector<string> Coord::format() const
 {
 	cout << "@Coord::format() " << typeid(*this).name() << endl;
-	vector<string> out(nv.size());
-	transform(nv.begin(), nv.end(), out.begin(), Format<type>(*this));
+	vector<string> out(nv2.size());
+	transform(nv2.begin(), nv2.end(), out.begin(), Format<type>(*this));
 	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<type>(*this));
 	return out;
 }
@@ -950,9 +950,9 @@ inline void convertlet(const Coord& c, NumericVector& nv)
 	cout << "@convertlet<CoordType newtype>(const Coord&, NumericVector&) newtype " << coordtype_to_int(newtype) + 1 << endl;
 	transform(c.get_nv().begin(), c.get_nv().end(), nv.begin(), Convertor<newtype>(c));
 }
+
+
 /*
-
-
 template<CoordType type, CoordType newtype>
 inline void convertlet(const Coord<type>& c, NumericVector&& nv)
 {
