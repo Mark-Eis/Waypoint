@@ -334,8 +334,7 @@ vector<FamousFive*> vff { &ff_decdeg, &ff_degmin, &ff_degminsec };
 class Coord {
 	protected:
 		CoordType ct;
-		vector<double> nv;
-		NumericVector& nv2;
+		NumericVector& nv;
 		const FamousFive& ff;
 		const vector<bool> valid { false };
 		const vector<bool> latlon;
@@ -345,7 +344,6 @@ class Coord {
 		bool waypoint = false;
 
 	public:
-//		Coord(const NumericVector&, CoordType _ct);
 		Coord(NumericVector&, CoordType _ct);
 		Coord(const Coord&) = delete;					// Disallow copying
 		Coord& operator=(const Coord&) = delete;			//  ——— ditto ———
@@ -355,7 +353,7 @@ class Coord {
 		~Coord() { cout << "§Coord::~Coord() "; _ctrsgn(typeid(*this), true); }
 
 		void validate(bool warn = true) const;
-		const vector<double>& get_nv() const;
+		const NumericVector& get_nv() const;
 		const vector<bool>& get_valid() const;
 		const vector<string>& get_names() const;
 		void warn_invalid() const;
@@ -377,9 +375,8 @@ class Coord {
 };
 
 
-//Coord::Coord(const NumericVector& nv, CoordType _ct) :
 Coord::Coord(NumericVector& nv, CoordType _ct) :
-	ct(_ct), nv(as<vector<double>>(nv)), nv2(nv), ff(*vff[coordtype_to_int(ct)]),
+	ct(_ct), nv(nv), ff(*vff[coordtype_to_int(ct)]),
 	latlon{ nv.hasAttribute("latlon") ? as<vector<bool>>(nv.attr("latlon")) : vector<bool>() },
 	names{ nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>() },
 	llgt1(latlon.size() > 1)
@@ -467,13 +464,13 @@ void Coord::validate(bool warn) const
 	cout << "@Coord::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
 	vector<bool>& non_const_valid { const_cast<vector<bool>&>(valid) };
 	non_const_valid.assign(nv.size(), {false});
-	transform(nv2.begin(), nv2.end(), non_const_valid.begin(), Validator(*this));
+	transform(nv.begin(), nv.end(), non_const_valid.begin(), Validator(*this));
 	if (all_valid())
 		non_const_valid.assign({true});
 	else
 		if (warn)
 			warning("Validation failed!");
-	nv2.attr("valid") = valid;
+	nv.attr("valid") = valid;
 }
 
 
@@ -488,7 +485,7 @@ inline bool Coord::all_valid() const
 
 /// __________________________________________________
 /// Get const reference to nv
-inline const vector<double>& Coord::get_nv() const
+inline const NumericVector& Coord::get_nv() const
 {
 //	cout << "@Coord::get_nv()\n";
 	return nv;
@@ -632,8 +629,8 @@ template<CoordType type>
 vector<string> Coord::format() const
 {
 	cout << "@Coord::format() " << typeid(*this).name() << endl;
-	vector<string> out(nv2.size());
-	transform(nv2.begin(), nv2.end(), out.begin(), Format<type>(*this));
+	vector<string> out(nv.size());
+	transform(nv.begin(), nv.end(), out.begin(), Format<type>(*this));
 	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<type>(*this));
 	return out;
 }
@@ -1034,18 +1031,17 @@ NumericVector dummy(NumericVector& nv, int fmt)
 // [[Rcpp::export]]
 NumericVector coords(NumericVector& nv, const int fmt = 1)
 {
-//	cout << "——Rcpp::export——coords()\n";
+	cout << "——Rcpp::export——coords()\n";
 	CoordType newtype = get_coordtype(fmt);
 	const bool inheritscoords { nv.inherits("coords") };
 	CoordType type;
 	if (inheritscoords) {
 		type = get_coordtype(nv);
-//		cout <<  "coords() argument nv is already a \"coords\" vector of type "
-//			 << coordtype_to_int(type) + 1 << endl;
+		cout <<  "@coords() nv is already a \"coords\" vector of type " << coordtype_to_int(type) + 1 << endl;
 		if (!check_valid(nv))
 			stop("Invalid coords!");
 		if (newtype == type) {
-//			cout << "——fmt out == fmt in!——" << endl;
+			cout << "——fmt out == fmt in!——" << endl;
 			return nv;
 		}
 	} else
@@ -1070,7 +1066,7 @@ NumericVector coords(NumericVector& nv, const int fmt = 1)
 				break;
 
 			default:
-				stop("coordlet(NumericVector&, CoordType) my bad");
+				stop("coords(NumericVector& nv, const int) my bad");
 		}
 	}
 
