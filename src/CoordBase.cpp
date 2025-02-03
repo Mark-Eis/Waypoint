@@ -303,7 +303,7 @@ class Coord {
 		Coord(Coord&&) = delete;							// Disallow transfer ownership
 		Coord& operator=(Coord&&) = delete;				// Disallow moving
 //		~Coord() = default;
-		~Coord() { cout << "§Coord<type>::~Coord() "; _ctrsgn(typeid(*this), true); }
+		~Coord() { cout << "§Coord::~Coord() "; _ctrsgn(typeid(*this), true); }
 
 		void validate(bool = true) const;
 		const vector<double>& get_nv() const;
@@ -439,7 +439,7 @@ bool Coord::all_valid() const
 /// Get const reference to nv
 inline const vector<double>& Coord::get_nv() const
 {
-//	cout << "@Coord<type>::get_nv()\n";
+//	cout << "@Coord::get_nv()\n";
 	return nv;
 }
 
@@ -448,6 +448,7 @@ inline const vector<double>& Coord::get_nv() const
 /// Get const reference to valid
 inline const vector<bool>& Coord::get_valid() const
 {
+//	cout << "@Coord::get_valid()\n";
 	return valid;
 }
 
@@ -1167,7 +1168,7 @@ vector<bool> validatecoord(NumericVector& nv)
 // [[Rcpp::export(name = "format.coords")]]
 vector<string> formatcoord(NumericVector& nv)
 {
-//	cout << "——Rcpp::export——format()\n";
+	cout << "——Rcpp::export——format()\n";
 	checkinherits(nv, "coords");
 	if (!check_valid(nv))
 		warning("Formatting invalid coords!");
