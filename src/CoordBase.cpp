@@ -182,7 +182,7 @@ inline double polish(double x)
 template<class T, class U> 
 inline vector<U> get_vec_attr(const T& t, const char* attrname)
 {
-	cout << "@get_vec_attr<T, U>(const T&, const char*) attr \"" << attrname << "\" " << boolalpha << t.hasAttribute(attrname) << endl;
+//	cout << "@get_vec_attr<T, U>(const T&, const char*) attr \"" << attrname << "\" " << boolalpha << t.hasAttribute(attrname) << endl;
 	return t.hasAttribute(attrname) ? as<vector<U>>(t.attr(attrname)) : vector<U>();
 }
 
@@ -278,7 +278,7 @@ inline string cardi_b(bool negative)
 
 /// __________________________________________________
 /// __________________________________________________
-/// Famously Five Class and Derived Classes
+/// FamousFive Class and Derived Classes
 
 struct FamousFive {
 	FamousFive() { cout << "§FamousFive() "; _ctrsgn(typeid(*this)); }
@@ -350,8 +350,8 @@ class Coord {
 		Coord& operator=(const Coord&) = delete;			//  ——— ditto ———
 		Coord(Coord&&) = delete;							// Disallow transfer ownership
 		Coord& operator=(Coord&&) = delete;				// Disallow moving
-//		~Coord() = default;
-		~Coord() { cout << "§Coord::~Coord() "; _ctrsgn(typeid(*this), true); }
+		~Coord() = default;
+//		~Coord() { cout << "§Coord::~Coord() "; _ctrsgn(typeid(*this), true); }
 
 		void validate(bool warn = true) const;
 		const NumericVector& get_nv() const;
@@ -382,7 +382,7 @@ Coord::Coord(const NumericVector& nv, CoordType _ct) :
 	names{ get_vec_attr<NumericVector, string>(nv, "names") },
 	llgt1(latlon.size() > 1)
 {
-	cout << "§Coord::Coord(const NumericVector&, CoordType) "; _ctrsgn(typeid(*this));
+//	cout << "§Coord::Coord(const NumericVector&, CoordType) "; _ctrsgn(typeid(*this));
 }
 
 
@@ -396,10 +396,10 @@ class Convertor {
 	public:
 		Convertor(const Coord& _c) : c(_c)
 		{
-			cout << "§Convertor<CoordType>::Convertor(const Coord&) "; _ctrsgn(typeid(*this));
+//			cout << "§Convertor<CoordType>::Convertor(const Coord&) "; _ctrsgn(typeid(*this));
 		}
-//		~Convertor() = default;
-		~Convertor() { cout << "§Convertor<type>::~Convertor() "; _ctrsgn(typeid(*this), true); }
+		~Convertor() = default;
+//		~Convertor() { cout << "§Convertor<type>::~Convertor() "; _ctrsgn(typeid(*this), true); }
 		double operator()(double n);
 };
 
@@ -409,7 +409,7 @@ class Convertor {
 template<CoordType type>
 inline double Convertor<type>::operator()(double n)
 {
-	cout << "@Convertor<CoordType>::operator() [default for CoordType::decdeg]\n";
+//	cout << "@Convertor<CoordType>::operator() [default for CoordType::decdeg]\n";
 	return c.ff.get_decdeg(n);
 }
 
@@ -419,7 +419,7 @@ inline double Convertor<type>::operator()(double n)
 template<>
 inline double Convertor<CoordType::degmin>::operator()(double n)
 {
-	cout << "@Convertor<CoordType::degmin>::operator()\n";
+//	cout << "@Convertor<CoordType::degmin>::operator()\n";
 	return c.ff.get_deg(n) * 1e2 + c.ff.get_decmin(n);
 }
 
@@ -429,7 +429,7 @@ inline double Convertor<CoordType::degmin>::operator()(double n)
 template<>
 inline double Convertor<CoordType::degminsec>::operator()(double n)
 {
-	cout << "@Convertor<CoordType::degminsec>::operator()\n";
+//	cout << "@Convertor<CoordType::degminsec>::operator()\n";
 	return c.ff.get_deg(n) * 1e4 + c.ff.get_min(n) * 1e2 + c.ff.get_sec(n);
 }
 
@@ -444,13 +444,13 @@ class Validator {
 	public:
 		Validator(const Coord& _c) : c(_c), ll_it(c.latlon.begin())
 		{
-			cout << "§Validator::Validator(const Coord&) "; _ctrsgn(typeid(*this));
+//			cout << "§Validator::Validator(const Coord&) "; _ctrsgn(typeid(*this));
 		}
-//		~Validator() = default;
-		~Validator() { cout << "§Validator::~Validator(const Coord&) "; _ctrsgn(typeid(*this), true); }
+		~Validator() = default;
+//		~Validator() { cout << "§Validator::~Validator(const Coord&) "; _ctrsgn(typeid(*this), true); }
 		bool operator()(double n)
 		{
-			cout << "@Validator() " << " validating: " << setw(9) << setfill(' ') << n << endl;
+//			cout << "@Validator() " << " validating: " << setw(9) << setfill(' ') << n << endl;
 			return !((abs(c.ff.get_decdeg(n)) > (c.latlon.size() && (c.llgt1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
 				(abs(c.ff.get_decmin(n)) >= 60) ||
 				(abs(c.ff.get_sec(n)) >= 60));
@@ -462,7 +462,7 @@ class Validator {
 /// Validate coords vector
 void Coord::validate(bool warn) const
 {
-	cout << "@Coord::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
+//	cout << "@Coord::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
 	vector<bool>& non_const_valid { const_cast<vector<bool>&>(valid) };
 	non_const_valid.assign(nv.size(), {false});
 	transform(nv.begin(), nv.end(), non_const_valid.begin(), Validator(*this));
@@ -531,10 +531,10 @@ class Format {
 	public:
 		Format(const Coord& _c) : c(_c)
 		{
-			cout << "§Format<CoordType>::Format(const Coord&) "; _ctrsgn(typeid(*this));
+//			cout << "§Format<CoordType>::Format(const Coord&) "; _ctrsgn(typeid(*this));
 		}
-//		~Format() = default;
-		~Format() { cout << "§Format<CoordType>::~Format() "; _ctrsgn(typeid(*this), true); }
+		~Format() = default;
+//		~Format() { cout << "§Format<CoordType>::~Format() "; _ctrsgn(typeid(*this), true); }
 		string operator()(double n);
 };
 
@@ -543,7 +543,7 @@ class Format {
 template<CoordType type>
 inline string Format<type>::operator()(double n)
 {
-	cout << "@Format<CoordType>::operator() [default for CoordType::decdeg]\n";
+//	cout << "@Format<CoordType>::operator() [default for CoordType::decdeg]\n";
 	outstrstr.str("");
 	outstrstr << setw(11) << setfill(' ')  << fixed << setprecision(6) << c.ff.get_decdeg(n) << "\u00B0";
 	return outstrstr.str();
@@ -554,7 +554,7 @@ inline string Format<type>::operator()(double n)
 template<>
 inline string Format<CoordType::degmin>::operator()(double n)
 {
-	cout << "@Format<CoordType::degmin>::operator()\n";
+//	cout << "@Format<CoordType::degmin>::operator()\n";
 	outstrstr.str("");
 	outstrstr << setw(3) << setfill(' ') << abs(c.ff.get_deg(n)) << "\u00B0"
 					  << setw(7) << setfill('0') << fixed << setprecision(4) << abs(c.ff.get_decmin(n)) << "'";
@@ -566,7 +566,7 @@ inline string Format<CoordType::degmin>::operator()(double n)
 template<>
 inline string Format<CoordType::degminsec>::operator()(double n)
 {
-	cout << "@Format<CoordType::degminsec>::operator()\n";
+//	cout << "@Format<CoordType::degminsec>::operator()\n";
 	outstrstr.str("");
 	outstrstr << setw(3) << setfill(' ') << abs(c.ff.get_deg(n)) << "\u00B0"
 					  << setw(2) << setfill('0') << abs(c.ff.get_min(n)) << "'"
@@ -585,10 +585,10 @@ class FormatLL {
 	public:
 		FormatLL(const Coord& _c) : c(_c), ll_it(c.latlon.begin())
 		{
-			cout << "§FormatLL<CoordType>::FormatLL(const Coord&) "; _ctrsgn(typeid(*this));
+//			cout << "§FormatLL<CoordType>::FormatLL(const Coord&) "; _ctrsgn(typeid(*this));
 		}
-//		~FormatLL() = default;
-		~FormatLL() { cout << "§FormatLL<CoordType>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
+		~FormatLL() = default;
+//		~FormatLL() { cout << "§FormatLL<CoordType>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
 		string operator()(string, double);
 };
 
@@ -597,7 +597,7 @@ class FormatLL {
 template<CoordType type>
 inline string FormatLL<type>::operator()(string ostr, double n)
 {
-	cout << "@FormatLL<CoordType>::operator(string, double) [default for CoordType::degmin and CoordType::degminsec]\n";
+//	cout << "@FormatLL<CoordType>::operator(string, double) [default for CoordType::degmin and CoordType::degminsec]\n";
 	return ostr += c.latlon.size() ? cardpoint(c.ff.get_decmin(n) < 0, c.llgt1 ? *ll_it++ : *ll_it) : cardi_b(c.ff.get_decmin(n) < 0);
 }
 
@@ -606,7 +606,7 @@ inline string FormatLL<type>::operator()(string ostr, double n)
 template<>
 inline string FormatLL<CoordType::decdeg>::operator()(string ostr, double n)
 {
-	cout << "@FormatLL<CoordType::decdeg>::operator(string, double) c.waypoint " << boolalpha << c.waypoint << endl;
+//	cout << "@FormatLL<CoordType::decdeg>::operator(string, double) c.waypoint " << boolalpha << c.waypoint << endl;
 	if (c.latlon.size() && !c.waypoint)
 		return ostr += ((c.llgt1 ? *ll_it++ : *ll_it) ? " lat" : " lon");
 	else
@@ -619,7 +619,7 @@ inline string FormatLL<CoordType::decdeg>::operator()(string ostr, double n)
 template<CoordType type>
 vector<string> Coord::format() const
 {
-	cout << "@Coord::format<CoordType>() " << typeid(*this).name() << endl;
+//	cout << "@Coord::format<CoordType>() " << typeid(*this).name() << endl;
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), Format<type>(*this));
 	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<type>(*this));
@@ -631,7 +631,7 @@ vector<string> Coord::format() const
 /// Print coords vector
 void Coord::print(ostream& stream) const
 {
-	cout << "@Coord::print() " << typeid(*this).name() << endl;
+//	cout << "@Coord::print() " << typeid(*this).name() << endl;
 	vector<string> sv; 
 	switch (ct)
 	{
@@ -664,7 +664,7 @@ void Coord::print(ostream& stream) const
 /// Output Coord derived object to ostream
 ostream& operator<<(ostream& stream, const Coord& c)
 {
-	cout << "@operator<<(ostream&, const Coord&)\n";
+//	cout << "@operator<<(ostream&, const Coord&)\n";
 	c.print(stream);
 	return stream;
 }
@@ -825,7 +825,7 @@ inline bool validcoord(NumericVector& nv)
 /// Check "valid" attribute of NumericVector all true
 inline bool check_valid(const NumericVector& nv)
 {
-	cout << "@check_valid(const NumericVector&)" << endl;
+//	cout << "@check_valid(const NumericVector&)" << endl;
 	return check_valid(nv, "valid");
 }
 
@@ -835,7 +835,7 @@ inline bool check_valid(const NumericVector& nv)
 template<class T>
 bool check_valid(T& t, const char* attrname)
 {
-	cout << "@check_valid<T>(T&, const char*)" << endl;
+//	cout << "@check_valid<T>(T&, const char*)" << endl;
 	const vector<bool>&& valid = get_vec_attr<T, bool>(t, attrname);
 	if (valid.size())
 		return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
@@ -851,7 +851,7 @@ bool check_valid(T& t, const char* attrname)
 /// Validate NumericVector
 const vector<bool> validate(const NumericVector& nv)
 {
-	cout << "@validate(const NumericVector&)\n";
+//	cout << "@validate(const NumericVector&)\n";
 	Coord c(nv, get_coordtype(nv));
 	c.validate();
 	return c.get_valid();	
@@ -946,7 +946,7 @@ void setvalidattr(const DataFrame& df, WayPoint<type>& wp)
 template<CoordType newtype>
 inline void convertlet(const Coord& c, NumericVector& nv)
 {
-	cout << "@convertlet<CoordType>(const Coord&, NumericVector&) newtype " << coordtype_to_int(newtype) + 1 << endl;
+//	cout << "@convertlet<CoordType>(const Coord&, NumericVector&) newtype " << coordtype_to_int(newtype) + 1 << endl;
 	transform(c.get_nv().begin(), c.get_nv().end(), nv.begin(), Convertor<newtype>(c));
 }
 
@@ -1016,14 +1016,14 @@ inline void wpconvertlet(DataFrame& df, WayPoint<type>& wp)
 // [[Rcpp::export]]
 NumericVector coords(NumericVector& nv, const int fmt = 1)
 {
-	cout << "——Rcpp::export——coords()\n";
+//	cout << "——Rcpp::export——coords()\n";
 	CoordType newtype = get_coordtype(fmt);
 	CoordType type;
 	if (nv.inherits("coords")) {
 		type = get_coordtype(nv);
-		cout <<  "@coords() nv is already a \"coords\" vector of type " << coordtype_to_int(type) + 1 << endl;
+//		cout <<  "@coords() nv is already a \"coords\" vector of type " << coordtype_to_int(type) + 1 << endl;
 		if (newtype == type) {
-			cout << "——fmt out == fmt in!——" << endl;
+//			cout << "——fmt out == fmt in!——" << endl;
 			if (!check_valid(nv))
 				stop("Invalid coords!");
 			return nv;
@@ -1075,7 +1075,7 @@ NumericVector coords_replace(NumericVector& nv, int value)
 // [[Rcpp::export(name = "`latlon<-`")]]
 NumericVector latlon(NumericVector& nv, LogicalVector& value)
 {
-	cout << "——Rcpp::export——set_latlon()\n";
+//	cout << "——Rcpp::export——set_latlon()\n";
 	checkinherits(nv, "coords");
 	if (value.size() != nv.size() && value.size() != 1)
 		stop("value must be either length 1 or length(nv)");
@@ -1091,7 +1091,7 @@ NumericVector latlon(NumericVector& nv, LogicalVector& value)
 // [[Rcpp::export(name = "print.coords", invisible = true)]]
 NumericVector printcoord(NumericVector& nv)
 {
-	cout << "——Rcpp::export——printcoord() format " << get_fmt_attribute(nv) << endl;
+//	cout << "——Rcpp::export——printcoord() format " << get_fmt_attribute(nv) << endl;
 	checkinherits(nv, "coords");
 	if (!check_valid(nv))
 		warning("Printing invalid coords!");
@@ -1105,7 +1105,7 @@ NumericVector printcoord(NumericVector& nv)
 // [[Rcpp::export(name = "validate.coords")]]
 const vector<bool> validatecoord(NumericVector& nv)
 {
-	cout << "——Rcpp::export——validatecoord()\n";
+//	cout << "——Rcpp::export——validatecoord()\n";
 	checkinherits(nv, "coords");
 	return validate(nv);
 }
@@ -1116,7 +1116,7 @@ const vector<bool> validatecoord(NumericVector& nv)
 // [[Rcpp::export(name = "format.coords")]]
 vector<string> formatcoord(NumericVector& nv)
 {
-	cout << "——Rcpp::export——format()\n";
+//	cout << "——Rcpp::export——format()\n";
 	checkinherits(nv, "coords");
 	if (!check_valid(nv))
 		warning("Formatting invalid coords!");
