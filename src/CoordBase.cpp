@@ -89,9 +89,6 @@ template<CoordType type>
 vector<bool> validatelet(const DataFrame&);
 
 template<CoordType type>
-void setvalidattr(const NumericVector&, Coord<type>&);
-
-template<CoordType type>
 void setvalidattr(const DataFrame&, WayPoint<type>&);
 */
 
@@ -931,13 +928,6 @@ vector<bool> validatelet(const DataFrame& df)
 	return vector<bool>();							/////// temporary solution ///////
 }
 
-*/
-void setvalidattr(const NumericVector& nv, Coord& c)
-{
-	cout << "@setvalidattr(const NumericVector&, Coord&)\n";
-	const_cast<NumericVector&>(nv).attr("valid") = c.get_valid();
-}
-/*
 
 template<CoordType type>
 void setvalidattr(const DataFrame& df, WayPoint<type>& wp)
@@ -1084,7 +1074,6 @@ NumericVector coords(NumericVector& nv, const int fmt = 1)
 		}
 	}
 
-	setvalidattr(nv, c);
 	nv.attr("class") = "coords";
 	nv.attr("fmt") = fmt;
 	return nv;
