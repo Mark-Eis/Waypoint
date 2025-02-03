@@ -338,6 +338,7 @@ class Coord {
 	protected:
 		CoordType ct;
 		vector<double> nv;
+		NumericVector& nv2;
 		const FamousFive& ff;
 		const vector<bool> valid { false };
 		const vector<bool> latlon;
@@ -347,7 +348,8 @@ class Coord {
 		bool waypoint = false;
 
 	public:
-		Coord(const NumericVector&, CoordType _ct);
+//		Coord(const NumericVector&, CoordType _ct);
+		Coord(NumericVector&, CoordType _ct);
 		Coord(const Coord&) = delete;					// Disallow copying
 		Coord& operator=(const Coord&) = delete;			//  ——— ditto ———
 		Coord(Coord&&) = delete;							// Disallow transfer ownership
@@ -378,8 +380,9 @@ class Coord {
 };
 
 
-Coord::Coord(const NumericVector& nv, CoordType _ct) :
-	ct(_ct), nv(as<vector<double>>(nv)), ff(*vff[coordtype_to_int(ct)]),
+//Coord::Coord(const NumericVector& nv, CoordType _ct) :
+Coord::Coord(NumericVector& nv, CoordType _ct) :
+	ct(_ct), nv(as<vector<double>>(nv)), nv2(nv), ff(*vff[coordtype_to_int(ct)]),
 	latlon{ nv.hasAttribute("latlon") ? as<vector<bool>>(nv.attr("latlon")) : vector<bool>() },
 	names{ nv.hasAttribute("names") ? as<vector<string>>(nv.attr("names")) : vector<string>() },
 	llgt1(latlon.size() > 1)
@@ -466,8 +469,10 @@ void Coord::validate(bool warn) const
 {
 	cout << "@Coord::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
 	vector<bool>& non_const_valid { const_cast<vector<bool>&>(valid) };
-	non_const_valid.assign(nv.size(), {false});
-	transform(nv.begin(), nv.end(), non_const_valid.begin(), Validator(*this));
+//	non_const_valid.assign(nv.size(), {false});
+//	transform(nv.begin(), nv.end(), non_const_valid.begin(), Validator(*this));
+	non_const_valid.assign(nv2.size(), {false});
+	transform(nv2.begin(), nv2.end(), non_const_valid.begin(), Validator(*this));
 	if (all_valid())
 		non_const_valid.assign({true});
 	else
