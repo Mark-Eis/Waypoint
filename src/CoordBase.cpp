@@ -8,14 +8,16 @@ using namespace std;
 
 void _ctrsgn(const type_info&, bool);
 
+// Formula simplification
 inline double mod1by60(double);
 inline double mod1e2(double);
 inline double round2(double, int);
 inline double polish(double);
 
+//CoordType
 enum class CoordType : char { decdeg, degmin, degminsec };
 
-inline const CoordType get_coordtype(int);
+inline const CoordType get_coordtype(const int);
 template<class T>
 inline const CoordType get_coordtype(const T&);
 inline const int coordtype_to_int(CoordType);
@@ -56,7 +58,7 @@ template<CoordType type>
 ostream& operator<<(ostream&, const WayPoint<type>&);
 */
 
-// convenience
+// Utility
 template<class T> 
 inline vector<bool> get_attr(const T&, const char*);
 template<class T>
@@ -182,7 +184,7 @@ inline double polish(double x)
 
 /// __________________________________________________
 /// Convert int to CoordType enum
-inline const CoordType get_coordtype(int i)
+inline const CoordType get_coordtype(const int i)
 {
 //	cout << "@get_coordtype(int) " << i << endl;
 	if (i < 1 || i > 3)
@@ -402,7 +404,7 @@ class Validator {
 		~Validator() { cout << "§Validator::~Validator(const Coord&) "; _ctrsgn(typeid(*this), true); }
 		bool operator()(double n)
 		{
-		//	cout << "@Validator() " << " validating: " << setw(9) << setfill(' ') << n << endl;
+			cout << "@Validator() " << " validating: " << setw(9) << setfill(' ') << n << endl;
 			return !((abs(c.ff.get_decdeg(n)) > (c.latlon.size() && (c.llgt1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
 				(abs(c.ff.get_decmin(n)) >= 60) ||
 				(abs(c.ff.get_sec(n)) >= 60));
@@ -768,8 +770,7 @@ ostream& operator<<(ostream& stream, const WayPoint<type>& wp)
 */
 /// __________________________________________________
 /// __________________________________________________
-/// Convenience functions
-
+/// Utility functions
 
 /// __________________________________________________
 /// Return named attribute as vector<bool> or empty vector<bool>
