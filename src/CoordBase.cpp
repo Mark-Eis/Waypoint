@@ -351,8 +351,8 @@ class Coord {
 		Coord& operator=(const Coord&) = delete;			//  ——— ditto ———
 		Coord(Coord&&) = delete;							// Disallow transfer ownership
 		Coord& operator=(Coord&&) = delete;				// Disallow moving
-		~Coord() = default;
-//		~Coord() { cout << "§Coord::~Coord() "; _ctrsgn(typeid(*this), true); }
+//		~Coord() = default;
+		~Coord() { cout << "§Coord::~Coord() "; _ctrsgn(typeid(*this), true); }
 
 		void validate(bool warn = true) const;
 		const NumericVector& get_nv() const;
@@ -383,7 +383,7 @@ Coord::Coord(const NumericVector& nv, CoordType _ct) :
 	names{ get_vec_attr<NumericVector, string>(nv, "names") },
 	llgt1(latlon.size() > 1)
 {
-//	cout << "§Coord::Coord(const NumericVector&, CoordType) "; _ctrsgn(typeid(*this));
+	cout << "§Coord::Coord(const NumericVector&, CoordType) "; _ctrsgn(typeid(*this));
 }
 
 
@@ -445,13 +445,13 @@ class Validator {
 	public:
 		Validator(const Coord& _c) : c(_c), ll_it(c.latlon.begin())
 		{
-//			cout << "§Validator::Validator(const Coord&) "; _ctrsgn(typeid(*this));
+			cout << "§Validator::Validator(const Coord&) "; _ctrsgn(typeid(*this));
 		}
-		~Validator() = default;
-//		~Validator() { cout << "§Validator::~Validator(const Coord&) "; _ctrsgn(typeid(*this), true); }
+//		~Validator() = default;
+		~Validator() { cout << "§Validator::~Validator(const Coord&) "; _ctrsgn(typeid(*this), true); }
 		bool operator()(double n)
 		{
-//			cout << "@Validator() " << " validating: " << setw(9) << setfill(' ') << n << endl;
+			cout << "@Validator() " << " validating: " << setw(9) << setfill(' ') << n << endl;
 			return !((abs(c.ff.get_decdeg(n)) > (c.latlon.size() && (c.llgt1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
 				(abs(c.ff.get_decmin(n)) >= 60) ||
 				(abs(c.ff.get_sec(n)) >= 60));
@@ -463,7 +463,7 @@ class Validator {
 /// Validate coords vector
 void Coord::validate(bool warn) const
 {
-//	cout << "@Coord::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
+	cout << "@Coord::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
 	vector<bool>& non_const_valid { const_cast<vector<bool>&>(valid) };
 	non_const_valid.assign(nv.size(), {false});
 	transform(nv.begin(), nv.end(), non_const_valid.begin(), Validator(*this));
@@ -532,10 +532,10 @@ class Format {
 	public:
 		Format(const Coord& _c) : c(_c)
 		{
-//			cout << "§Format<CoordType>::Format(const Coord&) "; _ctrsgn(typeid(*this));
+			cout << "§Format<CoordType>::Format(const Coord&) "; _ctrsgn(typeid(*this));
 		}
-		~Format() = default;
-//		~Format() { cout << "§Format<CoordType>::~Format() "; _ctrsgn(typeid(*this), true); }
+//		~Format() = default;
+		~Format() { cout << "§Format<CoordType>::~Format() "; _ctrsgn(typeid(*this), true); }
 		string operator()(double n);
 };
 
@@ -544,7 +544,7 @@ class Format {
 template<CoordType type>
 inline string Format<type>::operator()(double n)
 {
-//	cout << "@Format<CoordType>::operator() [default for CoordType::decdeg]\n";
+	cout << "@Format<CoordType>::operator() [default for CoordType::decdeg]\n";
 	outstrstr.str("");
 	outstrstr << setw(11) << setfill(' ')  << fixed << setprecision(6) << c.ff.get_decdeg(n) << "\u00B0";
 	return outstrstr.str();
@@ -555,7 +555,7 @@ inline string Format<type>::operator()(double n)
 template<>
 inline string Format<CoordType::degmin>::operator()(double n)
 {
-//	cout << "@Format<CoordType::degmin>::operator()\n";
+	cout << "@Format<CoordType::degmin>::operator()\n";
 	outstrstr.str("");
 	outstrstr << setw(3) << setfill(' ') << abs(c.ff.get_deg(n)) << "\u00B0"
 					  << setw(7) << setfill('0') << fixed << setprecision(4) << abs(c.ff.get_decmin(n)) << "'";
@@ -567,7 +567,7 @@ inline string Format<CoordType::degmin>::operator()(double n)
 template<>
 inline string Format<CoordType::degminsec>::operator()(double n)
 {
-//	cout << "@Format<CoordType::degminsec>::operator()\n";
+	cout << "@Format<CoordType::degminsec>::operator()\n";
 	outstrstr.str("");
 	outstrstr << setw(3) << setfill(' ') << abs(c.ff.get_deg(n)) << "\u00B0"
 					  << setw(2) << setfill('0') << abs(c.ff.get_min(n)) << "'"
@@ -620,7 +620,7 @@ inline string FormatLL<CoordType::decdeg>::operator()(string ostr, double n)
 template<CoordType type>
 vector<string> Coord::format() const
 {
-//	cout << "@Coord::format<CoordType>() " << typeid(*this).name() << endl;
+	cout << "@Coord::format<CoordType>() " << typeid(*this).name() << endl;
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), Format<type>(*this));
 	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<type>(*this));
@@ -632,7 +632,7 @@ vector<string> Coord::format() const
 /// Print coords vector
 void Coord::print(ostream& stream) const
 {
-//	cout << "@Coord::print() " << typeid(*this).name() << endl;
+	cout << "@Coord::print() " << typeid(*this).name() << endl;
 	vector<string> sv; 
 	switch (ct)
 	{
@@ -665,7 +665,7 @@ void Coord::print(ostream& stream) const
 /// Output Coord derived object to ostream
 ostream& operator<<(ostream& stream, const Coord& c)
 {
-//	cout << "@operator<<(ostream&, const Coord&)\n";
+	cout << "@operator<<(ostream&, const Coord&)\n";
 	c.print(stream);
 	return stream;
 }
@@ -680,8 +680,8 @@ class WayPoint {
 		CoordType ct;
 		const DataFrame& df;
 		const FamousFive& ff;
-		const int latcol;
-		const int loncol;
+		const int latcol = 1;
+		const int loncol = 2;
 		const vector<bool> validlat { false };
 		const vector<bool> validlon { false };
 	public:
@@ -704,9 +704,9 @@ class WayPoint {
 
 WayPoint::WayPoint(const DataFrame& _df, CoordType _ct) :
 	ct(_ct), df(_df),
-	ff(*vff[coordtype_to_int(ct)]),
-	latcol(df[getllcolsattr(df)[0]]),
-	loncol(df[getllcolsattr(df)[1]])
+	ff(*vff[coordtype_to_int(ct)])
+//	latcol(getllcolsattr(df)[0]),
+//	loncol(getllcolsattr(df)[1])
 {
 	cout << "§WayPoint::WayPoint(const DataFrame) "; _ctrsgn(typeid(*this));
 }
@@ -716,9 +716,11 @@ WayPoint::WayPoint(const DataFrame& _df, CoordType _ct) :
 /// Validate WayPoint
 void WayPoint::validate(bool warn) const
 {
-	cout << "@WayPoint<type>::validate(bool)\n";
-	Coord c_lat(as<NumericVector>(df[latcol]), ct);
-	Coord c_lon(as<NumericVector>(df[loncol]), ct);
+	cout << "@WayPoint::validate(bool)\n";
+	NumericVector nvlat(df[latcol]);
+	NumericVector nvlon(df[loncol]);
+	Coord c_lat(nvlat, ct);
+	Coord c_lon(nvlon, ct);
 	c_lat.validate(warn);
 	c_lon.validate(warn);
 }
@@ -1215,8 +1217,25 @@ vector<double> get_sec(NumericVector& nv)
 	return out;
 }
 */
-/*
 
+
+/// __________________________________________________
+/// dummy() exported function
+// [[Rcpp::export]]
+DataFrame dummy(DataFrame& df, int fmt)
+{
+	cout << "——Rcpp::export——`dummy(DataFrame&, int)`\n";
+	CoordType newtype = get_coordtype(fmt);
+	WayPoint wp(df, newtype);
+	wp.validate();
+//	wp.warn_invalid();
+//	cout << wp;
+	df.attr("fmt") = fmt;
+	return df;
+}
+
+
+/*
 /// __________________________________________________
 /// Add "waypoints" to R data.frame object class and validate,
 /// or convert format of R waypoints object and return
