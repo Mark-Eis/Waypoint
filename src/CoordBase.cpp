@@ -73,7 +73,7 @@ ostream& operator<<(ostream&, const WayPoint<type>&);
 inline bool validcoord(NumericVector&);
 
 inline bool check_valid(const NumericVector&);
-bool check_valid(const DataFrame&);
+// bool check_valid(const DataFrame&);
 
 template<class T>
 bool check_valid(T&, const char*);
@@ -221,7 +221,8 @@ void setcolattr(const T& t, int col, const char* attrib, V&& val)
 /// get "llcols" attribute for DataFrame object
 inline vector<int> getllcolsattr(const DataFrame& df)
 {
-	return as<vector<int>>(df.attr("llcols"));
+//	return as<vector<int>>(df.attr("llcols"));
+	return get_vec_attr<DataFrame, int>(df, "llcols");
 }
 
 
@@ -670,44 +671,60 @@ ostream& operator<<(ostream& stream, const Coord& c)
 }
 
 
-/**************************
-
-
 /// __________________________________________________
 /// __________________________________________________
 /// Waypoint class
 
-template<CoordType type>
 class WayPoint {
 	protected:
+		CoordType ct;
 		const DataFrame& df;
-		const Coord<type> c_lat;
-		const Coord<type> c_lon;
-		const vector<bool>& validlat;
-		const vector<bool>& validlon;
+		const FamousFive& ff;
+		const int latcol;
+		const int loncol;
+		const vector<bool> validlat { false };
+		const vector<bool> validlon { false };
 	public:
-		explicit WayPoint(const DataFrame&);
-		~WayPoint() = default;
-//		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
+		explicit WayPoint(const DataFrame&, CoordType);
+		WayPoint(const WayPoint&) = delete;					// Disallow copying
+		WayPoint& operator=(const WayPoint&) = delete;		//  ——— ditto ———
+		WayPoint(WayPoint&&) = delete;						// Disallow transfer ownership
+		WayPoint& operator=(WayPoint&&) = delete;			// Disallow moving
+//		~WayPoint() = default;
+		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
 
-		const Coord<type>& get_c(bool) const;
 		void validate(bool = true) const;
+		const NumericVector& get_nv(bool) const;
 		const vector<bool>& get_valid(bool) const;
-		void warn_invalid() const;
-		void print(ostream& stream) const;
+		void all_valid() const;
 		vector<string> format() const;
+		void print(ostream& stream) const;
 };
 
 
-template<CoordType type>
-WayPoint<type>::WayPoint(const DataFrame& _df) :
-	df(_df), c_lat(as<NumericVector>(df[getllcolsattr(df)[0]])), c_lon(as<NumericVector>(df[getllcolsattr(df)[1]])),
-	validlat(c_lat.get_valid()), validlon(c_lon.get_valid())
+WayPoint::WayPoint(const DataFrame& _df, CoordType _ct) :
+	ct(_ct), df(_df),
+	ff(*vff[coordtype_to_int(ct)]),
+	latcol(df[getllcolsattr(df)[0]]),
+	loncol(df[getllcolsattr(df)[1]])
 {
-//	cout << "§WayPoint<type>::WayPoint(const DataFrame) "; _ctrsgn(typeid(*this));
-	c_lat.set_waypoint();
-	c_lon.set_waypoint();
+	cout << "§WayPoint::WayPoint(const DataFrame) "; _ctrsgn(typeid(*this));
 }
+
+
+/// __________________________________________________
+/// Validate WayPoint
+void WayPoint::validate(bool warn) const
+{
+	cout << "@WayPoint<type>::validate(bool)\n";
+	Coord c_lat(as<NumericVector>(df[latcol]), ct);
+	Coord c_lon(as<NumericVector>(df[loncol]), ct);
+	c_lat.validate(warn);
+	c_lon.validate(warn);
+}
+
+
+/**************************
 
 
 /// __________________________________________________
@@ -717,17 +734,6 @@ inline const Coord<type>& WayPoint<type>::get_c(bool latlon) const
 {
 //	cout << "@WayPoint<type>::get_c(bool) const\n";
 	return latlon ? c_lat : c_lon;
-}
-
-
-/// __________________________________________________
-/// Validate WayPoint
-template<CoordType type>
-void WayPoint<type>::validate(bool warn) const
-{
-//	cout << "@WayPoint<type>::validate(bool)\n";
-	c_lat.validate(warn);
-	c_lon.validate(warn);
 }
 
 
