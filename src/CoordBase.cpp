@@ -537,12 +537,12 @@ inline void Coord::set_waypoint() const
 template<CoordType type>
 class Format {
 	protected:
-		const Coord& c;
+		const FamousFive& ff;
 		ostringstream outstrstr;
 	public:
-		Format(const Coord& _c) : c(_c)
+		Format(const FamousFive& _ff) : ff(_ff)
 		{
-			cout << "§Format<CoordType>::Format(const Coord&) "; _ctrsgn(typeid(*this));
+			cout << "§Format<CoordType>::Format(const FamousFive&) "; _ctrsgn(typeid(*this));
 		}
 //		~Format() = default;
 		~Format() { cout << "§Format<CoordType>::~Format() "; _ctrsgn(typeid(*this), true); }
@@ -556,7 +556,7 @@ inline string Format<type>::operator()(double n)
 {
 //	cout << "@Format<CoordType>::operator() [default for CoordType::decdeg]\n";
 	outstrstr.str("");
-	outstrstr << setw(11) << setfill(' ')  << fixed << setprecision(6) << c.ff.get_decdeg(n) << "\u00B0";
+	outstrstr << setw(11) << setfill(' ')  << fixed << setprecision(6) << ff.get_decdeg(n) << "\u00B0";
 	return outstrstr.str();
 }
 
@@ -567,8 +567,8 @@ inline string Format<CoordType::degmin>::operator()(double n)
 {
 //	cout << "@Format<CoordType::degmin>::operator()\n";
 	outstrstr.str("");
-	outstrstr << setw(3) << setfill(' ') << abs(c.ff.get_deg(n)) << "\u00B0"
-					  << setw(7) << setfill('0') << fixed << setprecision(4) << abs(c.ff.get_decmin(n)) << "'";
+	outstrstr << setw(3) << setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
+					  << setw(7) << setfill('0') << fixed << setprecision(4) << abs(ff.get_decmin(n)) << "'";
 	return outstrstr.str();
 }
 
@@ -579,9 +579,9 @@ inline string Format<CoordType::degminsec>::operator()(double n)
 {
 //	cout << "@Format<CoordType::degminsec>::operator()\n";
 	outstrstr.str("");
-	outstrstr << setw(3) << setfill(' ') << abs(c.ff.get_deg(n)) << "\u00B0"
-					  << setw(2) << setfill('0') << abs(c.ff.get_min(n)) << "'"
-					  << setw(5) << fixed << setprecision(2) << abs(c.ff.get_sec(n)) << "\"";
+	outstrstr << setw(3) << setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
+					  << setw(2) << setfill('0') << abs(ff.get_min(n)) << "'"
+					  << setw(5) << fixed << setprecision(2) << abs(ff.get_sec(n)) << "\"";
 	return outstrstr.str();
 }
 
@@ -632,7 +632,7 @@ vector<string> Coord::format() const
 {
 	cout << "@Coord::format<CoordType>() " << typeid(*this).name() << endl;
 	vector<string> out(nv.size());
-	transform(nv.begin(), nv.end(), out.begin(), Format<type>(*this));
+	transform(nv.begin(), nv.end(), out.begin(), Format<type>(ff));
 	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<type>(*this));
 	return out;
 }
@@ -1034,7 +1034,7 @@ inline void wpconvertlet(DataFrame& df, WayPoint<type>& wp)
 // [[Rcpp::export]]
 NumericVector coords(NumericVector nv, const int fmt = 1)
 {
-//	cout << "——Rcpp::export——coords()\n";
+	cout << "——Rcpp::export——coords()\n";
 	CoordType newtype = get_coordtype(fmt);
 	CoordType type;
 	if (nv.inherits("coords")) {
@@ -1083,7 +1083,7 @@ NumericVector coords(NumericVector nv, const int fmt = 1)
 // [[Rcpp::export(name = "`coords<-`")]]
 NumericVector coords_replace(NumericVector nv, int value)
 {
-//	cout << "——Rcpp::export——`coords_replace()<-`\n";
+	cout << "——Rcpp::export——`coords_replace()<-`\n";
 	return coords(nv, value);
 }
 
@@ -1109,7 +1109,7 @@ NumericVector latlon(NumericVector nv, LogicalVector& value)
 // [[Rcpp::export(name = "print.coords", invisible = true)]]
 NumericVector printcoord(NumericVector nv)
 {
-//	cout << "——Rcpp::export——printcoord() format " << get_fmt_attribute(nv) << endl;
+	cout << "——Rcpp::export——printcoord() format " << get_fmt_attribute(nv) << endl;
 	checkinherits(nv, "coords");
 	if (!check_valid(nv))
 		warning("Printing invalid coords!");
