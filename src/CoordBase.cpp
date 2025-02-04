@@ -107,22 +107,22 @@ inline void wpconvertlet(DataFrame&, WayPoint<type>&);
 */
 
 // exported
-NumericVector coords(NumericVector&, const int);
-NumericVector coords_replace(NumericVector&, int);
-NumericVector latlon(NumericVector&, LogicalVector&);
-NumericVector printcoord(NumericVector&);
-const vector<bool> validatecoord(NumericVector&);
-vector<string> formatcoord(NumericVector&);
+NumericVector coords(NumericVector, const int);
+NumericVector coords_replace(NumericVector, int);
+NumericVector latlon(NumericVector, LogicalVector&);
+NumericVector printcoord(NumericVector);
+const vector<bool> validatecoord(NumericVector);
+vector<string> formatcoord(NumericVector);
 /*
-vector<int> get_deg(NumericVector&);
-vector<double> get_decdeg(NumericVector&);
-vector<int> get_min(NumericVector&);
-vector<double> get_decmin(NumericVector&);
-vector<double> get_sec(NumericVector&);
-DataFrame waypoints(DataFrame&, int);
-DataFrame waypoints_replace(DataFrame& df, int value);
-DataFrame printwaypoint(DataFrame&);
-const DataFrame validatewaypoint(DataFrame&);
+vector<int> get_deg(NumericVector);
+vector<double> get_decdeg(NumericVector);
+vector<int> get_min(NumericVector);
+vector<double> get_decmin(NumericVector);
+vector<double> get_sec(NumericVector);
+DataFrame waypoints(DataFrame, int);
+DataFrame waypoints_replace(DataFrame df, int value);
+DataFrame printwaypoint(DataFrame);
+const DataFrame validatewaypoint(DataFrame);
 */
 
 /// __________________________________________________
@@ -451,7 +451,7 @@ class Validator {
 		~Validator() { cout << "§Validator::~Validator(const Coord&) "; _ctrsgn(typeid(*this), true); }
 		bool operator()(double n)
 		{
-			cout << "@Validator() " << " validating: " << setw(9) << setfill(' ') << n << endl;
+//			cout << "@Validator() " << " validating: " << setw(9) << setfill(' ') << n << endl;
 			return !((abs(c.ff.get_decdeg(n)) > (c.latlon.size() && (c.llgt1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
 				(abs(c.ff.get_decmin(n)) >= 60) ||
 				(abs(c.ff.get_sec(n)) >= 60));
@@ -544,7 +544,7 @@ class Format {
 template<CoordType type>
 inline string Format<type>::operator()(double n)
 {
-	cout << "@Format<CoordType>::operator() [default for CoordType::decdeg]\n";
+//	cout << "@Format<CoordType>::operator() [default for CoordType::decdeg]\n";
 	outstrstr.str("");
 	outstrstr << setw(11) << setfill(' ')  << fixed << setprecision(6) << c.ff.get_decdeg(n) << "\u00B0";
 	return outstrstr.str();
@@ -555,7 +555,7 @@ inline string Format<type>::operator()(double n)
 template<>
 inline string Format<CoordType::degmin>::operator()(double n)
 {
-	cout << "@Format<CoordType::degmin>::operator()\n";
+//	cout << "@Format<CoordType::degmin>::operator()\n";
 	outstrstr.str("");
 	outstrstr << setw(3) << setfill(' ') << abs(c.ff.get_deg(n)) << "\u00B0"
 					  << setw(7) << setfill('0') << fixed << setprecision(4) << abs(c.ff.get_decmin(n)) << "'";
@@ -567,7 +567,7 @@ inline string Format<CoordType::degmin>::operator()(double n)
 template<>
 inline string Format<CoordType::degminsec>::operator()(double n)
 {
-	cout << "@Format<CoordType::degminsec>::operator()\n";
+//	cout << "@Format<CoordType::degminsec>::operator()\n";
 	outstrstr.str("");
 	outstrstr << setw(3) << setfill(' ') << abs(c.ff.get_deg(n)) << "\u00B0"
 					  << setw(2) << setfill('0') << abs(c.ff.get_min(n)) << "'"
@@ -1022,7 +1022,7 @@ inline void wpconvertlet(DataFrame& df, WayPoint<type>& wp)
 /// Set R vector object class to coords and return,
 /// or convert format of R coords object and return
 // [[Rcpp::export]]
-NumericVector coords(NumericVector& nv, const int fmt = 1)
+NumericVector coords(NumericVector nv, const int fmt = 1)
 {
 //	cout << "——Rcpp::export——coords()\n";
 	CoordType newtype = get_coordtype(fmt);
@@ -1058,7 +1058,7 @@ NumericVector coords(NumericVector& nv, const int fmt = 1)
 				break;
 
 			default:
-				stop("coords(NumericVector& nv, const int) my bad");
+				stop("coords(NumericVector nv, const int) my bad");
 		}
 	}
 
@@ -1071,7 +1071,7 @@ NumericVector coords(NumericVector& nv, const int fmt = 1)
 /// __________________________________________________
 /// coords() as replacement function
 // [[Rcpp::export(name = "`coords<-`")]]
-NumericVector coords_replace(NumericVector& nv, int value)
+NumericVector coords_replace(NumericVector nv, int value)
 {
 //	cout << "——Rcpp::export——`coords_replace()<-`\n";
 	return coords(nv, value);
@@ -1081,7 +1081,7 @@ NumericVector coords_replace(NumericVector& nv, int value)
 /// __________________________________________________
 /// Set latlon attribute on "coords" NumericVector and revalidate
 // [[Rcpp::export(name = "`latlon<-`")]]
-NumericVector latlon(NumericVector& nv, LogicalVector& value)
+NumericVector latlon(NumericVector nv, LogicalVector& value)
 {
 //	cout << "——Rcpp::export——set_latlon()\n";
 	checkinherits(nv, "coords");
@@ -1097,7 +1097,7 @@ NumericVector latlon(NumericVector& nv, LogicalVector& value)
 /// __________________________________________________
 /// Print coords vector - S3 method print.coords()	  /////// "invisible" not working ///////
 // [[Rcpp::export(name = "print.coords", invisible = true)]]
-NumericVector printcoord(NumericVector& nv)
+NumericVector printcoord(NumericVector nv)
 {
 //	cout << "——Rcpp::export——printcoord() format " << get_fmt_attribute(nv) << endl;
 	checkinherits(nv, "coords");
@@ -1111,7 +1111,7 @@ NumericVector printcoord(NumericVector& nv)
 /// __________________________________________________
 /// Validate coords vector
 // [[Rcpp::export(name = "validate.coords")]]
-const vector<bool> validatecoord(NumericVector& nv)
+const vector<bool> validatecoord(NumericVector nv)
 {
 //	cout << "——Rcpp::export——validatecoord()\n";
 	checkinherits(nv, "coords");
@@ -1122,7 +1122,7 @@ const vector<bool> validatecoord(NumericVector& nv)
 /// __________________________________________________
 /// Format coords vector - S3 method format.coords()
 // [[Rcpp::export(name = "format.coords")]]
-vector<string> formatcoord(NumericVector& nv)
+vector<string> formatcoord(NumericVector nv)
 {
 //	cout << "——Rcpp::export——format()\n";
 	checkinherits(nv, "coords");
@@ -1142,7 +1142,7 @@ vector<string> formatcoord(NumericVector& nv)
 			return c.format<CoordType::degminsec>();
 
 		default:
-			stop("formatcoord(NumericVector&) my bad");
+			stop("formatcoord(NumericVector) my bad");
 	}
 }
 
@@ -1151,7 +1151,7 @@ vector<string> formatcoord(NumericVector& nv)
 /// __________________________________________________
 /// Return degrees as integer
 // [[Rcpp::export]]
-vector<int> get_deg(NumericVector& nv)
+vector<int> get_deg(NumericVector nv)
 {
 //	cout << "——Rcpp::export——get_deg()\n";
 	checkinherits(nv, "coords");
@@ -1165,7 +1165,7 @@ vector<int> get_deg(NumericVector& nv)
 /// __________________________________________________
 /// Return decimal degrees as double
 // [[Rcpp::export]]
-vector<double> get_decdeg(NumericVector& nv)
+vector<double> get_decdeg(NumericVector nv)
 {
 //	cout << "——Rcpp::export——get_decdeg()\n";
 	checkinherits(nv, "coords");
@@ -1179,7 +1179,7 @@ vector<double> get_decdeg(NumericVector& nv)
 /// __________________________________________________
 /// Return minutes as integer
 // [[Rcpp::export]]
-vector<int> get_min(NumericVector& nv)
+vector<int> get_min(NumericVector nv)
 {
 //	cout << "——Rcpp::export——get_min()\n";
 	checkinherits(nv, "coords");
@@ -1193,7 +1193,7 @@ vector<int> get_min(NumericVector& nv)
 /// __________________________________________________
 /// Return decimal minutes as double
 // [[Rcpp::export]]
-vector<double> get_decmin(NumericVector& nv)
+vector<double> get_decmin(NumericVector nv)
 {
 //	cout << "——Rcpp::export——get_decmin()\n";
 	checkinherits(nv, "coords");
@@ -1207,7 +1207,7 @@ vector<double> get_decmin(NumericVector& nv)
 /// __________________________________________________
 /// Return decimal seconds as double
 // [[Rcpp::export]]
-vector<double> get_sec(NumericVector& nv)
+vector<double> get_sec(NumericVector nv)
 {
 //	cout << "——Rcpp::export——get_sec()\n";
 	checkinherits(nv, "coords");
@@ -1222,9 +1222,9 @@ vector<double> get_sec(NumericVector& nv)
 /// __________________________________________________
 /// dummy() exported function
 // [[Rcpp::export]]
-DataFrame dummy(DataFrame& df, int fmt)
+DataFrame dummy(DataFrame df, int fmt)
 {
-	cout << "——Rcpp::export——`dummy(DataFrame&, int)`\n";
+	cout << "——Rcpp::export——`dummy(DataFrame, int)`\n";
 	CoordType newtype = get_coordtype(fmt);
 	WayPoint wp(df, newtype);
 	wp.validate();
@@ -1240,7 +1240,7 @@ DataFrame dummy(DataFrame& df, int fmt)
 /// Add "waypoints" to R data.frame object class and validate,
 /// or convert format of R waypoints object and return
 // [[Rcpp::export]]
-DataFrame waypoints(DataFrame& df, int fmt = 1)
+DataFrame waypoints(DataFrame df, int fmt = 1)
 {
 //	cout << "——Rcpp::export——waypoints()\n";
 	CoordType newtype = get_coordtype(fmt);
@@ -1280,7 +1280,7 @@ DataFrame waypoints(DataFrame& df, int fmt = 1)
 			break;
 
 		default:
-			stop("waypoints(DataFrame&, int) my bad");
+			stop("waypoints(DataFrame, int) my bad");
 	}
 
 	df.attr("fmt") = fmt;
@@ -1291,7 +1291,7 @@ DataFrame waypoints(DataFrame& df, int fmt = 1)
 /// __________________________________________________
 /// waypoints() as replacement function
 // [[Rcpp::export(name = "`waypoints<-`")]]
-DataFrame waypoints_replace(DataFrame& df, int value)
+DataFrame waypoints_replace(DataFrame df, int value)
 {
 //	cout << "——Rcpp::export——`waypoints_replace()<-`\n";
 	return waypoints(df, value);
@@ -1301,7 +1301,7 @@ DataFrame waypoints_replace(DataFrame& df, int value)
 /// __________________________________________________
 /// Print waypoints vector - S3 method print.waypoints()	  /////// "invisible" not working ///////
 // [[Rcpp::export(name = "print.waypoints", invisible = true)]]
-DataFrame printwaypoint(DataFrame& df)
+DataFrame printwaypoint(DataFrame df)
 {
 //	cout << "——Rcpp::export——printwaypoint() format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
@@ -1323,7 +1323,7 @@ DataFrame printwaypoint(DataFrame& df)
 			break;
 
 		default:
-			stop("printwaypoint(DataFrame&) my bad");
+			stop("printwaypoint(DataFrame) my bad");
 	}
 	return df;
 }
@@ -1332,9 +1332,9 @@ DataFrame printwaypoint(DataFrame& df)
 /// __________________________________________________
 /// Validate waypoints vector
 // [[Rcpp::export(name = "validate.waypoints")]]
-const DataFrame validatewaypoint(DataFrame& df)
+const DataFrame validatewaypoint(DataFrame df)
 {
-//	cout << "——Rcpp::export——validatewaypoint(DataFrame&) format " << get_fmt_attribute(df) << endl;
+//	cout << "——Rcpp::export——validatewaypoint(DataFrame) format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
 	return validate(df);
 }
