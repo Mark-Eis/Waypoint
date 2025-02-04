@@ -339,7 +339,7 @@ class Coord {
 	protected:
 		CoordType ct;
 		const FamousFive& ff;
-		const NumericVector& nv;
+		const NumericVector nv;
 		const vector<bool> valid { false };
 		const vector<bool> latlon;
 		const vector<string> names;
