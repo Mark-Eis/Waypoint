@@ -337,8 +337,8 @@ vector<FamousFive*> vff { &ff_decdeg, &ff_degmin, &ff_degminsec };
 class Coord {
 	protected:
 		CoordType ct;
-		const NumericVector& nv;
 		const FamousFive& ff;
+		const NumericVector& nv;
 		const vector<bool> valid { false };
 		const vector<bool> latlon;
 		const vector<string> names;
@@ -355,6 +355,7 @@ class Coord {
 		~Coord() { cout << "§Coord::~Coord() "; _ctrsgn(typeid(*this), true); }
 
 		void validate(bool warn = true) const;
+		const FamousFive& get_ff() const;
 		const NumericVector& get_nv() const;
 		const vector<bool>& get_valid() const;
 		const vector<string>& get_names() const;
@@ -378,7 +379,7 @@ class Coord {
 
 
 Coord::Coord(const NumericVector& nv, CoordType _ct) :
-	ct(_ct), nv(nv), ff(*vff[coordtype_to_int(ct)]),
+	ct(_ct), ff(*vff[coordtype_to_int(ct)]), nv(nv),
 	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") },
 	names{ get_vec_attr<NumericVector, string>(nv, "names") },
 	llgt1(latlon.size() > 1)
@@ -393,11 +394,11 @@ Coord::Coord(const NumericVector& nv, CoordType _ct) :
 template<CoordType type>
 class Convertor {
 	protected:
-		const Coord& c; 
+		const FamousFive& ff; 
 	public:
-		Convertor(const Coord& _c) : c(_c)
+		Convertor(const FamousFive& _ff) : ff(_ff)
 		{
-//			cout << "§Convertor<CoordType>::Convertor(const Coord&) "; _ctrsgn(typeid(*this));
+//			cout << "§Convertor<CoordType>::Convertor(const FamousFive&) "; _ctrsgn(typeid(*this));
 		}
 		~Convertor() = default;
 //		~Convertor() { cout << "§Convertor<type>::~Convertor() "; _ctrsgn(typeid(*this), true); }
@@ -411,7 +412,7 @@ template<CoordType type>
 inline double Convertor<type>::operator()(double n)
 {
 //	cout << "@Convertor<CoordType>::operator() [default for CoordType::decdeg]\n";
-	return c.ff.get_decdeg(n);
+	return ff.get_decdeg(n);
 }
 
 
@@ -421,7 +422,7 @@ template<>
 inline double Convertor<CoordType::degmin>::operator()(double n)
 {
 //	cout << "@Convertor<CoordType::degmin>::operator()\n";
-	return c.ff.get_deg(n) * 1e2 + c.ff.get_decmin(n);
+	return ff.get_deg(n) * 1e2 + ff.get_decmin(n);
 }
 
 
@@ -431,7 +432,7 @@ template<>
 inline double Convertor<CoordType::degminsec>::operator()(double n)
 {
 //	cout << "@Convertor<CoordType::degminsec>::operator()\n";
-	return c.ff.get_deg(n) * 1e4 + c.ff.get_min(n) * 1e2 + c.ff.get_sec(n);
+	return ff.get_deg(n) * 1e4 + ff.get_min(n) * 1e2 + ff.get_sec(n);
 }
 
 
@@ -482,6 +483,15 @@ inline bool Coord::all_valid() const
 {
 //	cout << "@Coord::all_valid()\n";
 	return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
+}
+
+
+/// __________________________________________________
+/// Get const reference to ff
+inline const FamousFive& Coord::get_ff() const
+{
+	cout << "@Coord::get_ff()\n";
+	return ff;
 }
 
 
@@ -955,7 +965,7 @@ template<CoordType newtype>
 inline void convertlet(const Coord& c, NumericVector& nv)
 {
 //	cout << "@convertlet<CoordType>(const Coord&, NumericVector&) newtype " << coordtype_to_int(newtype) + 1 << endl;
-	transform(c.get_nv().begin(), c.get_nv().end(), nv.begin(), Convertor<newtype>(c));
+	transform(c.get_nv().begin(), c.get_nv().end(), nv.begin(), Convertor<newtype>(c.get_ff()));
 }
 
 
