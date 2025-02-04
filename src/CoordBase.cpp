@@ -366,12 +366,6 @@ class Coord {
 		vector<string> format() const;
 		void print(ostream&) const;
 
-		friend class Convertor<CoordType::decdeg>;
-		friend class Convertor<CoordType::degmin>;
-		friend class Convertor<CoordType::degminsec>;
-		friend class Format<CoordType::decdeg>;
-		friend class Format<CoordType::degmin>;
-		friend class Format<CoordType::degminsec>;
 		friend class FormatLL<CoordType::decdeg>;
 		friend class FormatLL<CoordType::degmin>;
 		friend class FormatLL<CoordType::degminsec>;
