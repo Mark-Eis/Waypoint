@@ -49,6 +49,7 @@ class Convertor;
 //Coord
 class Coord;
 
+template<class T>
 class Validator;
 
 template<CoordType type>
@@ -374,6 +375,7 @@ class Coord {
 		friend class FormatLL<CoordType::decdeg>;
 		friend class FormatLL<CoordType::degmin>;
 		friend class FormatLL<CoordType::degminsec>;
+		template<class T>
 		friend class Validator;
 };
 
@@ -440,22 +442,23 @@ inline double Convertor<CoordType::degminsec>::operator()(double n)
 /// __________________________________________________
 /// Validate Coord functor
 
+template<class T>
 class Validator {
-		const Coord& c; 
+		const T& t; 
 		vector<bool>::const_iterator ll_it;
 	public:
-		Validator(const Coord& _c) : c(_c), ll_it(c.latlon.begin())
+		Validator(const T& _t) : t(_t), ll_it(t.latlon.begin())
 		{
-			cout << "§Validator::Validator(const Coord&) "; _ctrsgn(typeid(*this));
+			cout << "§Validator<T>::Validator(const T&) "; _ctrsgn(typeid(*this));
 		}
 //		~Validator() = default;
-		~Validator() { cout << "§Validator::~Validator(const Coord&) "; _ctrsgn(typeid(*this), true); }
+		~Validator() { cout << "§Validator<T>::~Validator() "; _ctrsgn(typeid(*this), true); }
 		bool operator()(double n)
 		{
-//			cout << "@Validator() " << " validating: " << setw(9) << setfill(' ') << n << endl;
-			return !((abs(c.ff.get_decdeg(n)) > (c.latlon.size() && (c.llgt1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
-				(abs(c.ff.get_decmin(n)) >= 60) ||
-				(abs(c.ff.get_sec(n)) >= 60));
+//			cout << "@Validator<T>() " << " validating: " << setw(9) << setfill(' ') << n << endl;
+			return !((abs(t.ff.get_decdeg(n)) > (t.latlon.size() && (t.llgt1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
+				(abs(t.ff.get_decmin(n)) >= 60) ||
+				(abs(t.ff.get_sec(n)) >= 60));
 		}
 };
 
