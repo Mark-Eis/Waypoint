@@ -23,7 +23,7 @@ template<class T>
 inline void checkinherits(T&, const char*);
 template<class T, class V>
 void setcolattr(const T&, int, const char*, V&&);			/////// deprecate ///////
-inline vector<int> getllcolsattr(const DataFrame&);
+inline vector<int> getllcolsattr(const DataFrame);
 
 //CoordType
 enum class CoordType : char { decdeg, degmin, degminsec };
@@ -218,7 +218,7 @@ void setcolattr(const T& t, int col, const char* attrib, V&& val)
 
 /// __________________________________________________
 /// get "llcols" attribute for DataFrame object
-inline vector<int> getllcolsattr(const DataFrame& df)
+inline vector<int> getllcolsattr(const DataFrame df)
 {
 //	return as<vector<int>>(df.attr("llcols"));
 	return get_vec_attr<DataFrame, int>(df, "llcols");
@@ -743,14 +743,14 @@ ostream& operator<<(ostream& stream, const Coord& c)
 class WayPoint {
 	protected:
 		CoordType ct;
-		const DataFrame& df;
+		const DataFrame df;
 		const FamousFive& ff;
 		const int latcol = 1;
 		const int loncol = 2;
 		const vector<bool> validlat { false };
 		const vector<bool> validlon { false };
 	public:
-		explicit WayPoint(const DataFrame&, CoordType);
+		explicit WayPoint(const DataFrame, CoordType);
 		WayPoint(const WayPoint&) = delete;					// Disallow copying
 		WayPoint& operator=(const WayPoint&) = delete;		//  ——— ditto ———
 		WayPoint(WayPoint&&) = delete;						// Disallow transfer ownership
@@ -767,7 +767,7 @@ class WayPoint {
 };
 
 
-WayPoint::WayPoint(const DataFrame& _df, CoordType _ct) :
+WayPoint::WayPoint(const DataFrame _df, CoordType _ct) :
 	ct(_ct), df(_df),
 	ff(*vff[coordtype_to_int(ct)])
 //	latcol(getllcolsattr(df)[0]),
