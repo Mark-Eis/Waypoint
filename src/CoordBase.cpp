@@ -1290,7 +1290,7 @@ DataFrame waypoints_replace(DataFrame df, int value)
 {
 //	cout << "——Rcpp::export——`waypoints_replace()<-`\n";
 	return waypoints(df, value);
-}
+} */
 
 
 /// __________________________________________________
@@ -1300,30 +1300,15 @@ DataFrame printwaypoint(DataFrame df)
 {
 //	cout << "——Rcpp::export——printwaypoint() format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
-	if (!check_valid(df))
-		warning("Invalid waypoints!");
+//	if (!check_valid(df))
+//		warning("Invalid waypoints!");
 
-	switch (get_coordtype(df))
-	{
-   		case CoordType::decdeg:
-			Rcout << WayPoint<CoordType::decdeg>(df);
-			break;
+	Rcout << WayPoint(get_coordtype(df), df);	
 
-		case CoordType::degmin:
-			Rcout << WayPoint<CoordType::degmin>(df);
-			break;
-
-		case CoordType::degminsec:
-			Rcout << WayPoint<CoordType::degminsec>(df);
-			break;
-
-		default:
-			stop("printwaypoint(DataFrame) my bad");
-	}
 	return df;
 }
 
-
+/*
 /// __________________________________________________
 /// Validate waypoints vector
 // [[Rcpp::export(name = "validate.waypoints")]]
