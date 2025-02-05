@@ -1017,14 +1017,6 @@ inline void convertlet(const Coord& c, NumericVector nv)
 
 
 /*
-template<CoordType type, CoordType newtype>
-inline void convertlet(const Coord<type>& c, NumericVector&& nv)
-{
-//	cout << "@convertlet(const Coord<type>&, NumericVector&&) type " << coordtype_to_int(type) + 1 << " newtype " << coordtype_to_int(newtype) + 1 << endl;
-	transform(c.get_nv().begin(), c.get_nv().end(), nv.begin(), Convertor<type, newtype>(c));
-}
-
-
 template<CoordType type>
 void waypointlet(DataFrame& df, CoordType newtype)
 {
