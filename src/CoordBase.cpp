@@ -791,11 +791,11 @@ void WayPoint::validate(bool warn) const
 
 
 /// __________________________________________________
-/// Get const reference to nv
+/// Get nvlat or nvlon
 inline const NumericVector WayPoint::get_nv(bool ll = true) const
 {
 //	cout << "@WayPoint::get_nv(bool)\n";
-	return df[ll ? latcol : loncol];
+	return ll ? nvlat : nvlon;
 }
 
 
@@ -806,7 +806,6 @@ const vector<bool>& WayPoint::get_valid(bool latlon) const
 //	cout << "@WayPoint::get_valid(bool) latlon " << boolalpha << latlon << endl;
 	return latlon ? validlat : validlon;
 }
-
 
 
 /// __________________________________________________
