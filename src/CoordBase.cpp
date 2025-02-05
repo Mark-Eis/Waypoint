@@ -94,7 +94,7 @@ void setvalidattr(const DataFrame&, WayPoint<type>&);
 
 // conversion
 template<CoordType newtype>
-inline void convertlet(const Coord&, NumericVector&);
+inline void convertlet(const Coord&, NumericVector);
 
 /*
 template<CoordType type>
@@ -1009,9 +1009,9 @@ void setvalidattr(const DataFrame& df, WayPoint<type>& wp)
 /// Conversion functions
 
 template<CoordType newtype>
-inline void convertlet(const Coord& c, NumericVector& nv)
+inline void convertlet(const Coord& c, NumericVector nv)
 {
-//	cout << "@convertlet<CoordType>(const Coord&, NumericVector&) newtype " << coordtype_to_int(newtype) + 1 << endl;
+//	cout << "@convertlet<CoordType>(const Coord&, NumericVector) newtype " << coordtype_to_int(newtype) + 1 << endl;
 	transform(c.get_nv().begin(), c.get_nv().end(), nv.begin(), Convertor<newtype>(c.get_ff()));
 }
 
