@@ -109,11 +109,12 @@ vector<double> get_decdeg(NumericVector);
 vector<int> get_min(NumericVector);
 vector<double> get_decmin(NumericVector);
 vector<double> get_sec(NumericVector);
+*/
 DataFrame waypoints(DataFrame, int);
 DataFrame waypoints_replace(DataFrame df, int value);
 DataFrame printwaypoint(DataFrame);
-const DataFrame validatewaypoint(DataFrame);
-*/
+//const DataFrame validatewaypoint(DataFrame);
+
 
 /// __________________________________________________
 /// __________________________________________________
@@ -1237,7 +1238,7 @@ DataFrame dummy(DataFrame df, int fmt)
 }
 
 
-/*
+
 /// __________________________________________________
 /// Add "waypoints" to R data.frame object class and validate,
 /// or convert format of R waypoints object and return
@@ -1247,44 +1248,49 @@ DataFrame waypoints(DataFrame df, int fmt = 1)
 //	cout << "——Rcpp::export——waypoints()\n";
 	CoordType newtype = get_coordtype(fmt);
 	CoordType type;
-	const bool inheritswaypoints { df.inherits("waypoints") };
-	if (inheritswaypoints) {
+	if (df.inherits("waypoints")) {
 		type = get_coordtype(df);
-//		cout << "argument df is already a \"waypoints\" vector of type " << coordtype_to_int(type) + 1 << endl;
-		if (!check_valid(df))
-			stop("Invalid waypoints!");
+		cout << "argument df is already a \"waypoints\" vector of type " << coordtype_to_int(type) + 1 << endl;
 		if (newtype == type) {
-		//	cout << "——fmt out == fmt in!——" << endl;
+			cout << "——fmt out == fmt in!——" << endl;
+//			if (!check_valid(df))
+//				stop("Invalid waypoints!");
 			return df;
 		}
 	} else {
 		type = newtype;
-		const vector<int> llcols { 1, 2 };									// !!!!!!!! Temporary Solution !!!!!!
+/*		const vector<int> llcols { 1, 2 };									// !!!!!!!! Temporary Solution !!!!!!
 		df.attr("llcols") = llcols;
 		for (const auto x : llcols)
 			setcolattr(df, x, "latlon", vector<bool>(1, llcols[1] - x));
 		constexpr int namescol = 0;											// !!!!!!!! Temporary Solution !!!!!!
-		df.attr("namescol") = namescol;
+		df.attr("namescol") = namescol; */
+	}
+	
+	WayPoint wp(type, df);
+	wp.validate();
+
+	if (type != newtype) {
+/*		switch (type)
+		{
+	    		case CoordType::decdeg:
+				waypointlet<CoordType::decdeg>(df, newtype);
+				break;
+	
+			case CoordType::degmin:
+				waypointlet<CoordType::degmin>(df, newtype);
+				break;
+	
+			case CoordType::degminsec:
+				waypointlet<CoordType::degminsec>(df, newtype);
+				break;
+	
+			default:
+				stop("waypoints(DataFrame, int) my bad");
+		} */
 	}
 
-	switch (type)
-	{
-    		case CoordType::decdeg:
-			waypointlet<CoordType::decdeg>(df, newtype);
-			break;
-
-		case CoordType::degmin:
-			waypointlet<CoordType::degmin>(df, newtype);
-			break;
-
-		case CoordType::degminsec:
-			waypointlet<CoordType::degminsec>(df, newtype);
-			break;
-
-		default:
-			stop("waypoints(DataFrame, int) my bad");
-	}
-
+	df.attr("class") = CharacterVector{"waypoints", "data.frame"};
 	df.attr("fmt") = fmt;
 	return df;
 }
@@ -1297,7 +1303,7 @@ DataFrame waypoints_replace(DataFrame df, int value)
 {
 //	cout << "——Rcpp::export——`waypoints_replace()<-`\n";
 	return waypoints(df, value);
-} */
+}
 
 
 /// __________________________________________________
