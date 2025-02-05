@@ -76,7 +76,7 @@ inline bool check_valid(const NumericVector);
 template<class T>
 bool check_valid(T, const char*);
 
-const vector<bool> validate(const NumericVector&);
+const vector<bool> validate(const NumericVector);
 
 /*
 template<class T>
@@ -915,9 +915,9 @@ bool check_valid(T t, const char* attrname)
 
 /// __________________________________________________
 /// Validate NumericVector
-const vector<bool> validate(const NumericVector& nv)
+const vector<bool> validate(const NumericVector nv)
 {
-//	cout << "@validate(const NumericVector&)\n";
+//	cout << "@validate(const NumericVector)\n";
 	Coord c(get_coordtype(nv), nv);
 	c.validate();
 	return c.get_valid();	
