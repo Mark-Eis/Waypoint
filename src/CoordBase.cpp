@@ -572,7 +572,7 @@ class Coord : public Coordbase {
 		bool waypoint = false;
 
 	public:
-		Coord(CoordType, const NumericVector&);			////////  Does NumericVector& need to be a ref? ///////
+		Coord(CoordType, const NumericVector);
 		Coord(const Coord&) = delete;					// Disallow copying
 		Coord& operator=(const Coord&) = delete;			//  ——— ditto ———
 		Coord(Coord&&) = delete;							// Disallow transfer ownership
