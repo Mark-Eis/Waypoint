@@ -535,7 +535,7 @@ class Coordbase {
 
 		virtual void validate(bool warn = true) const = 0;
 		virtual const FamousFive& get_ff() const = 0;
-		virtual const NumericVector& get_nv() const = 0;
+		virtual const NumericVector get_nv() const = 0;
 		virtual const vector<bool>& get_valid() const = 0;
 		virtual const vector<string>& get_names() const = 0;
 		virtual bool all_valid() const = 0;
@@ -586,7 +586,7 @@ class Coord : public Coordbase {
 
 		void validate(bool warn = true) const;
 		const FamousFive& get_ff() const;
-		const NumericVector& get_nv() const;
+		const NumericVector get_nv() const;
 		const vector<bool>& get_valid() const;
 		const vector<string>& get_names() const;
 		bool all_valid() const;
@@ -649,7 +649,7 @@ inline const FamousFive& Coord::get_ff() const
 
 /// __________________________________________________
 /// Get const reference to nv
-inline const NumericVector& Coord::get_nv() const
+inline const NumericVector Coord::get_nv() const
 {
 //	cout << "@Coord::get_nv()\n";
 	return nv;
@@ -762,7 +762,7 @@ class WayPoint {
 		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
 
 		void validate(bool = true) const;
-		const NumericVector& get_nv(bool) const;
+		const NumericVector get_nv(bool) const;
 		const vector<bool>& get_valid(bool) const;
 		void all_valid() const;
 		vector<string> format() const;
