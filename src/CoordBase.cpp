@@ -60,22 +60,21 @@ class FormatLL;
 
 ostream& operator<<(ostream&, const Coord&);
 
-/*
-
 // waypoint
-template<CoordType type>
 class WayPoint;
+
+/*
 
 template<CoordType type>
 ostream& operator<<(ostream&, const WayPoint<type>&);
 */
 
 // validation
-inline bool check_valid(const NumericVector&);
+inline bool check_valid(const NumericVector);
 // bool check_valid(const DataFrame&);
 
 template<class T>
-bool check_valid(T&, const char*);
+bool check_valid(T, const char*);
 
 const vector<bool> validate(const NumericVector&);
 
@@ -182,6 +181,7 @@ template<class T, class U>
 inline vector<U> get_vec_attr(const T& t, const char* attrname)
 {
 //	cout << "@get_vec_attr<T, U>(const T&, const char*) attr \"" << attrname << "\" " << boolalpha << t.hasAttribute(attrname) << endl;
+	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	return t.hasAttribute(attrname) ? as<vector<U>>(t.attr(attrname)) : vector<U>();
 }
 
@@ -192,6 +192,7 @@ template<class T>
 inline int get_fmt_attribute(const T& t)
 {
 //	cout << "@get_fmt_attribute<T>(const T&) " << as<int>(t.attr("fmt")) << endl;
+	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	return as<int>(t.attr("fmt"));
 }
 
@@ -202,6 +203,7 @@ template<class T>
 inline void checkinherits(T& t, const char* classname)
 {
 //	cout << "checkinherits<T>(T& t, const char* classname) t " << typeid(t).name() << " classname " << classname << endl;
+	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	if (!t.inherits(classname)) stop("Argument must be a \"%s\" object", classname);
 }
 
@@ -212,6 +214,7 @@ template<class T, class V>
 void setcolattr(const T& t, int col, const char* attrib, V&& val)
 {
 //	cout << "@setcolattr<T, V>(const T&, int, const char*, V&&) attrib " << attrib << ", col " << col << endl;
+	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	as<NumericVector>(t[col]).attr(attrib) = std::forward<V>(val);
 }
 
@@ -452,6 +455,7 @@ class FormatLL {
 		FormatLL(const T& _t) : t(_t), ll_it(t.latlon.begin())
 		{
 //			cout << "§FormatLL<T, CoordType>::FormatLL(const T&) "; _ctrsgn(typeid(*this));
+			static_assert(std::is_same<Coord, T>::value || std::is_same<WayPoint, T>::value, "T must be Coord or WayPoint");
 		}
 		~FormatLL() = default;
 //		~FormatLL() { cout << "§FormatLL<T, CoordType>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
@@ -472,6 +476,7 @@ class FormatLL<T, CoordType::decdeg> {
 		FormatLL(const T& _t) : t(_t), ll_it(t.latlon.begin())
 		{
 //			cout << "§FormatLL<T, CoordType::decdeg>::FormatLL(const T&) "; _ctrsgn(typeid(*this));
+			static_assert(std::is_same<Coord, T>::value || std::is_same<WayPoint, T>::value, "T must be Coord or WayPoint");
 		}
 		~FormatLL() = default;
 //		~FormatLL() { cout << "§FormatLL<T, CoordType::decdeg>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
@@ -498,6 +503,7 @@ class Validator {
 		Validator(const T& _t) : t(_t), ll_it(t.latlon.begin())
 		{
 //			cout << "§Validator<T>::Validator(const T&) "; _ctrsgn(typeid(*this));
+			static_assert(std::is_same<Coord, T>::value || std::is_same<WayPoint, T>::value, "T must be Coord or WayPoint");
 		}
 		~Validator() = default;
 //		~Validator() { cout << "§Validator<T>::~Validator() "; _ctrsgn(typeid(*this), true); }
@@ -602,7 +608,7 @@ Coord::Coord(CoordType ct, const NumericVector nv) :
 	names{ get_vec_attr<NumericVector, string>(nv, "names") },
 	llgt1(latlon.size() > 1)
 {
-	cout << "§Coord::Coord(CoordType, const NumericVector&) "; _ctrsgn(typeid(*this));
+	cout << "§Coord::Coord(CoordType, const NumericVector) "; _ctrsgn(typeid(*this));
 }
 
 
@@ -882,9 +888,9 @@ ostream& operator<<(ostream& stream, const WayPoint<type>& wp)
 
 /// __________________________________________________
 /// Check "valid" attribute of NumericVector all true
-inline bool check_valid(const NumericVector& nv)
+inline bool check_valid(const NumericVector nv)
 {
-//	cout << "@check_valid(const NumericVector&)" << endl;
+//	cout << "@check_valid(const NumericVector)" << endl;
 	return check_valid(nv, "valid");
 }
 
@@ -892,9 +898,10 @@ inline bool check_valid(const NumericVector& nv)
 /// __________________________________________________
 /// Check "valid" attribute of object of class T all true
 template<class T>
-bool check_valid(T& t, const char* attrname)
+bool check_valid(T t, const char* attrname)
 {
-//	cout << "@check_valid<T>(T&, const char*)" << endl;
+//	cout << "@check_valid<T>(T, const char*)" << endl;
+	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	const vector<bool>&& valid = get_vec_attr<T, bool>(t, attrname);
 	if (valid.size())
 		return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
@@ -944,8 +951,7 @@ template<class T>
 vector<bool> validate(const T& t)
 {
 //	cout << "@validate<>(const T&)\n";
-
-	// Code to constrain template to DataFrame or NumericVector
+	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 
 	switch (get_coordtype(t))
 	{
