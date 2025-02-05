@@ -83,9 +83,6 @@ template<class T>
 vector<bool> validate(const T&);
 
 template<CoordType type>
-vector<bool> validatelet(const NumericVector&);
-
-template<CoordType type>
 vector<bool> validatelet(const DataFrame&);
 
 template<CoordType type>
@@ -967,17 +964,6 @@ vector<bool> validate(const T& t)
 		default:
 			stop("validate<>(const T&) my bad");
 	}
-}
-
-
-template<CoordType type>
-vector<bool> validatelet(const NumericVector& nv)
-{
-//	cout << "@validatelet(const NumericVector&)\n";
-	Coord<type> c(nv);
-	c.validate();
-	setvalidattr(nv, c);
-	return c.get_valid();	
 }
 
 
