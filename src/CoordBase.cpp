@@ -49,7 +49,6 @@ class Convertor;
 //Coord
 class Coord;
 
-template<class T>
 class Validator;
 
 template<CoordType type>
@@ -63,11 +62,7 @@ ostream& operator<<(ostream&, const Coord&);
 // waypoint
 class WayPoint;
 
-/*
-
-template<CoordType type>
 ostream& operator<<(ostream&, const WayPoint&);
-*/
 
 // validation
 inline bool check_valid(const NumericVector);
@@ -492,24 +487,23 @@ class FormatLL<T, CoordType::decdeg> {
 /// __________________________________________________
 /// Validate Coord functor
 
-template<class T>
 class Validator {
-		const T& t; 
+		const FamousFive& ff;
 		vector<bool>::const_iterator ll_it;
+		const int ll_size;
 	public:
-		Validator(const T& _t) : t(_t), ll_it(t.latlon.begin())
+		Validator(const FamousFive& _ff, const vector<bool>& ll) : ff(_ff), ll_it(ll.begin()), ll_size(ll.size())
 		{
-//			cout << "§Validator<T>::Validator(const T&) "; _ctrsgn(typeid(*this));
-			static_assert(std::is_same<Coord, T>::value || std::is_same<WayPoint, T>::value, "T must be Coord or WayPoint");
+			cout << "§Validator::Validator(const FamousFive&, vector<bool>) "; _ctrsgn(typeid(*this));
 		}
-		~Validator() = default;
-//		~Validator() { cout << "§Validator<T>::~Validator() "; _ctrsgn(typeid(*this), true); }
+//		~Validator() = default;
+		~Validator() { cout << "§Validator::~Validator() "; _ctrsgn(typeid(*this), true); }
 		bool operator()(double n)
 		{
-//			cout << "@Validator<T>() " << " validating: " << setw(9) << setfill(' ') << n << endl;
-			return !((abs(t.ff.get_decdeg(n)) > (t.latlon.size() && (t.llgt1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
-				(abs(t.ff.get_decmin(n)) >= 60) ||
-				(abs(t.ff.get_sec(n)) >= 60));
+			cout << "@Validator() " << " validating: " << setw(9) << setfill(' ') << n << endl;
+			return !((abs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
+				(abs(ff.get_decmin(n)) >= 60) ||
+				(abs(ff.get_sec(n)) >= 60));
 		}
 };
 
@@ -521,6 +515,7 @@ class Coordbase {
 	protected:
 		CoordType ct;
 		const FamousFive& ff;
+		const vector<bool> latlon;
 
 	public:
 		Coordbase(CoordType _ct);
@@ -535,7 +530,7 @@ class Coordbase {
 		virtual const NumericVector get_nv(bool) const = 0;
 		virtual const vector<bool>& get_valid(bool) const = 0;
 //		virtual const vector<string>& get_names() const = 0;
-		virtual bool all_valid() const = 0;
+//		virtual bool all_valid() const = 0;
 //		virtual void set_waypoint() const = 0;
 //		template<CoordType type>
 //		virtual vector<string> format() const = 0;
@@ -543,7 +538,7 @@ class Coordbase {
 
 		template<class T, CoordType type>
 		friend class FormatLL;
-		template<class T>
+//		template<class T>
 		friend class Validator;
 };
 
@@ -594,7 +589,7 @@ class Coord : public Coordbase {
 		const NumericVector get_nv(bool) const;
 		const vector<bool>& get_valid(bool) const;
 		const vector<string>& get_names() const;
-		bool all_valid() const;
+//		bool all_valid() const;
 		void set_waypoint() const;
 		template<CoordType type>
 		vector<string> format() const;
@@ -602,7 +597,7 @@ class Coord : public Coordbase {
 
 		template<class T, CoordType type>
 		friend class FormatLL;
-		template<class T>
+//		template<class T>
 		friend class Validator;
 };
 
@@ -624,8 +619,9 @@ void Coord::validate(bool warn) const
 //	cout << "@Coord::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
 	vector<bool>& non_const_valid { const_cast<vector<bool>&>(valid) };
 	non_const_valid.assign(nv.size(), {false});
-	transform(nv.begin(), nv.end(), non_const_valid.begin(), Validator(*this));
-	if (all_valid())
+	transform(nv.begin(), nv.end(), non_const_valid.begin(), Validator(ff, latlon));
+//	if (all_valid())
+	if (all_of(valid.begin(), valid.end(), [](bool v) { return v;}))
 		non_const_valid.assign({true});
 	else
 		if (warn)
@@ -633,14 +629,14 @@ void Coord::validate(bool warn) const
 	const_cast<NumericVector&>(nv).attr("valid") = valid;
 }
 
-
+/* DEPRECATED!
 /// __________________________________________________
 /// All valid are true
 inline bool Coord::all_valid() const
 {
 //	cout << "@Coord::all_valid()\n";
 	return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
-}
+} */
 
 
 /// __________________________________________________
@@ -760,7 +756,7 @@ class WayPoint : public Coordbase {
 		void validate(bool = true) const;
 		const NumericVector get_nv(bool) const;
 		const vector<bool>& get_valid(bool) const;
-		bool all_valid() const;
+//		bool all_valid() const;
 		template<CoordType type>
 		vector<string> format() const;
 		void print(ostream& stream) const;
@@ -771,7 +767,7 @@ WayPoint::WayPoint(CoordType ct, const DataFrame df) :
 	Coordbase(ct), df(df),
 //	latcol(getllcolsattr(df)[0]),
 //	loncol(getllcolsattr(df)[1])
-	latcol(1), loncol(2),
+	latcol(1), loncol(2),											/////// !!!!!!! Temporary Solution !!!!!!! ///////
 	nvlat(df[latcol]), nvlon(df[loncol])
 {
 	cout << "§WayPoint::WayPoint(CoordType ct, const DataFrame) "; _ctrsgn(typeid(*this));
@@ -783,12 +779,28 @@ WayPoint::WayPoint(CoordType ct, const DataFrame df) :
 void WayPoint::validate(bool warn) const
 {
 	cout << "@WayPoint::validate(bool)\n";
-	NumericVector nvlat(df[latcol]);
-	NumericVector nvlon(df[loncol]);
-	Coord c_lat(ct, nvlat);
-	Coord c_lon(ct, nvlon);
-	c_lat.validate(warn);
-	c_lon.validate(warn);
+
+	vector<bool>& non_const_validlat { const_cast<vector<bool>&>(validlat) };
+	non_const_validlat.assign(nvlat.size(), {false});
+	transform(nvlat.begin(), nvlat.end(), non_const_validlat.begin(), Validator(ff, vector<bool>{ true }));
+
+	vector<bool>& non_const_validlon { const_cast<vector<bool>&>(validlon) };
+	non_const_validlon.assign(nvlat.size(), {false});
+	transform(nvlat.begin(), nvlat.end(), non_const_validlon.begin(), Validator(ff, vector<bool>{ false }));
+
+	if (all_of(validlat.begin(), validlat.end(), [](bool v) { return v;}))
+		non_const_validlat.assign({true});
+	else
+		if (warn)
+			warning("Validation of latitude failed!");
+	const_cast<DataFrame&>(df).attr("validlat") = validlat;
+
+	if (all_of(validlon.begin(), validlon.end(), [](bool v) { return v;}))
+		non_const_validlon.assign({true});
+	else
+		if (warn)
+			warning("Validation of latitude failed!");
+	const_cast<DataFrame&>(df).attr("validlon") = validlon;
 }
 
 
@@ -809,15 +821,6 @@ const vector<bool>& WayPoint::get_valid(bool latlon) const
 	return latlon ? validlat : validlon;
 }
 
-
-/// __________________________________________________
-/// All valid are true
-inline bool WayPoint::all_valid() const
-{
-//	cout << "@WayPoint::all_valid()\n";
-//	return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
-	return true;									/////// !!!!!!! Temporary Solution !!!!!!! ///////
-}
 
 /*
 /// __________________________________________________
