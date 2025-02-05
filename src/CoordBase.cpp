@@ -515,11 +515,55 @@ class Validator {
 
 /// __________________________________________________
 /// __________________________________________________
-/// Coordinate class
-class Coord {
+/// Coord base class
+class Coordbase {
 	protected:
 		CoordType ct;
 		const FamousFive& ff;
+
+	public:
+		Coordbase(CoordType _ct);
+		Coordbase(const Coordbase&) = delete;						// Disallow copying
+		Coordbase& operator=(const Coordbase&) = delete;				//  ——— ditto ———
+		Coordbase(Coordbase&&) = delete;								// Disallow transfer ownership
+		Coordbase& operator=(Coordbase&&) = delete;					// Disallow moving
+		virtual ~Coordbase() = 0;
+
+		virtual void validate(bool warn = true) const = 0;
+		virtual const FamousFive& get_ff() const = 0;
+		virtual const NumericVector& get_nv() const = 0;
+		virtual const vector<bool>& get_valid() const = 0;
+		virtual const vector<string>& get_names() const = 0;
+		virtual bool all_valid() const = 0;
+		virtual void set_waypoint() const = 0;
+//		template<CoordType type>
+//		virtual vector<string> format() const = 0;
+		virtual void print(ostream&) const = 0;
+
+		template<class T, CoordType type>
+		friend class FormatLL;
+		template<class T>
+		friend class Validator;
+};
+
+
+Coordbase::Coordbase(CoordType _ct) :
+	ct(_ct), ff(*vff[coordtype_to_int(ct)])
+{
+	cout << "§Coordbase::Coordbase(CoordType) "; _ctrsgn(typeid(*this));
+}
+
+
+Coordbase::~Coordbase()
+{
+	cout << "§Coordbase::~Coordbase() "; _ctrsgn(typeid(*this), true);
+}
+
+
+/// __________________________________________________
+/// Coordinate derived class
+class Coord : public Coordbase {
+	protected:
 		const NumericVector nv;
 		const vector<bool> valid { false };
 		const vector<bool> latlon;
@@ -528,13 +572,13 @@ class Coord {
 		bool waypoint = false;
 
 	public:
-		Coord(const NumericVector&, CoordType _ct);
+		Coord(CoordType, const NumericVector&);			////////  Does NumericVector& need to be a ref? ///////
 		Coord(const Coord&) = delete;					// Disallow copying
 		Coord& operator=(const Coord&) = delete;			//  ——— ditto ———
 		Coord(Coord&&) = delete;							// Disallow transfer ownership
 		Coord& operator=(Coord&&) = delete;				// Disallow moving
-		~Coord() = default;
-//		~Coord() { cout << "§Coord::~Coord() "; _ctrsgn(typeid(*this), true); }
+//		~Coord() = default;
+		~Coord() { cout << "§Coord::~Coord() "; _ctrsgn(typeid(*this), true); }
 
 		void validate(bool warn = true) const;
 		const FamousFive& get_ff() const;
@@ -554,13 +598,13 @@ class Coord {
 };
 
 
-Coord::Coord(const NumericVector& nv, CoordType _ct) :
-	ct(_ct), ff(*vff[coordtype_to_int(ct)]), nv(nv),
+Coord::Coord(CoordType ct, const NumericVector nv) :
+	Coordbase(ct), nv(nv),
 	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") },
 	names{ get_vec_attr<NumericVector, string>(nv, "names") },
 	llgt1(latlon.size() > 1)
 {
-//	cout << "§Coord::Coord(const NumericVector&, CoordType) "; _ctrsgn(typeid(*this));
+	cout << "§Coord::Coord(CoordType, const NumericVector&) "; _ctrsgn(typeid(*this));
 }
 
 
@@ -739,8 +783,8 @@ void WayPoint::validate(bool warn) const
 //	cout << "@WayPoint::validate(bool)\n";
 	NumericVector nvlat(df[latcol]);
 	NumericVector nvlon(df[loncol]);
-	Coord c_lat(nvlat, ct);
-	Coord c_lon(nvlon, ct);
+	Coord c_lat(ct, nvlat);
+	Coord c_lon(ct, nvlon);
 	c_lat.validate(warn);
 	c_lon.validate(warn);
 }
@@ -880,7 +924,7 @@ bool check_valid(T& t, const char* attrname)
 const vector<bool> validate(const NumericVector& nv)
 {
 //	cout << "@validate(const NumericVector&)\n";
-	Coord c(nv, get_coordtype(nv));
+	Coord c(get_coordtype(nv), nv);
 	c.validate();
 	return c.get_valid();	
 }
@@ -1059,7 +1103,7 @@ NumericVector coords(NumericVector nv, const int fmt = 1)
 	} else
 		type = newtype;
 
-	Coord c(nv, type);
+	Coord c(type, nv);
 	c.validate();
 
 	if (type != newtype) {
@@ -1123,7 +1167,7 @@ NumericVector printcoord(NumericVector nv)
 	checkinherits(nv, "coords");
 	if (!check_valid(nv))
 		warning("Printing invalid coords!");
-	Rcout << Coord(nv, get_coordtype(nv));
+	Rcout << Coord(get_coordtype(nv), nv);
 	return nv;
 }
 
@@ -1148,7 +1192,7 @@ vector<string> formatcoord(NumericVector nv)
 	checkinherits(nv, "coords");
 	if (!check_valid(nv))
 		warning("Formatting invalid coords!");
-	Coord c(nv, get_coordtype(nv));
+	Coord c(get_coordtype(nv), nv);
 
 	switch (get_coordtype(nv))
 	{
