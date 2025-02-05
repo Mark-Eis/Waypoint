@@ -483,7 +483,7 @@ class FormatLL<Coord, CoordType::decdeg> {
 };
 
 /// __________________________________________________
-/// Specialised functor for decimal degrees waypoint
+/// Specialised functor for decimal degrees WayPoint
 template<>
 class FormatLL<WayPoint, CoordType::decdeg> {
 		vector<bool>::const_iterator ll_it;
@@ -850,10 +850,10 @@ vector<string> WayPoint::format() const
 	cout << "@WayPoint::format()\n";
 	vector<string> sv_lat(df.nrows());
 	transform(nvlat.begin(), nvlat.end(), sv_lat.begin(), Format<type>(ff));
+	transform(sv_lat.begin(), sv_lat.end(), nvlat.begin(), sv_lat.begin(), FormatLL<WayPoint, type>(ff, vector<bool>{ true }));
 	vector<string> sv_lon(df.nrows());
 	transform(nvlon.begin(), nvlon.end(), sv_lon.begin(), Format<type>(ff));
-
-	// FormatLL goes here…
+	transform(sv_lon.begin(), sv_lon.end(), nvlon.begin(), sv_lon.begin(), FormatLL<WayPoint, type>(ff, vector<bool>{ false }));
 
 	vector<string> out(sv_lat.size());
 	transform(
