@@ -441,20 +441,21 @@ inline string Format<CoordType::degminsec>::operator()(double n)
 /// Default functor for degrees, minutes (and seconds)
 template<class T, CoordType type>
 class FormatLL {
-		const T& t; 
+		const FamousFive& ff; 
 		vector<bool>::const_iterator ll_it;
+		const int ll_size;
 	public:
-		FormatLL(const T& _t) : t(_t), ll_it(t.latlon.begin())
+		FormatLL(const FamousFive& _ff, const vector<bool>& ll) : ff(_ff), ll_it(ll.begin()), ll_size(ll.size())
 		{
-//			cout << "§FormatLL<T, CoordType>::FormatLL(const T&) "; _ctrsgn(typeid(*this));
+			cout << "§FormatLL<T, CoordType>::FormatLL(const FamousFive&, vector<bool>&) "; _ctrsgn(typeid(*this));
 			static_assert(std::is_same<Coord, T>::value || std::is_same<WayPoint, T>::value, "T must be Coord or WayPoint");
 		}
-		~FormatLL() = default;
-//		~FormatLL() { cout << "§FormatLL<T, CoordType>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
+//		~FormatLL() = default;
+		~FormatLL() { cout << "§FormatLL<T, CoordType>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
 		string operator()(string ostr, double n)
 		{
-//			cout << "@FormatLL<T, CoordType>::operator(string, double) [default for CoordType::degmin and CoordType::degminsec]\n";
-			return ostr += t.latlon.size() ? cardpoint(t.ff.get_decmin(n) < 0, t.llgt1 ? *ll_it++ : *ll_it) : cardi_b(t.ff.get_decmin(n) < 0);
+			cout << "@FormatLL<T, CoordType>::operator(string, double) [default for CoordType::degmin and CoordType::degminsec]\n";
+			return ostr += ll_size ? cardpoint(ff.get_decmin(n) < 0, ll_size > 1 ? *ll_it++ : *ll_it) : cardi_b(ff.get_decmin(n) < 0);
 		}
 };
 
@@ -462,21 +463,22 @@ class FormatLL {
 /// Specialised functor for decimal degrees
 template<class T>
 class FormatLL<T, CoordType::decdeg> {
-		const T& t; 
 		vector<bool>::const_iterator ll_it;
+		const int ll_size;
 	public:
-		FormatLL(const T& _t) : t(_t), ll_it(t.latlon.begin())
+		FormatLL(const FamousFive& _ff, const vector<bool>& ll) : ll_it(ll.begin()), ll_size(ll.size())
 		{
-//			cout << "§FormatLL<T, CoordType::decdeg>::FormatLL(const T&) "; _ctrsgn(typeid(*this));
+			cout << "§FormatLL<T, CoordType::decdeg>::FormatLL(const FamousFive&, vector<bool>&) "; _ctrsgn(typeid(*this));
 			static_assert(std::is_same<Coord, T>::value || std::is_same<WayPoint, T>::value, "T must be Coord or WayPoint");
 		}
-		~FormatLL() = default;
-//		~FormatLL() { cout << "§FormatLL<T, CoordType::decdeg>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
+//		~FormatLL() = default;
+		~FormatLL() { cout << "§FormatLL<T, CoordType::decdeg>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
 		string operator()(string ostr, double n)
 		{
-//			cout << "@FormatLL<T, CoordType::decdeg>::operator(string, double) t.waypoint " << boolalpha << t.waypoint << endl;
-			if (t.latlon.size() && !t.waypoint)
-				return ostr += ((t.llgt1 ? *ll_it++ : *ll_it) ? " lat" : " lon");
+			cout << "@FormatLL<T, CoordType::decdeg>::operator(string, double)\n";
+//			if (ll_size && !t.waypoint)
+			if (ll_size)
+				return ostr += ((ll_size > 1 ? *ll_it++ : *ll_it) ? " lat" : " lon");
 			else
 				return ostr;
 		}
@@ -494,13 +496,13 @@ class Validator {
 	public:
 		Validator(const FamousFive& _ff, const vector<bool>& ll) : ff(_ff), ll_it(ll.begin()), ll_size(ll.size())
 		{
-			cout << "§Validator::Validator(const FamousFive&, vector<bool>) "; _ctrsgn(typeid(*this));
+			cout << "§Validator::Validator(const FamousFive&, vector<bool>&) "; _ctrsgn(typeid(*this));
 		}
 //		~Validator() = default;
 		~Validator() { cout << "§Validator::~Validator() "; _ctrsgn(typeid(*this), true); }
 		bool operator()(double n)
 		{
-			cout << "@Validator() " << " validating: " << setw(9) << setfill(' ') << n << endl;
+//			cout << "@Validator() " << " validating: " << setw(9) << setfill(' ') << n << endl;
 			return !((abs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
 				(abs(ff.get_decmin(n)) >= 60) ||
 				(abs(ff.get_sec(n)) >= 60));
@@ -669,7 +671,7 @@ vector<string> Coord::format() const
 //	cout << "@Coord::format<CoordType>() " << typeid(*this).name() << endl;
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), Format<type>(ff));
-	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<Coord, type>(*this));
+	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<Coord, type>(ff, latlon));
 	return out;
 }
 
