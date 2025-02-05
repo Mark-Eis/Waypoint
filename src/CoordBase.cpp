@@ -460,27 +460,45 @@ class FormatLL {
 };
 
 /// __________________________________________________
-/// Specialised functor for decimal degrees
-template<class T>
-class FormatLL<T, CoordType::decdeg> {
+/// Specialised functor for decimal degrees Coord
+template<>
+class FormatLL<Coord, CoordType::decdeg> {
 		vector<bool>::const_iterator ll_it;
 		const int ll_size;
 	public:
 		FormatLL(const FamousFive& _ff, const vector<bool>& ll) : ll_it(ll.begin()), ll_size(ll.size())
 		{
-			cout << "§FormatLL<T, CoordType::decdeg>::FormatLL(const FamousFive&, vector<bool>&) "; _ctrsgn(typeid(*this));
-			static_assert(std::is_same<Coord, T>::value || std::is_same<WayPoint, T>::value, "T must be Coord or WayPoint");
+			cout << "§FormatLL<Coord, CoordType::decdeg>::FormatLL(const FamousFive&, vector<bool>&) "; _ctrsgn(typeid(*this));
 		}
 //		~FormatLL() = default;
-		~FormatLL() { cout << "§FormatLL<T, CoordType::decdeg>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
+		~FormatLL() { cout << "§FormatLL<Coord, CoordType::decdeg>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
 		string operator()(string ostr, double n)
 		{
-			cout << "@FormatLL<T, CoordType::decdeg>::operator(string, double)\n";
-//			if (ll_size && !t.waypoint)
+			cout << "@FormatLL<Coord, CoordType::decdeg>::operator(string, double)\n";
 			if (ll_size)
 				return ostr += ((ll_size > 1 ? *ll_it++ : *ll_it) ? " lat" : " lon");
 			else
 				return ostr;
+		}
+};
+
+/// __________________________________________________
+/// Specialised functor for decimal degrees waypoint
+template<>
+class FormatLL<WayPoint, CoordType::decdeg> {
+		vector<bool>::const_iterator ll_it;
+		const int ll_size;
+	public:
+		FormatLL(const FamousFive& _ff, const vector<bool>& ll) : ll_it(ll.begin()), ll_size(ll.size())
+		{
+			cout << "§FormatLL<WayPoint, CoordType::decdeg>::FormatLL(const FamousFive&, vector<bool>&) "; _ctrsgn(typeid(*this));
+		}
+//		~FormatLL() = default;
+		~FormatLL() { cout << "§FormatLL<WayPoint, CoordType::decdeg>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
+		string operator()(string ostr, double n)
+		{
+			cout << "@FormatLL<WayPoint, CoordType::decdeg>::operator(string, double)\n";
+			return ostr;
 		}
 };
 
