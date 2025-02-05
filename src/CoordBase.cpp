@@ -66,7 +66,7 @@ class WayPoint;
 /*
 
 template<CoordType type>
-ostream& operator<<(ostream&, const WayPoint<type>&);
+ostream& operator<<(ostream&, const WayPoint&);
 */
 
 // validation
@@ -530,13 +530,13 @@ class Coordbase {
 		Coordbase& operator=(Coordbase&&) = delete;					// Disallow moving
 		virtual ~Coordbase() = 0;
 
+		const FamousFive& get_ff() const;
 		virtual void validate(bool warn = true) const = 0;
-		virtual const FamousFive& get_ff() const = 0;
-		virtual const NumericVector get_nv() const = 0;
-		virtual const vector<bool>& get_valid() const = 0;
-		virtual const vector<string>& get_names() const = 0;
+		virtual const NumericVector get_nv(bool) const = 0;
+		virtual const vector<bool>& get_valid(bool) const = 0;
+//		virtual const vector<string>& get_names() const = 0;
 		virtual bool all_valid() const = 0;
-		virtual void set_waypoint() const = 0;
+//		virtual void set_waypoint() const = 0;
 //		template<CoordType type>
 //		virtual vector<string> format() const = 0;
 		virtual void print(ostream&) const = 0;
@@ -562,6 +562,15 @@ Coordbase::~Coordbase()
 
 
 /// __________________________________________________
+/// Get const reference to ff
+inline const FamousFive& Coordbase::get_ff() const
+{
+//	cout << "@Coordbase::get_ff()\n";
+	return ff;
+}
+
+
+/// __________________________________________________
 /// Coordinate derived class
 class Coord : public Coordbase {
 	protected:
@@ -582,9 +591,8 @@ class Coord : public Coordbase {
 		~Coord() { cout << "§Coord::~Coord() "; _ctrsgn(typeid(*this), true); }
 
 		void validate(bool warn = true) const;
-		const FamousFive& get_ff() const;
-		const NumericVector get_nv() const;
-		const vector<bool>& get_valid() const;
+		const NumericVector get_nv(bool) const;
+		const vector<bool>& get_valid(bool) const;
 		const vector<string>& get_names() const;
 		bool all_valid() const;
 		void set_waypoint() const;
@@ -636,17 +644,8 @@ inline bool Coord::all_valid() const
 
 
 /// __________________________________________________
-/// Get const reference to ff
-inline const FamousFive& Coord::get_ff() const
-{
-//	cout << "@Coord::get_ff()\n";
-	return ff;
-}
-
-
-/// __________________________________________________
 /// Get const reference to nv
-inline const NumericVector Coord::get_nv() const
+inline const NumericVector Coord::get_nv(bool ll = true) const
 {
 //	cout << "@Coord::get_nv()\n";
 	return nv;
@@ -655,7 +654,7 @@ inline const NumericVector Coord::get_nv() const
 
 /// __________________________________________________
 /// Get const reference to valid
-inline const vector<bool>& Coord::get_valid() const
+inline const vector<bool>& Coord::get_valid(bool ll = true) const
 {
 //	cout << "@Coord::get_valid()\n";
 	return valid;
@@ -740,17 +739,17 @@ ostream& operator<<(ostream& stream, const Coord& c)
 /// __________________________________________________
 /// Waypoint class
 
-class WayPoint {
+class WayPoint : public Coordbase {
 	protected:
-		CoordType ct;
 		const DataFrame df;
-		const FamousFive& ff;
-		const int latcol = 1;
-		const int loncol = 2;
+		const int latcol;
+		const int loncol;
+		const NumericVector nvlat;
+		const NumericVector nvlon;
 		const vector<bool> validlat { false };
 		const vector<bool> validlon { false };
 	public:
-		explicit WayPoint(const DataFrame, CoordType);
+		explicit WayPoint(CoordType, const DataFrame);
 		WayPoint(const WayPoint&) = delete;					// Disallow copying
 		WayPoint& operator=(const WayPoint&) = delete;		//  ——— ditto ———
 		WayPoint(WayPoint&&) = delete;						// Disallow transfer ownership
@@ -761,19 +760,21 @@ class WayPoint {
 		void validate(bool = true) const;
 		const NumericVector get_nv(bool) const;
 		const vector<bool>& get_valid(bool) const;
-		void all_valid() const;
+		bool all_valid() const;
+		template<CoordType type>
 		vector<string> format() const;
 		void print(ostream& stream) const;
 };
 
 
-WayPoint::WayPoint(const DataFrame _df, CoordType _ct) :
-	ct(_ct), df(_df),
-	ff(*vff[coordtype_to_int(ct)])
+WayPoint::WayPoint(CoordType ct, const DataFrame df) :
+	Coordbase(ct), df(df),
 //	latcol(getllcolsattr(df)[0]),
 //	loncol(getllcolsattr(df)[1])
+	latcol(1), loncol(2),
+	nvlat(df[latcol]), nvlon(df[loncol])
 {
-//	cout << "§WayPoint::WayPoint(const DataFrame) "; _ctrsgn(typeid(*this));
+	cout << "§WayPoint::WayPoint(CoordType ct, const DataFrame) "; _ctrsgn(typeid(*this));
 }
 
 
@@ -781,7 +782,7 @@ WayPoint::WayPoint(const DataFrame _df, CoordType _ct) :
 /// Validate WayPoint
 void WayPoint::validate(bool warn) const
 {
-//	cout << "@WayPoint::validate(bool)\n";
+	cout << "@WayPoint::validate(bool)\n";
 	NumericVector nvlat(df[latcol]);
 	NumericVector nvlon(df[loncol]);
 	Coord c_lat(ct, nvlat);
@@ -791,35 +792,39 @@ void WayPoint::validate(bool warn) const
 }
 
 
-/**************************
-
-
 /// __________________________________________________
-/// Get const reference to c_lat or c_lon
-template<CoordType type>
-inline const Coord<type>& WayPoint<type>::get_c(bool latlon) const
+/// Get const reference to nv
+inline const NumericVector WayPoint::get_nv(bool ll = true) const
 {
-//	cout << "@WayPoint<type>::get_c(bool) const\n";
-	return latlon ? c_lat : c_lon;
+//	cout << "@WayPoint::get_nv(bool)\n";
+	return df[ll ? latcol : loncol];
 }
 
 
 /// __________________________________________________
 /// WayPoint validity
-template<CoordType type>
-const vector<bool>& WayPoint<type>::get_valid(bool latlon) const
+const vector<bool>& WayPoint::get_valid(bool latlon) const
 {
-//	cout << "@WayPoint<type>::get_valid(bool) latlon " << boolalpha << latlon << endl;
+//	cout << "@WayPoint::get_valid(bool) latlon " << boolalpha << latlon << endl;
 	return latlon ? validlat : validlon;
 }
 
 
 /// __________________________________________________
-/// WayPoint validity warning
-template<CoordType type>
-void WayPoint<type>::warn_invalid() const
+/// All valid are true
+inline bool WayPoint::all_valid() const
 {
-//	cout << "@WayPoint<type>::warn_invalid()\n";
+//	cout << "@WayPoint::all_valid()\n";
+//	return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
+	return true;									/////// !!!!!!! Temporary Solution !!!!!!! ///////
+}
+
+/*
+/// __________________________________________________
+/// WayPoint validity warning
+void WayPoint::warn_invalid() const
+{
+//	cout << "@WayPoint::warn_invalid()\n";
 	if (any_of(validlat.begin(), validlat.end(), [](bool v) { return !v;})) {
 		warning("Invalid latitude");
 	}
@@ -827,56 +832,83 @@ void WayPoint<type>::warn_invalid() const
 		warning("Invalid longitude");
 	}
 }
-
+*/
 
 /// __________________________________________________
 /// Formatted character strings for printing
 template<CoordType type>
-vector<string> WayPoint<type>::format() const
+vector<string> WayPoint::format() const
 {
-//	cout << "@WayPoint<type>::format()\n";
-	vector<string> sv_lat{ c_lat.format() };
-	vector<string> sv_lon{ c_lon.format() };
+	cout << "@WayPoint::format()\n";
+	vector<string> sv_lat(df.nrows());
+	transform(nvlat.begin(), nvlat.end(), sv_lat.begin(), Format<type>(ff));
+	vector<string> sv_lon(df.nrows());
+	transform(nvlon.begin(), nvlon.end(), sv_lon.begin(), Format<type>(ff));
+
+	// FormatLL goes here…
+
 	vector<string> out(sv_lat.size());
 	transform(
 		sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(),
 		[](string& latstr, string& lonstr) { return latstr + "  " + lonstr; }
 	);
-	vector<string> names { as<vector<string>>(df[as<int>(df.attr("namescol"))]) };	/////// !!! revise this !!! ///////
+/*	vector<string> names { as<vector<string>>(df[as<int>(df.attr("namescol"))]) };	/////// !!! revise this !!! ///////
 	transform(
 		out.begin(), out.end(), names.begin(), out.begin(),
 		[](string& lls, const string& name) { return lls + "  " + name; }
-	);
+	); */
 	return out;
 }
 
 
 /// __________________________________________________
 /// Print WayPoint
-template<CoordType type>
-void WayPoint<type>::print(ostream& stream) const
+void WayPoint::print(ostream& stream) const
 {
-//	cout << "@WayPoint<type>::print() " << typeid(*this).name() << endl;
-	const int i { coordtype_to_int(type) };
+//	cout << "@WayPoint::print() " << typeid(*this).name() << endl;
+	const int i { coordtype_to_int(ct) };
 	vector<int> spacing { 5, 7, 8, 11, 13, 14, 2, 2, 2 };
 	stream << " Latitude" << string(spacing[i], ' ') << "Longitude\n"
 		   << string(1, ' ') << string(spacing[i + 3], '_')
 		   << string(spacing[i + 6], ' ') << string(spacing[i + 3] + 1, '_') << endl;
-	vector<string> sv(format());
-	for_each(sv.begin(), sv.end(), [&stream](const string& s) { stream << s << "\n"; });
+
+	vector<string> sv; 
+	switch (ct)
+	{
+		case CoordType::decdeg:
+			sv = format<CoordType::decdeg>();
+			break;
+
+		case CoordType::degmin:
+			sv = format<CoordType::degmin>();
+			break;
+
+		case CoordType::degminsec:
+			sv = format<CoordType::degminsec>();
+			break;
+
+		default:
+			stop("WayPoint::print(ostream&) my bad");
+	}
+
+/*	if (names.size()) {
+		vector<string>::const_iterator nm_it(names.begin());
+		for_each(sv.begin(), sv.end(),
+			[&stream,& nm_it](const string& s) { stream << s << " " << *nm_it++ << "\n"; });
+	} else */
+		for_each(sv.begin(), sv.end(), [&stream](const string& s) { stream << s << "\n"; });
 }
 
 
 /// __________________________________________________
 /// Output WayPoint to ostream
-template<CoordType type>
-ostream& operator<<(ostream& stream, const WayPoint<type>& wp)
+ostream& operator<<(ostream& stream, const WayPoint& wp)
 {
-//	cout << "@operator<<(ostream&, const WayPoint<type>&)\n";
+//	cout << "@operator<<(ostream&, const WayPoint&)\n";
 	wp.print(stream);
 	return stream;
 }
-*/
+
 
 
 /// __________________________________________________
@@ -1182,89 +1214,17 @@ vector<string> formatcoord(NumericVector nv)
 }
 
 
-/*
-/// __________________________________________________
-/// Return degrees as integer
-// [[Rcpp::export]]
-vector<int> get_deg(NumericVector nv)
-{
-//	cout << "——Rcpp::export——get_deg()\n";
-	checkinherits(nv, "coords");
-	unique_ptr<const CoordBase> c{newconstCoordBase(nv, get_coordtype(nv))};
-	vector<int> out(nv.size());
-	transform(nv.begin(), nv.end(), out.begin(), [&c](double n) { return c->get_deg(n); });
-	return out;
-}
-
-
-/// __________________________________________________
-/// Return decimal degrees as double
-// [[Rcpp::export]]
-vector<double> get_decdeg(NumericVector nv)
-{
-//	cout << "——Rcpp::export——get_decdeg()\n";
-	checkinherits(nv, "coords");
-	unique_ptr<const CoordBase> c{newconstCoordBase(nv, get_coordtype(nv))};
-	vector<double> out(nv.size());
-	transform(nv.begin(), nv.end(), out.begin(), [&c](double n) { return c->get_decdeg(n); });
-	return out;
-}
-
-
-/// __________________________________________________
-/// Return minutes as integer
-// [[Rcpp::export]]
-vector<int> get_min(NumericVector nv)
-{
-//	cout << "——Rcpp::export——get_min()\n";
-	checkinherits(nv, "coords");
-	unique_ptr<const CoordBase> c{newconstCoordBase(nv, get_coordtype(nv))};
-	vector<int> out(nv.size());
-	transform(nv.begin(), nv.end(), out.begin(), [&c](double n) { return c->get_min(n); });
-	return out;
-}
-
-
-/// __________________________________________________
-/// Return decimal minutes as double
-// [[Rcpp::export]]
-vector<double> get_decmin(NumericVector nv)
-{
-//	cout << "——Rcpp::export——get_decmin()\n";
-	checkinherits(nv, "coords");
-	unique_ptr<const CoordBase> c{newconstCoordBase(nv, get_coordtype(nv))};
-	vector<double> out(nv.size());
-	transform(nv.begin(), nv.end(), out.begin(), [&c](double n) { return c->get_decmin(n); });
-	return out;
-}
-
-
-/// __________________________________________________
-/// Return decimal seconds as double
-// [[Rcpp::export]]
-vector<double> get_sec(NumericVector nv)
-{
-//	cout << "——Rcpp::export——get_sec()\n";
-	checkinherits(nv, "coords");
-	unique_ptr<const CoordBase> c{newconstCoordBase(nv, get_coordtype(nv))};
-	vector<double> out(nv.size());
-	transform(nv.begin(), nv.end(), out.begin(), [&c](double n) { return c->get_sec(n); });
-	return out;
-}
-*/
-
-
 /// __________________________________________________
 /// dummy() exported function
 // [[Rcpp::export]]
 DataFrame dummy(DataFrame df, int fmt)
 {
-//	cout << "——Rcpp::export——`dummy(DataFrame, int)`\n";
+	cout << "——Rcpp::export——`dummy(DataFrame, int)`\n";
 	CoordType newtype = get_coordtype(fmt);
-	WayPoint wp(df, newtype);
+	WayPoint wp(newtype, df);
 	wp.validate();
 //	wp.warn_invalid();
-//	cout << wp;
+	cout << wp;
 	df.attr("fmt") = fmt;
 	return df;
 }
