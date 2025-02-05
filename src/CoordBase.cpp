@@ -71,8 +71,6 @@ ostream& operator<<(ostream&, const WayPoint<type>&);
 */
 
 // validation
-inline bool validcoord(NumericVector&);
-
 inline bool check_valid(const NumericVector&);
 // bool check_valid(const DataFrame&);
 
@@ -875,23 +873,12 @@ ostream& operator<<(ostream& stream, const WayPoint<type>& wp)
 	wp.print(stream);
 	return stream;
 }
-
 */
 
 
 /// __________________________________________________
 /// __________________________________________________
 /// Validation functions
-
-/// __________________________________________________
-/// Has R coords object been validated?
-inline bool validcoord(NumericVector& nv)
-{
-//	cout << "@validcoord(NumericVector&)\n";
-	LogicalVector lv { as<LogicalVector>(nv.attr("valid")) };
-	return 1 == lv.size() && lv[0];
-}
-
 
 /// __________________________________________________
 /// Check "valid" attribute of NumericVector all true
