@@ -84,6 +84,10 @@ template<CoordType type>
 void setvalidattr(const DataFrame&, WayPoint<type>&);
 */
 
+// Conversion
+template<class T, class U>
+void convert(T, CoordType newtype);
+
 // exported
 NumericVector coords(NumericVector, const int);
 NumericVector coords_replace(NumericVector, int);
@@ -988,7 +992,7 @@ bool check_valid(const DataFrame& df)
 template<class T>
 vector<bool> validate(const T& t)
 {
-//	cout << "@validate<>(const T&)\n";
+//	cout << "@validate<T>(const T&)\n";
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 
 	switch (get_coordtype(t))
@@ -1033,6 +1037,50 @@ void setvalidattr(const DataFrame& df, WayPoint<type>& wp)
 
 /// __________________________________________________
 /// __________________________________________________
+/// Conversion function
+
+/// __________________________________________________
+/// Convert NumericVector or DataFrame
+template<class T, class U>
+void convert(T t, CoordType newtype)
+{
+	cout << "@convert<T&, U>(const T&, U)\n";
+	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
+
+	CoordType type = get_coordtype(t);
+//	U u(type, t);
+//	u.validate();
+
+	Coord u(type, t);
+	u.validate();
+
+//	typename convert U::convert;
+
+	if (type != newtype) {
+		switch (newtype)
+		{
+			case CoordType::decdeg:
+				u.convert<CoordType::decdeg>(t);
+				break;
+
+			case CoordType::degmin:
+				u.convert<CoordType::degmin>(t);
+				break;
+
+			case CoordType::degminsec:
+				u.convert<CoordType::degminsec>(t);
+				break;
+
+			default:
+				stop("convert<T&, U>(const T&, U) my bad");
+		}
+		t.attr("fmt") = coordtype_to_int(newtype) + 1;
+	}
+}
+
+
+/// __________________________________________________
+/// __________________________________________________
 /// Exported functions
 
 /// __________________________________________________
@@ -1041,21 +1089,25 @@ void setvalidattr(const DataFrame& df, WayPoint<type>& wp)
 // [[Rcpp::export]]
 NumericVector coords(NumericVector nv, const int fmt = 1)
 {
-//	cout << "——Rcpp::export——coords()\n";
+	cout << "——Rcpp::export——coords()\n";
 	CoordType newtype = get_coordtype(fmt);
 	CoordType type;
 	if (nv.inherits("coords")) {
 		type = get_coordtype(nv);
-//		cout <<  "@coords() nv is already a \"coords\" vector of type " << coordtype_to_int(type) + 1 << endl;
+		cout <<  "@coords() nv is already a \"coords\" vector of type " << coordtype_to_int(type) + 1 << endl;
 		if (newtype == type) {
-//			cout << "——fmt out == fmt in!——" << endl;
+			cout << "——fmt out == fmt in!——" << endl;
 			if (!check_valid(nv))
 				stop("Invalid coords!");
 			return nv;
 		}
-	} else
+	} else {
 		type = newtype;
+		nv.attr("fmt") = fmt;
+	}
 
+	convert<NumericVector, Coord>(nv, newtype);
+/*
 	Coord c(type, nv);
 	c.validate();
 
@@ -1080,6 +1132,8 @@ NumericVector coords(NumericVector nv, const int fmt = 1)
 	}
 
 	nv.attr("fmt") = fmt;
+*/
+
 	nv.attr("class") = "coords";
 	return nv;
 }
