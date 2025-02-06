@@ -59,7 +59,7 @@ class FormatLL;
 
 ostream& operator<<(ostream&, const Coord&);
 
-// waypoint
+// WayPoint
 class WayPoint;
 
 ostream& operator<<(ostream&, const WayPoint&);
@@ -544,7 +544,6 @@ class Coordbase {
 		virtual void validate(bool warn = true) const = 0;
 		virtual const vector<bool>& get_valid(bool) const = 0;
 //		virtual const vector<string>& get_names() const = 0;
-//		virtual void set_waypoint() const = 0;
 //		template<CoordType type>
 //		virtual vector<string> format() const = 0;
 		virtual void print(ostream&) const = 0;
@@ -586,7 +585,6 @@ class Coord : public Coordbase {
 		const vector<bool> latlon;
 		const vector<string> names;
 		const bool llgt1 = false;
-		bool waypoint = false;
 
 	public:
 		Coord(CoordType, const NumericVector);
@@ -601,7 +599,6 @@ class Coord : public Coordbase {
 		const NumericVector get_nv() const;
 		const vector<bool>& get_valid(bool) const;
 		const vector<string>& get_names() const;
-		void set_waypoint() const;
 		template<CoordType type>
 		vector<string> format() const;
 		void print(ostream&) const;
@@ -663,16 +660,6 @@ inline const vector<bool>& Coord::get_valid(bool ll = true) const
 inline const vector<string>& Coord::get_names() const
 {
 	return names;
-}
-
-
-/// __________________________________________________
-/// Set waypoint flag
-inline void Coord::set_waypoint() const
-{
-//	cout << "@Coord::set_waypoint()\n";
-	bool& wpt = const_cast<bool&>(waypoint);
-	wpt = true;
 }
 
 
