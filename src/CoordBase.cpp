@@ -82,12 +82,10 @@ vector<bool> validatelet(const DataFrame&);
 
 template<CoordType type>
 void setvalidattr(const DataFrame&, WayPoint<type>&);
-*/
+
 
 // conversion
-template<CoordType newtype>
-inline void convertlet(const Coord&, NumericVector);
-
+*/
 template<CoordType newtype>
 inline void convertlet(const WayPoint& wp, DataFrame);
 
@@ -591,6 +589,8 @@ class Coord : public Coordbase {
 //		~Coord() = default;
 		~Coord() { cout << "§Coord::~Coord() "; _ctrsgn(typeid(*this), true); }
 
+		template<CoordType type>
+		void convert(NumericVector) const;
 		void validate(bool warn = true) const;
 		const NumericVector get_nv() const;
 		const vector<bool>& get_valid(bool) const;
@@ -608,6 +608,16 @@ Coord::Coord(CoordType ct, const NumericVector nv) :
 	llgt1(latlon.size() > 1)
 {
 	cout << "§Coord::Coord(CoordType, const NumericVector) "; _ctrsgn(typeid(*this));
+}
+
+
+/// __________________________________________________
+/// Validate NumericVector coordinate format
+template<CoordType newtype>
+inline void Coord::convert(NumericVector new_nv) const
+{
+	cout << "@Coord::convert<CoordType>(NumericVector) newtype " << coordtype_to_int(newtype) + 1 << endl;
+	transform(nv.begin(), nv.end(), new_nv.begin(), Convertor<newtype>(ff));
 }
 
 
@@ -1018,14 +1028,6 @@ void setvalidattr(const DataFrame& df, WayPoint<type>& wp)
 /// Conversion functions
 
 template<CoordType newtype>
-inline void convertlet(const Coord& c, NumericVector nv)
-{
-//	cout << "@convertlet<CoordType>(const Coord&, NumericVector) newtype " << coordtype_to_int(newtype) + 1 << endl;
-	transform(c.get_nv().begin(), c.get_nv().end(), nv.begin(), Convertor<newtype>(c.get_ff()));
-}
-
-
-template<CoordType newtype>
 inline void convertlet(const WayPoint& wp, DataFrame df)
 {
 	cout << "@convertlet<CoordType>(const WayPoint&, DataFrame) newtype " << coordtype_to_int(newtype) + 1 << endl;
@@ -1067,15 +1069,15 @@ NumericVector coords(NumericVector nv, const int fmt = 1)
 		switch (newtype)
 		{
 			case CoordType::decdeg:
-				convertlet<CoordType::decdeg>(c, nv);
+				c.convert<CoordType::decdeg>(nv);
 				break;
 
 			case CoordType::degmin:
-				convertlet<CoordType::degmin>(c, nv);
+				c.convert<CoordType::degmin>(nv);
 				break;
 
 			case CoordType::degminsec:
-				convertlet<CoordType::degminsec>(c, nv);
+				c.convert<CoordType::degminsec>(nv);
 				break;
 
 			default:
