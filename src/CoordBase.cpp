@@ -547,10 +547,6 @@ class Coordbase {
 //		template<CoordType type>
 //		virtual vector<string> format() const = 0;
 		virtual void print(ostream&) const = 0;
-
-		template<class T, CoordType type>
-		friend class FormatLL;
-		friend class Validator;
 };
 
 
@@ -602,11 +598,6 @@ class Coord : public Coordbase {
 		template<CoordType type>
 		vector<string> format() const;
 		void print(ostream&) const;
-
-		template<class T, CoordType type>
-		friend class FormatLL;
-//		template<class T>
-		friend class Validator;
 };
 
 
