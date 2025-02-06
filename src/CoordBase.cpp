@@ -82,12 +82,7 @@ vector<bool> validatelet(const DataFrame&);
 
 template<CoordType type>
 void setvalidattr(const DataFrame&, WayPoint<type>&);
-
-
-// conversion
 */
-template<CoordType newtype>
-inline void convertlet(const WayPoint& wp, DataFrame);
 
 // exported
 NumericVector coords(NumericVector, const int);
@@ -612,7 +607,7 @@ Coord::Coord(CoordType ct, const NumericVector nv) :
 
 
 /// __________________________________________________
-/// Validate NumericVector coordinate format
+/// Convert NumericVector coordinate format
 template<CoordType newtype>
 inline void Coord::convert(NumericVector new_nv) const
 {
@@ -742,6 +737,8 @@ class WayPoint : public Coordbase {
 //		~WayPoint() = default;
 		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
 
+		template<CoordType type>
+		void convert(DataFrame) const;
 		void validate(bool = true) const;
 		const NumericVector get_nvlat() const;
 		const NumericVector get_nvlon() const;
@@ -761,6 +758,18 @@ WayPoint::WayPoint(CoordType ct, const DataFrame df) :
 	nvlat(df[latcol]), nvlon(df[loncol])
 {
 	cout << "§WayPoint::WayPoint(CoordType ct, const DataFrame) "; _ctrsgn(typeid(*this));
+}
+
+
+/// __________________________________________________
+/// Convert DataFrame coordinate format
+template<CoordType newtype>
+inline void WayPoint::convert(DataFrame df) const
+{
+	cout << "@WayPoint::convert<CoordType>(DataFrame) newtype " << coordtype_to_int(newtype) + 1 << endl;
+//	const vector<int> llcols = getllcolsattr(df);												/////// !!!!!!! Temporary Solution !!!!!!! ///////
+	transform(nvlat.begin(), nvlat.end(), NumericVector(df[1]).begin(), Convertor<newtype>(ff));
+	transform(nvlon.begin(), nvlon.end(), NumericVector(df[2]).begin(), Convertor<newtype>(ff));
 }
 
 
@@ -911,7 +920,6 @@ ostream& operator<<(ostream& stream, const WayPoint& wp)
 }
 
 
-
 /// __________________________________________________
 /// __________________________________________________
 /// Validation functions
@@ -1025,20 +1033,6 @@ void setvalidattr(const DataFrame& df, WayPoint<type>& wp)
 
 /// __________________________________________________
 /// __________________________________________________
-/// Conversion functions
-
-template<CoordType newtype>
-inline void convertlet(const WayPoint& wp, DataFrame df)
-{
-	cout << "@convertlet<CoordType>(const WayPoint&, DataFrame) newtype " << coordtype_to_int(newtype) + 1 << endl;
-	const vector<int> llcols = getllcolsattr(df);
-	transform(wp.get_nvlat().begin(), wp.get_nvlat().end(), NumericVector(df[1]).begin(), Convertor<newtype>(wp.get_ff()));
-	transform(wp.get_nvlon().begin(), wp.get_nvlon().end(), NumericVector(df[2]).begin(), Convertor<newtype>(wp.get_ff()));
-}
-
-
-/// __________________________________________________
-/// __________________________________________________
 /// Exported functions
 
 /// __________________________________________________
@@ -1085,8 +1079,8 @@ NumericVector coords(NumericVector nv, const int fmt = 1)
 		}
 	}
 
-	nv.attr("class") = "coords";
 	nv.attr("fmt") = fmt;
+	nv.attr("class") = "coords";
 	return nv;
 }
 
@@ -1221,15 +1215,15 @@ DataFrame waypoints(DataFrame df, int fmt = 1)
 		switch (newtype)
 		{
 	    		case CoordType::decdeg:
-				convertlet<CoordType::decdeg>(wp, df);
+				wp.convert<CoordType::decdeg>(df);
 				break;
 	
 			case CoordType::degmin:
-				convertlet<CoordType::degmin>(wp, df);
+				wp.convert<CoordType::degmin>(df);
 				break;
 	
 			case CoordType::degminsec:
-				convertlet<CoordType::degminsec>(wp, df);
+				wp.convert<CoordType::degminsec>(df);
 				break;
 	
 			default:
