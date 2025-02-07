@@ -74,17 +74,6 @@ bool check_valid(T, const char*);
 template<class T, class U>
 inline const T validate(const T);
 
-/*
-template<class T>
-vector<bool> validate(const T&);
-
-template<CoordType type>
-vector<bool> validatelet(const DataFrame&);
-
-template<CoordType type>
-void setvalidattr(const DataFrame&, WayPoint<type>&);
-*/
-
 // Conversion
 template<class T, class U>
 void convert(T, CoordType newtype);
@@ -993,53 +982,6 @@ bool check_valid(const DataFrame& df)
 
 	return boolat || boolon;
 }
-
-
-/// __________________________________________________
-/// Validate DataFrame or NumericVector
-template<class T>
-vector<bool> validate(const T& t)
-{
-//	cout << "@validate<T>(const T&)\n";
-	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
-
-	switch (get_coordtype(t))
-	{
-		case CoordType::decdeg:
-			return validatelet<CoordType::decdeg>(t);
-
-		case CoordType::degmin:
-			return validatelet<CoordType::degmin>(t);
-
-		case CoordType::degminsec:
-			return validatelet<CoordType::degminsec>(t);
-
-		default:
-			stop("validate<>(const T&) my bad");
-	}
-}
-
-
-template<CoordType type>
-vector<bool> validatelet(const DataFrame& df)
-{
-//	cout << "@validatelet(const DataFrame&)\n";
-	WayPoint<type> wp(df);
-	wp.validate(true);
-	wp.warn_invalid();
-	setvalidattr(df, wp);
-	return vector<bool>();							/////// temporary solution ///////
-}
-
-
-template<CoordType type>
-void setvalidattr(const DataFrame& df, WayPoint<type>& wp)
-{
-//	cout << "@setvalidattr(DataFrame&, WayPoint<type>&)\n";
-	DataFrame& non_const_df { const_cast<DataFrame&>(df) };
-	for (const auto x : { 0, 1 } )
-		non_const_df.attr(vector<string>{ "lat_valid", "lon_valid" }[x]) = wp.get_valid(1 - x);
-}
 */
 
 
@@ -1143,7 +1085,7 @@ NumericVector coords(NumericVector nv, const int fmt = 1)
 // [[Rcpp::export(name = "`coords<-`")]]
 NumericVector coords_replace(NumericVector nv, int value)
 {
-//	cout << "——Rcpp::export——`coords_replace()<-`\n";
+	cout << "——Rcpp::export——`coords_replace()<-`\n";
 	return coords(nv, value);
 }
 
@@ -1153,7 +1095,7 @@ NumericVector coords_replace(NumericVector nv, int value)
 // [[Rcpp::export(name = "`latlon<-`")]]
 NumericVector latlon(NumericVector nv, LogicalVector& value)
 {
-//	cout << "——Rcpp::export——set_latlon()\n";
+	cout << "——Rcpp::export——set_latlon()\n";
 	checkinherits(nv, "coords");
 	if (value.size() != nv.size() && value.size() != 1)
 		stop("value must be either length 1 or length(nv)");
@@ -1169,7 +1111,7 @@ NumericVector latlon(NumericVector nv, LogicalVector& value)
 // [[Rcpp::export(name = "print.coords", invisible = true)]]
 NumericVector printcoord(NumericVector nv)
 {
-//	cout << "——Rcpp::export——printcoord() format " << get_fmt_attribute(nv) << endl;
+	cout << "——Rcpp::export——printcoord() format " << get_fmt_attribute(nv) << endl;
 	checkinherits(nv, "coords");
 	if (!check_valid(nv))
 		warning("Printing invalid coords!");
@@ -1180,11 +1122,10 @@ NumericVector printcoord(NumericVector nv)
 
 /// __________________________________________________
 /// Validate coords vector
-//const vector<bool> validatecoord(NumericVector nv)
 // [[Rcpp::export(name = "validate.coords")]]
 NumericVector validatecoord(NumericVector nv)
 {
-//	cout << "——Rcpp::export——validatecoord()\n";
+	cout << "——Rcpp::export——validatecoord()\n";
 	checkinherits(nv, "coords");
 	return validate<NumericVector, Coord>(nv);
 }
@@ -1195,7 +1136,7 @@ NumericVector validatecoord(NumericVector nv)
 // [[Rcpp::export(name = "format.coords")]]
 vector<string> formatcoord(NumericVector nv)
 {
-//	cout << "——Rcpp::export——format()\n";
+	cout << "——Rcpp::export——format()\n";
 	checkinherits(nv, "coords");
 	if (!check_valid(nv))
 		warning("Formatting invalid coords!");
@@ -1279,18 +1220,16 @@ DataFrame printwaypoint(DataFrame df)
 	return df;
 }
 
-/*
+
 /// __________________________________________________
 /// Validate waypoints vector
 // [[Rcpp::export(name = "validate.waypoints")]]
 const DataFrame validatewaypoint(DataFrame df)
 {
-//	cout << "——Rcpp::export——validatewaypoint(DataFrame) format " << get_fmt_attribute(df) << endl;
+	cout << "——Rcpp::export——validatewaypoint(DataFrame) format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
-	return validate(df);
+	return validate<DataFrame, WayPoint>(df);
 }
-
-**************************/
 
 
 /// __________________________________________________
