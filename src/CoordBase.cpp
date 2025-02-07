@@ -1132,34 +1132,6 @@ NumericVector coords(NumericVector nv, const int fmt = 1)
 	}
 
 	convert<NumericVector, Coord>(nv, newtype);
-
-/*
-	Coord c(type, nv);
-	c.validate();
-
-	if (type != newtype) {
-		switch (newtype)
-		{
-			case CoordType::decdeg:
-				c.convert<CoordType::decdeg>(nv);
-				break;
-
-			case CoordType::degmin:
-				c.convert<CoordType::degmin>(nv);
-				break;
-
-			case CoordType::degminsec:
-				c.convert<CoordType::degminsec>(nv);
-				break;
-
-			default:
-				stop("coords(NumericVector nv, const int) my bad");
-		}
-	}
-
-	nv.attr("fmt") = fmt;
-*/
-
 	nv.attr("class") = "coords";
 	return nv;
 }
@@ -1280,6 +1252,8 @@ DataFrame waypoints(DataFrame df, int fmt = 1)
 		}
 	} else {
 		type = newtype;
+		df.attr("fmt") = fmt;
+
 /*		const vector<int> llcols { 1, 2 };									// !!!!!!!! Temporary Solution !!!!!!
 		df.attr("llcols") = llcols;
 		for (const auto x : llcols)
@@ -1287,31 +1261,8 @@ DataFrame waypoints(DataFrame df, int fmt = 1)
 		constexpr int namescol = 0;											// !!!!!!!! Temporary Solution !!!!!!
 		df.attr("namescol") = namescol; */
 	}
-	
-	const WayPoint wp(type, df);
-	wp.validate();
 
-	if (type != newtype) {
-		switch (newtype)
-		{
-	    		case CoordType::decdeg:
-				wp.convert<CoordType::decdeg>(df);
-				break;
-	
-			case CoordType::degmin:
-				wp.convert<CoordType::degmin>(df);
-				break;
-	
-			case CoordType::degminsec:
-				wp.convert<CoordType::degminsec>(df);
-				break;
-	
-			default:
-				stop("waypoints(DataFrame, int) my bad");
-		}
-	}
-
-	df.attr("fmt") = fmt;
+	convert<DataFrame, WayPoint>(df, newtype);
 	df.attr("class") = CharacterVector{"waypoints", "data.frame"};
 	return df;
 }
