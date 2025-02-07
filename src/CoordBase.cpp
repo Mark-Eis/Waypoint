@@ -1076,14 +1076,12 @@ void convert(T t, CoordType newtype)
 	U u(type, t);
 	u.validate();
 
-
-
 	if (type != newtype) {
 		switch (newtype)
 		{
 			case CoordType::decdeg:
-				convertlet<CoordType::decdeg>(u, t);
-//				u.convert<CoordType::decdeg>(t);
+				convertlet<CoordType::decdeg>(u, t);					/////// temporary solution ///////
+//				u.convert<CoordType::decdeg>(t);						/////// preferred solution - #51 ///////
 				break;
 
 			case CoordType::degmin:
@@ -1214,22 +1212,6 @@ vector<string> formatcoord(NumericVector nv)
 			stop("formatcoord(NumericVector) my bad");
 	}
 }
-
-
-/// __________________________________________________
-/// dummy() exported function
-// [[Rcpp::export]]
-DataFrame dummy(DataFrame df, int fmt)
-{
-	cout << "——Rcpp::export——`dummy(DataFrame, int)`\n";
-	CoordType newtype = get_coordtype(fmt);
-	WayPoint wp(newtype, df);
-	wp.validate();
-	wp.warn_invalid();
-	df.attr("fmt") = fmt;
-	return df;
-}
-
 
 
 /// __________________________________________________
