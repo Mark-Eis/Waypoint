@@ -71,7 +71,11 @@ inline bool check_valid(const NumericVector);
 template<class T>
 bool check_valid(T, const char*);
 
-const vector<bool> validate(const NumericVector);
+//const vector<bool> validate(const NumericVector);
+//const vector<bool> validate(const DataFrame);
+
+template<class T, class U>
+inline const T validate(const T);
 
 /*
 template<class T>
@@ -98,7 +102,8 @@ NumericVector coords(NumericVector, const int);
 NumericVector coords_replace(NumericVector, int);
 NumericVector latlon(NumericVector, LogicalVector&);
 NumericVector printcoord(NumericVector);
-const vector<bool> validatecoord(NumericVector);
+//const vector<bool> validatecoord(NumericVector);
+NumericVector validatecoord(NumericVector);
 vector<string> formatcoord(NumericVector);
 /*
 vector<int> get_deg(NumericVector);
@@ -110,7 +115,7 @@ vector<double> get_sec(NumericVector);
 DataFrame waypoints(DataFrame, int);
 DataFrame waypoints_replace(DataFrame df, int value);
 DataFrame printwaypoint(DataFrame);
-//const DataFrame validatewaypoint(DataFrame);
+//DataFrame validatewaypoint(DataFrame);
 
 
 /// __________________________________________________
@@ -954,12 +959,12 @@ bool check_valid(T t, const char* attrname)
 		return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
 	else {
 		warning("Unvalidated %s! Revalidating…", typeid(t).name());
-		validate(t);	
+		validate<NumericVector, Coord>(t);	
 		return check_valid(t, attrname);
 	}
 }
 
-
+/*
 /// __________________________________________________
 /// Validate NumericVector
 const vector<bool> validate(const NumericVector nv)
@@ -968,6 +973,18 @@ const vector<bool> validate(const NumericVector nv)
 	Coord c(get_coordtype(nv), nv);
 	c.validate();
 	return c.get_valid();	
+}
+*/
+
+/// __________________________________________________
+/// Validate NumericVector or DataFrame
+template<class T, class U>
+inline const T validate(const T t)
+{
+//	cout << "@validate(const NumericVector)\n";
+	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
+	U(get_coordtype(t), t).validate();
+	return t;	
 }
 
 
@@ -1156,7 +1173,7 @@ NumericVector latlon(NumericVector nv, LogicalVector& value)
 		stop("value must be either length 1 or length(nv)");
 	else
 		nv.attr("latlon") = value;
-	validate(nv);
+	validate<NumericVector, Coord>(nv);
 	return nv;
 }
 
@@ -1177,12 +1194,13 @@ NumericVector printcoord(NumericVector nv)
 
 /// __________________________________________________
 /// Validate coords vector
+//const vector<bool> validatecoord(NumericVector nv)
 // [[Rcpp::export(name = "validate.coords")]]
-const vector<bool> validatecoord(NumericVector nv)
+NumericVector validatecoord(NumericVector nv)
 {
 //	cout << "——Rcpp::export——validatecoord()\n";
 	checkinherits(nv, "coords");
-	return validate(nv);
+	return validate<NumericVector, Coord>(nv);
 }
 
 
