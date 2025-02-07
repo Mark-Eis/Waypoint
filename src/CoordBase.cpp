@@ -65,11 +65,13 @@ class WayPoint;
 ostream& operator<<(ostream&, const WayPoint&);
 
 // validation
-inline bool check_valid(const NumericVector);
-// bool check_valid(const DataFrame&);
+bool check_valid(const NumericVector);
+bool check_valid(const DataFrame);
 
 template<class T, class U>
-bool check_valid(T, const char*);
+const T revalidate(const T);
+
+//const DataFrame revalidate_df(const DataFrame);
 
 template<class T, class U>
 inline const T validate(const T);
@@ -926,28 +928,69 @@ ostream& operator<<(ostream& stream, const WayPoint& wp)
 
 /// __________________________________________________
 /// Check "valid" attribute of NumericVector all true
-inline bool check_valid(const NumericVector nv)
+bool check_valid(const NumericVector nv)
 {
 	cout << "@check_valid(const NumericVector)" << endl;
-	return check_valid<NumericVector, Coord>(nv, "valid");
+	const vector<bool>&& valid = get_vec_attr<NumericVector, bool>(nv, "valid");
+	if (valid.size())
+		return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
+	else {
+		warning("Unvalidated coords, revalidating…");
+		validate<NumericVector, Coord>(nv);	
+		return check_valid(nv);
+	}
 }
 
 
 /// __________________________________________________
-/// Check "valid" attribute of object of class T all true
-template<class T, class U>
-bool check_valid(T t, const char* attrname)
+/// Check "lat_valid" and "lon_valid attributes of DataFrame are all true
+bool check_valid(const DataFrame df)
 {
-	cout << "@check_valid<T>(T, const char*)" << endl;
-	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
-	const vector<bool>&& valid = get_vec_attr<T, bool>(t, attrname);
-	if (valid.size())
-		return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
-	else {
-		warning("Unvalidated %s! Revalidating…", typeid(t).name());
-		validate<NumericVector, Coord>(t);	
-		return check_valid<T, U>(t, attrname);
-	}
+	cout << "@check_valid(const DataFrame)\n";
+	bool unvalidated = false;
+
+	const vector<bool>&& validlat = get_vec_attr<DataFrame, bool>(df, "validlat");
+	bool latvalid = false;
+	if (validlat.size()) {
+		latvalid = all_of(validlat.begin(), validlat.end(), [](bool v) { return v;});
+		if (!latvalid)
+			warning("Invalid latitude!");
+	} else
+		unvalidated = true;
+
+	const vector<bool>&& validlon = get_vec_attr<DataFrame, bool>(df, "validlon");
+	bool lonvalid = false;;
+	if (validlon.size()) {
+		lonvalid = all_of(validlon.begin(), validlon.end(), [](bool v) { return v;});
+		if (!lonvalid)
+			warning("Invalid longitude!");
+	} else
+		unvalidated = true;
+
+	if (unvalidated)
+//		return revalidate_df(df);
+		return revalidate<DataFrame, WayPoint>(df);
+
+	return latvalid || lonvalid;
+}
+
+/*
+const DataFrame revalidate_df(const DataFrame df)
+{
+	cout << "@revalidate_df(const DataFrame)\n";
+	warning("Unvalidated %s! Revalidating…", typeid(df).name());
+	validate<DataFrame, WayPoint>(df);	
+	return check_valid(df);
+}*/
+
+
+template<class T, class U>
+const T revalidate(const T t)
+{
+	cout << "@revalidate<T, U>(const T)\n";
+	warning("Unvalidated %s! Revalidating…", typeid(t).name());
+	validate<T, U>(t);	
+	return check_valid(t);
 }
 
 
@@ -963,32 +1006,9 @@ inline const T validate(const T t)
 }
 
 
-/*
-/// __________________________________________________
-/// Check "lat_valid" and "lon_valid attributes of DataFrame are all true
-bool check_valid(const DataFrame& df)
-{
-//	cout << "@check_valid(const DataFrame&)\n";
-
-	const vector<bool>&& latvalid = get_vecbool_attr(df, "lat_valid");
-	bool boolat = all_of(latvalid.begin(), latvalid.end(), [](bool v) { return v;});
-	if (!boolat)
-		warning("Invalid latitude!");
-
-	const vector<bool>&& lonvalid = get_vecbool_attr(df, "lon_valid");
-	bool boolon = all_of(lonvalid.begin(), lonvalid.end(), [](bool v) { return v;});
-	if (!boolon)
-		warning("Invalid longitude!");
-
-	return boolat || boolon;
-}
-*/
-
-
 /// __________________________________________________
 /// __________________________________________________
 /// Conversion functions
-
 
 template<CoordType newtype>
 inline void convertlet(const Coord& c, NumericVector nv)
@@ -1173,8 +1193,8 @@ DataFrame waypoints(DataFrame df, int fmt = 1)
 		cout << "argument df is already a \"waypoints\" vector of type " << coordtype_to_int(type) + 1 << endl;
 		if (newtype == type) {
 			cout << "——fmt out == fmt in!——" << endl;
-//			if (!check_valid(df))
-//				stop("Invalid waypoints!");
+			if (!check_valid(df))
+				stop("Invalid waypoints!");
 			return df;
 		}
 	} else {
@@ -1212,11 +1232,9 @@ DataFrame printwaypoint(DataFrame df)
 {
 	cout << "——Rcpp::export——printwaypoint() format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
-//	if (!check_valid(df))
-//		warning("Invalid waypoints!");
-
+	if (!check_valid(df))
+		warning("Invalid waypoints!");
 	Rcout << WayPoint(get_coordtype(df), df);	
-
 	return df;
 }
 
