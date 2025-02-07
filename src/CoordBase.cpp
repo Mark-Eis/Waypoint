@@ -71,9 +71,6 @@ inline bool check_valid(const NumericVector);
 template<class T>
 bool check_valid(T, const char*);
 
-//const vector<bool> validate(const NumericVector);
-//const vector<bool> validate(const DataFrame);
-
 template<class T, class U>
 inline const T validate(const T);
 
@@ -964,24 +961,13 @@ bool check_valid(T t, const char* attrname)
 	}
 }
 
-/*
-/// __________________________________________________
-/// Validate NumericVector
-const vector<bool> validate(const NumericVector nv)
-{
-//	cout << "@validate(const NumericVector)\n";
-	Coord c(get_coordtype(nv), nv);
-	c.validate();
-	return c.get_valid();	
-}
-*/
 
 /// __________________________________________________
 /// Validate NumericVector or DataFrame
 template<class T, class U>
 inline const T validate(const T t)
 {
-//	cout << "@validate(const NumericVector)\n";
+	cout << "@validate<T, U>(const T)\n";
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	U(get_coordtype(t), t).validate();
 	return t;	
