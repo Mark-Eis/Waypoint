@@ -88,6 +88,11 @@ void setvalidattr(const DataFrame&, WayPoint<type>&);
 template<class T, class U>
 void convert(T, CoordType newtype);
 
+template<CoordType newtype>
+inline void convertlet(const Coord&, NumericVector);
+template<CoordType newtype>
+inline void convertlet(const WayPoint&, DataFrame);
+
 // exported
 NumericVector coords(NumericVector, const int);
 NumericVector coords_replace(NumericVector, int);
@@ -1037,38 +1042,75 @@ void setvalidattr(const DataFrame& df, WayPoint<type>& wp)
 
 /// __________________________________________________
 /// __________________________________________________
-/// Conversion function
+/// Conversion functions
+
+
+template<CoordType newtype>
+inline void convertlet(const Coord& c, NumericVector nv)
+{
+	cout << "@convertlet<CoordType>(const Coord&, NumericVector) newtype " << coordtype_to_int(newtype) + 1 << endl;
+	transform(c.get_nv().begin(), c.get_nv().end(), nv.begin(), Convertor<newtype>(c.get_ff()));
+}
+
+
+template<CoordType newtype>
+inline void convertlet(const WayPoint& wp, DataFrame df)
+{
+	cout << "@convertlet<CoordType>(const WayPoint&, DataFrame) newtype " << coordtype_to_int(newtype) + 1 << endl;
+	const vector<int> llcols = getllcolsattr(df);
+	transform(wp.get_nvlat().begin(), wp.get_nvlat().end(), NumericVector(df[1]).begin(), Convertor<newtype>(wp.get_ff()));
+	transform(wp.get_nvlon().begin(), wp.get_nvlon().end(), NumericVector(df[2]).begin(), Convertor<newtype>(wp.get_ff()));
+}
+
 
 /// __________________________________________________
 /// Convert NumericVector or DataFrame
 template<class T, class U>
 void convert(T t, CoordType newtype)
 {
-	cout << "@convert<T&, U>(const T&, U)\n";
+	cout << "@convert<T&, U>(T, CoordType)\n";
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 
 	CoordType type = get_coordtype(t);
-//	U u(type, t);
-//	u.validate();
 
-	Coord u(type, t);
+//	typedef void (U::*UMemFn)(bool) const;
+//	using UMemFn = void (U::*)(bool) const;
+//	using UMemFn = (U::*)(bool) const ->void;		/// doesn't work
+
+//	U u2(type, t);
+//	u2.validate();
+
+//	UMemFn p = &U::validate;
+//	(u2.*p)(true);	/// works
+
+//	typedef void (U::*UMemFn2)(T) const;
+//	using UMemFn2 = void (U::*)(T) const;
+//	UMemFn2 q = &U::convert<CoordType::decdeg>;		/// doesn't work
+
+
+
+//	Coord u(type, t);
+	U u(type, t);
 	u.validate();
 
-//	typename convert U::convert;
+
 
 	if (type != newtype) {
 		switch (newtype)
 		{
 			case CoordType::decdeg:
-				u.convert<CoordType::decdeg>(t);
+				convertlet<CoordType::decdeg>(u, t);
+//				u.convert<CoordType::decdeg>(t);
 				break;
 
 			case CoordType::degmin:
-				u.convert<CoordType::degmin>(t);
+				convertlet<CoordType::degmin>(u, t);
+//				u.convert<CoordType::degmin>(t);
 				break;
 
 			case CoordType::degminsec:
-				u.convert<CoordType::degminsec>(t);
+				convertlet<CoordType::degminsec>(u, t);
+//				u.convert<CoordType::degminsec>(t);
 				break;
 
 			default:
@@ -1107,6 +1149,7 @@ NumericVector coords(NumericVector nv, const int fmt = 1)
 	}
 
 	convert<NumericVector, Coord>(nv, newtype);
+
 /*
 	Coord c(type, nv);
 	c.validate();
