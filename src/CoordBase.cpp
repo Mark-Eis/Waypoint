@@ -1073,23 +1073,6 @@ void convert(T t, CoordType newtype)
 
 	CoordType type = get_coordtype(t);
 
-//	typedef void (U::*UMemFn)(bool) const;
-//	using UMemFn = void (U::*)(bool) const;
-//	using UMemFn = (U::*)(bool) const ->void;		/// doesn't work
-
-//	U u2(type, t);
-//	u2.validate();
-
-//	UMemFn p = &U::validate;
-//	(u2.*p)(true);	/// works
-
-//	typedef void (U::*UMemFn2)(T) const;
-//	using UMemFn2 = void (U::*)(T) const;
-//	UMemFn2 q = &U::convert<CoordType::decdeg>;		/// doesn't work
-
-
-
-//	Coord u(type, t);
 	U u(type, t);
 	u.validate();
 
