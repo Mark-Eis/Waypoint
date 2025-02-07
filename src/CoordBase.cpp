@@ -71,6 +71,9 @@ bool check_valid(const DataFrame);
 template<class T, class U>
 const T revalidate(const T);
 
+constexpr auto revalid_Coord = &revalidate<NumericVector, Coord>;
+constexpr auto revalid_WayPoint = &revalidate<DataFrame, WayPoint>;
+
 template<class T, class U>
 inline const T validate(const T);
 
@@ -932,12 +935,8 @@ bool check_valid(const NumericVector nv)
 	const vector<bool>&& valid = get_vec_attr<NumericVector, bool>(nv, "valid");
 	if (valid.size())
 		return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
-	else /* {
-		warning("Unvalidated coords, revalidating…");
-		validate<NumericVector, Coord>(nv);	
-		return check_valid(nv);
-	} */
-		return revalidate<NumericVector, Coord>(nv);
+	else
+		return revalid_Coord(nv);
 }
 
 
@@ -967,7 +966,7 @@ bool check_valid(const DataFrame df)
 		unvalidated = true;
 
 	if (unvalidated)
-		return revalidate<DataFrame, WayPoint>(df);
+		return revalid_WayPoint(df);
 
 	return latvalid || lonvalid;
 }
