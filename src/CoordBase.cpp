@@ -68,7 +68,7 @@ ostream& operator<<(ostream&, const WayPoint&);
 inline bool check_valid(const NumericVector);
 // bool check_valid(const DataFrame&);
 
-template<class T>
+template<class T, class U>
 bool check_valid(T, const char*);
 
 template<class T, class U>
@@ -928,17 +928,17 @@ ostream& operator<<(ostream& stream, const WayPoint& wp)
 /// Check "valid" attribute of NumericVector all true
 inline bool check_valid(const NumericVector nv)
 {
-//	cout << "@check_valid(const NumericVector)" << endl;
-	return check_valid(nv, "valid");
+	cout << "@check_valid(const NumericVector)" << endl;
+	return check_valid<NumericVector, Coord>(nv, "valid");
 }
 
 
 /// __________________________________________________
 /// Check "valid" attribute of object of class T all true
-template<class T>
+template<class T, class U>
 bool check_valid(T t, const char* attrname)
 {
-//	cout << "@check_valid<T>(T, const char*)" << endl;
+	cout << "@check_valid<T>(T, const char*)" << endl;
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	const vector<bool>&& valid = get_vec_attr<T, bool>(t, attrname);
 	if (valid.size())
@@ -946,7 +946,7 @@ bool check_valid(T t, const char* attrname)
 	else {
 		warning("Unvalidated %s! Revalidating…", typeid(t).name());
 		validate<NumericVector, Coord>(t);	
-		return check_valid(t, attrname);
+		return check_valid<T, U>(t, attrname);
 	}
 }
 
