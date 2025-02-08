@@ -69,7 +69,7 @@ bool check_valid(const NumericVector);
 bool check_valid(const DataFrame);
 
 template<class T>
-bool validated(T, const NumericVector, const char*, bool&);
+bool validated(T, const char*, bool&);
 
 template<class T, class U>
 const T revalidate(const T);
@@ -804,7 +804,7 @@ void WayPoint::validate(bool warn) const
 		non_const_validlon.assign({true});
 	else
 		if (warn)
-			warning("Validation of latitude failed!");
+			warning("Validation of longitude failed!");
 	const_cast<DataFrame&>(df).attr("validlon") = validlon;
 }
 
@@ -932,36 +932,14 @@ ostream& operator<<(ostream& stream, const WayPoint& wp)
 
 /// __________________________________________________
 /// Check "valid" attribute of NumericVector all true
-/* bool check_valid(const NumericVector nv)
-{
-	cout << "@check_valid(const NumericVector)" << endl;
-	bool unvalidated = false;
-	const vector<bool>&& valid = get_vec_attr<NumericVector, bool>(nv, "valid");
-	if (valid.size())
-		return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
-	else
-		return revalid_Coord(nv);
-} */
-
 
 bool check_valid(const NumericVector nv)
 {
 	cout << "@check_valid(const NumericVector)" << endl;
 	bool unvalidated = false;
-	bool valid = validated(nv, nv, "valid", unvalidated);
+	bool valid = validated(nv, "valid", unvalidated);
 	if (unvalidated)
 		revalid_Coord(nv);
-	return valid;
-}
-
-
-template<class T>
-bool validated(T t, const NumericVector nv, const char* attrname, bool& unvalidated)
-{
-	cout << "@validated<T>(T, const NumericVector, const char*, bool&)" << endl;
-	const vector<bool>&& validvec = get_vec_attr<T, bool>(t, attrname);
-	bool valid = all_of(validvec.begin(), validvec.end(), [](bool v) { return v;});
-	unvalidated = (validvec.size()) ? false : true;
 	return valid;
 }
 
@@ -973,35 +951,42 @@ bool check_valid(const DataFrame df)
 	cout << "@check_valid(const DataFrame)\n";
 	bool unvalidated = false;
 
-	const vector<bool>&& validlat = get_vec_attr<DataFrame, bool>(df, "validlat");
-	bool latvalid = false;
-	if (validlat.size()) {
-		latvalid = all_of(validlat.begin(), validlat.end(), [](bool v) { return v;});
-		if (!latvalid)
-			warning("Invalid latitude!");
-	} else
-		unvalidated = true;
-
-	const vector<bool>&& validlon = get_vec_attr<DataFrame, bool>(df, "validlon");
-	bool lonvalid = false;;
-	if (validlon.size()) {
-		lonvalid = all_of(validlon.begin(), validlon.end(), [](bool v) { return v;});
-		if (!lonvalid)
-			warning("Invalid longitude!");
-	} else
-		unvalidated = true;
-
+	bool latvalid = validated(df, "validlat", unvalidated);
+	if (unvalidated)
+		return revalid_WayPoint(df);
+	bool lonvalid = validated(df, "validlon", unvalidated);
 	if (unvalidated)
 		return revalid_WayPoint(df);
 
+	if (!latvalid)
+		warning("Invalid latitude!");
+	if (!lonvalid)
+		warning("Invalid longitude!");
 	return latvalid || lonvalid;
 }
 
 
+/// __________________________________________________
+/// Check NumericVector or DataFrame has been validated and valid vector attribute all true
+template<class T>
+bool validated(T t, const char* attrname, bool& unvalidated)
+{
+	cout << "@validated<T>(T, const char*, bool&)" << endl;
+	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
+	const vector<bool>&& validvec = get_vec_attr<T, bool>(t, attrname);
+	bool valid = all_of(validvec.begin(), validvec.end(), [](bool v) { return v;});
+	unvalidated = (validvec.size()) ? false : true;
+	return valid;
+}
+
+
+/// __________________________________________________
+/// Revalidate NumericVector or DataFrame
 template<class T, class U>
 const T revalidate(const T t)
 {
 	cout << "@revalidate<T, U>(const T)\n";
+	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	warning("Unvalidated %s! Revalidating…", typeid(t).name());
 	validate<T, U>(t);	
 	return check_valid(t);
