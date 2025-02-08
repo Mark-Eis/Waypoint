@@ -68,6 +68,9 @@ ostream& operator<<(ostream&, const WayPoint&);
 bool check_valid(const NumericVector);
 bool check_valid(const DataFrame);
 
+template<class T>
+bool validated(T, const NumericVector, const char*, bool&);
+
 template<class T, class U>
 const T revalidate(const T);
 
@@ -929,14 +932,37 @@ ostream& operator<<(ostream& stream, const WayPoint& wp)
 
 /// __________________________________________________
 /// Check "valid" attribute of NumericVector all true
-bool check_valid(const NumericVector nv)
+/* bool check_valid(const NumericVector nv)
 {
 	cout << "@check_valid(const NumericVector)" << endl;
+	bool unvalidated = false;
 	const vector<bool>&& valid = get_vec_attr<NumericVector, bool>(nv, "valid");
 	if (valid.size())
 		return all_of(valid.begin(), valid.end(), [](bool v) { return v;});
 	else
 		return revalid_Coord(nv);
+} */
+
+
+bool check_valid(const NumericVector nv)
+{
+	cout << "@check_valid(const NumericVector)" << endl;
+	bool unvalidated = false;
+	bool valid = validated(nv, nv, "valid", unvalidated);
+	if (!unvalidated)
+		revalid_Coord(nv);
+	return valid;
+}
+
+
+template<class T>
+bool validated(T t, const NumericVector nv, const char* attrname, bool& unvalidated)
+{
+	cout << "@validated<T>(T, const NumericVector, const char*, bool&)" << endl;
+	const vector<bool>&& validvec = get_vec_attr<T, bool>(t, attrname);
+	bool valid = all_of(validvec.begin(), validvec.end(), [](bool v) { return v;});
+	unvalidated = (validvec.size()) ? true : false;
+	return valid;
 }
 
 
