@@ -856,11 +856,6 @@ vector<string> WayPoint::format() const
 		sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(),
 		[](string& latstr, string& lonstr) { return latstr + "  " + lonstr; }
 	);
-/*	vector<string> names { as<vector<string>>(df[as<int>(df.attr("namescol"))]) };	/////// !!! revise this !!! ///////
-	transform(
-		out.begin(), out.end(), names.begin(), out.begin(),
-		[](string& lls, const string& name) { return lls + "  " + name; }
-	); */
 	return out;
 }
 
@@ -895,12 +890,9 @@ void WayPoint::print(ostream& stream) const
 			stop("WayPoint::print(ostream&) my bad");
 	}
 
-/*	if (names.size()) {
-		vector<string>::const_iterator nm_it(names.begin());
-		for_each(sv.begin(), sv.end(),
-			[&stream,& nm_it](const string& s) { stream << s << " " << *nm_it++ << "\n"; });
-	} else */
-		for_each(sv.begin(), sv.end(), [&stream](const string& s) { stream << s << "\n"; });
+	vector<string> names { as<vector<string>>(df[as<int>(df.attr("namescol"))]) };	/////// !!! revise this !!! ///////
+	transform(sv.begin(), sv.end(), names.begin(), sv.begin(), [](string& lls, const string& name) { return lls + "  " + name; });
+	for_each(sv.begin(), sv.end(), [&stream](const string& s) { stream << s << "\n"; });
 }
 
 
@@ -1010,8 +1002,8 @@ inline void convertlet(const WayPoint& wp, DataFrame df)
 {
 	cout << "@convertlet<CoordType>(const WayPoint&, DataFrame) newtype " << coordtype_to_int(newtype) + 1 << endl;
 	const vector<int> llcols = getllcolsattr(df);
-	transform(wp.get_nvlat().begin(), wp.get_nvlat().end(), NumericVector(df[1]).begin(), Convertor<newtype>(wp.get_ff()));
-	transform(wp.get_nvlon().begin(), wp.get_nvlon().end(), NumericVector(df[2]).begin(), Convertor<newtype>(wp.get_ff()));
+	transform(wp.get_nvlat().begin(), wp.get_nvlat().end(), NumericVector(df[llcols[0]]).begin(), Convertor<newtype>(wp.get_ff()));
+	transform(wp.get_nvlon().begin(), wp.get_nvlon().end(), NumericVector(df[llcols[1]]).begin(), Convertor<newtype>(wp.get_ff()));
 }
 
 
@@ -1187,7 +1179,8 @@ DataFrame waypoints(DataFrame df, int fmt = 1)
 	} else {
 		type = newtype;
 		df.attr("fmt") = fmt;
-
+		df.attr("llcols") = vector<int>{ 1, 2 };
+		df.attr("namescol") = 0;
 /*		const vector<int> llcols { 1, 2 };									// !!!!!!!! Temporary Solution !!!!!!
 		df.attr("llcols") = llcols;
 		constexpr int namescol = 0;											// !!!!!!!! Temporary Solution !!!!!!
