@@ -22,7 +22,6 @@ inline int get_fmt_attribute(const T&);
 template<class T>
 inline void checkinherits(T&, const char*);
 template<class T, class V>
-void setcolattr(const T&, int, const char*, V&&);			/////// deprecate ///////
 inline vector<int> getllcolsattr(const DataFrame);
 
 //CoordType
@@ -192,17 +191,6 @@ inline void checkinherits(T& t, const char* classname)
 //	cout << "checkinherits<T>(T& t, const char* classname) t " << typeid(t).name() << " classname " << classname << endl;
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	if (!t.inherits(classname)) stop("Argument must be a \"%s\" object", classname);
-}
-
-
-/// __________________________________________________
-/// set attributes for vector column within object
-template<class T, class V>
-void setcolattr(const T& t, int col, const char* attrib, V&& val)
-{
-//	cout << "@setcolattr<T, V>(const T&, int, const char*, V&&) attrib " << attrib << ", col " << col << endl;
-	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
-	as<NumericVector>(t[col]).attr(attrib) = std::forward<V>(val);
 }
 
 
@@ -1202,8 +1190,6 @@ DataFrame waypoints(DataFrame df, int fmt = 1)
 
 /*		const vector<int> llcols { 1, 2 };									// !!!!!!!! Temporary Solution !!!!!!
 		df.attr("llcols") = llcols;
-		for (const auto x : llcols)
-			setcolattr(df, x, "latlon", vector<bool>(1, llcols[1] - x));
 		constexpr int namescol = 0;											// !!!!!!!! Temporary Solution !!!!!!
 		df.attr("namescol") = namescol; */
 	}
