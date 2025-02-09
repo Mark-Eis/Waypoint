@@ -565,7 +565,6 @@ class Coord : public Coordbase {
 		const NumericVector nv;
 		const vector<bool> valid { false };
 		const vector<bool> latlon;
-		const vector<string> names;
 		const bool llgt1 = false;
 
 	public:
@@ -586,7 +585,6 @@ class Coord : public Coordbase {
 Coord::Coord(CoordType ct, const NumericVector nv) :
 	Coordbase(ct), nv(nv),
 	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") },
-	names{ get_vec_attr<NumericVector, string>(nv, "names") },
 	llgt1(latlon.size() > 1)
 {
 	cout << "§Coord::Coord(CoordType, const NumericVector) "; _ctrsgn(typeid(*this));
@@ -666,12 +664,10 @@ void Coord::print(ostream& stream) const
 			stop("Coord::print(ostream&) my bad");
 	}
 
-	if (names.size()) {
-		vector<string>::const_iterator nm_it(names.begin());
-		for_each(sv.begin(), sv.end(),
-			[&stream,& nm_it](const string& s) { stream << s << " " << *nm_it++ << "\n"; });
-	} else
-		for_each(sv.begin(), sv.end(), [&stream](const string& s) { stream << s << "\n"; });
+	vector<string> names { get_vec_attr<NumericVector, string>(nv, "names") };
+	if (names.size())
+		transform(sv.begin(), sv.end(), names.begin(), sv.begin(), [](string& lls, const string& name) { return lls + "  " + name; });
+	for_each(sv.begin(), sv.end(), [&stream](const string& s) { stream << s << "\n"; });
 }
 
 
