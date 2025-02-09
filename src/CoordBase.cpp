@@ -528,8 +528,8 @@ class Coordbase {
 		virtual ~Coordbase() = 0;
 
 		const FamousFive& get_ff() const;
-		virtual void validate(bool warn = true) const = 0;
-		virtual void print(ostream&) const = 0;
+//		virtual void validate(bool warn = true) const = 0;
+//		virtual void print(ostream&) const = 0;
 };
 
 
@@ -910,11 +910,8 @@ void convert(T t, CoordType newtype)
 {
 //	cout << "@convert<T&, U>(T, CoordType)\n";
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
-
 	CoordType type = get_coordtype(t);
-
-	U u(type, t);
-	u.validate();
+	U(type, t).validate();
 
 	if (type != newtype) {
 		switch (newtype)
