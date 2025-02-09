@@ -529,8 +529,6 @@ class Coordbase {
 
 		const FamousFive& get_ff() const;
 		virtual void validate(bool warn = true) const = 0;
-//		template<CoordType type>
-//		virtual vector<string> format() const = 0;
 		virtual void print(ostream&) const = 0;
 };
 
@@ -571,7 +569,6 @@ class Coord : public Coordbase {
 		~Coord() { cout << "§Coord::~Coord() "; _ctrsgn(typeid(*this), true); }
 
 		void validate(bool warn = true) const;
-//		const NumericVector get_nv() const;
 		template<CoordType type>
 		vector<string> format() const;
 		void print(ostream&) const;
