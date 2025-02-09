@@ -583,7 +583,6 @@ class Coord : public Coordbase {
 		void validate(bool warn = true) const;
 		const NumericVector get_nv() const;
 		const vector<bool>& get_valid(bool) const;
-		const vector<string>& get_names() const;
 		template<CoordType type>
 		vector<string> format() const;
 		void print(ostream&) const;
@@ -642,14 +641,6 @@ inline const vector<bool>& Coord::get_valid(bool ll = true) const
 {
 //	cout << "@Coord::get_valid()\n";
 	return valid;
-}
-
-
-/// __________________________________________________
-/// Get const reference to names
-inline const vector<string>& Coord::get_names() const
-{
-	return names;
 }
 
 
