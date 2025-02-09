@@ -565,7 +565,6 @@ class Coord : public Coordbase {
 		const NumericVector nv;
 		const vector<bool> valid { false };
 		const vector<bool> latlon;
-		const bool llgt1 = false;
 
 	public:
 		Coord(CoordType, const NumericVector);
@@ -584,8 +583,7 @@ class Coord : public Coordbase {
 
 Coord::Coord(CoordType ct, const NumericVector nv) :
 	Coordbase(ct), nv(nv),
-	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") },
-	llgt1(latlon.size() > 1)
+	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") } //,
 {
 	cout << "§Coord::Coord(CoordType, const NumericVector) "; _ctrsgn(typeid(*this));
 }
