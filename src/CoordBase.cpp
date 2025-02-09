@@ -84,9 +84,9 @@ template<class T, class U>
 void convert(T, CoordType newtype);
 
 template<CoordType newtype>
-inline void convertlet(const Coord&, NumericVector);
+inline void convertlet(CoordType, NumericVector);
 template<CoordType newtype>
-inline void convertlet(const WayPoint&, DataFrame);
+inline void convertlet(CoordType, DataFrame);
 
 // exported
 NumericVector coords(NumericVector, const int);
@@ -529,7 +529,6 @@ class Coordbase {
 
 		const FamousFive& get_ff() const;
 		virtual void validate(bool warn = true) const = 0;
-//		virtual const vector<string>& get_names() const = 0;
 //		template<CoordType type>
 //		virtual vector<string> format() const = 0;
 		virtual void print(ostream&) const = 0;
@@ -571,10 +570,8 @@ class Coord : public Coordbase {
 //		~Coord() = default;
 		~Coord() { cout << "§Coord::~Coord() "; _ctrsgn(typeid(*this), true); }
 
-		template<CoordType type>
-		void convert(NumericVector) const;
 		void validate(bool warn = true) const;
-		const NumericVector get_nv() const;
+//		const NumericVector get_nv() const;
 		template<CoordType type>
 		vector<string> format() const;
 		void print(ostream&) const;
@@ -586,16 +583,6 @@ Coord::Coord(CoordType ct, const NumericVector nv) :
 	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") } //,
 {
 	cout << "§Coord::Coord(CoordType, const NumericVector) "; _ctrsgn(typeid(*this));
-}
-
-
-/// __________________________________________________
-/// Convert NumericVector coordinate format
-template<CoordType newtype>
-inline void Coord::convert(NumericVector new_nv) const
-{
-	cout << "@Coord::convert<CoordType>(NumericVector) newtype " << coordtype_to_int(newtype) + 1 << endl;
-	transform(nv.begin(), nv.end(), new_nv.begin(), Convertor<newtype>(ff));
 }
 
 
@@ -613,15 +600,6 @@ void Coord::validate(bool warn) const
 		if (warn)
 			warning("Validation failed!");
 	const_cast<NumericVector&>(nv).attr("valid") = valid;
-}
-
-
-/// __________________________________________________
-/// Get const reference to nv
-inline const NumericVector Coord::get_nv() const
-{
-//	cout << "@Coord::get_nv()\n";
-	return nv;
 }
 
 
@@ -686,8 +664,8 @@ ostream& operator<<(ostream& stream, const Coord& c)
 class WayPoint : public Coordbase {
 	protected:
 		const DataFrame df;
-		const int latcol;
-		const int loncol;
+		const char latcol;
+		const char loncol;
 		const NumericVector nvlat;
 		const NumericVector nvlon;
 		const vector<bool> validlat { false };
@@ -697,11 +675,7 @@ class WayPoint : public Coordbase {
 //		~WayPoint() = default;
 		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
 
-		template<CoordType type>
-		void convert(DataFrame) const;
 		void validate(bool = true) const;
-		const NumericVector get_nvlat() const;
-		const NumericVector get_nvlon() const;
 		void warn_invalid() const;
 		template<CoordType type>
 		vector<string> format() const;
@@ -717,18 +691,6 @@ WayPoint::WayPoint(CoordType ct, const DataFrame df) :
 	nvlat(df[latcol]), nvlon(df[loncol])
 {
 	cout << "§WayPoint::WayPoint(CoordType ct, const DataFrame) "; _ctrsgn(typeid(*this));
-}
-
-
-/// __________________________________________________
-/// Convert DataFrame coordinate format
-template<CoordType newtype>
-inline void WayPoint::convert(DataFrame df) const
-{
-	cout << "@WayPoint::convert<CoordType>(DataFrame) newtype " << coordtype_to_int(newtype) + 1 << endl;
-//	const vector<int> llcols = getllcolsattr(df);												/////// !!!!!!! Temporary Solution !!!!!!! ///////
-	transform(nvlat.begin(), nvlat.end(), NumericVector(df[1]).begin(), Convertor<newtype>(ff));
-	transform(nvlon.begin(), nvlon.end(), NumericVector(df[2]).begin(), Convertor<newtype>(ff));
 }
 
 
@@ -763,24 +725,6 @@ void WayPoint::validate(bool warn) const
 
 
 /// __________________________________________________
-/// Get nvlat
-inline const NumericVector WayPoint::get_nvlat() const
-{
-//	cout << "@WayPoint::get_nvlat()\n";
-	return nvlat;
-}
-
-
-/// __________________________________________________
-/// Get nvlon
-inline const NumericVector WayPoint::get_nvlon() const
-{
-//	cout << "@WayPoint::get_nvlon()\n";
-	return nvlon;
-}
-
-
-/// __________________________________________________
 /// WayPoint validity warning
 void WayPoint::warn_invalid() const
 {
@@ -800,18 +744,15 @@ template<CoordType type>
 vector<string> WayPoint::format() const
 {
 	cout << "@WayPoint::format()\n";
-	vector<string> sv_lat(df.nrows());
+	vector<string> sv_lat(nvlat.size());
 	transform(nvlat.begin(), nvlat.end(), sv_lat.begin(), Format<type>(ff));
 	transform(sv_lat.begin(), sv_lat.end(), nvlat.begin(), sv_lat.begin(), FormatLL<WayPoint, type>(ff, vector<bool>{ true }));
-	vector<string> sv_lon(df.nrows());
+	vector<string> sv_lon(nvlon.size());
 	transform(nvlon.begin(), nvlon.end(), sv_lon.begin(), Format<type>(ff));
 	transform(sv_lon.begin(), sv_lon.end(), nvlon.begin(), sv_lon.begin(), FormatLL<WayPoint, type>(ff, vector<bool>{ false }));
 
 	vector<string> out(sv_lat.size());
-	transform(
-		sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(),
-		[](string& latstr, string& lonstr) { return latstr + "  " + lonstr; }
-	);
+	transform(sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(), [](string& latstr, string& lonstr) { return latstr + "  " + lonstr; });
 	return out;
 }
 
@@ -946,20 +887,22 @@ inline const T validate(const T t)
 /// Conversion functions
 
 template<CoordType newtype>
-inline void convertlet(const Coord& c, NumericVector nv)
+inline void convertlet(CoordType type, NumericVector nv)
 {
 	cout << "@convertlet<CoordType>(const Coord&, NumericVector) newtype " << coordtype_to_int(newtype) + 1 << endl;
-	transform(c.get_nv().begin(), c.get_nv().end(), nv.begin(), Convertor<newtype>(c.get_ff()));
+	transform(nv.begin(), nv.end(), nv.begin(), Convertor<newtype>(*vff[coordtype_to_int(type)]));
 }
 
 
 template<CoordType newtype>
-inline void convertlet(const WayPoint& wp, DataFrame df)
+inline void convertlet(CoordType type, DataFrame df)
 {
 	cout << "@convertlet<CoordType>(const WayPoint&, DataFrame) newtype " << coordtype_to_int(newtype) + 1 << endl;
 	const vector<int> llcols = getllcolsattr(df);
-	transform(wp.get_nvlat().begin(), wp.get_nvlat().end(), NumericVector(df[llcols[0]]).begin(), Convertor<newtype>(wp.get_ff()));
-	transform(wp.get_nvlon().begin(), wp.get_nvlon().end(), NumericVector(df[llcols[1]]).begin(), Convertor<newtype>(wp.get_ff()));
+	NumericVector nvlat(df[llcols[0]]);
+	NumericVector nvlon(df[llcols[1]]);
+	transform(nvlat.begin(), nvlat.end(), nvlat.begin(), Convertor<newtype>(*vff[coordtype_to_int(type)]));
+	transform(nvlon.begin(), nvlon.end(), nvlon.begin(), Convertor<newtype>(*vff[coordtype_to_int(type)]));
 }
 
 
@@ -980,18 +923,15 @@ void convert(T t, CoordType newtype)
 		switch (newtype)
 		{
 			case CoordType::decdeg:
-				convertlet<CoordType::decdeg>(u, t);					/////// temporary solution ///////
-//				u.convert<CoordType::decdeg>(t);						/////// preferred solution - #51 ///////
+				convertlet<CoordType::decdeg>(type, t);
 				break;
 
 			case CoordType::degmin:
-				convertlet<CoordType::degmin>(u, t);
-//				u.convert<CoordType::degmin>(t);
+				convertlet<CoordType::degmin>(type, t);
 				break;
 
 			case CoordType::degminsec:
-				convertlet<CoordType::degminsec>(u, t);
-//				u.convert<CoordType::degminsec>(t);
+				convertlet<CoordType::degminsec>(type, t);
 				break;
 
 			default:
