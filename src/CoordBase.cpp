@@ -529,7 +529,6 @@ class Coordbase {
 
 		const FamousFive& get_ff() const;
 		virtual void validate(bool warn = true) const = 0;
-		virtual const vector<bool>& get_valid(bool) const = 0;
 //		virtual const vector<string>& get_names() const = 0;
 //		template<CoordType type>
 //		virtual vector<string> format() const = 0;
@@ -582,7 +581,6 @@ class Coord : public Coordbase {
 		void convert(NumericVector) const;
 		void validate(bool warn = true) const;
 		const NumericVector get_nv() const;
-		const vector<bool>& get_valid(bool) const;
 		template<CoordType type>
 		vector<string> format() const;
 		void print(ostream&) const;
@@ -632,15 +630,6 @@ inline const NumericVector Coord::get_nv() const
 {
 //	cout << "@Coord::get_nv()\n";
 	return nv;
-}
-
-
-/// __________________________________________________
-/// Get const reference to valid
-inline const vector<bool>& Coord::get_valid(bool ll = true) const
-{
-//	cout << "@Coord::get_valid()\n";
-	return valid;
 }
 
 
@@ -727,7 +716,6 @@ class WayPoint : public Coordbase {
 		void validate(bool = true) const;
 		const NumericVector get_nvlat() const;
 		const NumericVector get_nvlon() const;
-		const vector<bool>& get_valid(bool) const;
 		void warn_invalid() const;
 		template<CoordType type>
 		vector<string> format() const;
@@ -803,15 +791,6 @@ inline const NumericVector WayPoint::get_nvlon() const
 {
 //	cout << "@WayPoint::get_nvlon()\n";
 	return nvlon;
-}
-
-
-/// __________________________________________________
-/// WayPoint validity
-const vector<bool>& WayPoint::get_valid(bool latlon) const
-{
-//	cout << "@WayPoint::get_valid(bool) latlon " << boolalpha << latlon << endl;
-	return latlon ? validlat : validlon;
 }
 
 
