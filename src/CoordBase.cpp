@@ -1072,10 +1072,14 @@ DataFrame waypoints(DataFrame df, int fmt = 1)
 	} else {
 		type = newtype;
 		df.attr("fmt") = fmt;
-		const vector<int> llcols { 1, 2 };									// !!!!!!!! Temporary Solution !!!!!!
-		df.attr("llcols") = llcols;
-		constexpr int namescol = 0;											// !!!!!!!! Temporary Solution !!!!!!
-		df.attr("namescol") = namescol;
+		if (!df.hasAttribute("llcols")) {
+			const vector<int> llcols { 1, 2 };									// !!!!!!!! Temporary Solution !!!!!!
+			df.attr("llcols") = llcols;
+		}
+		if (!df.hasAttribute("namescol")) {
+			constexpr int namescol = 0;											// !!!!!!!! Temporary Solution !!!!!!
+			df.attr("namescol") = namescol;
+		}
 	}
 
 	convert<DataFrame, WayPoint>(df, newtype);
