@@ -323,10 +323,10 @@ class Convertor {
 	public:
 		Convertor(const FamousFive& _ff) : ff(_ff)
 		{
-			cout << "§Convertor<CoordType>::Convertor(const FamousFive&) "; _ctrsgn(typeid(*this));
+//			cout << "§Convertor<CoordType>::Convertor(const FamousFive&) "; _ctrsgn(typeid(*this));
 		}
-//		~Convertor() = default;
-		~Convertor() { cout << "§Convertor<type>::~Convertor() "; _ctrsgn(typeid(*this), true); }
+		~Convertor() = default;
+//		~Convertor() { cout << "§Convertor<type>::~Convertor() "; _ctrsgn(typeid(*this), true); }
 		double operator()(double n);
 };
 
@@ -497,10 +497,10 @@ class Validator {
 	public:
 		Validator(const FamousFive& _ff, const vector<bool>& ll) : ff(_ff), ll_it(ll.begin()), ll_size(ll.size())
 		{
-			cout << "§Validator::Validator(const FamousFive&, vector<bool>&) "; _ctrsgn(typeid(*this));
+//			cout << "§Validator::Validator(const FamousFive&, vector<bool>&) "; _ctrsgn(typeid(*this));
 		}
-//		~Validator() = default;
-		~Validator() { cout << "§Validator::~Validator() "; _ctrsgn(typeid(*this), true); }
+		~Validator() = default;
+//		~Validator() { cout << "§Validator::~Validator() "; _ctrsgn(typeid(*this), true); }
 		bool operator()(double n)
 		{
 //			cout << "@Validator() " << " validating: " << setw(9) << setfill(' ') << n << endl;
@@ -536,13 +536,13 @@ class Coordbase {
 Coordbase::Coordbase(CoordType _ct) :
 	ct(_ct), ff(*vff[coordtype_to_int(ct)])
 {
-	cout << "§Coordbase::Coordbase(CoordType) "; _ctrsgn(typeid(*this));
+//	cout << "§Coordbase::Coordbase(CoordType) "; _ctrsgn(typeid(*this));
 }
 
 
 Coordbase::~Coordbase()
 {
-	cout << "§Coordbase::~Coordbase() "; _ctrsgn(typeid(*this), true);
+//	cout << "§Coordbase::~Coordbase() "; _ctrsgn(typeid(*this), true);
 }
 
 
@@ -565,8 +565,8 @@ class Coord : public Coordbase {
 
 	public:
 		Coord(CoordType, const NumericVector);
-//		~Coord() = default;
-		~Coord() { cout << "§Coord::~Coord() "; _ctrsgn(typeid(*this), true); }
+		~Coord() = default;
+//		~Coord() { cout << "§Coord::~Coord() "; _ctrsgn(typeid(*this), true); }
 
 		void validate(bool warn = true) const;
 		template<CoordType type>
@@ -579,7 +579,7 @@ Coord::Coord(CoordType ct, const NumericVector nv) :
 	Coordbase(ct), nv(nv),
 	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") } //,
 {
-	cout << "§Coord::Coord(CoordType, const NumericVector) "; _ctrsgn(typeid(*this));
+//	cout << "§Coord::Coord(CoordType, const NumericVector) "; _ctrsgn(typeid(*this));
 }
 
 
@@ -669,8 +669,8 @@ class WayPoint : public Coordbase {
 		const vector<bool> validlon { false };
 	public:
 		explicit WayPoint(CoordType, const DataFrame);
-//		~WayPoint() = default;
-		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
+		~WayPoint() = default;
+//		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
 
 		void validate(bool = true) const;
 		void warn_invalid() const;
@@ -682,12 +682,12 @@ class WayPoint : public Coordbase {
 
 WayPoint::WayPoint(CoordType ct, const DataFrame df) :
 	Coordbase(ct), df(df),
-//	latcol(getllcolsattr(df)[0]),
-//	loncol(getllcolsattr(df)[1])
-	latcol(1), loncol(2),											/////// !!!!!!! Temporary Solution !!!!!!! ///////
+	latcol(getllcolsattr(df)[0]),
+	loncol(getllcolsattr(df)[1]),
+//	latcol(1), loncol(2),											/////// !!!!!!! Temporary Solution !!!!!!! ///////
 	nvlat(df[latcol]), nvlon(df[loncol])
 {
-	cout << "§WayPoint::WayPoint(CoordType ct, const DataFrame) "; _ctrsgn(typeid(*this));
+//	cout << "§WayPoint::WayPoint(CoordType ct, const DataFrame) "; _ctrsgn(typeid(*this));
 }
 
 
@@ -695,7 +695,7 @@ WayPoint::WayPoint(CoordType ct, const DataFrame df) :
 /// Validate WayPoint
 void WayPoint::validate(bool warn) const
 {
-	cout << "@WayPoint::validate(bool)\n";
+//	cout << "@WayPoint::validate(bool)\n";
 
 	vector<bool>& non_const_validlat { const_cast<vector<bool>&>(validlat) };
 	non_const_validlat.assign(nvlat.size(), {false});
@@ -740,7 +740,7 @@ void WayPoint::warn_invalid() const
 template<CoordType type>
 vector<string> WayPoint::format() const
 {
-	cout << "@WayPoint::format()\n";
+//	cout << "@WayPoint::format()\n";
 	vector<string> sv_lat(nvlat.size());
 	transform(nvlat.begin(), nvlat.end(), sv_lat.begin(), Format<type>(ff));
 	transform(sv_lat.begin(), sv_lat.end(), nvlat.begin(), sv_lat.begin(), FormatLL<WayPoint, type>(ff, vector<bool>{ true }));
@@ -809,7 +809,7 @@ ostream& operator<<(ostream& stream, const WayPoint& wp)
 
 bool check_valid(const NumericVector nv)
 {
-	cout << "@check_valid(const NumericVector)" << endl;
+//	cout << "@check_valid(const NumericVector)" << endl;
 	bool unvalidated = false;
 	bool valid = validated(nv, "valid", unvalidated);
 	if (unvalidated)
@@ -822,7 +822,7 @@ bool check_valid(const NumericVector nv)
 /// Check "lat_valid" and "lon_valid attributes of DataFrame are all true
 bool check_valid(const DataFrame df)
 {
-	cout << "@check_valid(const DataFrame)\n";
+//	cout << "@check_valid(const DataFrame)\n";
 	bool unvalidated = false;
 
 	bool latvalid = validated(df, "validlat", unvalidated);
@@ -845,7 +845,7 @@ bool check_valid(const DataFrame df)
 template<class T>
 bool validated(T t, const char* attrname, bool& unvalidated)
 {
-	cout << "@validated<T>(T, const char*, bool&)" << endl;
+//	cout << "@validated<T>(T, const char*, bool&)" << endl;
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	const vector<bool>&& validvec = get_vec_attr<T, bool>(t, attrname);
 	bool valid = all_of(validvec.begin(), validvec.end(), [](bool v) { return v;});
@@ -859,7 +859,7 @@ bool validated(T t, const char* attrname, bool& unvalidated)
 template<class T, class U>
 const T revalidate(const T t)
 {
-	cout << "@revalidate<T, U>(const T)\n";
+//	cout << "@revalidate<T, U>(const T)\n";
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	warning("Unvalidated %s! Revalidating…", typeid(t).name());
 	validate<T, U>(t);	
@@ -872,7 +872,7 @@ const T revalidate(const T t)
 template<class T, class U>
 inline const T validate(const T t)
 {
-	cout << "@validate<T, U>(const T)\n";
+//	cout << "@validate<T, U>(const T)\n";
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	U(get_coordtype(t), t).validate();
 	return t;	
@@ -886,7 +886,7 @@ inline const T validate(const T t)
 template<CoordType newtype>
 inline void convertlet(CoordType type, NumericVector nv)
 {
-	cout << "@convertlet<CoordType>(const Coord&, NumericVector) newtype " << coordtype_to_int(newtype) + 1 << endl;
+//	cout << "@convertlet<CoordType>(const Coord&, NumericVector) newtype " << coordtype_to_int(newtype) + 1 << endl;
 	transform(nv.begin(), nv.end(), nv.begin(), Convertor<newtype>(*vff[coordtype_to_int(type)]));
 }
 
@@ -894,7 +894,7 @@ inline void convertlet(CoordType type, NumericVector nv)
 template<CoordType newtype>
 inline void convertlet(CoordType type, DataFrame df)
 {
-	cout << "@convertlet<CoordType>(const WayPoint&, DataFrame) newtype " << coordtype_to_int(newtype) + 1 << endl;
+//	cout << "@convertlet<CoordType>(const WayPoint&, DataFrame) newtype " << coordtype_to_int(newtype) + 1 << endl;
 	const vector<int> llcols = getllcolsattr(df);
 	NumericVector nvlat(df[llcols[0]]);
 	NumericVector nvlon(df[llcols[1]]);
@@ -908,7 +908,7 @@ inline void convertlet(CoordType type, DataFrame df)
 template<class T, class U>
 void convert(T t, CoordType newtype)
 {
-	cout << "@convert<T&, U>(T, CoordType)\n";
+//	cout << "@convert<T&, U>(T, CoordType)\n";
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 
 	CoordType type = get_coordtype(t);
@@ -949,14 +949,14 @@ void convert(T t, CoordType newtype)
 // [[Rcpp::export]]
 NumericVector coords(NumericVector nv, const int fmt = 1)
 {
-	cout << "——Rcpp::export——coords()\n";
+//	cout << "——Rcpp::export——coords()\n";
 	CoordType newtype = get_coordtype(fmt);
 	CoordType type;
 	if (nv.inherits("coords")) {
 		type = get_coordtype(nv);
-		cout <<  "@coords() nv is already a \"coords\" vector of type " << coordtype_to_int(type) + 1 << endl;
+//		cout <<  "@coords() nv is already a \"coords\" vector of type " << coordtype_to_int(type) + 1 << endl;
 		if (newtype == type) {
-			cout << "——fmt out == fmt in!——" << endl;
+//			cout << "——fmt out == fmt in!——" << endl;
 			if (!check_valid(nv))
 				stop("Invalid coords!");
 			return nv;
@@ -977,7 +977,7 @@ NumericVector coords(NumericVector nv, const int fmt = 1)
 // [[Rcpp::export(name = "`coords<-`")]]
 NumericVector coords_replace(NumericVector nv, int value)
 {
-	cout << "——Rcpp::export——`coords_replace()<-`\n";
+//	cout << "——Rcpp::export——`coords_replace()<-`\n";
 	return coords(nv, value);
 }
 
@@ -987,7 +987,7 @@ NumericVector coords_replace(NumericVector nv, int value)
 // [[Rcpp::export(name = "`latlon<-`")]]
 NumericVector latlon(NumericVector nv, LogicalVector& value)
 {
-	cout << "——Rcpp::export——set_latlon()\n";
+//	cout << "——Rcpp::export——set_latlon()\n";
 	checkinherits(nv, "coords");
 	if (value.size() != nv.size() && value.size() != 1)
 		stop("value must be either length 1 or length(nv)");
@@ -1003,7 +1003,7 @@ NumericVector latlon(NumericVector nv, LogicalVector& value)
 // [[Rcpp::export(name = "print.coords", invisible = true)]]
 NumericVector printcoord(NumericVector nv)
 {
-	cout << "——Rcpp::export——printcoord() format " << get_fmt_attribute(nv) << endl;
+//	cout << "——Rcpp::export——printcoord() format " << get_fmt_attribute(nv) << endl;
 	checkinherits(nv, "coords");
 	if (!check_valid(nv))
 		warning("Printing invalid coords!");
@@ -1017,7 +1017,7 @@ NumericVector printcoord(NumericVector nv)
 // [[Rcpp::export(name = "validate.coords")]]
 NumericVector validatecoord(NumericVector nv)
 {
-	cout << "——Rcpp::export——validatecoord()\n";
+//	cout << "——Rcpp::export——validatecoord()\n";
 	checkinherits(nv, "coords");
 	return validate<NumericVector, Coord>(nv);
 }
@@ -1028,7 +1028,7 @@ NumericVector validatecoord(NumericVector nv)
 // [[Rcpp::export(name = "format.coords")]]
 vector<string> formatcoord(NumericVector nv)
 {
-	cout << "——Rcpp::export——format()\n";
+//	cout << "——Rcpp::export——format()\n";
 	checkinherits(nv, "coords");
 	if (!check_valid(nv))
 		warning("Formatting invalid coords!");
@@ -1057,14 +1057,14 @@ vector<string> formatcoord(NumericVector nv)
 // [[Rcpp::export]]
 DataFrame waypoints(DataFrame df, int fmt = 1)
 {
-	cout << "——Rcpp::export——waypoints()\n";
+//	cout << "——Rcpp::export——waypoints()\n";
 	CoordType newtype = get_coordtype(fmt);
 	CoordType type;
 	if (df.inherits("waypoints")) {
 		type = get_coordtype(df);
-		cout << "argument df is already a \"waypoints\" vector of type " << coordtype_to_int(type) + 1 << endl;
+//		cout << "argument df is already a \"waypoints\" vector of type " << coordtype_to_int(type) + 1 << endl;
 		if (newtype == type) {
-			cout << "——fmt out == fmt in!——" << endl;
+//			cout << "——fmt out == fmt in!——" << endl;
 			if (!check_valid(df))
 				stop("Invalid waypoints!");
 			return df;
@@ -1072,12 +1072,10 @@ DataFrame waypoints(DataFrame df, int fmt = 1)
 	} else {
 		type = newtype;
 		df.attr("fmt") = fmt;
-		df.attr("llcols") = vector<int>{ 1, 2 };
-		df.attr("namescol") = 0;
-/*		const vector<int> llcols { 1, 2 };									// !!!!!!!! Temporary Solution !!!!!!
+		const vector<int> llcols { 1, 2 };									// !!!!!!!! Temporary Solution !!!!!!
 		df.attr("llcols") = llcols;
 		constexpr int namescol = 0;											// !!!!!!!! Temporary Solution !!!!!!
-		df.attr("namescol") = namescol; */
+		df.attr("namescol") = namescol;
 	}
 
 	convert<DataFrame, WayPoint>(df, newtype);
@@ -1091,7 +1089,7 @@ DataFrame waypoints(DataFrame df, int fmt = 1)
 // [[Rcpp::export(name = "`waypoints<-`")]]
 DataFrame waypoints_replace(DataFrame df, int value)
 {
-	cout << "——Rcpp::export——`waypoints_replace()<-`\n";
+//	cout << "——Rcpp::export——`waypoints_replace()<-`\n";
 	return waypoints(df, value);
 }
 
@@ -1101,7 +1099,7 @@ DataFrame waypoints_replace(DataFrame df, int value)
 // [[Rcpp::export(name = "print.waypoints", invisible = true)]]
 DataFrame printwaypoint(DataFrame df)
 {
-	cout << "——Rcpp::export——printwaypoint() format " << get_fmt_attribute(df) << endl;
+//	cout << "——Rcpp::export——printwaypoint() format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
 	if (!check_valid(df))
 		warning("Invalid waypoints!");
@@ -1115,7 +1113,7 @@ DataFrame printwaypoint(DataFrame df)
 // [[Rcpp::export(name = "validate.waypoints")]]
 const DataFrame validatewaypoint(DataFrame df)
 {
-	cout << "——Rcpp::export——validatewaypoint(DataFrame) format " << get_fmt_attribute(df) << endl;
+//	cout << "——Rcpp::export——validatewaypoint(DataFrame) format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
 	return validate<DataFrame, WayPoint>(df);
 }
