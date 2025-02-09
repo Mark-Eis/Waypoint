@@ -528,8 +528,6 @@ class Coordbase {
 		virtual ~Coordbase() = 0;
 
 		const FamousFive& get_ff() const;
-//		virtual void validate(bool warn = true) const = 0;
-//		virtual void print(ostream&) const = 0;
 };
 
 
