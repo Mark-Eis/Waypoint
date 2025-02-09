@@ -522,8 +522,8 @@ class Coordbase {
 	public:
 		Coordbase(CoordType _ct);
 		Coordbase(const Coordbase&) = delete;						// Disallow copying
-		Coordbase& operator=(const Coordbase&) = delete;				//  ——— ditto ———
-		Coordbase(Coordbase&&) = delete;								// Disallow transfer ownership
+		Coordbase& operator=(const Coordbase&) = delete;			//  ——— ditto ———
+		Coordbase(Coordbase&&) = delete;							// Disallow transfer ownership
 		Coordbase& operator=(Coordbase&&) = delete;					// Disallow moving
 		virtual ~Coordbase() = 0;
 
@@ -570,10 +570,6 @@ class Coord : public Coordbase {
 
 	public:
 		Coord(CoordType, const NumericVector);
-		Coord(const Coord&) = delete;					// Disallow copying
-		Coord& operator=(const Coord&) = delete;			//  ——— ditto ———
-		Coord(Coord&&) = delete;							// Disallow transfer ownership
-		Coord& operator=(Coord&&) = delete;				// Disallow moving
 //		~Coord() = default;
 		~Coord() { cout << "§Coord::~Coord() "; _ctrsgn(typeid(*this), true); }
 
@@ -704,10 +700,6 @@ class WayPoint : public Coordbase {
 		const vector<bool> validlon { false };
 	public:
 		explicit WayPoint(CoordType, const DataFrame);
-		WayPoint(const WayPoint&) = delete;					// Disallow copying
-		WayPoint& operator=(const WayPoint&) = delete;		//  ——— ditto ———
-		WayPoint(WayPoint&&) = delete;						// Disallow transfer ownership
-		WayPoint& operator=(WayPoint&&) = delete;			// Disallow moving
 //		~WayPoint() = default;
 		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
 
