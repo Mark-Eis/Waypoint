@@ -11,171 +11,116 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // coords
-NumericVector coords(NumericVector& nv, int fmt);
+NumericVector coords(NumericVector nv, const int fmt);
 RcppExport SEXP _Waypoint_coords(SEXP nvSEXP, SEXP fmtSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector& >::type nv(nvSEXP);
-    Rcpp::traits::input_parameter< int >::type fmt(fmtSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nv(nvSEXP);
+    Rcpp::traits::input_parameter< const int >::type fmt(fmtSEXP);
     rcpp_result_gen = Rcpp::wrap(coords(nv, fmt));
     return rcpp_result_gen;
 END_RCPP
 }
 // coords_replace
-NumericVector coords_replace(NumericVector& nv, int value);
+NumericVector coords_replace(NumericVector nv, int value);
 RcppExport SEXP _Waypoint_coords_replace(SEXP nvSEXP, SEXP valueSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector& >::type nv(nvSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nv(nvSEXP);
     Rcpp::traits::input_parameter< int >::type value(valueSEXP);
     rcpp_result_gen = Rcpp::wrap(coords_replace(nv, value));
     return rcpp_result_gen;
 END_RCPP
 }
 // latlon
-NumericVector latlon(NumericVector& nv, LogicalVector& value);
+NumericVector latlon(NumericVector nv, LogicalVector& value);
 RcppExport SEXP _Waypoint_latlon(SEXP nvSEXP, SEXP valueSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector& >::type nv(nvSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nv(nvSEXP);
     Rcpp::traits::input_parameter< LogicalVector& >::type value(valueSEXP);
     rcpp_result_gen = Rcpp::wrap(latlon(nv, value));
     return rcpp_result_gen;
 END_RCPP
 }
 // printcoord
-NumericVector printcoord(NumericVector& nv);
+NumericVector printcoord(NumericVector nv);
 RcppExport SEXP _Waypoint_printcoord(SEXP nvSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector& >::type nv(nvSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nv(nvSEXP);
     rcpp_result_gen = Rcpp::wrap(printcoord(nv));
     return rcpp_result_gen;
 END_RCPP
 }
-// Rvalidatecoord
-vector<bool> Rvalidatecoord(NumericVector& nv);
-RcppExport SEXP _Waypoint_Rvalidatecoord(SEXP nvSEXP) {
+// validatecoord
+NumericVector validatecoord(NumericVector nv);
+RcppExport SEXP _Waypoint_validatecoord(SEXP nvSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector& >::type nv(nvSEXP);
-    rcpp_result_gen = Rcpp::wrap(Rvalidatecoord(nv));
+    Rcpp::traits::input_parameter< NumericVector >::type nv(nvSEXP);
+    rcpp_result_gen = Rcpp::wrap(validatecoord(nv));
     return rcpp_result_gen;
 END_RCPP
 }
 // formatcoord
-vector<string> formatcoord(NumericVector& nv);
+CharacterVector formatcoord(NumericVector nv);
 RcppExport SEXP _Waypoint_formatcoord(SEXP nvSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector& >::type nv(nvSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type nv(nvSEXP);
     rcpp_result_gen = Rcpp::wrap(formatcoord(nv));
     return rcpp_result_gen;
 END_RCPP
 }
-// get_deg
-vector<int> get_deg(NumericVector& nv);
-RcppExport SEXP _Waypoint_get_deg(SEXP nvSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector& >::type nv(nvSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_deg(nv));
-    return rcpp_result_gen;
-END_RCPP
-}
-// get_decdeg
-vector<double> get_decdeg(NumericVector& nv);
-RcppExport SEXP _Waypoint_get_decdeg(SEXP nvSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector& >::type nv(nvSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_decdeg(nv));
-    return rcpp_result_gen;
-END_RCPP
-}
-// get_min
-vector<int> get_min(NumericVector& nv);
-RcppExport SEXP _Waypoint_get_min(SEXP nvSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector& >::type nv(nvSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_min(nv));
-    return rcpp_result_gen;
-END_RCPP
-}
-// get_decmin
-vector<double> get_decmin(NumericVector& nv);
-RcppExport SEXP _Waypoint_get_decmin(SEXP nvSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector& >::type nv(nvSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_decmin(nv));
-    return rcpp_result_gen;
-END_RCPP
-}
-// get_sec
-vector<double> get_sec(NumericVector& nv);
-RcppExport SEXP _Waypoint_get_sec(SEXP nvSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector& >::type nv(nvSEXP);
-    rcpp_result_gen = Rcpp::wrap(get_sec(nv));
-    return rcpp_result_gen;
-END_RCPP
-}
 // waypoints
-DataFrame waypoints(DataFrame& df, int fmt);
+DataFrame waypoints(DataFrame df, int fmt);
 RcppExport SEXP _Waypoint_waypoints(SEXP dfSEXP, SEXP fmtSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< DataFrame& >::type df(dfSEXP);
+    Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
     Rcpp::traits::input_parameter< int >::type fmt(fmtSEXP);
     rcpp_result_gen = Rcpp::wrap(waypoints(df, fmt));
     return rcpp_result_gen;
 END_RCPP
 }
 // waypoints_replace
-DataFrame waypoints_replace(DataFrame& df, int value);
+DataFrame waypoints_replace(DataFrame df, int value);
 RcppExport SEXP _Waypoint_waypoints_replace(SEXP dfSEXP, SEXP valueSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< DataFrame& >::type df(dfSEXP);
+    Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
     Rcpp::traits::input_parameter< int >::type value(valueSEXP);
     rcpp_result_gen = Rcpp::wrap(waypoints_replace(df, value));
     return rcpp_result_gen;
 END_RCPP
 }
 // printwaypoint
-DataFrame printwaypoint(DataFrame& df);
+DataFrame printwaypoint(DataFrame df);
 RcppExport SEXP _Waypoint_printwaypoint(SEXP dfSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< DataFrame& >::type df(dfSEXP);
+    Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
     rcpp_result_gen = Rcpp::wrap(printwaypoint(df));
     return rcpp_result_gen;
 END_RCPP
 }
 // validatewaypoint
-const DataFrame validatewaypoint(DataFrame& df);
+const DataFrame validatewaypoint(DataFrame df);
 RcppExport SEXP _Waypoint_validatewaypoint(SEXP dfSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< DataFrame& >::type df(dfSEXP);
+    Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
     rcpp_result_gen = Rcpp::wrap(validatewaypoint(df));
     return rcpp_result_gen;
 END_RCPP
@@ -200,13 +145,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Waypoint_coords_replace", (DL_FUNC) &_Waypoint_coords_replace, 2},
     {"_Waypoint_latlon", (DL_FUNC) &_Waypoint_latlon, 2},
     {"_Waypoint_printcoord", (DL_FUNC) &_Waypoint_printcoord, 1},
-    {"_Waypoint_Rvalidatecoord", (DL_FUNC) &_Waypoint_Rvalidatecoord, 1},
+    {"_Waypoint_validatecoord", (DL_FUNC) &_Waypoint_validatecoord, 1},
     {"_Waypoint_formatcoord", (DL_FUNC) &_Waypoint_formatcoord, 1},
-    {"_Waypoint_get_deg", (DL_FUNC) &_Waypoint_get_deg, 1},
-    {"_Waypoint_get_decdeg", (DL_FUNC) &_Waypoint_get_decdeg, 1},
-    {"_Waypoint_get_min", (DL_FUNC) &_Waypoint_get_min, 1},
-    {"_Waypoint_get_decmin", (DL_FUNC) &_Waypoint_get_decmin, 1},
-    {"_Waypoint_get_sec", (DL_FUNC) &_Waypoint_get_sec, 1},
     {"_Waypoint_waypoints", (DL_FUNC) &_Waypoint_waypoints, 2},
     {"_Waypoint_waypoints_replace", (DL_FUNC) &_Waypoint_waypoints_replace, 2},
     {"_Waypoint_printwaypoint", (DL_FUNC) &_Waypoint_printwaypoint, 1},

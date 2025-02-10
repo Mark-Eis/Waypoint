@@ -1,11 +1,11 @@
 Package: Waypoint
 Type: Package
-Title: What the Package Does in One 'Title Case' Line
+Title: Convert and Validate Geographic Coordinates and Waypoints
 Version: 1.0
 Date: 2024-12-27
 Author: Mark Eisler
 Maintainer: Mark Eisler <mark@markeisler.com>
-Description: One paragraph description of what the package does as one or more full sentences.
+Description: Package Waypoint converts geographic coordinates and waypoints between three common formats, validates their values as being plausible geographic locations and prints the formatted values. The three possible formats are (i) decimal degrees, (ii) degrees and minutes, and (iii) degrees minutes and seconds.
 License: MIT
 Imports: methods, Rcpp (>= 1.0.13)
 LinkingTo: Rcpp

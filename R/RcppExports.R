@@ -18,31 +18,11 @@ print.coords <- function(nv) {
 }
 
 validate.coords <- function(nv) {
-    .Call(`_Waypoint_Rvalidatecoord`, nv)
+    .Call(`_Waypoint_validatecoord`, nv)
 }
 
 format.coords <- function(nv) {
     .Call(`_Waypoint_formatcoord`, nv)
-}
-
-get_deg <- function(nv) {
-    .Call(`_Waypoint_get_deg`, nv)
-}
-
-get_decdeg <- function(nv) {
-    .Call(`_Waypoint_get_decdeg`, nv)
-}
-
-get_min <- function(nv) {
-    .Call(`_Waypoint_get_min`, nv)
-}
-
-get_decmin <- function(nv) {
-    .Call(`_Waypoint_get_decmin`, nv)
-}
-
-get_sec <- function(nv) {
-    .Call(`_Waypoint_get_sec`, nv)
 }
 
 waypoints <- function(df, fmt = 1L) {

@@ -93,9 +93,8 @@ NumericVector coords(NumericVector, const int);
 NumericVector coords_replace(NumericVector, int);
 NumericVector latlon(NumericVector, LogicalVector&);
 NumericVector printcoord(NumericVector);
-//const vector<bool> validatecoord(NumericVector);
 NumericVector validatecoord(NumericVector);
-vector<string> formatcoord(NumericVector);
+CharacterVector formatcoord(NumericVector nv);
 /*
 vector<int> get_deg(NumericVector);
 vector<double> get_decdeg(NumericVector);
@@ -106,7 +105,7 @@ vector<double> get_sec(NumericVector);
 DataFrame waypoints(DataFrame, int);
 DataFrame waypoints_replace(DataFrame df, int value);
 DataFrame printwaypoint(DataFrame);
-//DataFrame validatewaypoint(DataFrame);
+DataFrame validatewaypoint(DataFrame);
 
 
 /// __________________________________________________
@@ -1021,7 +1020,7 @@ NumericVector validatecoord(NumericVector nv)
 /// __________________________________________________
 /// Format coords vector - S3 method format.coords()
 // [[Rcpp::export(name = "format.coords")]]
-vector<string> formatcoord(NumericVector nv)
+CharacterVector formatcoord(NumericVector nv)
 {
 //	cout << "——Rcpp::export——format()\n";
 	checkinherits(nv, "coords");
@@ -1032,13 +1031,13 @@ vector<string> formatcoord(NumericVector nv)
 	switch (get_coordtype(nv))
 	{
 		case CoordType::decdeg:
-			return c.format<CoordType::decdeg>();
+			return wrap(c.format<CoordType::decdeg>());
 
 		case CoordType::degmin:
-			return c.format<CoordType::degmin>();
+			return wrap(c.format<CoordType::degmin>());
 
 		case CoordType::degminsec:
-			return c.format<CoordType::degminsec>();
+			return wrap(c.format<CoordType::degminsec>());
 
 		default:
 			stop("formatcoord(NumericVector) my bad");
@@ -1110,7 +1109,7 @@ DataFrame printwaypoint(DataFrame df)
 /// __________________________________________________
 /// Validate waypoints vector
 // [[Rcpp::export(name = "validate.waypoints")]]
-const DataFrame validatewaypoint(DataFrame df)
+DataFrame validatewaypoint(DataFrame df)
 {
 //	cout << "——Rcpp::export——validatewaypoint(DataFrame) format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
