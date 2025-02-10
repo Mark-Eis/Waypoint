@@ -81,12 +81,12 @@ inline const T validate(const T);
 
 // Conversion
 template<class T, class U>
-void convert(T, CoordType newtype);
+void convene(T, CoordType newtype);
 
 template<CoordType newtype>
-inline void convertlet(CoordType, NumericVector);
+inline void convert(CoordType, NumericVector);
 template<CoordType newtype>
-inline void convertlet(CoordType, DataFrame);
+inline void convert(CoordType, DataFrame);
 
 // exported
 NumericVector coords(NumericVector, const int);
@@ -882,17 +882,17 @@ inline const T validate(const T t)
 /// Conversion functions
 
 template<CoordType newtype>
-inline void convertlet(CoordType type, NumericVector nv)
+inline void convert(CoordType type, NumericVector nv)
 {
-//	cout << "@convertlet<CoordType>(const Coord&, NumericVector) newtype " << coordtype_to_int(newtype) + 1 << endl;
+//	cout << "@convert<CoordType>(const Coord&, NumericVector) newtype " << coordtype_to_int(newtype) + 1 << endl;
 	transform(nv.begin(), nv.end(), nv.begin(), Convertor<newtype>(*vff[coordtype_to_int(type)]));
 }
 
 
 template<CoordType newtype>
-inline void convertlet(CoordType type, DataFrame df)
+inline void convert(CoordType type, DataFrame df)
 {
-//	cout << "@convertlet<CoordType>(const WayPoint&, DataFrame) newtype " << coordtype_to_int(newtype) + 1 << endl;
+//	cout << "@convert<CoordType>(const WayPoint&, DataFrame) newtype " << coordtype_to_int(newtype) + 1 << endl;
 	const vector<int> llcols = getllcolsattr(df);
 	NumericVector nvlat(df[llcols[0]]);
 	NumericVector nvlon(df[llcols[1]]);
@@ -902,11 +902,11 @@ inline void convertlet(CoordType type, DataFrame df)
 
 
 /// __________________________________________________
-/// Convert NumericVector or DataFrame
+/// Convene NumericVector or DataFrame
 template<class T, class U>
-void convert(T t, CoordType newtype)
+void convene(T t, CoordType newtype)
 {
-//	cout << "@convert<T&, U>(T, CoordType)\n";
+//	cout << "@convene<T&, U>(T, CoordType)\n";
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	CoordType type = get_coordtype(t);
 	U(type, t).validate();
@@ -915,19 +915,19 @@ void convert(T t, CoordType newtype)
 		switch (newtype)
 		{
 			case CoordType::decdeg:
-				convertlet<CoordType::decdeg>(type, t);
+				convert<CoordType::decdeg>(type, t);
 				break;
 
 			case CoordType::degmin:
-				convertlet<CoordType::degmin>(type, t);
+				convert<CoordType::degmin>(type, t);
 				break;
 
 			case CoordType::degminsec:
-				convertlet<CoordType::degminsec>(type, t);
+				convert<CoordType::degminsec>(type, t);
 				break;
 
 			default:
-				stop("convert<T&, U>(const T&, U) my bad");
+				stop("convene<T&, U>(const T&, U) my bad");
 		}
 		t.attr("fmt") = coordtype_to_int(newtype) + 1;
 	}
@@ -961,7 +961,7 @@ NumericVector coords(NumericVector nv, const int fmt = 1)
 		nv.attr("fmt") = fmt;
 	}
 
-	convert<NumericVector, Coord>(nv, newtype);
+	convene<NumericVector, Coord>(nv, newtype);
 	nv.attr("class") = "coords";
 	return nv;
 }
@@ -1077,7 +1077,7 @@ DataFrame waypoints(DataFrame df, int fmt = 1)
 		}
 	}
 
-	convert<DataFrame, WayPoint>(df, newtype);
+	convene<DataFrame, WayPoint>(df, newtype);
 	df.attr("class") = CharacterVector{"waypoints", "data.frame"};
 	return df;
 }
