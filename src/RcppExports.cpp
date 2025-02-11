@@ -115,7 +115,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // validatewaypoint
-const DataFrame validatewaypoint(DataFrame df);
+DataFrame validatewaypoint(DataFrame df);
 RcppExport SEXP _Waypoint_validatewaypoint(SEXP dfSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

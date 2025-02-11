@@ -94,16 +94,9 @@ NumericVector coords_replace(NumericVector, int);
 NumericVector latlon(NumericVector, LogicalVector&);
 NumericVector printcoord(NumericVector);
 NumericVector validatecoord(NumericVector);
-CharacterVector formatcoord(NumericVector nv);
-/*
-vector<int> get_deg(NumericVector);
-vector<double> get_decdeg(NumericVector);
-vector<int> get_min(NumericVector);
-vector<double> get_decmin(NumericVector);
-vector<double> get_sec(NumericVector);
-*/
+CharacterVector formatcoord(NumericVector);
 DataFrame waypoints(DataFrame, int);
-DataFrame waypoints_replace(DataFrame df, int value);
+DataFrame waypoints_replace(DataFrame, int);
 DataFrame printwaypoint(DataFrame);
 DataFrame validatewaypoint(DataFrame);
 
