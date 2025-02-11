@@ -992,7 +992,7 @@ NumericVector latlon(NumericVector nv, LogicalVector& value)
 /// __________________________________________________
 /// Print coords vector - S3 method print.coords()	  /////// "invisible" not working ///////
 // [[Rcpp::export(name = "print.coords", invisible = true)]]
-NumericVector printcoord(NumericVector nv)
+NumericVector printcoords(NumericVector nv)
 {
 //	cout << "——Rcpp::export——printcoord() format " << get_fmt_attribute(nv) << endl;
 	checkinherits(nv, "coords");
@@ -1006,7 +1006,7 @@ NumericVector printcoord(NumericVector nv)
 /// __________________________________________________
 /// Validate coords vector
 // [[Rcpp::export(name = "validate.coords")]]
-NumericVector validatecoord(NumericVector nv)
+NumericVector validatecoords(NumericVector nv)
 {
 //	cout << "——Rcpp::export——validatecoord()\n";
 	checkinherits(nv, "coords");
@@ -1017,7 +1017,7 @@ NumericVector validatecoord(NumericVector nv)
 /// __________________________________________________
 /// Format coords vector - S3 method format.coords()
 // [[Rcpp::export(name = "format.coords")]]
-CharacterVector formatcoord(NumericVector nv)
+CharacterVector formatcoords(NumericVector nv)
 {
 //	cout << "——Rcpp::export——format()\n";
 	checkinherits(nv, "coords");
@@ -1092,7 +1092,7 @@ DataFrame waypoints_replace(DataFrame df, int value)
 /// __________________________________________________
 /// Print waypoints vector - S3 method print.waypoints()	  /////// "invisible" not working ///////
 // [[Rcpp::export(name = "print.waypoints", invisible = true)]]
-DataFrame printwaypoint(DataFrame df)
+DataFrame printwaypoints(DataFrame df)
 {
 //	cout << "——Rcpp::export——printwaypoint() format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
@@ -1106,7 +1106,7 @@ DataFrame printwaypoint(DataFrame df)
 /// __________________________________________________
 /// Validate waypoints vector
 // [[Rcpp::export(name = "validate.waypoints")]]
-DataFrame validatewaypoint(DataFrame df)
+DataFrame validatewaypoints(DataFrame df)
 {
 //	cout << "——Rcpp::export——validatewaypoint(DataFrame) format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");

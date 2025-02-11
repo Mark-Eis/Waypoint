@@ -14,15 +14,15 @@ coords <- function(nv, fmt = 1L) {
 }
 
 print.coords <- function(nv) {
-    invisible(.Call(`_Waypoint_printcoord`, nv))
+    invisible(.Call(`_Waypoint_printcoords`, nv))
 }
 
-validate.coords <- function(nv) {
-    .Call(`_Waypoint_validatecoord`, nv)
+validatecoords <- function(nv) {
+    .Call(`_Waypoint_validatecoords`, nv)
 }
 
-format.coords <- function(nv) {
-    .Call(`_Waypoint_formatcoord`, nv)
+formatcoords <- function(nv) {
+    .Call(`_Waypoint_formatcoords`, nv)
 }
 
 waypoints <- function(df, fmt = 1L) {
@@ -34,11 +34,11 @@ waypoints <- function(df, fmt = 1L) {
 }
 
 print.waypoints <- function(df) {
-    invisible(.Call(`_Waypoint_printwaypoint`, df))
+    invisible(.Call(`_Waypoint_printwaypoints`, df))
 }
 
-validate.waypoints <- function(df) {
-    .Call(`_Waypoint_validatewaypoint`, df)
+validatewaypoints <- function(df) {
+    .Call(`_Waypoint_validatewaypoints`, df)
 }
 
 rcpp_hello_world <- function() {

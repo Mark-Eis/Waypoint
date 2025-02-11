@@ -1,5 +1,5 @@
 # Waypoint R Package
-# Mark Eisler Dec 2024
+# Mark Eisler Feb 2025
 # For conversion and validation of geographic coordinates
 #
 # Requires R version 4.4.2 (2024-10-31) -- "Pile of Leaves" or later
@@ -15,6 +15,7 @@
 
 validate <- function(object, ...) 
     UseMethod("validate")
+    
 
 # ========================================
 #  Analyse Coordinates and Waypoints

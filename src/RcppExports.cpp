@@ -46,36 +46,36 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// printcoord
-NumericVector printcoord(NumericVector nv);
-RcppExport SEXP _Waypoint_printcoord(SEXP nvSEXP) {
+// printcoords
+NumericVector printcoords(NumericVector nv);
+RcppExport SEXP _Waypoint_printcoords(SEXP nvSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type nv(nvSEXP);
-    rcpp_result_gen = Rcpp::wrap(printcoord(nv));
+    rcpp_result_gen = Rcpp::wrap(printcoords(nv));
     return rcpp_result_gen;
 END_RCPP
 }
-// validatecoord
-NumericVector validatecoord(NumericVector nv);
-RcppExport SEXP _Waypoint_validatecoord(SEXP nvSEXP) {
+// validatecoords
+NumericVector validatecoords(NumericVector nv);
+RcppExport SEXP _Waypoint_validatecoords(SEXP nvSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type nv(nvSEXP);
-    rcpp_result_gen = Rcpp::wrap(validatecoord(nv));
+    rcpp_result_gen = Rcpp::wrap(validatecoords(nv));
     return rcpp_result_gen;
 END_RCPP
 }
-// formatcoord
-CharacterVector formatcoord(NumericVector nv);
-RcppExport SEXP _Waypoint_formatcoord(SEXP nvSEXP) {
+// formatcoords
+CharacterVector formatcoords(NumericVector nv);
+RcppExport SEXP _Waypoint_formatcoords(SEXP nvSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type nv(nvSEXP);
-    rcpp_result_gen = Rcpp::wrap(formatcoord(nv));
+    rcpp_result_gen = Rcpp::wrap(formatcoords(nv));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -103,25 +103,25 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// printwaypoint
-DataFrame printwaypoint(DataFrame df);
-RcppExport SEXP _Waypoint_printwaypoint(SEXP dfSEXP) {
+// printwaypoints
+DataFrame printwaypoints(DataFrame df);
+RcppExport SEXP _Waypoint_printwaypoints(SEXP dfSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
-    rcpp_result_gen = Rcpp::wrap(printwaypoint(df));
+    rcpp_result_gen = Rcpp::wrap(printwaypoints(df));
     return rcpp_result_gen;
 END_RCPP
 }
-// validatewaypoint
-DataFrame validatewaypoint(DataFrame df);
-RcppExport SEXP _Waypoint_validatewaypoint(SEXP dfSEXP) {
+// validatewaypoints
+DataFrame validatewaypoints(DataFrame df);
+RcppExport SEXP _Waypoint_validatewaypoints(SEXP dfSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
-    rcpp_result_gen = Rcpp::wrap(validatewaypoint(df));
+    rcpp_result_gen = Rcpp::wrap(validatewaypoints(df));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -144,13 +144,13 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Waypoint_coords", (DL_FUNC) &_Waypoint_coords, 2},
     {"_Waypoint_coords_replace", (DL_FUNC) &_Waypoint_coords_replace, 2},
     {"_Waypoint_latlon", (DL_FUNC) &_Waypoint_latlon, 2},
-    {"_Waypoint_printcoord", (DL_FUNC) &_Waypoint_printcoord, 1},
-    {"_Waypoint_validatecoord", (DL_FUNC) &_Waypoint_validatecoord, 1},
-    {"_Waypoint_formatcoord", (DL_FUNC) &_Waypoint_formatcoord, 1},
+    {"_Waypoint_printcoords", (DL_FUNC) &_Waypoint_printcoords, 1},
+    {"_Waypoint_validatecoords", (DL_FUNC) &_Waypoint_validatecoords, 1},
+    {"_Waypoint_formatcoords", (DL_FUNC) &_Waypoint_formatcoords, 1},
     {"_Waypoint_waypoints", (DL_FUNC) &_Waypoint_waypoints, 2},
     {"_Waypoint_waypoints_replace", (DL_FUNC) &_Waypoint_waypoints_replace, 2},
-    {"_Waypoint_printwaypoint", (DL_FUNC) &_Waypoint_printwaypoint, 1},
-    {"_Waypoint_validatewaypoint", (DL_FUNC) &_Waypoint_validatewaypoint, 1},
+    {"_Waypoint_printwaypoints", (DL_FUNC) &_Waypoint_printwaypoints, 1},
+    {"_Waypoint_validatewaypoints", (DL_FUNC) &_Waypoint_validatewaypoints, 1},
     {"_Waypoint_rcpp_hello_world", (DL_FUNC) &_Waypoint_rcpp_hello_world, 0},
     {"_rcpp_module_boot_NumEx", (DL_FUNC) &_rcpp_module_boot_NumEx, 0},
     {"_rcpp_module_boot_yada", (DL_FUNC) &_rcpp_module_boot_yada, 0},
