@@ -252,7 +252,7 @@ inline string cardi_b(bool negative)
 /// FamousFive Class and Derived Classes
 
 struct FamousFive {
-	FamousFive() { cout << "§FamousFive() "; _ctrsgn(typeid(*this)); }
+//	FamousFive() { cout << "§FamousFive() "; _ctrsgn(typeid(*this)); }
 	virtual ~FamousFive() = 0;	
 	virtual int get_deg(double x) const = 0;
 	virtual double get_decdeg(double x) const = 0;
@@ -261,14 +261,17 @@ struct FamousFive {
 	virtual double get_sec(double x) const = 0;
 };
 
-FamousFive::~FamousFive() { cout << "§~FamousFive(CoordType) "; _ctrsgn(typeid(*this), true); }	
+FamousFive::~FamousFive()
+{
+//	cout << "§~FamousFive(CoordType) "; _ctrsgn(typeid(*this), true); 
+}	
 
 /// __________________________________________________
 /// Derived class for decimal degrees	
 struct FF_decdeg : public FamousFive {
-	FF_decdeg() { cout << "§FF_decdeg() "; _ctrsgn(typeid(*this)); }	
-//	~FF_decdeg() = default;
-	~FF_decdeg() { cout << "§~FF_decdeg::FF_decdeg() "; _ctrsgn(typeid(*this), true); }
+//	FF_decdeg() { cout << "§FF_decdeg() "; _ctrsgn(typeid(*this)); }	
+	~FF_decdeg() = default;
+//	~FF_decdeg() { cout << "§~FF_decdeg::FF_decdeg() "; _ctrsgn(typeid(*this), true); }
 	int get_deg(double x) const { return int(x); }
 	double get_decdeg(double x) const { return x; }
 	int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
@@ -279,9 +282,9 @@ struct FF_decdeg : public FamousFive {
 /// __________________________________________________
 /// Derived class for degrees and minutes
 struct FF_degmin : public FamousFive {
-	FF_degmin() { cout << "§FF_degmin() "; _ctrsgn(typeid(*this)); }	
-//	~FF_degmin() = default;
-	~FF_degmin() { cout << "§~FF_degmin::FF_degmin() "; _ctrsgn(typeid(*this), true); }
+//	FF_degmin() { cout << "§FF_degmin() "; _ctrsgn(typeid(*this)); }	
+	~FF_degmin() = default;
+//	~FF_degmin() { cout << "§~FF_degmin::FF_degmin() "; _ctrsgn(typeid(*this), true); }
 	int get_deg(double x) const { return int(x / 1e2); }
 	double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
 	int get_min(double x) const { return int(x) % int(1e2); }
@@ -292,9 +295,9 @@ struct FF_degmin : public FamousFive {
 /// __________________________________________________
 /// Derived class for degrees, minutes and seconds
 struct FF_degminsec : public FamousFive {
-	FF_degminsec() { cout << "§FF_degminsec() "; _ctrsgn(typeid(*this)); }	
-//	~FF_degminsec() = default;
-	~FF_degminsec() { cout << "§~FF_degminsec::FF_degminsec() "; _ctrsgn(typeid(*this), true); }
+//	FF_degminsec() { cout << "§FF_degminsec() "; _ctrsgn(typeid(*this)); }	
+	~FF_degminsec() = default;
+//	~FF_degminsec() { cout << "§~FF_degminsec::FF_degminsec() "; _ctrsgn(typeid(*this), true); }
 	int get_deg(double x) const { return int(x / 1e4); }
 	double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
 	int get_min(double x) const { return (int(x) % int(1e4)) / 1e2; }
