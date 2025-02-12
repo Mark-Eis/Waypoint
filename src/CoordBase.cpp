@@ -937,6 +937,36 @@ void convene(T t, CoordType newtype)
 /// __________________________________________________
 /// Set R vector object class to coords and return,
 /// or convert format of R coords object and return
+//' @title Geographic or GPS Coordinate Class
+//' 
+//' @description `coords()` creates a robust representation of a series of geographic or GPS coordinate
+//' instantiated as an object of class `"coords"`.
+//' 
+//' `coords()` also converts the format of geographic or GPS coordinates between (i) decimal degrees,
+//' (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
+//'
+//' @details The values provided in the numeric vector argument [`nv`] should have a decimal point
+//' after the number of whole degrees in the case of decimal degrees,  after the number of whole
+//' minutes in the case of degrees and minutes, and after the number of whole seconds in the case of
+//' degrees, minutes and seconds.
+//'
+//' The `fmt` argument should be 1 for decimal degrees, 2 for degrees and minutes, and 3 for degrees, 
+//' minutes and seconds. This value is used to provide the format of values in a numeric vector to be
+//' converted into a `"coords"` object, and the desired  format if a `"coords"` object is to be converted
+//' to a new format.
+//'
+//' The values of a newly created `"coords"` object are validated to ensure their being plausible
+//' geographic locations as described under [`validate()`]. Likewise, a check is made that an existing
+//' `"coords"` object to be converted to a new format has already been validated, and if not it is
+//' re-validated. 
+//'
+//' @param nv numeric vector of coordinate values.
+//' @param fmt integer, 1, 2 or 3, indicating the current or desired coordinate format; default 1.
+//'
+//' @return
+//' An object of class `"coords"`, comprising a `numeric vector` and an boolean vector attribute `”valid”`
+//' indicating whether the individual coordinate values are indeed valid as described above.
+//'
 // [[Rcpp::export]]
 NumericVector coords(NumericVector nv, const int fmt = 1)
 {
