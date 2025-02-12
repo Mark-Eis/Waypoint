@@ -17,11 +17,11 @@ print.coords <- function(nv) {
     invisible(.Call(`_Waypoint_printcoords`, nv))
 }
 
-validatecoords <- function(nv) {
+validate.coords <- function(nv) {
     .Call(`_Waypoint_validatecoords`, nv)
 }
 
-formatcoords <- function(nv) {
+format.coords <- function(nv) {
     .Call(`_Waypoint_formatcoords`, nv)
 }
 
@@ -37,7 +37,7 @@ print.waypoints <- function(df) {
     invisible(.Call(`_Waypoint_printwaypoints`, df))
 }
 
-validatewaypoints <- function(df) {
+validate.waypoints <- function(df) {
     .Call(`_Waypoint_validatewaypoints`, df)
 }
 

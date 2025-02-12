@@ -1,6 +1,7 @@
 useDynLib(Waypoint, .registration=TRUE)
 import(methods, Rcpp)
 exportPattern("^[[:alpha:]]+")
+S3method(checkvalid,coords)
 S3method(print,coords)
 S3method(print,waypoints)
 S3method(validate,coords)
