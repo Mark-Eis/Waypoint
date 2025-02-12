@@ -940,7 +940,7 @@ void convene(T t, CoordType newtype)
 // [[Rcpp::export]]
 NumericVector coords(NumericVector nv, const int fmt = 1)
 {
-//	cout << "——Rcpp::export——coords()\n";
+//	cout << "——Rcpp::export——coords(NumericVector)\n";
 	CoordType newtype = get_coordtype(fmt);
 	CoordType type;
 	if (nv.inherits("coords")) {
@@ -968,7 +968,7 @@ NumericVector coords(NumericVector nv, const int fmt = 1)
 // [[Rcpp::export(name = "`coords<-`")]]
 NumericVector coords_replace(NumericVector nv, int value)
 {
-//	cout << "——Rcpp::export——`coords_replace()<-`\n";
+//	cout << "——Rcpp::export——`coords_replace(NumericVector, int)<-`\n";
 	return coords(nv, value);
 }
 
@@ -978,7 +978,7 @@ NumericVector coords_replace(NumericVector nv, int value)
 // [[Rcpp::export(name = "`latlon<-`")]]
 NumericVector latlon(NumericVector nv, LogicalVector& value)
 {
-//	cout << "——Rcpp::export——set_latlon()\n";
+//	cout << "——Rcpp::export——latlon(NumericVector, LogicalVector)\n";
 	checkinherits(nv, "coords");
 	if (value.size() != nv.size() && value.size() != 1)
 		stop("value must be either length 1 or length(nv)");
@@ -994,7 +994,7 @@ NumericVector latlon(NumericVector nv, LogicalVector& value)
 // [[Rcpp::export(name = "print.coords", invisible = true)]]
 NumericVector printcoords(NumericVector nv)
 {
-//	cout << "——Rcpp::export——printcoord() format " << get_fmt_attribute(nv) << endl;
+//	cout << "——Rcpp::export——printcoords(NumericVector) format " << get_fmt_attribute(nv) << endl;
 	checkinherits(nv, "coords");
 	if (!check_valid(nv))
 		warning("Printing invalid coords!");
@@ -1008,7 +1008,7 @@ NumericVector printcoords(NumericVector nv)
 // [[Rcpp::export(name = "validate.coords")]]
 NumericVector validatecoords(NumericVector nv)
 {
-//	cout << "——Rcpp::export——validatecoord()\n";
+//	cout << "——Rcpp::export——validatecoords(NumericVector)\n";
 	checkinherits(nv, "coords");
 	return validate<NumericVector, Coord>(nv);
 }
@@ -1019,7 +1019,7 @@ NumericVector validatecoords(NumericVector nv)
 // [[Rcpp::export(name = "format.coords")]]
 CharacterVector formatcoords(NumericVector nv)
 {
-//	cout << "——Rcpp::export——format()\n";
+//	cout << "——Rcpp::export——formatcoords(NumericVector)\n";
 	checkinherits(nv, "coords");
 	if (!check_valid(nv))
 		warning("Formatting invalid coords!");
@@ -1048,7 +1048,7 @@ CharacterVector formatcoords(NumericVector nv)
 // [[Rcpp::export]]
 DataFrame waypoints(DataFrame df, int fmt = 1)
 {
-//	cout << "——Rcpp::export——waypoints()\n";
+//	cout << "——Rcpp::export——waypoints(DataFrame, int)\n";
 	CoordType newtype = get_coordtype(fmt);
 	CoordType type;
 	if (df.inherits("waypoints")) {
@@ -1084,7 +1084,7 @@ DataFrame waypoints(DataFrame df, int fmt = 1)
 // [[Rcpp::export(name = "`waypoints<-`")]]
 DataFrame waypoints_replace(DataFrame df, int value)
 {
-//	cout << "——Rcpp::export——`waypoints_replace()<-`\n";
+//	cout << "——Rcpp::export——`waypoints_replace(DataFrame, int)<-`\n";
 	return waypoints(df, value);
 }
 
@@ -1094,7 +1094,7 @@ DataFrame waypoints_replace(DataFrame df, int value)
 // [[Rcpp::export(name = "print.waypoints", invisible = true)]]
 DataFrame printwaypoints(DataFrame df)
 {
-//	cout << "——Rcpp::export——printwaypoint() format " << get_fmt_attribute(df) << endl;
+//	cout << "——Rcpp::export——printwaypoints(DataFrame) format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
 	if (!check_valid(df))
 		warning("Invalid waypoints!");
@@ -1108,7 +1108,7 @@ DataFrame printwaypoints(DataFrame df)
 // [[Rcpp::export(name = "validate.waypoints")]]
 DataFrame validatewaypoints(DataFrame df)
 {
-//	cout << "——Rcpp::export——validatewaypoint(DataFrame) format " << get_fmt_attribute(df) << endl;
+//	cout << "——Rcpp::export——validatewaypoints(DataFrame) format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
 	return validate<DataFrame, WayPoint>(df);
 }
