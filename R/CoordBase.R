@@ -80,15 +80,15 @@ checkvalid.coords <- function(coord, show_n = 20) {
 #' Infix function implementing provision of an alternative if an object has zero length.
 #'
 #' @details
-#' The infix function `%L%` may be useful in implementing `if (length(x)) x else y` and was inspired by
-#' the null coalescing operator [`%||%`][base::Control].
+#' The infix function \code{\%L\%} may be useful in implementing \code{if (length(x)) x else y} and was inspired by
+#' the null coalescing operator \code{\link[base:Control]{\%||\%}}.
 #'
 #' @family utils
-#' @seealso [`%||%`][base::Control].
+#' @seealso \code{\link[base:Control]{\%||\%}}.
 #'
 #' @param x,y atomic vector arguments or other objects for which `length()` is defined.
 #'
-#' @return `x`, or if `length(x)` is zero, `y`.
+#' @return \code{x}, or if \code{length(x)} is zero, \code{y}.
 #'
 #' @keywords univar arith
 #' @export

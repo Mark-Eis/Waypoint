@@ -12,12 +12,13 @@ coords(nv) <- value
 \arguments{
 \item{nv}{numeric vector of coordinate values.}
 
-\item{fmt, value}{integer, 1, 2 or 3, indicating the current or desired coordinate format; default 1.}
+\item{fmt, value}{integer, 1, 2 or 3, indicating the current or desired coordinate format;
+default 1.}
 }
 \value{
-An object of class \code{"coords"} comprising a \code{numeric vector} with a \code{boolean vector}
-attribute \code{"valid"}, indicating whether the individual coordinate values are indeed valid, as
-described above.
+An object of class \code{"coords"} comprising a \code{numeric vector} with a
+\code{boolean vector} attribute \code{"valid"}, indicating whether the individual coordinate
+values are indeed valid, as described above.
 }
 \description{
 \code{coords()} creates a robust representation of a series of geographic or GPS
@@ -28,19 +29,19 @@ coordinates instantiated as an object of class \code{"coords"}.
 }
 \details{
 Individual values provided in the numeric vector argument \code{nv} should have a decimal
-point after the number of whole degrees in the case of decimal degrees,  after the number of whole
-minutes in the case of degrees and minutes, and after the number of whole seconds in the case of
-degrees, minutes and seconds.
+point after the number of whole degrees in the case of decimal degrees,  after the number of
+whole minutes in the case of degrees and minutes, and after the number of whole seconds in the
+case of degrees, minutes and seconds.
 
-The \code{fmt} argument is used to provide the format of values in a numeric vector to be converted
-into a \code{"coords"} object, and the desired  format if a \code{"coords"} object is to be converted
-to a new format. `fmt` should be 1 for decimal degrees, 2 for degrees and minutes, and 3 for degrees, 
-minutes and seconds.
+The \code{fmt} argument is used to provide the format of values in a numeric vector to be
+converted into a \code{"coords"} object, and the desired  format if a \code{"coords"} object is
+to be converted to a new format. `fmt` should be 1 for decimal degrees, 2 for degrees and
+minutes, and 3 for degrees, minutes and seconds.
 
-The values of a newly created \code{"coords"} object are validated to ensure their being plausible
-geographic locations as described under \code{\link[=validate]{validate()}}. Likewise, a check is made
-to ensure that that an existing \code{"coords"} object to be converted to a new format has already been
-validated; if not, it is re-validated.
+The values of a newly created \code{"coords"} object are validated to ensure their being
+plausible geographic locations as described under \code{\link[=validate]{validate()}}. Likewise,
+a check is made to ensure that that an existing \code{"coords"} object to be converted to a new
+format has already been validated; if not, it is re-validated.
 }
 \seealso{
 Other coords_waypoints: 

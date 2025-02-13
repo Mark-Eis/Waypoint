@@ -6,4 +6,4 @@ S3method(print,coords)
 S3method(print,waypoints)
 S3method(validate,coords)
 S3method(validate,waypoints)
-
+export(`%L%`)

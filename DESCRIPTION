@@ -6,7 +6,7 @@ Date: 2024-12-27
 Author: Mark Eisler
 Maintainer: Mark Eisler <mark@markeisler.com>
 Description: Package Waypoint converts geographic coordinates and waypoints between three common formats, validates their values as being plausible geographic locations and prints the formatted values. The three possible formats are (i) decimal degrees, (ii) degrees and minutes, and (iii) degrees minutes and seconds.
-License: MIT
+License: MIT + file LICENSE
 Imports: methods, Rcpp (>= 1.0.13)
 LinkingTo: Rcpp
 RoxygenNote: 7.3.1

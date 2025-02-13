@@ -108,7 +108,7 @@ DataFrame validatewaypoint(DataFrame);
 /// Report object construction and destruction
 void _ctrsgn(const type_info& obj, bool destruct = false)
 {
-	cout << (destruct ? "Destroying " : "Constructing ") << obj.name() << endl;
+//	cout << (destruct ? "Destroying " : "Constructing ") << obj.name() << endl;
 }
 
 
@@ -941,36 +941,39 @@ void convene(T t, CoordType newtype)
 //' 
 //' @name coords
 //' 
-//' @description \code{coords()} creates a robust representation of a series of geographic or GPS
+//' @description
+//' \code{coords()} creates a robust representation of a series of geographic or GPS
 //' coordinates instantiated as an object of class \code{"coords"}.
 //' 
 //' \code{coords()} also converts the format of existing objects of class \code{"coords"} between
 //' (i) decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
 //'
-//' @details Individual values provided in the numeric vector argument \code{nv} should have a decimal
-//' point after the number of whole degrees in the case of decimal degrees,  after the number of whole
-//' minutes in the case of degrees and minutes, and after the number of whole seconds in the case of
-//' degrees, minutes and seconds.
+//' @details
+//' Individual values provided in the numeric vector argument \code{nv} should have a decimal
+//' point after the number of whole degrees in the case of decimal degrees,  after the number of
+//' whole minutes in the case of degrees and minutes, and after the number of whole seconds in the
+//' case of degrees, minutes and seconds.
 //'
-//' The \code{fmt} argument is used to provide the format of values in a numeric vector to be converted
-//' into a \code{"coords"} object, and the desired  format if a \code{"coords"} object is to be converted
-//' to a new format. `fmt` should be 1 for decimal degrees, 2 for degrees and minutes, and 3 for degrees, 
-//' minutes and seconds.
+//' The \code{fmt} argument is used to provide the format of values in a numeric vector to be
+//' converted into a \code{"coords"} object, and the desired  format if a \code{"coords"} object is
+//' to be converted to a new format. `fmt` should be 1 for decimal degrees, 2 for degrees and
+//' minutes, and 3 for degrees, minutes and seconds.
 //'
-//' The values of a newly created \code{"coords"} object are validated to ensure their being plausible
-//' geographic locations as described under \code{\link[=validate]{validate()}}. Likewise, a check is made
-//' to ensure that that an existing \code{"coords"} object to be converted to a new format has already been
-//' validated; if not, it is re-validated. 
+//' The values of a newly created \code{"coords"} object are validated to ensure their being
+//' plausible geographic locations as described under \code{\link[=validate]{validate()}}. Likewise,
+//' a check is made to ensure that that an existing \code{"coords"} object to be converted to a new
+//' format has already been validated; if not, it is re-validated. 
 //'
 //' @family coords_waypoints
 //'
 //' @param nv numeric vector of coordinate values.
-//' @param fmt,value integer, 1, 2 or 3, indicating the current or desired coordinate format; default 1.
+//' @param fmt,value integer, 1, 2 or 3, indicating the current or desired coordinate format;
+//'   default 1.
 //'
 //' @return
-//' An object of class \code{"coords"} comprising a \code{numeric vector} with a \code{boolean vector}
-//' attribute \code{"valid"}, indicating whether the individual coordinate values are indeed valid, as
-//' described above.
+//' An object of class \code{"coords"} comprising a \code{numeric vector} with a
+//' \code{boolean vector} attribute \code{"valid"}, indicating whether the individual coordinate
+//' values are indeed valid, as described above.
 // [[Rcpp::export]]
 NumericVector coords(NumericVector nv, const int fmt = 1)
 {
@@ -1010,6 +1013,30 @@ NumericVector coords_replace(NumericVector nv, int value)
 
 /// __________________________________________________
 /// Set latlon attribute on "coords" NumericVector and revalidate
+//' @title Latitude or Longitude Attribute for Coords
+//' 
+//' @name latlon-set
+//'
+//' @description \code{latlon()<-} adds the attribute \code{"latlon"} to objects of class
+//' \code{\link[=coords]{"coords"}}, or modifies an existing \code{"latlon"} attribute.
+//'
+//' @details
+//' Attribute \code{"latlon"} is a \code{boolean vector} of length \code{1L} or \code{length(nv)}
+//' for which \code{TRUE} values represent latitude and \code{FALSE} values represent longitude.
+//' Setting this attribute to any other length will result in an error. A \code{boolean vector} of
+//' length \code{1L} signifies that values are all latitude if \code{TRUE}, or longitude if
+//' \code{false}.
+//'
+//' This attribute is used in formatting printed output and also by
+//' \code{\link[=validate]{validate()}}. Indeed, the values of \code{nv} are revalidated every time
+//' attribute \code{"latlon"} is added or changed.
+//'
+//' @param nv object of class \code{\link[=coords]{"coords"}}.
+//' @param value a \code{boolean vector} of length \code{1L} or of \code{length(nv)}.
+//'
+//' @return
+//' Argument \code{nv} is returned with \code{boolean vector} attribute \code{"latlon"}
+//' updated as appropriate.
 // [[Rcpp::export(name = "`latlon<-`")]]
 NumericVector latlon(NumericVector nv, LogicalVector& value)
 {
@@ -1044,9 +1071,11 @@ NumericVector printcoords(NumericVector nv)
 //' 
 //' @name validate
 //' 
-//' @description \code{validate()} validate objects of class \code{"coords"} or \code{"waypoints"}.
+//' @description
+//' \code{validate()} validate objects of class \code{"coords"} or \code{"waypoints"}.
 //'
-//' @details Individual coordinate values within \code{\link[=coords]{"coords"}} or
+//' @details
+//' Individual coordinate values within \code{\link[=coords]{"coords"}} or
 //' \code{\link[=waypoints]{"waypoints"}} objects are validated to ensure their being plausible
 //' geographic locations.
 //'
@@ -1102,13 +1131,15 @@ CharacterVector formatcoords(NumericVector nv)
 //' 
 //' @name waypoints
 //' 
-//' @description \code{waypoints()} creates a robust representation of a series of geographic or GPS
+//' @description
+//' \code{waypoints()} creates a robust representation of a series of geographic or GPS
 //' waypoints instantiated as an object of class \code{"waypoints"}.
 //' 
 //' \code{waypoints()} also converts the format of existing objects of class \code{"waypoints"} between
 //' (i) decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
 //'
-//' @details Individual values provided in the numeric vector latitude and longitude columns of argument
+//' @details
+//' Individual values provided in the numeric vector latitude and longitude columns of argument
 //' \code{df} should have a decimal point after the number of whole degrees in the case of decimal degrees,
 //' after the number of whole minutes in the case of degrees and minutes, and after the number of whole
 //' seconds in the case of degrees, minutes and seconds.

@@ -11,14 +11,14 @@ x \%L\% y
 \item{x, y}{atomic vector arguments or other objects for which `length()` is defined.}
 }
 \value{
-`x`, or if `length(x)` is zero, `y`.
+\code{x}, or if \code{length(x)} is zero, \code{y}.
 }
 \description{
 Infix function implementing provision of an alternative if an object has zero length.
 }
 \details{
-The infix function `%L%` may be useful in implementing `if (length(x)) x else y` and was inspired by
-the null coalescing operator [`%||%`][base::Control].
+The infix function \code{\%L\%} may be useful in implementing \code{if (length(x)) x else y} and was inspired by
+the null coalescing operator \code{\link[base:Control]{\%||\%}}.
 }
 \examples{
 c1 <- letters[1:4]
@@ -35,7 +35,7 @@ n2 \%L\% c1
 rm(c1, c2, n1, n2)
 }
 \seealso{
-[`%||%`][base::Control].
+\code{\link[base:Control]{\%||\%}}.
 }
 \concept{utils}
 \keyword{arith}
