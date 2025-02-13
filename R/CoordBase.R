@@ -10,7 +10,7 @@
 #  Validate Coordinates and Waypoints
 #  S3generic validate()
 #
-#' @rdname coords
+# #' @rdname coords
 #' @export
 
 validate <- function(object, ...) 
@@ -21,7 +21,7 @@ validate <- function(object, ...)
 #  Analyse Coordinates and Waypoints
 #  S3generic checkvalid()
 #
-#' @rdname coords
+# #' @rdname coords
 #' @export
 
 checkvalid <- function(object, ...) 
@@ -32,7 +32,7 @@ checkvalid <- function(object, ...)
 #  Analyse Coordinates
 #  S3method checkvalid.coords()
 #'
-#' @rdname coord
+# #' @rdname coord
 #' @export
 
 checkvalid.coords <- function(coord, show_n = 20) {

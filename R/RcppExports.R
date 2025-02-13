@@ -3,38 +3,40 @@
 
 #' @title Geographic or GPS Coordinate Class
 #' 
-#' @description `coords()` creates a robust representation of a series of geographic or GPS coordinate
-#' instantiated as an object of class `"coords"`.
+#' @name coords
 #' 
-#' `coords()` also converts the format of geographic or GPS coordinates between (i) decimal degrees,
-#' (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
+#' @description \code{coords()} creates a robust representation of a series of geographic or GPS
+#' coordinate instantiated as an object of class \code{"coords"}.
+#' 
+#' \code{coords()} also converts the format of geographic or GPS coordinates between (i) decimal
+#' degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
 #'
-#' @details The values provided in the numeric vector argument [`nv`] should have a decimal point
-#' after the number of whole degrees in the case of decimal degrees,  after the number of whole
+#' @details Individual values provided in the numeric vector argument \code{nv} should have a decimal
+#' point after the number of whole degrees in the case of decimal degrees,  after the number of whole
 #' minutes in the case of degrees and minutes, and after the number of whole seconds in the case of
 #' degrees, minutes and seconds.
 #'
-#' The `fmt` argument should be 1 for decimal degrees, 2 for degrees and minutes, and 3 for degrees, 
-#' minutes and seconds. This value is used to provide the format of values in a numeric vector to be
-#' converted into a `"coords"` object, and the desired  format if a `"coords"` object is to be converted
-#' to a new format.
+#' The \code{fmt} argument is used to provide the format of values in a numeric vector to be converted
+#' into a \code{"coords"} object, and the desired  format if a \code{"coords"} object is to be converted
+#' to a new format. `fmt` should be 1 for decimal degrees, 2 for degrees and minutes, and 3 for degrees, 
+#' minutes and seconds.
 #'
-#' The values of a newly created `"coords"` object are validated to ensure their being plausible
-#' geographic locations as described under [`validate()`]. Likewise, a check is made that an existing
-#' `"coords"` object to be converted to a new format has already been validated, and if not it is
-#' re-validated. 
+#' The values of a newly created \code{"coords"} object are validated to ensure their being plausible
+#' geographic locations as described under \code{\link[=validate]{validate()}}. Likewise, a check is made
+#' that an existing \code{"coords"} object to be converted to a new format has already been validated; if
+#' not, it is re-validated. 
 #'
 #' @param nv numeric vector of coordinate values.
-#' @param fmt integer, 1, 2 or 3, indicating the current or desired coordinate format; default 1.
+#' @param fmt,value integer, 1, 2 or 3, indicating the current or desired coordinate format; default 1.
 #'
 #' @return
-#' An object of class `"coords"`, comprising a `numeric vector` and an boolean vector attribute `”valid”`
-#' indicating whether the individual coordinate values are indeed valid as described above.
-#'
+#' An object of class \code{"coords"}, comprising a `numeric vector` and an boolean vector attribute
+#' \code{"valid"} indicating whether the individual coordinate values are indeed valid as described above.
 coords <- function(nv, fmt = 1L) {
     .Call(`_Waypoint_coords`, nv, fmt)
 }
 
+#' @rdname coords
 `coords<-` <- function(nv, value) {
     .Call(`_Waypoint_coords_replace`, nv, value)
 }
@@ -47,6 +49,24 @@ print.coords <- function(nv) {
     invisible(.Call(`_Waypoint_printcoords`, nv))
 }
 
+#' @title Validate Coords or Waypoints
+#' 
+#' @name validate
+#' 
+#' @description \code{validate()} validate objects of class \code{"coords"} or \code{"waypoints"}.
+#'
+#' @details Individual coordinate values within \code{\link[=coords]{"coords"}} or
+#' \code{\link[=waypoints]{"waypoints"}} objects are validated to ensure their being plausible
+#' geographic locations.
+#'
+#' The values of ... 
+#'
+#' @param nv object of class \code{"coords"}.
+#' @param df object of class \code{"waypoints"}.
+#'
+#' @return
+#' \code{validate()} returns its argument with \code{boolean vector} attribute \code{"valid"}
+#' updated as appropriate.
 validate.coords <- function(nv) {
     .Call(`_Waypoint_validatecoords`, nv)
 }
@@ -67,6 +87,7 @@ print.waypoints <- function(df) {
     invisible(.Call(`_Waypoint_printwaypoints`, df))
 }
 
+#' @rdname validate
 validate.waypoints <- function(df) {
     .Call(`_Waypoint_validatewaypoints`, df)
 }
