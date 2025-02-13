@@ -6,10 +6,10 @@
 #' @name coords
 #' 
 #' @description \code{coords()} creates a robust representation of a series of geographic or GPS
-#' coordinate instantiated as an object of class \code{"coords"}.
+#' coordinates instantiated as an object of class \code{"coords"}.
 #' 
-#' \code{coords()} also converts the format of geographic or GPS coordinates between (i) decimal
-#' degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
+#' \code{coords()} also converts the format of existing objects of class \code{"coords"} between
+#' (i) decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
 #'
 #' @details Individual values provided in the numeric vector argument \code{nv} should have a decimal
 #' point after the number of whole degrees in the case of decimal degrees,  after the number of whole
@@ -23,15 +23,18 @@
 #'
 #' The values of a newly created \code{"coords"} object are validated to ensure their being plausible
 #' geographic locations as described under \code{\link[=validate]{validate()}}. Likewise, a check is made
-#' that an existing \code{"coords"} object to be converted to a new format has already been validated; if
-#' not, it is re-validated. 
+#' to ensure that that an existing \code{"coords"} object to be converted to a new format has already been
+#' validated; if not, it is re-validated. 
+#'
+#' @family coords_waypoints
 #'
 #' @param nv numeric vector of coordinate values.
 #' @param fmt,value integer, 1, 2 or 3, indicating the current or desired coordinate format; default 1.
 #'
 #' @return
-#' An object of class \code{"coords"}, comprising a `numeric vector` and an boolean vector attribute
-#' \code{"valid"} indicating whether the individual coordinate values are indeed valid as described above.
+#' An object of class \code{"coords"} comprising a \code{numeric vector} with a \code{boolean vector}
+#' attribute \code{"valid"}, indicating whether the individual coordinate values are indeed valid, as
+#' described above.
 coords <- function(nv, fmt = 1L) {
     .Call(`_Waypoint_coords`, nv, fmt)
 }
@@ -75,10 +78,46 @@ format.coords <- function(nv) {
     .Call(`_Waypoint_formatcoords`, nv)
 }
 
+#' @title Geographic or GPS Waypoint Class
+#' 
+#' @name waypoints
+#' 
+#' @description \code{waypoints()} creates a robust representation of a series of geographic or GPS
+#' waypoints instantiated as an object of class \code{"waypoints"}.
+#' 
+#' \code{waypoints()} also converts the format of existing objects of class \code{"waypoints"} between
+#' (i) decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
+#'
+#' @details Individual values provided in the numeric vector latitude and longitude columns of argument
+#' \code{df} should have a decimal point after the number of whole degrees in the case of decimal degrees,
+#' after the number of whole minutes in the case of degrees and minutes, and after the number of whole
+#' seconds in the case of degrees, minutes and seconds.
+#'
+#' The \code{fmt} argument is used to provide the format of values in a dataframe to be converted into a
+#' \code{"waypoints"} object, and the desired  format if a \code{"waypoints"} object is to be converted
+#' to a new format. `fmt` should be 1 for decimal degrees, 2 for degrees and minutes, and 3 for degrees, 
+#' minutes and seconds.
+#'
+#' The latitude and longitude values of a newly created \code{"waypoints"} object are validated to ensure
+#' their being plausible geographic locations as described under \code{\link[=validate]{validate()}}.
+#' Likewise, a check is made to ensure that an existing \code{"coords"} object to be converted to a new
+#' format has already been validated; if not, it is re-validated. 
+#'
+#' @family coords_waypoints
+#'
+#' @param df a \code{dataframe} containing at least two numeric columns containing corresponding values
+#' of latitude and longitude in each row representing a waypoint.
+#' @param fmt,value integer, 1, 2 or 3, indicating the current or desired coordinate format; default 1.
+#'
+#' @return
+#' An object of class \code{"waypoints"} comprising a \code{data.frame} with two \code{boolean vector}
+#' attributes \code{"validlat"} and \code{"validlon"} indicating whether the individual coordinate values
+#' are indeed valid, as described above.
 waypoints <- function(df, fmt = 1L) {
     .Call(`_Waypoint_waypoints`, df, fmt)
 }
 
+#' @rdname waypoints
 `waypoints<-` <- function(df, value) {
     .Call(`_Waypoint_waypoints_replace`, df, value)
 }

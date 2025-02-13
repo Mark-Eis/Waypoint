@@ -15,15 +15,16 @@ coords(nv) <- value
 \item{fmt, value}{integer, 1, 2 or 3, indicating the current or desired coordinate format; default 1.}
 }
 \value{
-An object of class \code{"coords"}, comprising a `numeric vector` and an boolean vector attribute
-\code{"valid"} indicating whether the individual coordinate values are indeed valid as described above.
+An object of class \code{"coords"} comprising a \code{numeric vector} with a \code{boolean vector}
+attribute \code{"valid"}, indicating whether the individual coordinate values are indeed valid, as
+described above.
 }
 \description{
 \code{coords()} creates a robust representation of a series of geographic or GPS
-coordinate instantiated as an object of class \code{"coords"}.
+coordinates instantiated as an object of class \code{"coords"}.
 
-\code{coords()} also converts the format of geographic or GPS coordinates between (i) decimal
-degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
+\code{coords()} also converts the format of existing objects of class \code{"coords"} between
+(i) decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
 }
 \details{
 Individual values provided in the numeric vector argument \code{nv} should have a decimal
@@ -38,6 +39,11 @@ minutes and seconds.
 
 The values of a newly created \code{"coords"} object are validated to ensure their being plausible
 geographic locations as described under \code{\link[=validate]{validate()}}. Likewise, a check is made
-that an existing \code{"coords"} object to be converted to a new format has already been validated; if
-not, it is re-validated.
+to ensure that that an existing \code{"coords"} object to be converted to a new format has already been
+validated; if not, it is re-validated.
 }
+\seealso{
+Other coords_waypoints: 
+\code{\link{waypoints}()}
+}
+\concept{coords_waypoints}
