@@ -6,18 +6,19 @@
 \alias{validate.waypoints}
 \title{Validate Coords or Waypoints}
 \usage{
-\method{validate}{coords}(nv)
+\method{validate}{coords}(cd)
 
 \method{validate}{waypoints}(df)
 }
 \arguments{
-\item{nv}{object of class \code{"coords"}.}
+\item{cd}{object of class \code{"coords"}.}
 
 \item{df}{object of class \code{"waypoints"}.}
 }
 \value{
-\code{validate()} returns its argument with \code{boolean vector} attribute \code{"valid"}
-updated as appropriate.
+\code{validate()} returns its argument with \code{boolean vector} attribute \code{"valid"},
+or attributes \code{"validlat"} and \code{"validlon"} updated as appropriate for
+\code{"coords"} and' \code{"waypoints"} objects respectively.
 }
 \description{
 \code{validate()} validate objects of class \code{"coords"} or \code{"waypoints"}.
@@ -27,5 +28,9 @@ Individual coordinate values within \code{\link[=coords]{"coords"}} or
 \code{\link[=waypoints]{"waypoints"}} objects are validated to ensure their being plausible
 geographic locations.
 
-The values of ...
+The absolute values of coordinates in degrees must not exceed 180, or 90 if degrees of
+latitude. Likewise the absolute values of the minutes and seconds components, where given,
+must not exceed 60 degrees, otherwise a warning will be given and the \code{"valid"} attribute
+in the case of \code{"coords"}, or \code{"validlat"} and \code{"validlon"} attributes in the
+case of \code{"waypoints"} set to \code{FALSE} for any non-compliant coordinate values.
 }

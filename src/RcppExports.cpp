@@ -58,13 +58,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // validatecoords
-NumericVector validatecoords(NumericVector nv);
-RcppExport SEXP _Waypoint_validatecoords(SEXP nvSEXP) {
+NumericVector validatecoords(NumericVector cd);
+RcppExport SEXP _Waypoint_validatecoords(SEXP cdSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type nv(nvSEXP);
-    rcpp_result_gen = Rcpp::wrap(validatecoords(nv));
+    Rcpp::traits::input_parameter< NumericVector >::type cd(cdSEXP);
+    rcpp_result_gen = Rcpp::wrap(validatecoords(cd));
     return rcpp_result_gen;
 END_RCPP
 }

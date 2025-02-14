@@ -1130,20 +1130,25 @@ NumericVector printcoords(NumericVector cd)
 //' \code{\link[=waypoints]{"waypoints"}} objects are validated to ensure their being plausible
 //' geographic locations.
 //'
-//' The values of ... 
+//' The absolute values of coordinates in degrees must not exceed 180, or 90 if degrees of
+//' latitude. Likewise the absolute values of the minutes and seconds components, where given,
+//' must not exceed 60 degrees, otherwise a warning will be given and the \code{"valid"} attribute
+//' in the case of \code{"coords"}, or \code{"validlat"} and \code{"validlon"} attributes in the
+//' case of \code{"waypoints"} set to \code{FALSE} for any non-compliant coordinate values.
 //'
-//' @param nv object of class \code{"coords"}.
+//' @param cd object of class \code{"coords"}.
 //' @param df object of class \code{"waypoints"}.
 //'
 //' @return
-//' \code{validate()} returns its argument with \code{boolean vector} attribute \code{"valid"}
-//' updated as appropriate.
+//' \code{validate()} returns its argument with \code{boolean vector} attribute \code{"valid"},
+//' or attributes \code{"validlat"} and \code{"validlon"} updated as appropriate for
+//' \code{"coords"} and' \code{"waypoints"} objects respectively.
 // [[Rcpp::export(name = "validate.coords")]]
-NumericVector validatecoords(NumericVector nv)
+NumericVector validatecoords(NumericVector cd)
 {
 //	cout << "——Rcpp::export——validatecoords(NumericVector)\n";
-	checkinherits(nv, "coords");
-	return validate<NumericVector, Coord>(nv);
+	checkinherits(cd, "coords");
+	return validate<NumericVector, Coord>(cd);
 }
 
 
