@@ -30,14 +30,46 @@
 #'
 #' @family coords_waypoints
 #'
-#' @param nv numeric vector of coordinate values.
-#' @param fmt,value integer, 1, 2 or 3, indicating the current or desired coordinate format;
-#'   default 1.
+#' @param nv \code{numeric vector} of coordinate values, optionally named.
+#' @param fmt,value \code{integer}, 1L, 2L or 3L, indicating the current or desired coordinate format;
+#'   default 1L.
+#' @param cd object of class \code{"coords"}, as created by function \code{\link[=coords]{coords()}}.
 #'
 #' @return
 #' An object of class \code{"coords"} comprising a \code{numeric vector} with a
 #' \code{boolean vector} attribute \code{"valid"}, indicating whether the individual coordinate
 #' values are indeed valid, as described above.
+#'
+#' @examples
+#' ## Named numeric vector representing degrees and minutes
+#' (num_dm <- c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -5731.1536,
+#'	             -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -2514.4093) |>
+#'     setNames(
+#'         rep(
+#'             c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+#'               "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2
+#'         )
+#'     )
+#' )
+#'
+#' ## Create "coords" object of degrees and minutes
+#' coords(num_dm) <- 2
+#' num_dm
+#'
+#' ## Convert "coords" object to degrees, minutes and seconds
+#' coords(num_dm) <- 3
+#' num_dm
+#'
+#' ## Convert to decimal degrees
+#' coords(num_dm) <- 1
+#' num_dm
+#'
+#' ## Convert back to degrees and minutes
+#' coords(num_dm) <- 2
+#' num_dm
+#'
+#' rm(num_dm)
+#'
 coords <- function(nv, fmt = 1L) {
     .Call(`_Waypoint_coords`, nv, fmt)
 }
@@ -59,24 +91,58 @@ coords <- function(nv, fmt = 1L) {
 #' for which \code{TRUE} values represent latitude and \code{FALSE} values represent longitude.
 #' Setting this attribute to any other length will result in an error. A \code{boolean vector} of
 #' length \code{1L} signifies that values are all latitude if \code{TRUE}, or longitude if
-#' \code{false}.
+#' \code{FALSE}.
 #'
 #' This attribute is used in formatting printed output and also by
 #' \code{\link[=validate]{validate()}}. Indeed, the values of \code{nv} are revalidated every time
 #' attribute \code{"latlon"} is added or changed.
 #'
-#' @param nv object of class \code{\link[=coords]{"coords"}}.
+#' @param cd object of class \code{\link[=coords]{"coords"}}.
 #' @param value a \code{boolean vector} of length \code{1L} or of \code{length(nv)}.
 #'
 #' @return
-#' Argument \code{nv} is returned with \code{boolean vector} attribute \code{"latlon"}
+#' Argument \code{cd} is returned with \code{boolean vector} attribute \code{"latlon"}
 #' updated as appropriate.
-`latlon<-` <- function(nv, value) {
-    .Call(`_Waypoint_latlon`, nv, value)
+#'
+#' @examples
+#' ## Continuing example from `coords()`, named numeric vector representing degrees and minutes
+#' \dontshow{
+#'     (num_dm <- c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -5731.1536,
+#'    	             -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -2514.4093) |>
+#'         setNames(
+#'             rep(
+#'                 c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+#'                   "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2
+#'             )
+#'         )
+#'     )
+#' }
+#'
+#' ## Create "coords" object of degrees and minutes
+#' coords(num_dm) <- 2
+#'
+#' ## Set "latlon" attribute to FALSE, length 1
+#' latlon(num_dm) <- FALSE
+#' num_dm
+#'
+#' ## Set "latlon" attribute to TRUE and FALSE (each n=8)
+#' latlon(num_dm) <- rep(c(TRUE, FALSE), each = 8)
+#' num_dm
+#'
+#' ## Reversing latitude and longitude results in implausible 
+#' ## longitude value and warning message 
+#' latlon(num_dm) <- rep(c(FALSE, TRUE), each = 8)
+#' num_dm
+#'
+#' rm(num_dm)
+#'
+`latlon<-` <- function(cd, value) {
+    .Call(`_Waypoint_latlon`, cd, value)
 }
 
-print.coords <- function(nv) {
-    invisible(.Call(`_Waypoint_printcoords`, nv))
+#' @rdname coords
+print.coords <- function(cd) {
+    invisible(.Call(`_Waypoint_printcoords`, cd))
 }
 
 #' @title Validate Coords or Waypoints

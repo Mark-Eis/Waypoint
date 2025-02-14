@@ -3,17 +3,22 @@
 \name{coords}
 \alias{coords}
 \alias{coords<-}
+\alias{print.coords}
 \title{Geographic or GPS Coordinate Class}
 \usage{
 coords(nv, fmt = 1L)
 
 coords(nv) <- value
+
+\method{print}{coords}(cd)
 }
 \arguments{
-\item{nv}{numeric vector of coordinate values.}
+\item{nv}{\code{numeric vector} of coordinate values, optionally named.}
 
-\item{fmt, value}{integer, 1, 2 or 3, indicating the current or desired coordinate format;
-default 1.}
+\item{fmt, value}{\code{integer}, 1L, 2L or 3L, indicating the current or desired coordinate format;
+default 1L.}
+
+\item{cd}{object of class \code{"coords"}, as created by function \code{\link[=coords]{coords()}}.}
 }
 \value{
 An object of class \code{"coords"} comprising a \code{numeric vector} with a
@@ -42,6 +47,37 @@ The values of a newly created \code{"coords"} object are validated to ensure the
 plausible geographic locations as described under \code{\link[=validate]{validate()}}. Likewise,
 a check is made to ensure that that an existing \code{"coords"} object to be converted to a new
 format has already been validated; if not, it is re-validated.
+}
+\examples{
+## Named numeric vector representing degrees and minutes
+(num_dm <- c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -5731.1536,
+             -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -2514.4093) |>
+    setNames(
+        rep(
+            c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2
+        )
+    )
+)
+
+## Create "coords" object of degrees and minutes
+coords(num_dm) <- 2
+num_dm
+
+## Convert "coords" object to degrees, minutes and seconds
+coords(num_dm) <- 3
+num_dm
+
+## Convert to decimal degrees
+coords(num_dm) <- 1
+num_dm
+
+## Convert back to degrees and minutes
+coords(num_dm) <- 2
+num_dm
+
+rm(num_dm)
+
 }
 \seealso{
 Other coords_waypoints: 

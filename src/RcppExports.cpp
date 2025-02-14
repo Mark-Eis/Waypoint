@@ -35,25 +35,25 @@ BEGIN_RCPP
 END_RCPP
 }
 // latlon
-NumericVector latlon(NumericVector nv, LogicalVector& value);
-RcppExport SEXP _Waypoint_latlon(SEXP nvSEXP, SEXP valueSEXP) {
+NumericVector latlon(NumericVector cd, LogicalVector& value);
+RcppExport SEXP _Waypoint_latlon(SEXP cdSEXP, SEXP valueSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type nv(nvSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type cd(cdSEXP);
     Rcpp::traits::input_parameter< LogicalVector& >::type value(valueSEXP);
-    rcpp_result_gen = Rcpp::wrap(latlon(nv, value));
+    rcpp_result_gen = Rcpp::wrap(latlon(cd, value));
     return rcpp_result_gen;
 END_RCPP
 }
 // printcoords
-NumericVector printcoords(NumericVector nv);
-RcppExport SEXP _Waypoint_printcoords(SEXP nvSEXP) {
+NumericVector printcoords(NumericVector cd);
+RcppExport SEXP _Waypoint_printcoords(SEXP cdSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type nv(nvSEXP);
-    rcpp_result_gen = Rcpp::wrap(printcoords(nv));
+    Rcpp::traits::input_parameter< NumericVector >::type cd(cdSEXP);
+    rcpp_result_gen = Rcpp::wrap(printcoords(cd));
     return rcpp_result_gen;
 END_RCPP
 }
