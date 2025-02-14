@@ -667,7 +667,6 @@ class WayPoint : public Coordbase {
 //		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
 
 		void validate(bool = true) const;
-		void warn_invalid() const;
 		template<CoordType type>
 		vector<string> format() const;
 		void print(ostream& stream) const;
@@ -712,20 +711,6 @@ void WayPoint::validate(bool warn) const
 		if (warn)
 			warning("Validation of longitude failed!");
 	const_cast<DataFrame&>(df).attr("validlon") = validlon;
-}
-
-
-/// __________________________________________________
-/// WayPoint validity warning
-void WayPoint::warn_invalid() const
-{
-//	cout << "@WayPoint::warn_invalid()\n";
-	if (any_of(validlat.begin(), validlat.end(), [](bool v) { return !v;})) {
-		warning("Invalid latitude");
-	}
-	if (any_of(validlon.begin(), validlon.end(), [](bool v) { return !v;})) {
-		warning("Invalid longitude");
-	}
 }
 
 
