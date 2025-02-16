@@ -9,8 +9,9 @@
 #' \code{coords()} creates a robust representation of a series of geographic or GPS
 #' coordinates instantiated as an object of class \code{"coords"}.
 #' 
-#' \code{coords()} also converts the format of existing objects of class \code{"coords"} between
-#' (i) decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
+#' \code{coords()} and replacement form function \verb{coords()<-} also convert the format of
+#' existing objects of class \code{"coords"} between (i) decimal degrees, (ii) degrees and minutes,
+#' and (iii) degrees, minutes and seconds.
 #'
 #' @details
 #' Individual values provided in the numeric vector argument \code{nv} should have a decimal
@@ -42,19 +43,18 @@
 #'
 #' @examples
 #' ## Named numeric vector representing degrees and minutes
-#' (num_dm <- c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -5731.1536,
-#'	             -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -2514.4093) |>
-#'     setNames(
-#'         rep(
-#'             c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
-#'               "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2
-#'         )
-#'     )
+#' (num_dm <- c(
+#'         5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -5731.1536,
+#'         -007.6754, 1823.9137, -12246.7203, -7702.1145,0.0000, -1217.3178, 7331.0370, -2514.4093
+#'     ) |>
+#'     setNames(rep(
+#'         c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+#'           "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2
+#'     ))
 #' )
 #'
 #' ## Create "coords" object of degrees and minutes
-#' coords(num_dm) <- 2
-#' num_dm
+#' coords(num_dm, 2)
 #'
 #' ## Convert "coords" object to degrees, minutes and seconds
 #' coords(num_dm) <- 3
@@ -231,11 +231,12 @@ format.coords <- function(nv) {
 #' @name waypoints
 #' 
 #' @description
-#' \code{waypoints()} creates a robust representation of a series of geographic or GPS
-#' waypoints instantiated as an object of class \code{"waypoints"}.
+#' \code{waypoints()} creates a robust representation of a series of geographic or GPS waypoints
+#' instantiated as an object of class \code{"waypoints"}.
 #' 
-#' \code{waypoints()} also converts the format of existing objects of class \code{"waypoints"} between
-#' (i) decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
+#' \code{waypoints()} and replacement form function \verb{waypoints()<-} also convert the format
+#' of existing objects of class \code{"waypoints"} between (i) decimal degrees, (ii) degrees and
+#' minutes, and (iii) degrees, minutes and seconds.
 #'
 #' @details
 #' Individual values provided in the numeric vector latitude and longitude columns of argument

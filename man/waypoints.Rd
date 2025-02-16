@@ -21,11 +21,12 @@ attributes \code{"validlat"} and \code{"validlon"} indicating whether the indivi
 are indeed valid, as described above.
 }
 \description{
-\code{waypoints()} creates a robust representation of a series of geographic or GPS
-waypoints instantiated as an object of class \code{"waypoints"}.
+\code{waypoints()} creates a robust representation of a series of geographic or GPS waypoints
+instantiated as an object of class \code{"waypoints"}.
 
-\code{waypoints()} also converts the format of existing objects of class \code{"waypoints"} between
-(i) decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
+\code{waypoints()} and replacement form function \verb{waypoints()<-} also convert the format
+of existing objects of class \code{"waypoints"} between (i) decimal degrees, (ii) degrees and
+minutes, and (iii) degrees, minutes and seconds.
 }
 \details{
 Individual values provided in the numeric vector latitude and longitude columns of argument
