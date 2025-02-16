@@ -1117,7 +1117,7 @@ NumericVector printcoords(NumericVector cd)
 
 
 /// __________________________________________________
-/// Validate coords vector
+/// Validate coords or waypoints vector
 //' @title Validate Coords or Waypoints
 //' 
 //' @name validate
@@ -1143,6 +1143,54 @@ NumericVector printcoords(NumericVector cd)
 //' \code{validate()} returns its argument with \code{boolean vector} attribute \code{"valid"},
 //' or attributes \code{"validlat"} and \code{"validlon"} updated as appropriate for
 //' \code{"coords"} and' \code{"waypoints"} objects respectively.
+//'
+//' @examples
+//' ## Continuing example from `coords()`, named numeric vector representing degrees and minutes
+//' \dontshow{
+//' num_dm <- c(
+//'         5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -5731.1536,
+//'         -007.6754, 1823.9137, -12246.7203, -7702.1145,0.0000, -1217.3178, 7331.0370, -2514.4093
+//'     ) |>
+//'     setNames(rep(
+//'         c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+//'           "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2
+//'     ))
+//' }
+//'
+//' ## Create "coords" object of degrees and minutes
+//' coords(num_dm) <- 2
+//'
+//' validate(num_dm)
+//'
+//' ## Change first value to have more than 60 minutes
+//' num_dm[1] <- 5160.4659
+//'
+//' validate(num_dm)
+//'
+//' ## Continuing example from `waypoints()`, dataframe representing waypoint names and latitude
+//' ## and longitude values in decimal degrees
+//' \dontshow{
+//' wp1 <- data.frame(
+//'     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument",
+//'              "Null Island", "Tristan da Cunha", "Mawson Peak",
+//'              "Silvio Pettirossi International Airport"),
+//'     lat = c(51.507765, 49.54621, 48.107232, 38.889494,
+//'             0, -37.11174, -53.104781, -57.519227),
+//'     lon = c(-0.127924, 18.398562, -122.778671, -77.035242,
+//'             0, -12.28863, 73.517283, -25.240156)
+//' )
+//' }
+//'
+//' # Create "waypoints" object of decimal degrees
+//' waypoints(wp1) <- 1
+//'
+//' validate(wp1)
+//'
+//' ## Change third longitude absolute value to have more than 180 degrees
+//' wp1$lon[3] <- -182.778671
+//'
+//' validate(wp1)
+//'
 // [[Rcpp::export(name = "validate.coords")]]
 NumericVector validatecoords(NumericVector cd)
 {
