@@ -1220,6 +1220,33 @@ CharacterVector formatcoords(NumericVector nv)
 //' An object of class \code{"waypoints"} comprising a \code{data.frame} with two \code{boolean vector}
 //' attributes \code{"validlat"} and \code{"validlon"} indicating whether the individual coordinate values
 //' are indeed valid, as described above.
+//'
+//' @examples
+//' # Dataframe representing waypoint names and latitude and longitude values in decimal degrees
+//' (wp1 <- data.frame(
+//'     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+//'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
+//'     lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -53.104781, -57.519227),
+//'     lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -25.240156)
+//' ))
+//'
+//' # Create "waypoints" object of decimal degrees
+//' waypoints(wp1)
+//'
+//' ## Convert "waypoints" object to degrees and minutes
+//' waypoints(wp1) <- 2
+//' wp1
+//'
+//' ## Convert "waypoints" object to degrees, minutes and seconds
+//' waypoints(wp1) <- 3
+//' wp1
+//'
+//' ## Convert back to decimal degrees
+//' waypoints(wp1) <- 1
+//' wp1
+//'
+//' rm(wp1)
+//'
 // [[Rcpp::export]]
 DataFrame waypoints(DataFrame df, int fmt = 1)
 {
