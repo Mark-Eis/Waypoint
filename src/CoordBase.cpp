@@ -99,6 +99,7 @@ DataFrame waypoints(DataFrame, int);
 DataFrame waypoints_replace(DataFrame, int);
 DataFrame printwaypoint(DataFrame);
 DataFrame validatewaypoint(DataFrame);
+NumericVector as_coord(DataFrame, bool);
 
 
 /// __________________________________________________
@@ -1364,6 +1365,23 @@ DataFrame validatewaypoints(DataFrame df)
 //	cout << "——Rcpp::export——validatewaypoints(DataFrame) format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
 	return validate<DataFrame, WayPoint>(df);
+}
+
+
+/// __________________________________________________
+/// Clone coords object from waypoints vector
+// [[Rcpp::export]]
+NumericVector as_coord(DataFrame df, bool latlon)
+{
+//	cout << "——Rcpp::export——as_coord(DataFrame)\n;
+	checkinherits(df, "waypoints");
+	NumericVector nv = df[getllcolsattr(df)[latlon ? 0 : 1]];
+	nv = clone(nv);
+	nv.attr("class") = "coords";
+	nv.attr("fmt") = df.attr("fmt");
+	nv.attr("latlon") = latlon ? vector<bool>{ TRUE } : vector<bool>{ FALSE };
+	nv.attr("valid") = df.attr(latlon ? "validlat" : "validlon");
+	return nv;
 }
 
 
