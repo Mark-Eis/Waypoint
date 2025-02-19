@@ -125,6 +125,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// as_coord
+NumericVector as_coord(DataFrame df, bool latlon);
+RcppExport SEXP _Waypoint_as_coord(SEXP dfSEXP, SEXP latlonSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
+    Rcpp::traits::input_parameter< bool >::type latlon(latlonSEXP);
+    rcpp_result_gen = Rcpp::wrap(as_coord(df, latlon));
+    return rcpp_result_gen;
+END_RCPP
+}
 // rcpp_hello_world
 List rcpp_hello_world();
 RcppExport SEXP _Waypoint_rcpp_hello_world() {
@@ -151,6 +163,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Waypoint_waypoints_replace", (DL_FUNC) &_Waypoint_waypoints_replace, 2},
     {"_Waypoint_printwaypoints", (DL_FUNC) &_Waypoint_printwaypoints, 1},
     {"_Waypoint_validatewaypoints", (DL_FUNC) &_Waypoint_validatewaypoints, 1},
+    {"_Waypoint_as_coord", (DL_FUNC) &_Waypoint_as_coord, 2},
     {"_Waypoint_rcpp_hello_world", (DL_FUNC) &_Waypoint_rcpp_hello_world, 0},
     {"_rcpp_module_boot_NumEx", (DL_FUNC) &_rcpp_module_boot_NumEx, 0},
     {"_rcpp_module_boot_yada", (DL_FUNC) &_rcpp_module_boot_yada, 0},

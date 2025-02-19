@@ -86,25 +86,25 @@ checkvalid.coords <- function(coord, show_n = 20) {
 #' @family utils
 #' @seealso \code{\link[base:Control]{\%||\%}}.
 #'
-#' @param x,y atomic vector arguments or other objects for which `length()` is defined.
+#' @param x,y atomic vector arguments or other objects for which \code{length()} is defined.
 #'
 #' @return \code{x}, or if \code{length(x)} is zero, \code{y}.
 #'
 #' @keywords univar arith
 #' @export
 #' @examples
-#' c1 <- letters[1:4]
-#' c2 <- character(0)
-#' n1 <- 1:3
-#' n2 <- numeric(0)
+#' c4 <- letters[1:4]
+#' c0 <- character(0)
+#' n3 <- 1:3
+#' n0 <- numeric(0)
 #' 
-#' c1 %L% n1
-#' c2 %L% n1
+#' c4 %L% n3
+#' c0 %L% n3
 #' 
-#' n1 %L% c1
-#' n2 %L% c1
+#' n3 %L% c4
+#' n0 %L% c4
 #'
-#' rm(c1, c2, n1, n2)
+#' rm(c4, c0, n3, n0)
 
 `%L%` <- function (x, y) 
 if (length(x)) x else y

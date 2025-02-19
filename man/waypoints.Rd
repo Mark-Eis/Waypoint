@@ -18,14 +18,15 @@ of latitude and longitude in each row representing a waypoint.}
 \value{
 An object of class \code{"waypoints"} comprising a \code{data.frame} with two \code{boolean vector}
 attributes \code{"validlat"} and \code{"validlon"} indicating whether the individual coordinate values
-are indeed valid, as described above.
+are indeed valid, as described under \emph{Details}.
 }
 \description{
-\code{waypoints()} creates a robust representation of a series of geographic or GPS
-waypoints instantiated as an object of class \code{"waypoints"}.
+\code{waypoints()} creates a robust representation of a series of geographic or GPS waypoints
+instantiated as an object of class \code{"waypoints"}.
 
-\code{waypoints()} also converts the format of existing objects of class \code{"waypoints"} between
-(i) decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
+\code{waypoints()} and replacement form function \verb{waypoints()<-} also convert the format
+of existing objects of class \code{"waypoints"} between (i) decimal degrees, (ii) degrees and
+minutes, and (iii) degrees, minutes and seconds.
 }
 \details{
 Individual values provided in the numeric vector latitude and longitude columns of argument
@@ -35,13 +36,40 @@ seconds in the case of degrees, minutes and seconds.
 
 The \code{fmt} argument is used to provide the format of values in a dataframe to be converted into a
 \code{"waypoints"} object, and the desired  format if a \code{"waypoints"} object is to be converted
-to a new format. `fmt` should be 1 for decimal degrees, 2 for degrees and minutes, and 3 for degrees, 
+to a new format.  \code{fmt} should be 1 for decimal degrees, 2 for degrees and minutes, and 3 for degrees, 
 minutes and seconds.
 
 The latitude and longitude values of a newly created \code{"waypoints"} object are validated to ensure
 their being plausible geographic locations as described under \code{\link[=validate]{validate()}}.
 Likewise, a check is made to ensure that an existing \code{"coords"} object to be converted to a new
 format has already been validated; if not, it is re-validated.
+}
+\examples{
+# Dataframe representing waypoint names and latitude and longitude values in decimal degrees
+(wp1 <- data.frame(
+    name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+             "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
+    lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -53.104781, -57.519227),
+    lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -25.240156)
+))
+
+# Create "waypoints" object of decimal degrees
+waypoints(wp1)
+
+## Convert "waypoints" object to degrees and minutes
+waypoints(wp1) <- 2
+wp1
+
+## Convert "waypoints" object to degrees, minutes and seconds
+waypoints(wp1) <- 3
+wp1
+
+## Convert back to decimal degrees
+waypoints(wp1) <- 1
+wp1
+
+rm(wp1)
+
 }
 \seealso{
 Other coords_waypoints: 

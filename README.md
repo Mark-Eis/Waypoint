@@ -1,2 +1,2 @@
 # Waypoint
-Conversion and validation of geographic coordinates
+Conversion, validation and print formatting of geographic coordinates.

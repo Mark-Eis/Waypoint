@@ -943,7 +943,7 @@ void convene(T t, CoordType newtype)
 //'
 //' The \code{fmt} argument is used to provide the format of values in a numeric vector to be
 //' converted into a \code{"coords"} object, and the desired  format if a \code{"coords"} object is
-//' to be converted to a new format. `fmt` should be 1 for decimal degrees, 2 for degrees and
+//' to be converted to a new format.  \code{fmt} should be 1 for decimal degrees, 2 for degrees and
 //' minutes, and 3 for degrees, minutes and seconds.
 //'
 //' The values of a newly created \code{"coords"} object are validated to ensure their being
@@ -961,7 +961,7 @@ void convene(T t, CoordType newtype)
 //' @return
 //' An object of class \code{"coords"} comprising a \code{numeric vector} with a
 //' \code{boolean vector} attribute \code{"valid"}, indicating whether the individual coordinate
-//' values are indeed valid, as described above.
+//' values are indeed valid, as described  under \emph{Details}.
 //'
 //' @examples
 //' ## Named numeric vector representing degrees and minutes
@@ -1134,8 +1134,9 @@ NumericVector printcoords(NumericVector cd)
 //' The absolute values of coordinates in degrees must not exceed 180, or 90 if degrees of
 //' latitude. Likewise the absolute values of the minutes and seconds components, where given,
 //' must not exceed 60 degrees, otherwise a warning will be given and the \code{"valid"} attribute
-//' in the case of \code{"coords"}, or \code{"validlat"} and \code{"validlon"} attributes in the
-//' case of \code{"waypoints"} set to \code{FALSE} for any non-compliant coordinate values.
+//' in the case of a \code{"coords"} object, or \code{"validlat"} and \code{"validlon"} attributes
+//' in the case of a \code{"waypoints"} object set to \code{FALSE} for any non-compliant coordinate
+//' values.
 //'
 //' @param cd object of class \code{"coords"}.
 //' @param df object of class \code{"waypoints"}.
@@ -1252,7 +1253,7 @@ CharacterVector formatcoords(NumericVector nv)
 //'
 //' The \code{fmt} argument is used to provide the format of values in a dataframe to be converted into a
 //' \code{"waypoints"} object, and the desired  format if a \code{"waypoints"} object is to be converted
-//' to a new format. `fmt` should be 1 for decimal degrees, 2 for degrees and minutes, and 3 for degrees, 
+//' to a new format.  \code{fmt} should be 1 for decimal degrees, 2 for degrees and minutes, and 3 for degrees, 
 //' minutes and seconds.
 //'
 //' The latitude and longitude values of a newly created \code{"waypoints"} object are validated to ensure
@@ -1269,7 +1270,7 @@ CharacterVector formatcoords(NumericVector nv)
 //' @return
 //' An object of class \code{"waypoints"} comprising a \code{data.frame} with two \code{boolean vector}
 //' attributes \code{"validlat"} and \code{"validlon"} indicating whether the individual coordinate values
-//' are indeed valid, as described above.
+//' are indeed valid, as described under \emph{Details}.
 //'
 //' @examples
 //' # Dataframe representing waypoint names and latitude and longitude values in decimal degrees
