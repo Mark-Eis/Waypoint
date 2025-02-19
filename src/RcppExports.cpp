@@ -125,6 +125,29 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// as_coord
+NumericVector as_coord(DataFrame df, bool latlon);
+RcppExport SEXP _Waypoint_as_coord(SEXP dfSEXP, SEXP latlonSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
+    Rcpp::traits::input_parameter< bool >::type latlon(latlonSEXP);
+    rcpp_result_gen = Rcpp::wrap(as_coord(df, latlon));
+    return rcpp_result_gen;
+END_RCPP
+}
+// exp_count_false
+int exp_count_false(const LogicalVector lv);
+RcppExport SEXP _Waypoint_exp_count_false(SEXP lvSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const LogicalVector >::type lv(lvSEXP);
+    rcpp_result_gen = Rcpp::wrap(exp_count_false(lv));
+    return rcpp_result_gen;
+END_RCPP
+}
 // rcpp_hello_world
 List rcpp_hello_world();
 RcppExport SEXP _Waypoint_rcpp_hello_world() {
@@ -139,6 +162,7 @@ END_RCPP
 RcppExport SEXP _rcpp_module_boot_NumEx();
 RcppExport SEXP _rcpp_module_boot_yada();
 RcppExport SEXP _rcpp_module_boot_stdVector();
+RcppExport SEXP _rcpp_module_boot_wpmod();
 
 static const R_CallMethodDef CallEntries[] = {
     {"_Waypoint_coords", (DL_FUNC) &_Waypoint_coords, 2},
@@ -151,10 +175,13 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Waypoint_waypoints_replace", (DL_FUNC) &_Waypoint_waypoints_replace, 2},
     {"_Waypoint_printwaypoints", (DL_FUNC) &_Waypoint_printwaypoints, 1},
     {"_Waypoint_validatewaypoints", (DL_FUNC) &_Waypoint_validatewaypoints, 1},
+    {"_Waypoint_as_coord", (DL_FUNC) &_Waypoint_as_coord, 2},
+    {"_Waypoint_exp_count_false", (DL_FUNC) &_Waypoint_exp_count_false, 1},
     {"_Waypoint_rcpp_hello_world", (DL_FUNC) &_Waypoint_rcpp_hello_world, 0},
     {"_rcpp_module_boot_NumEx", (DL_FUNC) &_rcpp_module_boot_NumEx, 0},
     {"_rcpp_module_boot_yada", (DL_FUNC) &_rcpp_module_boot_yada, 0},
     {"_rcpp_module_boot_stdVector", (DL_FUNC) &_rcpp_module_boot_stdVector, 0},
+    {"_rcpp_module_boot_wpmod", (DL_FUNC) &_rcpp_module_boot_wpmod, 0},
     {NULL, NULL, 0}
 };
 

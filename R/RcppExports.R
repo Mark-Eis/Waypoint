@@ -309,6 +309,14 @@ validate.waypoints <- function(df) {
     .Call(`_Waypoint_validatewaypoints`, df)
 }
 
+as_coord <- function(df, latlon) {
+    .Call(`_Waypoint_as_coord`, df, latlon)
+}
+
+count_false <- function(lv) {
+    .Call(`_Waypoint_exp_count_false`, lv)
+}
+
 rcpp_hello_world <- function() {
     .Call(`_Waypoint_rcpp_hello_world`)
 }

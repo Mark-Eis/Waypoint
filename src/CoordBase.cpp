@@ -23,6 +23,7 @@ template<class T>
 inline void checkinherits(T&, const char*);
 template<class T, class V>
 inline vector<int> getllcolsattr(const DataFrame);
+int count_false(const vector<bool>);
 
 //CoordType
 enum class CoordType : char { decdeg, degmin, degminsec };
@@ -197,6 +198,17 @@ inline vector<int> getllcolsattr(const DataFrame df)
 
 
 /// __________________________________________________
+/// Count false values in vector<bool> 
+int count_false(const vector<bool> bv)
+{
+	cout << "@count_false(const vector<bool>)\n";
+	auto false_count = std::count(bv.begin(), bv.end(), false);
+    cout << "Count = " << false_count << endl;
+    return false_count;
+}
+
+
+/// __________________________________________________
 /// __________________________________________________
 /// CoordType enum class
 
@@ -204,7 +216,7 @@ inline vector<int> getllcolsattr(const DataFrame df)
 /// Convert int to CoordType enum
 inline const CoordType get_coordtype(const int i)
 {
-//	cout << "@get_coordtype(int) " << i << endl;
+	cout << "@get_coordtype(int) " << i << endl;
 	if (i < 1 || i > 3)
 		stop("\"newfmt\" must be between 1 and 3");
 	return vector<CoordType>{ CoordType::decdeg, CoordType::degmin, CoordType::degminsec }[i - 1];
@@ -648,6 +660,41 @@ ostream& operator<<(ostream& stream, const Coord& c)
 	return stream;
 }
 
+
+/// __________________________________________________
+/// __________________________________________________
+/// create external pointer to a Coord object
+RcppExport SEXP Coord__new(SEXP fmt, SEXP _nv)
+{
+	Rcout << "@Coord__new(SEXP, SEXP)\n";
+// convert inputs to appropriate C++ types
+	CoordType ct = get_coordtype(as<const int>(fmt));
+	NumericVector nv = clone(_nv);
+// create pointer to an Coord object and wrap it as an external pointer
+	Rcpp::XPtr<Coord> ptr( new Coord( ct, nv ), true );
+
+// return the external pointer to R
+	return ptr;
+}
+
+/// __________________________________________________
+/// __________________________________________________
+/// invoke the validate method
+RcppExport SEXP Coord__validate(SEXP xp, SEXP _warn)
+{
+	Rcout << "@Coord__validate(SEXP, SEXP)\n";
+// grab the object as a XPtr (smart pointer) to Uniform
+	Rcpp::XPtr<Coord> ptr(xp);
+// convert the parameter to bool
+	bool warn = as<bool>(_warn);
+// invoke the function
+	ptr->validate( warn );
+
+// Needs a return value???
+//	bool res = true;
+// return the result to R
+	return wrap(warn);
+}
 
 /// __________________________________________________
 /// __________________________________________________
@@ -1373,7 +1420,7 @@ DataFrame validatewaypoints(DataFrame df)
 // [[Rcpp::export]]
 NumericVector as_coord(DataFrame df, bool latlon)
 {
-//	cout << "——Rcpp::export——as_coord(DataFrame)\n;
+//	cout << "——Rcpp::export——as_coord(DataFrame)\n;"
 	checkinherits(df, "waypoints");
 	NumericVector nv = df[getllcolsattr(df)[latlon ? 0 : 1]];
 	nv = clone(nv);
@@ -1383,6 +1430,18 @@ NumericVector as_coord(DataFrame df, bool latlon)
 	nv.attr("valid") = df.attr(latlon ? "validlat" : "validlon");
 	return nv;
 }
+
+
+/// __________________________________________________
+/// __________________________________________________
+/// Count false values in vector<bool> 
+// [[Rcpp::export(name = "count_false")]]
+int exp_count_false(const LogicalVector lv)
+{
+	cout << "——Rcpp::export——count_false(const LogicalVector)\n";
+    return count_false(as<vector<bool>>(lv));
+}
+
 
 
 /// __________________________________________________
