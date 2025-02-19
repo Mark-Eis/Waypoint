@@ -110,7 +110,7 @@ NumericVector as_coord(DataFrame, bool);
 /// Report object construction and destruction
 void _ctrsgn(const type_info& obj, bool destruct = false)
 {
-//	cout << (destruct ? "Destroying " : "Constructing ") << obj.name() << endl;
+	cout << (destruct ? "Destroying " : "Constructing ") << obj.name() << endl;
 }
 
 
@@ -506,13 +506,13 @@ class Validator {
 	public:
 		Validator(const FamousFive& _ff, const vector<bool>& ll) : ff(_ff), ll_it(ll.begin()), ll_size(ll.size())
 		{
-//			cout << "§Validator::Validator(const FamousFive&, vector<bool>&) "; _ctrsgn(typeid(*this));
+			cout << "§Validator::Validator(const FamousFive&, vector<bool>&) "; _ctrsgn(typeid(*this));
 		}
-		~Validator() = default;
-//		~Validator() { cout << "§Validator::~Validator() "; _ctrsgn(typeid(*this), true); }
+//		~Validator() = default;
+		~Validator() { cout << "§Validator::~Validator() "; _ctrsgn(typeid(*this), true); }
 		bool operator()(double n)
 		{
-//			cout << "@Validator() " << " validating: " << setw(9) << setfill(' ') << n << endl;
+			cout << "@Validator() " << " validating: " << setw(9) << setfill(' ') << n << endl;
 			return !((abs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
 				(abs(ff.get_decmin(n)) >= 60) ||
 				(abs(ff.get_sec(n)) >= 60));
@@ -543,13 +543,13 @@ class Coordbase {
 Coordbase::Coordbase(CoordType _ct) :
 	ct(_ct), ff(*vff[coordtype_to_int(ct)])
 {
-//	cout << "§Coordbase::Coordbase(CoordType) "; _ctrsgn(typeid(*this));
+	cout << "§Coordbase::Coordbase(CoordType) "; _ctrsgn(typeid(*this));
 }
 
 
 Coordbase::~Coordbase()
 {
-//	cout << "§Coordbase::~Coordbase() "; _ctrsgn(typeid(*this), true);
+	cout << "§Coordbase::~Coordbase() "; _ctrsgn(typeid(*this), true);
 }
 
 
@@ -572,8 +572,8 @@ class Coord : public Coordbase {
 
 	public:
 		Coord(CoordType, const NumericVector);
-		~Coord() = default;
-//		~Coord() { cout << "§Coord::~Coord() "; _ctrsgn(typeid(*this), true); }
+//		~Coord() = default;
+		~Coord() { cout << "§Coord::~Coord() "; _ctrsgn(typeid(*this), true); }
 
 		void validate(bool warn = true) const;
 		template<CoordType type>
@@ -586,7 +586,7 @@ Coord::Coord(CoordType ct, const NumericVector nv) :
 	Coordbase(ct), nv(nv),
 	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") } //,
 {
-//	cout << "§Coord::Coord(CoordType, const NumericVector) "; _ctrsgn(typeid(*this));
+	cout << "§Coord::Coord(CoordType, const NumericVector) "; _ctrsgn(typeid(*this));
 }
 
 
@@ -594,7 +594,7 @@ Coord::Coord(CoordType ct, const NumericVector nv) :
 /// Validate coords vector
 void Coord::validate(bool warn) const
 {
-//	cout << "@Coord::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
+	cout << "@Coord::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
 	vector<bool>& non_const_valid { const_cast<vector<bool>&>(valid) };
 	non_const_valid.assign(nv.size(), {false});
 	transform(nv.begin(), nv.end(), non_const_valid.begin(), Validator(ff, latlon));
@@ -664,16 +664,16 @@ ostream& operator<<(ostream& stream, const Coord& c)
 /// __________________________________________________
 /// __________________________________________________
 /// create external pointer to a Coord object
-RcppExport SEXP Coord__new(SEXP fmt, SEXP _nv)
+RcppExport SEXP Coord__new(SEXP fmt, SEXP nv)
 {
-	Rcout << "@Coord__new(SEXP, SEXP)\n";
-// convert inputs to appropriate C++ types
+	cout << "@Coord__new(SEXP, SEXP)\n";
+	// convert inputs to appropriate C++ types
 	CoordType ct = get_coordtype(as<const int>(fmt));
-	NumericVector nv = clone(_nv);
-// create pointer to an Coord object and wrap it as an external pointer
+
+	// create pointer to an Coord object and wrap it as an external pointer
 	Rcpp::XPtr<Coord> ptr( new Coord( ct, nv ), true );
 
-// return the external pointer to R
+	// return the external pointer to R
 	return ptr;
 }
 
@@ -682,19 +682,19 @@ RcppExport SEXP Coord__new(SEXP fmt, SEXP _nv)
 /// invoke the validate method
 RcppExport SEXP Coord__validate(SEXP xp, SEXP _warn)
 {
-	Rcout << "@Coord__validate(SEXP, SEXP)\n";
-// grab the object as a XPtr (smart pointer) to Uniform
+	cout << "@Coord__validate(SEXP, SEXP)\n";
+	// grab the object as a XPtr (smart pointer) to Uniform
 	Rcpp::XPtr<Coord> ptr(xp);
-// convert the parameter to bool
+	// convert the parameter to bool
 	bool warn = as<bool>(_warn);
-// invoke the function
+	// invoke the function
 	ptr->validate( warn );
 
-// Needs a return value???
-//	bool res = true;
-// return the result to R
+	// Needs a return value — should be valid bool vector in this version??
+	// return warn to R
 	return wrap(warn);
 }
+
 
 /// __________________________________________________
 /// __________________________________________________
