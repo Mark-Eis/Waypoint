@@ -3,11 +3,14 @@
 \name{waypoints}
 \alias{waypoints}
 \alias{waypoints<-}
+\alias{print.waypoints}
 \title{Geographic or GPS Waypoint Class}
 \usage{
 waypoints(df, fmt = 1L)
 
 waypoints(df) <- value
+
+\method{print}{waypoints}(df)
 }
 \arguments{
 \item{df}{a \code{dataframe} containing at least two numeric columns containing corresponding values
@@ -37,7 +40,9 @@ seconds in the case of degrees, minutes and seconds.
 The \code{fmt} argument is used to provide the format of values in a dataframe to be converted into a
 \code{"waypoints"} object, and the desired  format if a \code{"waypoints"} object is to be converted
 to a new format.  \code{fmt} should be 1 for decimal degrees, 2 for degrees and minutes, and 3 for degrees, 
-minutes and seconds.
+minutes and seconds. Note that following conversion, the original data structure is modified such that the
+latitude and longitude values are as described in the previous paragraph, and may be inspected using
+standard R code, see examples.
 
 The latitude and longitude values of a newly created \code{"waypoints"} object are validated to ensure
 their being plausible geographic locations as described under \code{\link[=validate]{validate()}}.
@@ -66,6 +71,11 @@ wp1
 
 ## Convert back to decimal degrees
 waypoints(wp1) <- 1
+wp1
+
+## Convert back to degrees, minutes and seconds and to a data.frame
+waypoints(wp1) <- 3
+class(wp1) <- "data.frame"
 wp1
 
 rm(wp1)
