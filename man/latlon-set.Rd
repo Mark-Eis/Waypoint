@@ -10,7 +10,7 @@ latlon(cd) <- value
 \arguments{
 \item{cd}{object of class \code{\link[=coords]{"coords"}}.}
 
-\item{value}{a \code{boolean vector} of length \code{1L} or of \code{length(nv)}.}
+\item{value}{a \code{boolean vector} of length \code{1L} or of \code{length(cd)}.}
 }
 \value{
 Argument \code{cd} is returned with \code{boolean vector} attribute \code{"latlon"}
@@ -21,14 +21,14 @@ updated as appropriate.
 \code{\link[=coords]{"coords"}}, or modifies an existing \code{"latlon"} attribute.
 }
 \details{
-Attribute \code{"latlon"} is a \code{boolean vector} of length \code{1L} or \code{length(nv)}
+Attribute \code{"latlon"} is a \code{boolean vector} of length \code{1L} or \code{length(cd)}
 for which \code{TRUE} values represent latitude and \code{FALSE} values represent longitude.
 Setting this attribute to any other length will result in an error. A \code{boolean vector} of
 length \code{1L} signifies that values are all latitude if \code{TRUE}, or longitude if
 \code{FALSE}.
 
 This attribute is used in formatting printed output and also by
-\code{\link[=validate]{validate()}}. Indeed, the values of \code{nv} are revalidated every time
+\code{\link[=validate]{validate()}}. Indeed, the values of \code{cd} are revalidated every time
 attribute \code{"latlon"} is added or changed.
 }
 \examples{
@@ -56,8 +56,8 @@ num_dm
 latlon(num_dm) <- rep(c(TRUE, FALSE), each = 8)
 num_dm
 
-## Reversing latitude and longitude results in implausible 
-## longitude value and warning message 
+## Reversing latitude and longitude results in an implausible 
+## longitude value and a warning message 
 latlon(num_dm) <- rep(c(FALSE, TRUE), each = 8)
 num_dm
 
