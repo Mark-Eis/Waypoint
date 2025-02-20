@@ -173,10 +173,9 @@ format has already been validated; if not, it is re-validated.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  -53.104781°    73.517283°  Mawson Peak</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  -57.519227°   -25.240156°  Silvio Pettirossi International Airport</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## Convert back to degrees, minutes and seconds and to a data.frame</span></span></span>
+<span class="r-in"><span><span class="co">## Convert to degrees, minutes and seconds and a data.frame</span></span></span>
 <span class="r-in"><span><span class="fu">waypoints</span><span class="op">(</span><span class="va">wp1</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">3</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">wp1</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"data.frame"</span></span></span>
-<span class="r-in"><span><span class="va">wp1</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">wp1</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                      name       lat           lon</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1                         Nelson's Column  513028.0     -740.5264</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2                               Ostravice  493246.4   182354.8232</span>

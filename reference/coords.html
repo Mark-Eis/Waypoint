@@ -89,7 +89,9 @@ case of degrees, minutes and seconds.</p>
 <p>The <code>fmt</code> argument is used to provide the format of values in a numeric vector to be
 converted into a <code>"coords"</code> object, and the desired  format if a <code>"coords"</code> object is
 to be converted to a new format.  <code>fmt</code> should be 1 for decimal degrees, 2 for degrees and
-minutes, and 3 for degrees, minutes and seconds.</p>
+minutes, and 3 for degrees, minutes and seconds. Note that following conversion, the original data
+structure is modified such that its values are as described in the previous paragraph, and may be
+inspected using standard R code, see examples.</p>
 <p>The values of a newly created <code>"coords"</code> object are validated to ensure their being
 plausible geographic locations as described under <code><a href="validate.html">validate()</a></code>. Likewise,
 a check is made to ensure that that an existing <code>"coords"</code> object to be converted to a new
@@ -208,6 +210,14 @@ format has already been validated; if not, it is re-validated.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  12°17.3178' (S/W)  Tristan da Cunha</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  73°31.0370' (N/E)  Mawson Peak</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  25°14.4093' (S/W)  Silvio Pettirossi International Airport</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Convert to decimal degrees and a numeric vector</span></span></span>
+<span class="r-in"><span><span class="fu">coords</span><span class="op">(</span><span class="va">num_dm</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">1</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">num_dm</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1]   51.5077650   49.5462100   48.1072317   38.8894933    0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6]  -37.1117400  -53.1047817  -57.5192267   -0.1279233   18.3985617</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] -122.7786717  -77.0352417    0.0000000  -12.2886300   73.5172833</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16]  -25.2401550</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">num_dm</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
