@@ -9,7 +9,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Waypoint</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.00001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +52,7 @@
 
 
 <dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
-<dd><p>a <code>boolean vector</code> of length <code>1L</code> or of <code>length(nv)</code>.</p></dd>
+<dd><p>a <code>boolean vector</code> of length <code>1L</code> or of <code>length(cd)</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -62,13 +62,13 @@ updated as appropriate.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Attribute <code>"latlon"</code> is a <code>boolean vector</code> of length <code>1L</code> or <code>length(nv)</code>
+    <p>Attribute <code>"latlon"</code> is a <code>boolean vector</code> of length <code>1L</code> or <code>length(cd)</code>
 for which <code>TRUE</code> values represent latitude and <code>FALSE</code> values represent longitude.
 Setting this attribute to any other length will result in an error. A <code>boolean vector</code> of
 length <code>1L</code> signifies that values are all latitude if <code>TRUE</code>, or longitude if
 <code>FALSE</code>.</p>
 <p>This attribute is used in formatting printed output and also by
-<code><a href="validate.html">validate()</a></code>. Indeed, the values of <code>nv</code> are revalidated every time
+<code><a href="validate.html">validate()</a></code>. Indeed, the values of <code>cd</code> are revalidated every time
 attribute <code>"latlon"</code> is added or changed.</p>
     </div>
 
@@ -119,8 +119,8 @@ attribute <code>"latlon"</code> is added or changed.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  73°31.0370' E  Mawson Peak</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  25°14.4093' W  Silvio Pettirossi International Airport</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## Reversing latitude and longitude results in implausible </span></span></span>
-<span class="r-in"><span><span class="co">## longitude value and warning message </span></span></span>
+<span class="r-in"><span><span class="co">## Reversing latitude and longitude results in an implausible </span></span></span>
+<span class="r-in"><span><span class="co">## longitude value and a warning message </span></span></span>
 <span class="r-in"><span><span class="fu">latlon</span><span class="op">(</span><span class="va">num_dm</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="cn">TRUE</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Validation failed!</span>
 <span class="r-in"><span><span class="va">num_dm</span></span></span>
