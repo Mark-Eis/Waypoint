@@ -73,7 +73,7 @@ wp1
 waypoints(wp1) <- 1
 wp1
 
-## Convert to degrees, minutes and seconds and a data.frame
+## Convert to degrees, minutes and seconds and show as a dataframe
 waypoints(wp1) <- 3
 as.data.frame(wp1)
 
@@ -81,6 +81,8 @@ rm(wp1)
 
 }
 \seealso{
+\code{\link[=validate]{"validate()"}}.
+
 Other coords_waypoints: 
 \code{\link{coords}()}
 }

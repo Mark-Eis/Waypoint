@@ -83,3 +83,6 @@ wp1$lon[3] <- -182.778671
 validate(wp1)
 
 }
+\seealso{
+\code{\link[=coords]{"coords"}} and \code{\link[=waypoints]{"waypoints"}}.
+}

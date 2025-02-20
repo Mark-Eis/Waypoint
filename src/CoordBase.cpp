@@ -954,6 +954,8 @@ void convene(T t, CoordType newtype)
 //' format has already been validated; if not, it is re-validated. 
 //'
 //' @family coords_waypoints
+//' @seealso
+//' \code{\link[=latlon]{"latlon()"}} and \code{\link[=validate]{"validate()"}}.
 //'
 //' @param nv \code{numeric vector} of coordinate values, optionally named.
 //' @param fmt,value \code{integer}, 1L, 2L or 3L, indicating the current or desired coordinate format;
@@ -992,7 +994,7 @@ void convene(T t, CoordType newtype)
 //' coords(num_dm) <- 2
 //' num_dm
 //'
-//' ## Convert to decimal degrees and a numeric vector
+//' ## Convert to decimal degrees and show as a numeric vector
 //' coords(num_dm) <- 1
 //' as.numeric(num_dm)
 //'
@@ -1039,13 +1041,13 @@ NumericVector coords_replace(NumericVector nv, int value)
 /// Set latlon attribute on "coords" NumericVector and revalidate
 //' @title Latitude or Longitude Attribute for Coords
 //' 
-//' @name latlon-set
+//' @name latlon
 //'
 //' @description \code{latlon()<-} adds the attribute \code{"latlon"} to objects of class
 //' \code{\link[=coords]{"coords"}}, or modifies an existing \code{"latlon"} attribute.
 //'
 //' @details
-//' Attribute \code{"latlon"} is a \code{boolean vector} of length \code{1L} or \code{length(cd)}
+//' Attribute \code{"latlon"} is a \code{boolean vector} of length \code{1} or \code{length(cd)}
 //' for which \code{TRUE} values represent latitude and \code{FALSE} values represent longitude.
 //' Setting this attribute to any other length will result in an error. A \code{boolean vector} of
 //' length \code{1L} signifies that values are all latitude if \code{TRUE}, or longitude if
@@ -1055,8 +1057,11 @@ NumericVector coords_replace(NumericVector nv, int value)
 //' \code{\link[=validate]{validate()}}. Indeed, the values of \code{cd} are revalidated every time
 //' attribute \code{"latlon"} is added or changed.
 //'
+//' @seealso
+//' \code{\link[=coords]{"coords"}}.
+//'
 //' @param cd object of class \code{\link[=coords]{"coords"}}.
-//' @param value a \code{boolean vector} of length \code{1L} or of \code{length(cd)}.
+//' @param value a \code{boolean vector} of length \code{1} or of \code{length(cd)}.
 //'
 //' @return
 //' Argument \code{cd} is returned with \code{boolean vector} attribute \code{"latlon"}
@@ -1143,6 +1148,9 @@ NumericVector printcoords(NumericVector cd)
 //' in the case of a \code{"coords"} object, or \code{"validlat"} and \code{"validlon"} attributes
 //' in the case of a \code{"waypoints"} object set to \code{FALSE} for any non-compliant coordinate
 //' values.
+//'
+//' @seealso
+//' \code{\link[=coords]{"coords"}} and \code{\link[=waypoints]{"waypoints"}}.
 //'
 //' @param cd object of class \code{"coords"}.
 //' @param df object of class \code{"waypoints"}.
@@ -1270,6 +1278,8 @@ CharacterVector formatcoords(NumericVector nv)
 //' format has already been validated; if not, it is re-validated. 
 //'
 //' @family coords_waypoints
+//' @seealso
+//' \code{\link[=validate]{"validate()"}}.
 //'
 //' @param df a \code{dataframe} containing at least two numeric columns containing corresponding values
 //' of latitude and longitude in each row representing a waypoint.
@@ -1304,7 +1314,7 @@ CharacterVector formatcoords(NumericVector nv)
 //' waypoints(wp1) <- 1
 //' wp1
 //'
-//' ## Convert to degrees, minutes and seconds and a data.frame
+//' ## Convert to degrees, minutes and seconds and show as a dataframe
 //' waypoints(wp1) <- 3
 //' as.data.frame(wp1)
 //'

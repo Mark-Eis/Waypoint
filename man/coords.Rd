@@ -78,7 +78,7 @@ num_dm
 coords(num_dm) <- 2
 num_dm
 
-## Convert to decimal degrees and a numeric vector
+## Convert to decimal degrees and show as a numeric vector
 coords(num_dm) <- 1
 as.numeric(num_dm)
 
@@ -86,6 +86,8 @@ rm(num_dm)
 
 }
 \seealso{
+\code{\link[=latlon]{"latlon()"}} and \code{\link[=validate]{"validate()"}}.
+
 Other coords_waypoints: 
 \code{\link{waypoints}()}
 }
