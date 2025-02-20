@@ -21,9 +21,9 @@ devtools::install_github("Mark-Eis/Waypoint")
 
 The **Waypoint R package** enables conversion, validation and neatly formatted printing of geographic coordinates and waypoints. Coordinates and waypoints are converted between (i) decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds. More specifically, *Waypoint* does the following: – 
 
-- Creates and converts the format of `"coords"` objects with `coords()` and  [`coords<-()`](https://mark-eis.github.io/Waypoint/reference/coords.html).
+- Creates [`"coords"`](https://mark-eis.github.io/Waypoint/reference/coords.html) objects and converts their formats with `coords()` and [`coords<-()`](https://mark-eis.github.io/Waypoint/reference/coords.html).
 
-- Creates and converts the format of `"waypoints"` objects with `waypoints()` and  [`waypoints<-()`](https://mark-eis.github.io/Waypoint/reference/waypoints.html).
+- Creates [`"waypoints"`](https://mark-eis.github.io/Waypoint/reference/waypoints.html) objects and converts their formats with `waypoints()` and  [`waypoints<-()`](https://mark-eis.github.io/Waypoint/reference/waypoints.html).
 
 - Assigns latitude and longitude attributes to values within objects of classes `"coords"` with `latlon()` and  [`latlon<-()`](https://mark-eis.github.io/Waypoint/reference/latlon.html).
 
