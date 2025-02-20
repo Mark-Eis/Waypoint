@@ -944,7 +944,9 @@ void convene(T t, CoordType newtype)
 //' The \code{fmt} argument is used to provide the format of values in a numeric vector to be
 //' converted into a \code{"coords"} object, and the desired  format if a \code{"coords"} object is
 //' to be converted to a new format.  \code{fmt} should be 1 for decimal degrees, 2 for degrees and
-//' minutes, and 3 for degrees, minutes and seconds.
+//' minutes, and 3 for degrees, minutes and seconds. Note that following conversion, the original data
+//' structure is modified such that its values are as described in the previous paragraph, and may be
+//' inspected using standard R code, see examples.
 //'
 //' The values of a newly created \code{"coords"} object are validated to ensure their being
 //' plausible geographic locations as described under \code{\link[=validate]{validate()}}. Likewise,
@@ -989,6 +991,10 @@ void convene(T t, CoordType newtype)
 //' ## Convert back to degrees and minutes
 //' coords(num_dm) <- 2
 //' num_dm
+//'
+//' ## Convert to decimal degrees and a numeric vector
+//' coords(num_dm) <- 1
+//' as.numeric(num_dm)
 //'
 //' rm(num_dm)
 //'
@@ -1298,10 +1304,9 @@ CharacterVector formatcoords(NumericVector nv)
 //' waypoints(wp1) <- 1
 //' wp1
 //'
-//' ## Convert back to degrees, minutes and seconds and to a data.frame
+//' ## Convert to degrees, minutes and seconds and a data.frame
 //' waypoints(wp1) <- 3
-//' class(wp1) <- "data.frame"
-//' wp1
+//' as.data.frame(wp1)
 //'
 //' rm(wp1)
 //'

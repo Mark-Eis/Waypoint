@@ -73,10 +73,9 @@ wp1
 waypoints(wp1) <- 1
 wp1
 
-## Convert back to degrees, minutes and seconds and to a data.frame
+## Convert to degrees, minutes and seconds and a data.frame
 waypoints(wp1) <- 3
-class(wp1) <- "data.frame"
-wp1
+as.data.frame(wp1)
 
 rm(wp1)
 
