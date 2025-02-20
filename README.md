@@ -15,6 +15,7 @@ You can install the development version of Waypoint from [GitHub](https://github
 # install.packages("devtools")
 devtools::install_github("Mark-Eis/Waypoint")
 ```
+---
 
 ### Waypoint Package Description: –
 
@@ -28,6 +29,6 @@ The **Waypoint R package** enables conversion, validation and neatly formatted p
 
 - Ensures values within objects of classes `"coords"` or `"waypoints"` are plausible geographic locations with `validate()`.
 
-– Provides S3 `print()` methods for objects of classes `"coords"` or `"waypoints"` for neatly formatted printing.
+- Provides S3 `print()` methods for objects of classes `"coords"` or `"waypoints"` for neatly formatted printing.
 
 *Waypoint* uses high performance C++ code seamlessly integrated into R using [`Rcpp`](https://www.rcpp.org).
