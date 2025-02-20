@@ -1345,6 +1345,7 @@ DataFrame waypoints_replace(DataFrame df, int value)
 
 /// __________________________________________________
 /// Print waypoints vector - S3 method print.waypoints()	  /////// "invisible" not working ///////
+//' @rdname waypoints
 // [[Rcpp::export(name = "print.waypoints", invisible = true)]]
 DataFrame printwaypoints(DataFrame df)
 {
