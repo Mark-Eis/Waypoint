@@ -51,7 +51,10 @@ minutes, and (iii) degrees, minutes and seconds.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">waypoints</span><span class="op">(</span><span class="va">df</span>, fmt <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">waypoints</span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span></code></pre></div>
+<span><span class="fu">waypoints</span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">value</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'waypoints'</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -82,7 +85,9 @@ seconds in the case of degrees, minutes and seconds.</p>
 <p>The <code>fmt</code> argument is used to provide the format of values in a dataframe to be converted into a
 <code>"waypoints"</code> object, and the desired  format if a <code>"waypoints"</code> object is to be converted
 to a new format.  <code>fmt</code> should be 1 for decimal degrees, 2 for degrees and minutes, and 3 for degrees,
-minutes and seconds.</p>
+minutes and seconds. Note that following conversion, the original data structure is modified such that the
+latitude and longitude values are as described in the previous paragraph, and may be inspected using
+standard R code, see examples.</p>
 <p>The latitude and longitude values of a newly created <code>"waypoints"</code> object are validated to ensure
 their being plausible geographic locations as described under <code><a href="validate.html">validate()</a></code>.
 Likewise, a check is made to ensure that an existing <code>"coords"</code> object to be converted to a new
@@ -167,6 +172,20 @@ format has already been validated; if not, it is re-validated.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  -37.111740°   -12.288630°  Tristan da Cunha</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  -53.104781°    73.517283°  Mawson Peak</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  -57.519227°   -25.240156°  Silvio Pettirossi International Airport</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Convert back to degrees, minutes and seconds and to a data.frame</span></span></span>
+<span class="r-in"><span><span class="fu">waypoints</span><span class="op">(</span><span class="va">wp1</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">3</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">wp1</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"data.frame"</span></span></span>
+<span class="r-in"><span><span class="va">wp1</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                      name       lat           lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                         Nelson's Column  513028.0     -740.5264</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                               Ostravice  493246.4   182354.8232</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                                Tally Ho  480626.0 -1224643.2156</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                     Washington Monument  385322.2  -770206.8712</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                             Null Island       0.0        0.0000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                        Tristan da Cunha -370642.3  -121719.0680</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                             Mawson Peak -530617.2   733102.2188</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8 Silvio Pettirossi International Airport -573109.2  -251424.5616</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">wp1</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
