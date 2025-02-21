@@ -216,7 +216,7 @@ inline const CoordType get_coordtype(const int i)
 template<class T>
 inline const CoordType get_coordtype(const T& t)
 {
-//	cout << "@get_coordtype<T>(const T&) " << as<int>(t.attr("fmt")) << endl;
+	cout << "@get_coordtype<T>(const T&) " << get_fmt_attribute(t) << endl;
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	return get_coordtype(get_fmt_attribute(t));
 }
