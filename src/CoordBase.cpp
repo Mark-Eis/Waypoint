@@ -768,12 +768,27 @@ void WayPoint::print(ostream& stream) const
 		const int namescol = as<int>(df.attr("namescol"));
 		if (NA_INTEGER != namescol) {
 			cout << "@WayPoint::print() df.attr(\"namescol\") " << namescol << endl;
-			vector<string> names { as<vector<string>>(df[namescol]) };
-			transform(sv.begin(), sv.end(), names.begin(), sv.begin(), [](string& lls, const string& name) { return lls + "  " + name; });
+			transform(sv.begin(), sv.end(), as<vector<string>>(df[namescol]).begin(), sv.begin(), [](string& lls, const string& name) { return lls + "  " + name; });
 		} else
 			cout << "@WayPoint::print() NA_INTEGER == namescol\n";
-	} else
+	} else {
 		cout << "@WayPoint::print() !df.hasAttribute(\"namescol\")\n";
+		if (df.hasAttribute("row.names")) {
+			cout << "@WayPoint::print() using df.hasAttribute(\"row.names\")\n";
+			RObject rownames = df.attr("row.names");
+			if(is<CharacterVector>(rownames)) {
+		        cout << "@WayPoint::print() rownames is CharacterVector\n";
+				transform(sv.begin(), sv.end(), as<vector<string>>(df.attr("row.names")).begin(), sv.begin(),
+					[](string& lls, const string& name) { return lls + "  " + name; }
+				);	
+			} else if(is<IntegerVector>(rownames)) {
+		        cout << "@WayPoint::print() rownames is IntegerVector\n";
+				transform(sv.begin(), sv.end(), as<vector<int>>(df.attr("row.names")).begin(), sv.begin(),
+					[](string& lls, const int name) { return lls + "  " + to_string(name); }
+				);	
+			}
+		}
+	}
 		
 	for_each(sv.begin(), sv.end(), [&stream](const string& s) { stream << s << "\n"; });
 }
