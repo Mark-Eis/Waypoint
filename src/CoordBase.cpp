@@ -738,7 +738,7 @@ vector<string> WayPoint::format() const
 /// Print WayPoint
 void WayPoint::print(ostream& stream) const
 {
-//	cout << "@WayPoint::print() " << typeid(*this).name() << endl;
+	cout << "@WayPoint::print() " << typeid(*this).name() << endl;
 	const int i { coordtype_to_int(ct) };
 	vector<int> spacing { 5, 7, 8, 11, 13, 14, 2, 2, 2 };
 	stream << " Latitude" << string(spacing[i], ' ') << "Longitude\n"
@@ -763,9 +763,11 @@ void WayPoint::print(ostream& stream) const
 		default:
 			stop("WayPoint::print(ostream&) my bad");
 	}
-
+	cout << "@WayPoint::print() " << "L766" << endl;
 	vector<string> names { as<vector<string>>(df[as<int>(df.attr("namescol"))]) };	/////// !!! revise this !!! ///////
+	cout << "@WayPoint::print() " << "L768" << endl;
 	transform(sv.begin(), sv.end(), names.begin(), sv.begin(), [](string& lls, const string& name) { return lls + "  " + name; });
+	cout << "@WayPoint::print() " << "L770" << endl;
 	for_each(sv.begin(), sv.end(), [&stream](const string& s) { stream << s << "\n"; });
 }
 
@@ -1281,8 +1283,8 @@ CharacterVector formatcoords(NumericVector nv)
 //' @seealso
 //' \code{\link[=validate]{"validate()"}}.
 //'
-//' @param df a \code{dataframe} containing at least two numeric columns containing corresponding values
-//' of latitude and longitude in each row representing a waypoint.
+//' @param df a \code{dataframe} comprising at least two numeric columns containing corresponding to values
+//' of latitude and longitude, optionally a  names column, with each row representing a waypoint.
 //' @param fmt,value integer, 1, 2 or 3, indicating the current or desired coordinate format; default 1.
 //'
 //' @return
