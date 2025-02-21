@@ -763,20 +763,18 @@ void WayPoint::print(ostream& stream) const
 		default:
 			stop("WayPoint::print(ostream&) my bad");
 	}
-	cout << "@WayPoint::print() " << "L766" << endl;
-//	vector<string> names { as<vector<string>>(df[as<int>(df.attr("namescol"))]) };	/////// !!! revise this !!! ///////
-	cout << "@WayPoint::print() df.hasAttribute(\"namescol\") == " << boolalpha << df.hasAttribute("namescol") << endl;
+
 	if (df.hasAttribute("namescol")) {
-		cout << "@WayPoint::print() df.attr(\"namescol\") " << as<int>(df.attr("namescol")) << endl;
-		if (NA_INTEGER == as<int>(df.attr("namescol")))
-			cout << "@WayPoint::print() df.attr(\"namescol\") NA_INTEGER\n";	
-	} else {
-		cout << "@WayPoint::print() df.hasAttribute(\"namescol\") NULL\n";
-	}
-//	df[as<int>(df.attr("namescol"))]) ;
-//	vector<string> names { as<vector<string>>(df[as<int>(df.attr("namescol"))]) };
-	cout << "@WayPoint::print() " << "L775" << endl;
-//	transform(sv.begin(), sv.end(), names.begin(), sv.begin(), [](string& lls, const string& name) { return lls + "  " + name; });
+		const int namescol = as<int>(df.attr("namescol"));
+		if (NA_INTEGER != namescol) {
+			cout << "@WayPoint::print() df.attr(\"namescol\") " << namescol << endl;
+			vector<string> names { as<vector<string>>(df[namescol]) };
+			transform(sv.begin(), sv.end(), names.begin(), sv.begin(), [](string& lls, const string& name) { return lls + "  " + name; });
+		} else
+			cout << "@WayPoint::print() NA_INTEGER == namescol\n";
+	} else
+		cout << "@WayPoint::print() !df.hasAttribute(\"namescol\")\n";
+		
 	for_each(sv.begin(), sv.end(), [&stream](const string& s) { stream << s << "\n"; });
 }
 
