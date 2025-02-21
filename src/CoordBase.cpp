@@ -216,7 +216,7 @@ inline const CoordType get_coordtype(const int i)
 template<class T>
 inline const CoordType get_coordtype(const T& t)
 {
-	cout << "@get_coordtype<T>(const T&) " << get_fmt_attribute(t) << endl;
+//	cout << "@get_coordtype<T>(const T&) " << get_fmt_attribute(t) << endl;
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	return get_coordtype(get_fmt_attribute(t));
 }
@@ -738,7 +738,7 @@ vector<string> WayPoint::format() const
 /// Print WayPoint
 void WayPoint::print(ostream& stream) const
 {
-	cout << "@WayPoint::print() " << typeid(*this).name() << endl;
+//	cout << "@WayPoint::print() " << typeid(*this).name() << endl;
 	const int i { coordtype_to_int(ct) };
 	vector<int> spacing { 5, 7, 8, 11, 13, 14, 2, 2, 2 };
 	stream << " Latitude" << string(spacing[i], ' ') << "Longitude\n"
@@ -766,30 +766,15 @@ void WayPoint::print(ostream& stream) const
 
 	if (df.hasAttribute("namescol")) {
 		const int namescol = as<int>(df.attr("namescol"));
-		if (NA_INTEGER != namescol) {
-			cout << "@WayPoint::print() df.attr(\"namescol\") " << namescol << endl;
+		if (NA_INTEGER != namescol)
 			transform(sv.begin(), sv.end(), as<vector<string>>(df[namescol]).begin(), sv.begin(), [](string& lls, const string& name) { return lls + "  " + name; });
-		} else
-			cout << "@WayPoint::print() NA_INTEGER == namescol\n";
-	} else {
-		cout << "@WayPoint::print() !df.hasAttribute(\"namescol\")\n";
-		if (df.hasAttribute("row.names")) {
-			cout << "@WayPoint::print() using df.hasAttribute(\"row.names\")\n";
-			RObject rownames = df.attr("row.names");
-			if(is<CharacterVector>(rownames)) {
-		        cout << "@WayPoint::print() rownames is CharacterVector\n";
-				transform(sv.begin(), sv.end(), as<vector<string>>(df.attr("row.names")).begin(), sv.begin(),
-					[](string& lls, const string& name) { return lls + "  " + name; }
-				);	
-			} else if(is<IntegerVector>(rownames)) {
-		        cout << "@WayPoint::print() rownames is IntegerVector\n";
-				transform(sv.begin(), sv.end(), as<vector<int>>(df.attr("row.names")).begin(), sv.begin(),
-					[](string& lls, const int name) { return lls + "  " + to_string(name); }
-				);	
-			}
-		}
+	} else if (df.hasAttribute("row.names")) {
+		RObject rownames = df.attr("row.names");
+		if(is<CharacterVector>(rownames))
+			transform(sv.begin(), sv.end(), as<vector<string>>(rownames).begin(), sv.begin(), [](string& lls, const string& name) { return lls + "  " + name; });	
+		else if(is<IntegerVector>(rownames))
+			transform(sv.begin(), sv.end(), as<vector<int>>(rownames).begin(), sv.begin(), [](string& lls, const int name) { return lls + "  " + to_string(name); });	
 	}
-		
 	for_each(sv.begin(), sv.end(), [&stream](const string& s) { stream << s << "\n"; });
 }
 
