@@ -862,24 +862,16 @@ inline const T validate(const T t)
 /// Check df has valid "llcols" attribute
 bool valid_ll(const DataFrame df)
 {
-	cout << "@valid_ll(const DataFrame)\n";
+//	cout << "@valid_ll(const DataFrame)\n";
 	bool valid = false;
 	if (df.hasAttribute("llcols")) {
-		cout << "@valid_ll(const DataFrame) df.hasAttribute(\"llcols\")\n";
 		RObject llcols = df.attr("llcols");
 		if(is<IntegerVector>(llcols)) {
-			cout << "@valid_ll(const DataFrame) llcols is IntegerVector\n";
 			const vector<int> llcols_iv = as<vector<int>>(df.attr("llcols"));
-			if( 2 == llcols_iv.size() ) {
-				cout << "@valid_ll(const DataFrame) llcols has size 2\n";
-				if (NA_INTEGER != llcols_iv[0] && NA_INTEGER != llcols_iv[1]) {
-					cout << "@valid_ll(const DataFrame) neither llcols[0] nor llcols[1] is NA\n";
-					if( is<NumericVector>(df[llcols_iv[0] - 1]) && is<NumericVector>(df[llcols_iv[1] - 1]) ) {
-						cout << "@valid_ll(const DataFrame) valid is true\n";
+			if( 2 == llcols_iv.size() )
+				if (NA_INTEGER != llcols_iv[0] && NA_INTEGER != llcols_iv[1])
+					if( is<NumericVector>(df[llcols_iv[0] - 1]) && is<NumericVector>(df[llcols_iv[1] - 1]) )
 						valid = true;
-					}
-				}
-			}
 		}
 	} 
 	return valid;
