@@ -765,9 +765,13 @@ void WayPoint::print(ostream& stream) const
 	}
 
 	if (df.hasAttribute("namescol")) {
-		const int namescol = as<int>(df.attr("namescol"));
-		if (NA_INTEGER != namescol)
+		int namescol = as<int>(df.attr("namescol"));
+		if (NA_INTEGER != namescol) {
+			if (namescol < 1 || namescol > df.size())
+				stop("Invalid attribute \"namescol\"!");
+			namescol -= 1;
 			transform(sv.begin(), sv.end(), as<vector<string>>(df[namescol]).begin(), sv.begin(), [](string& lls, const string& name) { return lls + "  " + name; });
+		}
 	} else if (df.hasAttribute("row.names")) {
 		RObject rownames = df.attr("row.names");
 		if(is<CharacterVector>(rownames))
@@ -1371,7 +1375,7 @@ DataFrame waypoints(DataFrame df, int fmt = 1)
 		}
 		if (!df.hasAttribute("namescol")) {
 			constexpr int namescol = 0;											// !!!!!!!! Temporary Solution !!!!!!
-			df.attr("namescol") = namescol;
+			df.attr("namescol") = namescol + 1;
 		}
 	}
 
