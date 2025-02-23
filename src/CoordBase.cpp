@@ -1392,6 +1392,8 @@ DataFrame waypoints(DataFrame df, int fmt = 1)
 		}
 	}
 
+	if(!valid_ll(df))
+		stop("Invalid llcols attribute!");
 	convene<DataFrame, WayPoint>(df, newtype);
 	df.attr("class") = CharacterVector{"waypoints", "data.frame"};
 	return df;
@@ -1417,6 +1419,8 @@ DataFrame printwaypoints(DataFrame wp)
 {
 //	cout << "——Rcpp::export——printwaypoints(DataFrame) format " << get_fmt_attribute(wp) << endl;
 	checkinherits(wp, "waypoints");
+	if(!valid_ll(wp))
+		stop("Invalid llcols attribute!");
 	if (!check_valid(wp))
 		warning("Invalid waypoints!");
 	Rcout << WayPoint(get_coordtype(wp), wp);	
