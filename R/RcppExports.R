@@ -275,8 +275,8 @@ format.coords <- function(nv) {
 #' @seealso
 #' \code{\link[=validate]{"validate()"}}.
 #'
-#' @param df a \code{dataframe} containing at least two numeric columns containing corresponding values
-#' of latitude and longitude in each row representing a waypoint.
+#' @param df a \code{dataframe} comprising at least two numeric columns containing corresponding to values
+#' of latitude and longitude, optionally a  names column, with each row representing a waypoint.
 #' @param fmt,value integer, 1, 2 or 3, indicating the current or desired coordinate format; default 1.
 #'
 #' @return

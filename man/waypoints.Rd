@@ -13,8 +13,8 @@ waypoints(df) <- value
 \method{print}{waypoints}(df)
 }
 \arguments{
-\item{df}{a \code{dataframe} containing at least two numeric columns containing corresponding values
-of latitude and longitude in each row representing a waypoint.}
+\item{df}{a \code{dataframe} comprising at least two numeric columns containing corresponding to values
+of latitude and longitude, optionally a  names column, with each row representing a waypoint.}
 
 \item{fmt, value}{integer, 1, 2 or 3, indicating the current or desired coordinate format; default 1.}
 }
