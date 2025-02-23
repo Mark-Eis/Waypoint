@@ -663,8 +663,8 @@ class WayPoint : public Coordbase {
 
 WayPoint::WayPoint(CoordType ct, const DataFrame df) :
 	Coordbase(ct), df(df),
-	nvlat(df[get_vec_attr<DataFrame, int>(df, "llcols")[0]]), 
-	nvlon(df[get_vec_attr<DataFrame, int>(df, "llcols")[1]])
+	nvlat(df[get_vec_attr<DataFrame, int>(df, "llcols")[0] - 1]), 
+	nvlon(df[get_vec_attr<DataFrame, int>(df, "llcols")[1] - 1])
 {
 //	cout << "§WayPoint::WayPoint(CoordType ct, const DataFrame) "; _ctrsgn(typeid(*this));
 }
@@ -874,8 +874,8 @@ inline void convert(CoordType type, DataFrame df)
 {
 //	cout << "@convert<CoordType>(const WayPoint&, DataFrame) newtype " << coordtype_to_int(newtype) + 1 << endl;
 	const vector<int> llcols = get_vec_attr<DataFrame, int>(df, "llcols");
-	NumericVector nvlat(df[llcols[0]]);
-	NumericVector nvlon(df[llcols[1]]);
+	NumericVector nvlat(df[llcols[0] - 1]);
+	NumericVector nvlon(df[llcols[1] - 1]);
 	transform(nvlat.begin(), nvlat.end(), nvlat.begin(), Convertor<newtype>(*vff[coordtype_to_int(type)]));
 	transform(nvlon.begin(), nvlon.end(), nvlon.begin(), Convertor<newtype>(*vff[coordtype_to_int(type)]));
 }
@@ -1355,7 +1355,7 @@ DataFrame waypoints(DataFrame df, int fmt = 1)
 		type = newtype;
 		df.attr("fmt") = fmt;
 		if (!df.hasAttribute("llcols")) {
-			const vector<int> llcols { 1, 2 };									// !!!!!!!! Temporary Solution !!!!!!
+			const vector<int> llcols { 2, 3 };									// !!!!!!!! Temporary Solution !!!!!!
 			df.attr("llcols") = llcols;
 		}
 		if (!df.hasAttribute("namescol")) {
