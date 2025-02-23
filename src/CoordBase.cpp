@@ -656,8 +656,6 @@ ostream& operator<<(ostream& stream, const Coord& c)
 class WayPoint : public Coordbase {
 	protected:
 		const DataFrame df;
-		const char latcol;
-		const char loncol;
 		const NumericVector nvlat;
 		const NumericVector nvlon;
 		const vector<bool> validlat { false };
@@ -676,10 +674,8 @@ class WayPoint : public Coordbase {
 
 WayPoint::WayPoint(CoordType ct, const DataFrame df) :
 	Coordbase(ct), df(df),
-	latcol(getllcolsattr(df)[0]),
-	loncol(getllcolsattr(df)[1]),
-//	latcol(1), loncol(2),											/////// !!!!!!! Temporary Solution !!!!!!! ///////
-	nvlat(df[latcol]), nvlon(df[loncol])
+	nvlat(df[get_vec_attr<DataFrame, int>(df, "llcols")[0]]), 
+	nvlon(df[get_vec_attr<DataFrame, int>(df, "llcols")[1]])
 {
 //	cout << "§WayPoint::WayPoint(CoordType ct, const DataFrame) "; _ctrsgn(typeid(*this));
 }
