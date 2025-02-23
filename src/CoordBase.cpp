@@ -76,6 +76,7 @@ constexpr auto revalid_WayPoint = &revalidate<DataFrame, WayPoint>;
 
 template<class T, class U>
 inline const T validate(const T);
+bool valid_ll(const DataFrame);
 
 // Conversion
 template<class T, class U>
@@ -858,6 +859,33 @@ inline const T validate(const T t)
 
 
 /// __________________________________________________
+/// Check df has valid "llcols" attribute
+bool valid_ll(const DataFrame df)
+{
+	cout << "@valid_ll(const DataFrame)\n";
+	bool valid = false;
+	if (df.hasAttribute("llcols")) {
+		cout << "@valid_ll(const DataFrame) df.hasAttribute(\"llcols\")\n";
+		RObject llcols = df.attr("llcols");
+		if(is<IntegerVector>(llcols)) {
+			cout << "@valid_ll(const DataFrame) llcols is IntegerVector\n";
+			const vector<int> llcols_iv = as<vector<int>>(df.attr("llcols"));
+			if( 2 == llcols_iv.size() ) {
+				cout << "@valid_ll(const DataFrame) llcols has size 2\n";
+				if (NA_INTEGER != llcols_iv[0] && NA_INTEGER != llcols_iv[1]) {
+					cout << "@valid_ll(const DataFrame) neither llcols[0] nor llcols[1] is NA\n";
+					if( is<NumericVector>(df[llcols_iv[0] - 1]) && is<NumericVector>(df[llcols_iv[1] - 1]) ) {
+						cout << "@valid_ll(const DataFrame) valid is true\n";
+						valid = true;
+					}
+				}
+			}
+		}
+	} 
+	return valid;
+}
+
+/// __________________________________________________
 /// __________________________________________________
 /// Conversion functions
 
@@ -1404,6 +1432,8 @@ DataFrame validatewaypoints(DataFrame df)
 {
 //	cout << "——Rcpp::export——validatewaypoints(DataFrame) format " << get_fmt_attribute(df) << endl;
 	checkinherits(df, "waypoints");
+	if(!valid_ll(df))
+		stop("Invalid llcols attribute!");
 	return validate<DataFrame, WayPoint>(df);
 }
 
