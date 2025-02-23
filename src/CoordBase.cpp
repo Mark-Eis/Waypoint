@@ -21,8 +21,6 @@ template<class T>
 inline int get_fmt_attribute(const T&);
 template<class T>
 inline void checkinherits(T&, const char*);
-template<class T, class V>
-inline vector<int> getllcolsattr(const DataFrame);
 
 //CoordType
 enum class CoordType : char { decdeg, degmin, degminsec };
@@ -184,15 +182,6 @@ inline void checkinherits(T& t, const char* classname)
 //	cout << "checkinherits<T>(T& t, const char* classname) t " << typeid(t).name() << " classname " << classname << endl;
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	if (!t.inherits(classname)) stop("Argument must be a \"%s\" object", classname);
-}
-
-
-/// __________________________________________________
-/// get "llcols" attribute for DataFrame object
-inline vector<int> getllcolsattr(const DataFrame df)
-{
-//	return as<vector<int>>(df.attr("llcols"));
-	return get_vec_attr<DataFrame, int>(df, "llcols");
 }
 
 
@@ -884,7 +873,7 @@ template<CoordType newtype>
 inline void convert(CoordType type, DataFrame df)
 {
 //	cout << "@convert<CoordType>(const WayPoint&, DataFrame) newtype " << coordtype_to_int(newtype) + 1 << endl;
-	const vector<int> llcols = getllcolsattr(df);
+	const vector<int> llcols = get_vec_attr<DataFrame, int>(df, "llcols");
 	NumericVector nvlat(df[llcols[0]]);
 	NumericVector nvlon(df[llcols[1]]);
 	transform(nvlat.begin(), nvlat.end(), nvlat.begin(), Convertor<newtype>(*vff[coordtype_to_int(type)]));
@@ -1426,7 +1415,7 @@ NumericVector as_coord(DataFrame df, bool latlon)
 {
 //	cout << "——Rcpp::export——as_coord(DataFrame)\n;
 	checkinherits(df, "waypoints");
-	NumericVector nv = df[getllcolsattr(df)[latlon ? 0 : 1]];
+	NumericVector nv = df[get_vec_attr<DataFrame, int>(df, "llcols")[latlon ? 0 : 1]];
 	nv = clone(nv);
 	nv.attr("class") = "coords";
 	nv.attr("fmt") = df.attr("fmt");
