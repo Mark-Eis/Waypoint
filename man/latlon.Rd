@@ -28,7 +28,7 @@ length \code{1L} signifies that values are all latitude if \code{TRUE}, or longi
 \code{FALSE}.
 
 This attribute is used in formatting printed output and also by
-\code{\link[=validate]{validate()}}. Indeed, the values of \code{cd} are revalidated every time
+\code{\link[=validate]{validate}()}. Indeed, the values of \code{cd} are revalidated every time
 attribute \code{"latlon"} is added or changed.
 }
 \examples{

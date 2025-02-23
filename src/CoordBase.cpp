@@ -958,18 +958,20 @@ void convene(T t, CoordType newtype)
 //' inspected using standard R code, see examples.
 //'
 //' The values of a newly created \code{"coords"} object are validated to ensure their being
-//' plausible geographic locations as described under \code{\link[=validate]{validate()}}. Likewise,
+//' plausible geographic locations as described under \code{\link[=validate]{validate}()}. Likewise,
 //' a check is made to ensure that that an existing \code{"coords"} object to be converted to a new
 //' format has already been validated; if not, it is re-validated. 
 //'
 //' @family coords_waypoints
 //' @seealso
-//' \code{\link[=latlon]{"latlon()"}} and \code{\link[=validate]{"validate()"}}.
+//' \code{\link[=latlon]{latlon}()} and \code{\link[=validate]{validate}()}.
 //'
 //' @param nv \code{numeric vector} of coordinate values, optionally named.
+//'
 //' @param fmt,value \code{integer}, 1L, 2L or 3L, indicating the current or desired coordinate format;
 //'   default 1L.
-//' @param cd object of class \code{"coords"}, as created by function \code{\link[=coords]{coords()}}.
+//'
+//' @param cd object of class \code{"coords"}, as created by function \code{\link[=coords]{coords}()}.
 //'
 //' @return
 //' An object of class \code{"coords"} comprising a \code{numeric vector} with a
@@ -1063,13 +1065,14 @@ NumericVector coords_replace(NumericVector nv, int value)
 //' \code{FALSE}.
 //'
 //' This attribute is used in formatting printed output and also by
-//' \code{\link[=validate]{validate()}}. Indeed, the values of \code{cd} are revalidated every time
+//' \code{\link[=validate]{validate}()}. Indeed, the values of \code{cd} are revalidated every time
 //' attribute \code{"latlon"} is added or changed.
 //'
 //' @seealso
 //' \code{\link[=coords]{"coords"}}.
 //'
 //' @param cd object of class \code{\link[=coords]{"coords"}}.
+//'
 //' @param value a \code{boolean vector} of length \code{1} or of \code{length(cd)}.
 //'
 //' @return
@@ -1162,6 +1165,7 @@ NumericVector printcoords(NumericVector cd)
 //' \code{\link[=coords]{"coords"}} and \code{\link[=waypoints]{"waypoints"}}.
 //'
 //' @param cd object of class \code{"coords"}.
+//'
 //' @param df object of class \code{"waypoints"}.
 //'
 //' @return
@@ -1269,35 +1273,49 @@ CharacterVector formatcoords(NumericVector nv)
 //' minutes, and (iii) degrees, minutes and seconds.
 //'
 //' @details
-//' Individual values provided in the numeric vector latitude and longitude columns of argument
-//' \code{df} should have a decimal point after the number of whole degrees in the case of decimal degrees,
-//' after the number of whole minutes in the case of degrees and minutes, and after the number of whole
-//' seconds in the case of degrees, minutes and seconds.
+//' Individual values provided in the \code{numeric vector} latitude and longitude columns of
+//' argument \code{df} should have a decimal point after the number of whole degrees in the case of
+//' decimal degrees, after the number of whole minutes in the case of degrees and minutes, and after
+//' the number of whole seconds in the case of degrees, minutes and seconds.
 //'
-//' The \code{fmt} argument is used to provide the format of values in a dataframe to be converted into a
-//' \code{"waypoints"} object, and the desired  format if a \code{"waypoints"} object is to be converted
-//' to a new format.  \code{fmt} should be 1 for decimal degrees, 2 for degrees and minutes, and 3 for degrees, 
-//' minutes and seconds. Note that following conversion, the original data structure is modified such that the
-//' latitude and longitude values are as described in the previous paragraph, and may be inspected using
-//' standard R code, see examples.
+//' By default, the names of the waypoints should be included in the first column of argument
+//' \code{df}, and the latitude and longitude in the second and third columns. If other columns are
+//' preferred for the latitude and longitude, these may be specified by \code{"llcols"}, a length 2
+//' \code{integer vector} attribute of \code{df}. Similarly, an alternative names column may be
+//' selected by setting \code{"namescol"}, an \code{integer} attribute; if \code{df} has no such
+//' \code{"namescol"} attribute, the \code{"row.names"} attribute of \code{df} is used, if present.
+//' Setting the \code{"namescol"} attribute to \code{NA} supresses printing of any names.
 //'
-//' The latitude and longitude values of a newly created \code{"waypoints"} object are validated to ensure
-//' their being plausible geographic locations as described under \code{\link[=validate]{validate()}}.
-//' Likewise, a check is made to ensure that an existing \code{"coords"} object to be converted to a new
-//' format has already been validated; if not, it is re-validated. 
+//' The \code{fmt} argument is used to provide the format of values in a dataframe to be converted
+//' into a \code{"waypoints"} object, and the desired  format if a \code{"waypoints"} object is to
+//' be converted to a new format.  \code{fmt} should be 1 for decimal degrees, 2 for degrees and
+//' minutes, and 3 for degrees, minutes and seconds. Note that following conversion, the original
+//' data structure is modified such that the latitude and longitude values are as described in the
+//' previous paragraph, and may be inspected using standard R code, see examples.
+//'
+//' The latitude and longitude values of a newly created \code{"waypoints"} object are validated to
+//' ensure their being plausible geographic locations as described under
+//' \code{\link[=validate]{validate}()}. Likewise, a check is made to ensure that an existing
+//' \code{"coords"} object to be converted to a new format has already been validated; if not, it is
+//' re-validated. 
 //'
 //' @family coords_waypoints
 //' @seealso
-//' \code{\link[=validate]{"validate()"}}.
+//' \code{\link[base:attr]{attribute}}, \code{\link[=validate]{validate}()}.
 //'
-//' @param df a \code{dataframe} comprising at least two numeric columns containing corresponding to values
-//' of latitude and longitude, optionally a  names column, with each row representing a waypoint.
-//' @param fmt,value integer, 1, 2 or 3, indicating the current or desired coordinate format; default 1.
+//' @param df a \code{dataframe} comprising at least two \code{numeric} columns containing values of
+//'   latitude and longitude and optionally a \code{character} column of names, and with each row
+//'   representing a waypoint.
+//'
+//' @param fmt,value \code{integer}, 1, 2 or 3, indicating the current or desired coordinate format;
+//'   default 1.
+//'
+//' @param wp object of class \code{"waypoints"}, as created by function \code{\link[=waypoints]{waypoints}()}.
 //'
 //' @return
-//' An object of class \code{"waypoints"} comprising a \code{data.frame} with two \code{boolean vector}
-//' attributes \code{"validlat"} and \code{"validlon"} indicating whether the individual coordinate values
-//' are indeed valid, as described under \emph{Details}.
+//' An object of class \code{"waypoints"} comprising a \code{data.frame} with two
+//' \code{boolean vector} attributes \code{"validlat"} and \code{"validlon"} indicating whether the
+//' individual coordinate values are indeed valid, as described under \emph{Details}.
 //'
 //' @examples
 //' # Dataframe representing waypoint names and latitude and longitude values in decimal degrees
@@ -1378,14 +1396,14 @@ DataFrame waypoints_replace(DataFrame df, int value)
 /// Print waypoints vector - S3 method print.waypoints()	  /////// "invisible" not working ///////
 //' @rdname waypoints
 // [[Rcpp::export(name = "print.waypoints", invisible = true)]]
-DataFrame printwaypoints(DataFrame df)
+DataFrame printwaypoints(DataFrame wp)
 {
-//	cout << "——Rcpp::export——printwaypoints(DataFrame) format " << get_fmt_attribute(df) << endl;
-	checkinherits(df, "waypoints");
-	if (!check_valid(df))
+//	cout << "——Rcpp::export——printwaypoints(DataFrame) format " << get_fmt_attribute(wp) << endl;
+	checkinherits(wp, "waypoints");
+	if (!check_valid(wp))
 		warning("Invalid waypoints!");
-	Rcout << WayPoint(get_coordtype(df), df);	
-	return df;
+	Rcout << WayPoint(get_coordtype(wp), wp);	
+	return wp;
 }
 
 

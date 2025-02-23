@@ -104,13 +104,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // printwaypoints
-DataFrame printwaypoints(DataFrame df);
-RcppExport SEXP _Waypoint_printwaypoints(SEXP dfSEXP) {
+DataFrame printwaypoints(DataFrame wp);
+RcppExport SEXP _Waypoint_printwaypoints(SEXP wpSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
-    rcpp_result_gen = Rcpp::wrap(printwaypoints(df));
+    Rcpp::traits::input_parameter< DataFrame >::type wp(wpSEXP);
+    rcpp_result_gen = Rcpp::wrap(printwaypoints(wp));
     return rcpp_result_gen;
 END_RCPP
 }

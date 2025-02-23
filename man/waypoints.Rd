@@ -10,18 +10,22 @@ waypoints(df, fmt = 1L)
 
 waypoints(df) <- value
 
-\method{print}{waypoints}(df)
+\method{print}{waypoints}(wp)
 }
 \arguments{
-\item{df}{a \code{dataframe} comprising at least two numeric columns containing corresponding to values
-of latitude and longitude, optionally a  names column, with each row representing a waypoint.}
+\item{df}{a \code{dataframe} comprising at least two \code{numeric} columns containing values of
+latitude and longitude and optionally a \code{character} column of names, and with each row
+representing a waypoint.}
 
-\item{fmt, value}{integer, 1, 2 or 3, indicating the current or desired coordinate format; default 1.}
+\item{fmt, value}{\code{integer}, 1, 2 or 3, indicating the current or desired coordinate format;
+default 1.}
+
+\item{wp}{object of class \code{"waypoints"}, as created by function \code{\link[=waypoints]{waypoints}()}.}
 }
 \value{
-An object of class \code{"waypoints"} comprising a \code{data.frame} with two \code{boolean vector}
-attributes \code{"validlat"} and \code{"validlon"} indicating whether the individual coordinate values
-are indeed valid, as described under \emph{Details}.
+An object of class \code{"waypoints"} comprising a \code{data.frame} with two
+\code{boolean vector} attributes \code{"validlat"} and \code{"validlon"} indicating whether the
+individual coordinate values are indeed valid, as described under \emph{Details}.
 }
 \description{
 \code{waypoints()} creates a robust representation of a series of geographic or GPS waypoints
@@ -32,22 +36,31 @@ of existing objects of class \code{"waypoints"} between (i) decimal degrees, (ii
 minutes, and (iii) degrees, minutes and seconds.
 }
 \details{
-Individual values provided in the numeric vector latitude and longitude columns of argument
-\code{df} should have a decimal point after the number of whole degrees in the case of decimal degrees,
-after the number of whole minutes in the case of degrees and minutes, and after the number of whole
-seconds in the case of degrees, minutes and seconds.
+Individual values provided in the \code{numeric vector} latitude and longitude columns of
+argument \code{df} should have a decimal point after the number of whole degrees in the case of
+decimal degrees, after the number of whole minutes in the case of degrees and minutes, and after
+the number of whole seconds in the case of degrees, minutes and seconds.
 
-The \code{fmt} argument is used to provide the format of values in a dataframe to be converted into a
-\code{"waypoints"} object, and the desired  format if a \code{"waypoints"} object is to be converted
-to a new format.  \code{fmt} should be 1 for decimal degrees, 2 for degrees and minutes, and 3 for degrees, 
-minutes and seconds. Note that following conversion, the original data structure is modified such that the
-latitude and longitude values are as described in the previous paragraph, and may be inspected using
-standard R code, see examples.
+By default, the names of the waypoints should be included in the first column of argument
+\code{df}, and the latitude and longitude in the second and third columns. If other columns are
+preferred for the latitude and longitude, these may be specified by \code{"llcols"}, a length 2
+\code{integer vector} attribute of \code{df}. Similarly, an alternative names column may be
+selected by setting \code{"namescol"}, an \code{integer} attribute; if \code{df} has no such
+\code{"namescol"} attribute, the \code{"row.names"} attribute of \code{df} is used, if present.
+Setting the \code{"namescol"} attribute to \code{NA} supresses printing of any names.
 
-The latitude and longitude values of a newly created \code{"waypoints"} object are validated to ensure
-their being plausible geographic locations as described under \code{\link[=validate]{validate()}}.
-Likewise, a check is made to ensure that an existing \code{"coords"} object to be converted to a new
-format has already been validated; if not, it is re-validated.
+The \code{fmt} argument is used to provide the format of values in a dataframe to be converted
+into a \code{"waypoints"} object, and the desired  format if a \code{"waypoints"} object is to
+be converted to a new format.  \code{fmt} should be 1 for decimal degrees, 2 for degrees and
+minutes, and 3 for degrees, minutes and seconds. Note that following conversion, the original
+data structure is modified such that the latitude and longitude values are as described in the
+previous paragraph, and may be inspected using standard R code, see examples.
+
+The latitude and longitude values of a newly created \code{"waypoints"} object are validated to
+ensure their being plausible geographic locations as described under
+\code{\link[=validate]{validate}()}. Likewise, a check is made to ensure that an existing
+\code{"coords"} object to be converted to a new format has already been validated; if not, it is
+re-validated.
 }
 \examples{
 # Dataframe representing waypoint names and latitude and longitude values in decimal degrees
@@ -81,7 +94,7 @@ rm(wp1)
 
 }
 \seealso{
-\code{\link[=validate]{"validate()"}}.
+\code{\link[base:attr]{attribute}}, \code{\link[=validate]{validate}()}.
 
 Other coords_waypoints: 
 \code{\link{coords}()}

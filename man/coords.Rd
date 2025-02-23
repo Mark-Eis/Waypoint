@@ -18,7 +18,7 @@ coords(nv) <- value
 \item{fmt, value}{\code{integer}, 1L, 2L or 3L, indicating the current or desired coordinate format;
 default 1L.}
 
-\item{cd}{object of class \code{"coords"}, as created by function \code{\link[=coords]{coords()}}.}
+\item{cd}{object of class \code{"coords"}, as created by function \code{\link[=coords]{coords}()}.}
 }
 \value{
 An object of class \code{"coords"} comprising a \code{numeric vector} with a
@@ -47,7 +47,7 @@ structure is modified such that its values are as described in the previous para
 inspected using standard R code, see examples.
 
 The values of a newly created \code{"coords"} object are validated to ensure their being
-plausible geographic locations as described under \code{\link[=validate]{validate()}}. Likewise,
+plausible geographic locations as described under \code{\link[=validate]{validate}()}. Likewise,
 a check is made to ensure that that an existing \code{"coords"} object to be converted to a new
 format has already been validated; if not, it is re-validated.
 }
@@ -86,7 +86,7 @@ rm(num_dm)
 
 }
 \seealso{
-\code{\link[=latlon]{"latlon()"}} and \code{\link[=validate]{"validate()"}}.
+\code{\link[=latlon]{latlon}()} and \code{\link[=validate]{validate}()}.
 
 Other coords_waypoints: 
 \code{\link{waypoints}()}
