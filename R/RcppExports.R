@@ -265,15 +265,15 @@ format.coords <- function(nv) {
 #'
 #' By default, the names of the waypoints should be included in the first column of argument
 #' \code{df}, and the latitude and longitude in the second and third columns. If other columns are
-#' preferred for the latitude and longitude, these may be specified by \code{"llcols"}, a length 2
-#' \code{integer vector} attribute of \code{df}. Similarly, an alternative names column may be
-#' selected by setting \code{"namescol"}, an \code{integer} attribute; if \code{df} has no such
-#' \code{"namescol"} attribute, the \code{"row.names"} attribute of \code{df} is used, if present.
-#' Setting the \code{"namescol"} attribute to \code{NA} supresses printing of any names.
+#' preferred for the latitude and longitude, these may be specified in a length 2
+#' \code{integer vector} attribute of \code{df}, \code{"llcols"}. Similarly, an alternative names
+#' column may be specified using an \code{integer} attribute, \code{"namescol"}; if \code{df} has
+#' no such \code{"namescol"} attribute, the \code{"row.names"} attribute of \code{df} is used, if
+#' present. Setting attribute \code{"namescol"} to \code{NA} supresses printing of names.
 #'
 #' The \code{fmt} argument is used to provide the format of values in a dataframe to be converted
 #' into a \code{"waypoints"} object, and the desired  format if a \code{"waypoints"} object is to
-#' be converted to a new format.  \code{fmt} should be 1 for decimal degrees, 2 for degrees and
+#' be converted to a new format. \code{fmt} should be 1 for decimal degrees, 2 for degrees and
 #' minutes, and 3 for degrees, minutes and seconds. Note that following conversion, the original
 #' data structure is modified such that the latitude and longitude values are as described in the
 #' previous paragraph, and may be inspected using standard R code, see examples.
