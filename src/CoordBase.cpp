@@ -21,6 +21,11 @@ template<class T>
 inline int get_fmt_attribute(const T&);
 template<class T>
 inline void checkinherits(T&, const char*);
+
+template<class T> struct Has_size;
+template<class T>
+inline bool is_item_in_obj(const T, const int);
+
 inline bool is_col_in_df(const DataFrame, const int);
 
 //CoordType
@@ -175,20 +180,39 @@ inline int get_fmt_attribute(const T& t)
 	return as<int>(t.attr("fmt"));
 }
 
-
 /// __________________________________________________
 /// Does object inherit given class?
 template<class T>
 inline void checkinherits(T& t, const char* classname)
 {
-//	cout << "checkinherits<T>(T& t, const char* classname) t " << typeid(t).name() << " classname " << classname << endl;
+//	cout << "@checkinherits<T>(T& t, const char* classname) t " << typeid(t).name() << " classname " << classname << endl;
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	if (!t.inherits(classname)) stop("Argument must be a \"%s\" object", classname);
 }
 
 
+template<class T> struct Has_size {
+	static void constraints(T t) { int i = t.size(); }
+	Has_size() { void(*p)(T) = constraints; }
+};
+
+
 /// __________________________________________________
-/// Is column number in DataFrame?
+/// Is item number present in object? (Using C++ numbering)
+template<class T>
+inline bool is_item_in_obj(const T t, const int item)
+{
+	cout << "@is_item_in_obj(T, int)\n";
+	Has_size<T>();
+	if (NA_INTEGER == item)
+		return false;
+	else
+		return !(item < 0) && item < t.size();
+}
+
+
+/// __________________________________________________
+/// Is column number in DataFrame? (Using R column numbering)
 inline bool is_col_in_df(const DataFrame df, const int col)
 {
 	if (NA_INTEGER == col)
@@ -763,12 +787,17 @@ void WayPoint::print(ostream& stream) const
 	}
 
 	if (df.hasAttribute("namescol")) {
-		int namescol = as<int>(df.attr("namescol"));
-		if (is_col_in_df(df, namescol)) {
-			namescol -= 1;
-			transform(sv.begin(), sv.end(), as<vector<string>>(df[namescol]).begin(), sv.begin(), [](string& lls, const string& name) { return lls + "  " + name; });
+		RObject namescol_tmp = df.attr("namescol");
+		if (is<IntegerVector>(namescol_tmp)) {
+			int namescol = as<int>(df.attr("namescol"));
+			if (is_item_in_obj(df, namescol - 1)) {
+//				if(is<CharacterVector>(df[namescol - 1]))
+				namescol -= 1;
+				transform(sv.begin(), sv.end(), as<vector<string>>(df[namescol]).begin(), sv.begin(), [](string& lls, const string& name) { return lls + "  " + name; });
+			} else
+				stop("Invalid \"namescol\" attribute! (item not in object)");
 		} else
-			stop("Invalid \"namescol\" attribute!");
+			stop("Invalid \"namescol\" attribute! (not an IntegerVector)");
 	} else if (df.hasAttribute("row.names")) {
 		RObject rownames = df.attr("row.names");
 		if(is<CharacterVector>(rownames))
@@ -880,7 +909,7 @@ bool valid_ll(const DataFrame df)
 		if (is<IntegerVector>(llcols)) {
 			const vector<int> llcols_iv = as<vector<int>>(df.attr("llcols"));
 			if (2 == llcols_iv.size())
-				if (is_col_in_df(df, llcols_iv[0]) && is_col_in_df(df, llcols_iv[1]) && llcols_iv[0] != llcols_iv[1])
+				if (is_item_in_obj(df, llcols_iv[0] - 1) && is_item_in_obj(df, llcols_iv[1] - 1) && llcols_iv[0] != llcols_iv[1])
 					if (is<NumericVector>(df[llcols_iv[0] - 1]) && is<NumericVector>(df[llcols_iv[1] - 1]))
 						valid = true;
 		}
