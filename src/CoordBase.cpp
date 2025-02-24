@@ -26,8 +26,6 @@ template<class T> struct Has_size;
 template<class T>
 inline bool is_item_in_obj(const T, const int);
 
-inline bool is_col_in_df(const DataFrame, const int);
-
 //CoordType
 enum class CoordType : char { decdeg, degmin, degminsec };
 
@@ -191,6 +189,8 @@ inline void checkinherits(T& t, const char* classname)
 }
 
 
+/// __________________________________________________
+/// Template constraint—T must have member T::size()
 template<class T> struct Has_size {
 	static void constraints(T t) { int i = t.size(); }
 	Has_size() { void(*p)(T) = constraints; }
@@ -202,23 +202,12 @@ template<class T> struct Has_size {
 template<class T>
 inline bool is_item_in_obj(const T t, const int item)
 {
-	cout << "@is_item_in_obj(T, int)\n";
+//	cout << "@is_item_in_obj(T, int)\n";
 	Has_size<T>();
 	if (NA_INTEGER == item)
 		return false;
 	else
 		return !(item < 0) && item < t.size();
-}
-
-
-/// __________________________________________________
-/// Is column number in DataFrame? (Using R column numbering)
-inline bool is_col_in_df(const DataFrame df, const int col)
-{
-	if (NA_INTEGER == col)
-		return false;
-	else
-		return col > 0 && col <= df.size();
 }
 
 
@@ -790,14 +779,16 @@ void WayPoint::print(ostream& stream) const
 		RObject namescol_tmp = df.attr("namescol");
 		if (is<IntegerVector>(namescol_tmp)) {
 			int namescol = as<int>(df.attr("namescol"));
-			if (is_item_in_obj(df, namescol - 1)) {
-//				if(is<CharacterVector>(df[namescol - 1]))
-				namescol -= 1;
-				transform(sv.begin(), sv.end(), as<vector<string>>(df[namescol]).begin(), sv.begin(), [](string& lls, const string& name) { return lls + "  " + name; });
-			} else
+			if (is_item_in_obj(df, namescol - 1))
+				if(is<CharacterVector>(df[namescol - 1])) {
+					namescol -= 1;
+					transform(sv.begin(), sv.end(), as<vector<string>>(df[namescol]).begin(), sv.begin(), [](string& lls, const string& name) { return lls + "  " + name; });
+				} else
+					stop("Invalid \"namescol\" attribute! (df col not a CharacterVector)");
+			else
 				stop("Invalid \"namescol\" attribute! (item not in object)");
 		} else
-			stop("Invalid \"namescol\" attribute! (not an IntegerVector)");
+			stop("Invalid \"namescol\" attribute! (not an integer)");
 	} else if (df.hasAttribute("row.names")) {
 		RObject rownames = df.attr("row.names");
 		if(is<CharacterVector>(rownames))
