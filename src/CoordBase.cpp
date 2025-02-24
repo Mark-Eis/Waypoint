@@ -191,7 +191,10 @@ inline void checkinherits(T& t, const char* classname)
 /// Is column number in DataFrame?
 inline bool is_col_in_df(const DataFrame df, const int col)
 {
-	return col > 0 && col <= df.size();
+	if (NA_INTEGER == col)
+		return false;
+	else
+		return col > 0 && col <= df.size();
 }
 
 
@@ -875,13 +878,12 @@ bool valid_ll(const DataFrame df)
 	bool valid = false;
 	if (df.hasAttribute("llcols")) {
 		RObject llcols = df.attr("llcols");
-		if(is<IntegerVector>(llcols)) {
+		if (is<IntegerVector>(llcols)) {
 			const vector<int> llcols_iv = as<vector<int>>(df.attr("llcols"));
-			if( 2 == llcols_iv.size() )
-				if (NA_INTEGER != llcols_iv[0] && NA_INTEGER != llcols_iv[1])
-					if (is_col_in_df(df, llcols_iv[0]) && is_col_in_df(df, llcols_iv[1]) && llcols_iv[0] != llcols_iv[1])
-						if( is<NumericVector>(df[llcols_iv[0] - 1]) && is<NumericVector>(df[llcols_iv[1] - 1]) )
-							valid = true;
+			if (2 == llcols_iv.size())
+				if (is_col_in_df(df, llcols_iv[0]) && is_col_in_df(df, llcols_iv[1]) && llcols_iv[0] != llcols_iv[1])
+					if (is<NumericVector>(df[llcols_iv[0] - 1]) && is<NumericVector>(df[llcols_iv[1] - 1]))
+						valid = true;
 		}
 	} 
 	return valid;
