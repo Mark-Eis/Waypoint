@@ -21,6 +21,7 @@ template<class T>
 inline int get_fmt_attribute(const T&);
 template<class T>
 inline void checkinherits(T&, const char*);
+inline bool is_col_in_df(const DataFrame, const int);
 
 //CoordType
 enum class CoordType : char { decdeg, degmin, degminsec };
@@ -183,6 +184,14 @@ inline void checkinherits(T& t, const char* classname)
 //	cout << "checkinherits<T>(T& t, const char* classname) t " << typeid(t).name() << " classname " << classname << endl;
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	if (!t.inherits(classname)) stop("Argument must be a \"%s\" object", classname);
+}
+
+
+/// __________________________________________________
+/// Is column number in DataFrame?
+inline bool is_col_in_df(const DataFrame df, const int col)
+{
+	return col > 0 && col <= df.size();
 }
 
 
@@ -870,12 +879,45 @@ bool valid_ll(const DataFrame df)
 			const vector<int> llcols_iv = as<vector<int>>(df.attr("llcols"));
 			if( 2 == llcols_iv.size() )
 				if (NA_INTEGER != llcols_iv[0] && NA_INTEGER != llcols_iv[1])
-					if( is<NumericVector>(df[llcols_iv[0] - 1]) && is<NumericVector>(df[llcols_iv[1] - 1]) )
-						valid = true;
+					if (is_col_in_df(df, llcols_iv[0]) && is_col_in_df(df, llcols_iv[1]) && llcols_iv[0] != llcols_iv[1])
+						if( is<NumericVector>(df[llcols_iv[0] - 1]) && is<NumericVector>(df[llcols_iv[1] - 1]) )
+							valid = true;
 		}
 	} 
 	return valid;
 }
+
+
+/*
+/// Debug version (0e1c3c5)
+bool valid_ll(const DataFrame df)
+{
+	cout << "@valid_ll(const DataFrame)\n";
+	bool valid = false;
+	if (df.hasAttribute("llcols")) {
+		cout << "@valid_ll(const DataFrame) df.hasAttribute(\"llcols\")\n";
+		RObject llcols = df.attr("llcols");
+		if(is<IntegerVector>(llcols)) {
+			cout << "@valid_ll(const DataFrame) llcols is IntegerVector\n";
+			const vector<int> llcols_iv = as<vector<int>>(df.attr("llcols"));
+			if( 2 == llcols_iv.size() ) {
+				cout << "@valid_ll(const DataFrame) llcols has size 2\n";
+				if (NA_INTEGER != llcols_iv[0] && NA_INTEGER != llcols_iv[1]) {
+					cout << "@valid_ll(const DataFrame) neither llcols_iv[0] nor llcols_iv[1] is NA\n";
+					if (is_col_in_df(df, llcols_iv[0]) && is_col_in_df(df, llcols_iv[1]) && llcols_iv[0] != llcols_iv[1]) {
+						cout << "@valid_ll(const DataFrame) both llcols[0] and llcols[1] exist in df\n";
+						if( is<NumericVector>(df[llcols_iv[0] - 1]) && is<NumericVector>(df[llcols_iv[1] - 1]) ) {
+							cout << "@valid_ll(const DataFrame) valid is true\n";
+							valid = true;
+						}
+					}
+				}
+			}
+		}
+	} 
+	return valid;
+} */
+
 
 /// __________________________________________________
 /// __________________________________________________
