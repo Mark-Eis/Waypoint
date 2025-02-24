@@ -764,12 +764,11 @@ void WayPoint::print(ostream& stream) const
 
 	if (df.hasAttribute("namescol")) {
 		int namescol = as<int>(df.attr("namescol"));
-		if (NA_INTEGER != namescol) {
-			if (namescol < 1 || namescol > df.size())
-				stop("Invalid attribute \"namescol\"!");
+		if (is_col_in_df(df, namescol)) {
 			namescol -= 1;
 			transform(sv.begin(), sv.end(), as<vector<string>>(df[namescol]).begin(), sv.begin(), [](string& lls, const string& name) { return lls + "  " + name; });
-		}
+		} else
+			stop("Invalid \"namescol\" attribute!");
 	} else if (df.hasAttribute("row.names")) {
 		RObject rownames = df.attr("row.names");
 		if(is<CharacterVector>(rownames))
