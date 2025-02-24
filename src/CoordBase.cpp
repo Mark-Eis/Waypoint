@@ -193,7 +193,7 @@ inline void checkinherits(T& t, const char* classname)
 template<class T>
 inline bool is_item_in_obj(const T t, const int item)
 {
-	cout << "@is_item_in_obj(T, int)\n";
+//	cout << "@is_item_in_obj(T, int)\n";
 	if (NA_INTEGER == item)
 		return false;
 	else
