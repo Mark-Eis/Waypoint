@@ -1,7 +1,7 @@
 Package: Waypoint
 Type: Package
 Title: Convert and Validate Geographic Coordinates and Waypoints
-Version: 1.0.0.00008
+Version: 1.0.0.00009
 Date: 2025-02-24
 Author: Mark Eisler
 Maintainer: Mark Eisler <mark@markeisler.com>

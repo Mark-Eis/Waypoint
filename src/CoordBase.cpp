@@ -22,7 +22,6 @@ inline int get_fmt_attribute(const T&);
 template<class T>
 inline void checkinherits(T&, const char*);
 
-template<class T> struct Has_size;
 template<class T>
 inline bool is_item_in_obj(const T, const int);
 
@@ -190,20 +189,11 @@ inline void checkinherits(T& t, const char* classname)
 
 
 /// __________________________________________________
-/// Template constraint—T must have member T::size()
-template<class T> struct Has_size {
-	static void constraints(T t) { int i = t.size(); }
-	Has_size() { void(*p)(T) = constraints; }
-};
-
-
-/// __________________________________________________
 /// Is item number present in object? (Using C++ numbering)
 template<class T>
 inline bool is_item_in_obj(const T t, const int item)
 {
-//	cout << "@is_item_in_obj(T, int)\n";
-	Has_size<T>();
+	cout << "@is_item_in_obj(T, int)\n";
 	if (NA_INTEGER == item)
 		return false;
 	else
