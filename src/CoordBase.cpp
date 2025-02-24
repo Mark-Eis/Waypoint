@@ -888,37 +888,6 @@ bool valid_ll(const DataFrame df)
 }
 
 
-/*
-/// Debug version (0e1c3c5)
-bool valid_ll(const DataFrame df)
-{
-	cout << "@valid_ll(const DataFrame)\n";
-	bool valid = false;
-	if (df.hasAttribute("llcols")) {
-		cout << "@valid_ll(const DataFrame) df.hasAttribute(\"llcols\")\n";
-		RObject llcols = df.attr("llcols");
-		if(is<IntegerVector>(llcols)) {
-			cout << "@valid_ll(const DataFrame) llcols is IntegerVector\n";
-			const vector<int> llcols_iv = as<vector<int>>(df.attr("llcols"));
-			if( 2 == llcols_iv.size() ) {
-				cout << "@valid_ll(const DataFrame) llcols has size 2\n";
-				if (NA_INTEGER != llcols_iv[0] && NA_INTEGER != llcols_iv[1]) {
-					cout << "@valid_ll(const DataFrame) neither llcols_iv[0] nor llcols_iv[1] is NA\n";
-					if (is_col_in_df(df, llcols_iv[0]) && is_col_in_df(df, llcols_iv[1]) && llcols_iv[0] != llcols_iv[1]) {
-						cout << "@valid_ll(const DataFrame) both llcols[0] and llcols[1] exist in df\n";
-						if( is<NumericVector>(df[llcols_iv[0] - 1]) && is<NumericVector>(df[llcols_iv[1] - 1]) ) {
-							cout << "@valid_ll(const DataFrame) valid is true\n";
-							valid = true;
-						}
-					}
-				}
-			}
-		}
-	} 
-	return valid;
-} */
-
-
 /// __________________________________________________
 /// __________________________________________________
 /// Conversion functions
