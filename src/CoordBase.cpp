@@ -617,7 +617,7 @@ vector<string> Coord::format() const
 /// Print coords vector
 void Coord::print(ostream& stream) const
 {
-///	cout << "@Coord::print() " << typeid(*this).name() << endl;
+//	cout << "@Coord::print() " << typeid(*this).name() << endl;
 	vector<string> sv; 
 	switch (ct)
 	{
@@ -640,10 +640,14 @@ void Coord::print(ostream& stream) const
 	vector<string> names { get_vec_attr<NumericVector, string>(nv, "names") };
 	int strwdth = 0;
 	if (names.size()) {
-		int padwidth[3] = { 19, 17, 18 };
+		int padwidth[6] = { 19, 17, 18, 15, 21, 22 };
+//		int pad = padwidth[coordtype_to_int(ct) + (latlon.size() ? 0 : 3)];
+//		cout << "@Coord::print() pad " << pad << endl;
 		vector<string>::iterator longest = max_element(names.begin(), names.end(), [](const string& a, const string& b){ return a.size() < b.size(); });
-		strwdth = longest->size() + padwidth[coordtype_to_int(ct)];
-		if (!latlon.size()) strwdth += 4;
+//		cout << "@Coord::print() longest->size() " << longest->size() << endl;
+//		strwdth = longest->size() + pad;
+		strwdth = longest->size() + padwidth[coordtype_to_int(ct) + (latlon.size() ? 0 : 3)];
+//		cout << "@Coord::print() strwdth " << strwdth << endl;
 		transform(sv.begin(), sv.end(), names.begin(), sv.begin(), [](string& lls, const string& name) { return name + "  " + lls; });
 	}
 	for_each(sv.begin(), sv.end(), [&stream, strwdth](const string& s) { stream << setw(strwdth) << s << "\n"; });
