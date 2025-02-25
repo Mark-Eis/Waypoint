@@ -744,7 +744,7 @@ vector<string> WayPoint::format() const
 /// Print WayPoint
 void WayPoint::print(ostream& stream) const
 {
-//	cout << "@WayPoint::print() " << typeid(*this).name() << endl;
+	cout << "@WayPoint::print() " << typeid(*this).name() << endl;
 	const int i { coordtype_to_int(ct) };
 	vector<int> spacing { 5, 7, 8, 11, 13, 14, 2, 2, 2 };
 	stream << " Latitude" << string(spacing[i], ' ') << "Longitude\n"
@@ -770,6 +770,7 @@ void WayPoint::print(ostream& stream) const
 			stop("WayPoint::print(ostream&) my bad");
 	}
 
+	int strwdth = 0;
 	if (df.hasAttribute("namescol")) {
 		RObject namescol_tmp = df.attr("namescol");
 		if (is<IntegerVector>(namescol_tmp)) {
@@ -785,12 +786,20 @@ void WayPoint::print(ostream& stream) const
 			stop("Invalid \"namescol\" attribute! (not an integer)");
 	} else if (df.hasAttribute("row.names")) {
 		RObject rownames = df.attr("row.names");
-		if(is<CharacterVector>(rownames))
-			transform(sv.begin(), sv.end(), as<vector<string>>(rownames).begin(), sv.begin(), [](string& lls, const string& name) { return lls + "  " + name; });	
-		else if(is<IntegerVector>(rownames))
-			transform(sv.begin(), sv.end(), as<vector<int>>(rownames).begin(), sv.begin(), [](string& lls, const int name) { return lls + "  " + to_string(name); });	
+		if(is<CharacterVector>(rownames)) {
+			cout << "@WayPoint::print() rownames is CharacterVector\n";
+			int padwidth[3] = { 30, 34, 36 };
+			vector<string> rownames_str = as<vector<string>>(rownames);
+			vector<string>::iterator longest = max_element(rownames_str.begin(), rownames_str.end(), [](const string& a, const string& b){ return a.size() < b.size(); });
+			cout << "@WayPoint::print() longest->size() " << longest->size() << endl;
+			strwdth = longest->size() + padwidth[coordtype_to_int(ct)];
+//			transform(sv.begin(), sv.end(), as<vector<string>>(rownames).begin(), sv.begin(), [](string& lls, const string& name) { return lls + "  " + name; });	
+			transform(sv.begin(), sv.end(), rownames_str.begin(), sv.begin(), [](string& lls, const string& name) { return name + "  " + lls; });	
+		} else if(is<IntegerVector>(rownames))
+//			transform(sv.begin(), sv.end(), as<vector<int>>(rownames).begin(), sv.begin(), [](string& lls, const int name) { return lls + "  " + to_string(name); });	
+			transform(sv.begin(), sv.end(), as<vector<int>>(rownames).begin(), sv.begin(), [](string& lls, const int name) { return to_string(name) + "  " + lls; });	
 	}
-	for_each(sv.begin(), sv.end(), [&stream](const string& s) { stream << s << "\n"; });
+	for_each(sv.begin(), sv.end(), [&stream, strwdth](const string& s) { stream << setw(strwdth) << s << "\n"; });
 }
 
 
