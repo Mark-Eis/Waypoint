@@ -887,11 +887,13 @@ bool valid_ll(const DataFrame df)
 	if (df.hasAttribute("llcols")) {
 		RObject llcols = df.attr("llcols");
 		if (is<IntegerVector>(llcols)) {
-			const vector<int> llcols_iv = as<vector<int>>(df.attr("llcols"));
-			if (2 == llcols_iv.size())
-				if (is_item_in_obj(df, llcols_iv[0] - 1) && is_item_in_obj(df, llcols_iv[1] - 1) && llcols_iv[0] != llcols_iv[1])
-					if (is<NumericVector>(df[llcols_iv[0] - 1]) && is<NumericVector>(df[llcols_iv[1] - 1]))
+			vector<int> llcols_iv = as<vector<int>>(df.attr("llcols"));
+			if (2 == llcols_iv.size()) {
+				transform(llcols_iv.begin(), llcols_iv.end(), llcols_iv.begin(), [](int x){ return --x; });
+				if (is_item_in_obj(df, llcols_iv[0]) && is_item_in_obj(df, llcols_iv[1]) && llcols_iv[0] != llcols_iv[1])
+					if (is<NumericVector>(df[llcols_iv[0]]) && is<NumericVector>(df[llcols_iv[1]]))
 						valid = true;
+			}
 		}
 	} 
 	return valid;
