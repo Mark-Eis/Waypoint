@@ -768,14 +768,13 @@ void WayPoint::print(ostream& stream) const
 	if (df.hasAttribute("namescol")) {
 		RObject namescol_tmp = df.attr("namescol");
 		if (is<IntegerVector>(namescol_tmp)) {
-			int namescol = as<int>(df.attr("namescol"));
-			if (is_item_in_obj(df, namescol - 1))
-				if(is<CharacterVector>(df[namescol - 1])) {
-					namescol -= 1;
+			int namescol = as<int>(df.attr("namescol")) - 1;
+			if (is_item_in_obj(df, namescol)) {
+				if(is<CharacterVector>(df[namescol]))
 					transform(sv.begin(), sv.end(), as<vector<string>>(df[namescol]).begin(), sv.begin(), [](string& lls, const string& name) { return lls + "  " + name; });
-				} else
+				else
 					stop("Invalid \"namescol\" attribute! (df col not a CharacterVector)");
-			else
+			} else
 				stop("Invalid \"namescol\" attribute! (item not in object)");
 		} else
 			stop("Invalid \"namescol\" attribute! (not an integer)");
