@@ -641,13 +641,8 @@ void Coord::print(ostream& stream) const
 	int strwdth = 0;
 	if (names.size()) {
 		int padwidth[6] = { 19, 17, 18, 15, 21, 22 };
-//		int pad = padwidth[coordtype_to_int(ct) + (latlon.size() ? 0 : 3)];
-//		cout << "@Coord::print() pad " << pad << endl;
 		vector<string>::iterator longest = max_element(names.begin(), names.end(), [](const string& a, const string& b){ return a.size() < b.size(); });
-//		cout << "@Coord::print() longest->size() " << longest->size() << endl;
-//		strwdth = longest->size() + pad;
 		strwdth = longest->size() + padwidth[coordtype_to_int(ct) + (latlon.size() ? 0 : 3)];
-//		cout << "@Coord::print() strwdth " << strwdth << endl;
 		transform(sv.begin(), sv.end(), names.begin(), sv.begin(), [](string& lls, const string& name) { return name + "  " + lls; });
 	}
 	for_each(sv.begin(), sv.end(), [&stream, strwdth](const string& s) { stream << setw(strwdth) << s << "\n"; });
