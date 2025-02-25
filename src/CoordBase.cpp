@@ -617,7 +617,7 @@ vector<string> Coord::format() const
 /// Print coords vector
 void Coord::print(ostream& stream) const
 {
-//	cout << "@Coord::print() " << typeid(*this).name() << endl;
+///	cout << "@Coord::print() " << typeid(*this).name() << endl;
 	vector<string> sv; 
 	switch (ct)
 	{
@@ -638,9 +638,15 @@ void Coord::print(ostream& stream) const
 	}
 
 	vector<string> names { get_vec_attr<NumericVector, string>(nv, "names") };
-	if (names.size())
-		transform(sv.begin(), sv.end(), names.begin(), sv.begin(), [](string& lls, const string& name) { return lls + "  " + name; });
-	for_each(sv.begin(), sv.end(), [&stream](const string& s) { stream << s << "\n"; });
+	int strwdth = 0;
+	if (names.size()) {
+		int padwidth[3] = { 19, 17, 18 };
+		vector<string>::iterator longest = max_element(names.begin(), names.end(), [](const string& a, const string& b){ return a.size() < b.size(); });
+		strwdth = longest->size() + padwidth[coordtype_to_int(ct)];
+		if (!latlon.size()) strwdth += 4;
+		transform(sv.begin(), sv.end(), names.begin(), sv.begin(), [](string& lls, const string& name) { return name + "  " + lls; });
+	}
+	for_each(sv.begin(), sv.end(), [&stream, strwdth](const string& s) { stream << setw(strwdth) << s << "\n"; });
 }
 
 
