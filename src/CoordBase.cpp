@@ -21,9 +21,10 @@ template<class T>
 inline int get_fmt_attribute(const T&);
 template<class T>
 inline void checkinherits(T&, const char*);
-
 template<class T>
 inline bool is_item_in_obj(const T, const int);
+template<class T>
+inline void prefixcoords(vector<string>&, const vector<T>&);
 
 //CoordType
 enum class CoordType : char { decdeg, degmin, degminsec };
@@ -198,6 +199,16 @@ inline bool is_item_in_obj(const T t, const int item)
 		return false;
 	else
 		return !(item < 0) && item < t.size();
+}
+
+
+/// __________________________________________________
+/// Prefix coords or waypoints with names
+template<class T>
+inline void prefixcoords(vector<string>& sv, const vector<T>& prefix)
+{
+	cout << "prefixcoords(vector<string>&, const vector<T>&)\n";
+	transform(sv.begin(), sv.end(), prefix.begin(), sv.begin(), [](string& lls, const string& name) { return name + "  " + lls; });	
 }
 
 
@@ -617,7 +628,7 @@ vector<string> Coord::format() const
 /// Print coords vector
 void Coord::print(ostream& stream) const
 {
-	cout << "@Coord::print() " << typeid(*this).name() << endl;
+//	cout << "@Coord::print() " << typeid(*this).name() << endl;
 	vector<string> sv; 
 	switch (ct)
 	{
@@ -640,7 +651,7 @@ void Coord::print(ostream& stream) const
 	vector<string> names { get_vec_attr<NumericVector, string>(nv, "names") };
 	int strwdth = 0;
 	if (names.size()) {
-		transform(sv.begin(), sv.end(), names.begin(), sv.begin(), [](string& lls, const string& name) { return name + "  " + lls; });
+		prefixcoords(sv, names);
 		strwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
 	}
 	for_each(sv.begin(), sv.end(), [&stream, strwdth](const string& s) { stream << setw(strwdth) << s << "\n"; });
@@ -779,38 +790,29 @@ void WayPoint::print(ostream& stream) const
 			stop("WayPoint::print(ostream&) my bad");
 	}
 
-	int strwdth = 0;
-	int padwidth[3] = { 30, 34, 36 };
 	vector<string> names_str;
 	if (df.hasAttribute("namescol")) {
 		RObject namescol_tmp = df.attr("namescol");
 		if (is<IntegerVector>(namescol_tmp)) {
 			int namescol = as<int>(df.attr("namescol")) - 1;
-			if (is_item_in_obj(df, namescol)) {
-				if(is<CharacterVector>(df[namescol])) {
-					names_str = as<vector<string>>(df[namescol]);
-					vector<string>::iterator longest = max_element(names_str.begin(), names_str.end(), [](const string& a, const string& b){ return a.size() < b.size(); });
-					strwdth = longest->size() + padwidth[coordtype_to_int(ct)];
-//					transform(sv.begin(), sv.end(), as<vector<string>>(df[namescol]).begin(), sv.begin(), [](string& lls, const string& name) { return lls + "  " + name; });
-					transform(sv.begin(), sv.end(), names_str.begin(), sv.begin(), [](string& lls, const string& name) { return name + "  " + lls; });	
-				} else
+			if (is_item_in_obj(df, namescol))
+				if(is<CharacterVector>(df[namescol]))
+					transform(sv.begin(), sv.end(), as<vector<string>>(df[namescol]).begin(), sv.begin(), [](string& lls, const string& name) { return name + "  " + lls; });	
+				else
 					stop("Invalid \"namescol\" attribute! (df col not a CharacterVector)");
-			} else
+			else
 				stop("Invalid \"namescol\" attribute! (item not in object)");
 		} else
 			stop("Invalid \"namescol\" attribute! (not an integer)");
 	} else if (df.hasAttribute("row.names")) {
 		RObject rownames = df.attr("row.names");
-		if(is<CharacterVector>(rownames)) {
-//			int padwidth[3] = { 30, 34, 36 };
-			names_str = as<vector<string>>(rownames);
-			vector<string>::iterator longest = max_element(names_str.begin(), names_str.end(), [](const string& a, const string& b){ return a.size() < b.size(); });
-			strwdth = longest->size() + padwidth[coordtype_to_int(ct)];
-			transform(sv.begin(), sv.end(), names_str.begin(), sv.begin(), [](string& lls, const string& name) { return name + "  " + lls; });	
-		} else if(is<IntegerVector>(rownames))
+		if(is<CharacterVector>(rownames))
+			transform(sv.begin(), sv.end(), as<vector<string>>(rownames).begin(), sv.begin(), [](string& lls, const string& name) { return name + "  " + lls; });	
+		else if(is<IntegerVector>(rownames))
 			transform(sv.begin(), sv.end(), as<vector<int>>(rownames).begin(), sv.begin(), [](string& lls, const int name) { return to_string(name) + "  " + lls; });	
 	}
 
+	int strwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
 	for_each(ttlvec.begin(), ttlvec.end(), [&stream, strwdth](const string& s) { stream << setw(strwdth - 2) << s << "\n"; });
 	for_each(sv.begin(), sv.end(), [&stream, strwdth](const string& s) { stream << setw(strwdth) << s << "\n"; });
 }
