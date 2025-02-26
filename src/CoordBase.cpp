@@ -203,12 +203,22 @@ inline bool is_item_in_obj(const T t, const int item)
 
 
 /// __________________________________________________
-/// Prefix coords or waypoints with names
+/// Prefix coords or waypoints strings with names—default for e.g., vector<string>
 template<class T>
 inline void prefixcoords(vector<string>& sv, const vector<T>& prefix)
 {
-	cout << "prefixcoords(vector<string>&, const vector<T>&)\n";
+//	cout << "prefixcoords<T>(vector<string>&, const vector<T>&)\n";
 	transform(sv.begin(), sv.end(), prefix.begin(), sv.begin(), [](string& lls, const string& name) { return name + "  " + lls; });	
+}
+
+
+/// __________________________________________________
+/// Specialisation for vector<int> prefix
+template<>
+inline void prefixcoords(vector<string>& sv, const vector<int>& prefix)
+{
+//	cout << "prefixcoords<>(vector<string>&, const vector<int>&)\n";
+	transform(sv.begin(), sv.end(), prefix.begin(), sv.begin(), [](string& lls, const int name) { return to_string(name) + "  " + lls; });	
 }
 
 
@@ -753,22 +763,17 @@ vector<string> WayPoint::format() const
 /// Print WayPoint
 void WayPoint::print(ostream& stream) const
 {
-	cout << "@WayPoint::print() " << typeid(*this).name() << endl;
+//	cout << "@WayPoint::print() " << typeid(*this).name() << endl;
 	const int i { coordtype_to_int(ct) };
-/*	vector<int> spacing { 5, 7, 8, 11, 13, 14, 2, 2, 2 };
-	stream << " Latitude" << string(spacing[i], ' ') << "Longitude\n"
-		   << string(1, ' ') << string(spacing[i + 3], '_')
-		   << string(spacing[i + 6], ' ') << string(spacing[i + 3] + 1, '_') << endl;
-*/
 	int spacing[] = { 5,  7,  8,
 					 11, 13, 14 };
 	ostringstream ostrstr;
 	vector<string> ttlvec;
-	ostrstr << " Latitude" << string(spacing[i], ' ') << "Longitude";
+	ostrstr << "Latitude" << string(spacing[i], ' ') << "Longitude";
 	ttlvec.push_back(ostrstr.str());
 
 	ostrstr.str("");
-	ostrstr	<< string(1, ' ') << string(spacing[i + 3], '_') << string(2, ' ') << string(spacing[i + 3] + 1, '_');
+	ostrstr	<< string(spacing[i + 3], '_') << string(2, ' ') << string(spacing[i + 3] + 1, '_');
 	ttlvec.push_back(ostrstr.str());
 
 	vector<string> sv; 
@@ -797,7 +802,7 @@ void WayPoint::print(ostream& stream) const
 			int namescol = as<int>(df.attr("namescol")) - 1;
 			if (is_item_in_obj(df, namescol))
 				if(is<CharacterVector>(df[namescol]))
-					transform(sv.begin(), sv.end(), as<vector<string>>(df[namescol]).begin(), sv.begin(), [](string& lls, const string& name) { return name + "  " + lls; });	
+					prefixcoords(sv, as<vector<string>>(df[namescol]));
 				else
 					stop("Invalid \"namescol\" attribute! (df col not a CharacterVector)");
 			else
@@ -807,13 +812,13 @@ void WayPoint::print(ostream& stream) const
 	} else if (df.hasAttribute("row.names")) {
 		RObject rownames = df.attr("row.names");
 		if(is<CharacterVector>(rownames))
-			transform(sv.begin(), sv.end(), as<vector<string>>(rownames).begin(), sv.begin(), [](string& lls, const string& name) { return name + "  " + lls; });	
+			prefixcoords(sv, as<vector<string>>(rownames));
 		else if(is<IntegerVector>(rownames))
-			transform(sv.begin(), sv.end(), as<vector<int>>(rownames).begin(), sv.begin(), [](string& lls, const int name) { return to_string(name) + "  " + lls; });	
+			prefixcoords(sv, as<vector<int>>(rownames));
 	}
 
 	int strwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
-	for_each(ttlvec.begin(), ttlvec.end(), [&stream, strwdth](const string& s) { stream << setw(strwdth - 2) << s << "\n"; });
+	for_each(ttlvec.begin(), ttlvec.end(), [&stream, strwdth, i](const string& s) { int fudge[] = { 2, 6, 10 }; stream << setw(strwdth - fudge[i]) << s << "\n"; });
 	for_each(sv.begin(), sv.end(), [&stream, strwdth](const string& s) { stream << setw(strwdth) << s << "\n"; });
 }
 
