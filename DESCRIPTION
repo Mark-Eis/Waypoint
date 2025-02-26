@@ -1,8 +1,8 @@
 Package: Waypoint
 Type: Package
 Title: Convert and Validate Geographic Coordinates and Waypoints
-Version: 1.0.0.00011
-Date: 2025-02-25
+Version: 1.0.0.00012
+Date: 2025-02-26
 Author: Mark Eisler
 Maintainer: Mark Eisler <mark@markeisler.com>
 Description: Package Waypoint converts geographic coordinates and waypoints between three common formats, validates their values as being plausible geographic locations and prints the formatted values. The three possible formats are (i) decimal degrees, (ii) degrees and minutes, and (iii) degrees minutes and seconds.
