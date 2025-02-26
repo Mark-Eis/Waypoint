@@ -401,7 +401,8 @@ inline string Format<CoordType::degmin>::operator()(double n)
 //	cout << "@Format<CoordType::degmin>::operator()\n";
 	outstrstr.str("");
 	outstrstr << setw(3) << setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
-					  << setw(7) << setfill('0') << fixed << setprecision(4) << abs(ff.get_decmin(n)) << "'";
+//					  << setw(7) << setfill('0') << fixed << setprecision(4) << abs(ff.get_decmin(n)) << "'";
+					  << setw(7) << setfill('0') << fixed << setprecision(4) << abs(ff.get_decmin(n)) << "\u2032";
 	return outstrstr.str();
 }
 
@@ -413,8 +414,10 @@ inline string Format<CoordType::degminsec>::operator()(double n)
 //	cout << "@Format<CoordType::degminsec>::operator()\n";
 	outstrstr.str("");
 	outstrstr << setw(3) << setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
-					  << setw(2) << setfill('0') << abs(ff.get_min(n)) << "'"
-					  << setw(5) << fixed << setprecision(2) << abs(ff.get_sec(n)) << "\"";
+//					  << setw(2) << setfill('0') << abs(ff.get_min(n)) << "'"
+//					  << setw(5) << fixed << setprecision(2) << abs(ff.get_sec(n)) << "\"";
+					  << setw(2) << setfill('0') << abs(ff.get_min(n)) << "\u2032"
+					  << setw(5) << fixed << setprecision(2) << abs(ff.get_sec(n)) << "\u2033";
 	return outstrstr.str();
 }
 
@@ -787,16 +790,12 @@ void WayPoint::print(ostream& stream) const
 	} else if (df.hasAttribute("row.names")) {
 		RObject rownames = df.attr("row.names");
 		if(is<CharacterVector>(rownames)) {
-			cout << "@WayPoint::print() rownames is CharacterVector\n";
 			int padwidth[3] = { 30, 34, 36 };
 			vector<string> rownames_str = as<vector<string>>(rownames);
 			vector<string>::iterator longest = max_element(rownames_str.begin(), rownames_str.end(), [](const string& a, const string& b){ return a.size() < b.size(); });
-			cout << "@WayPoint::print() longest->size() " << longest->size() << endl;
 			strwdth = longest->size() + padwidth[coordtype_to_int(ct)];
-//			transform(sv.begin(), sv.end(), as<vector<string>>(rownames).begin(), sv.begin(), [](string& lls, const string& name) { return lls + "  " + name; });	
 			transform(sv.begin(), sv.end(), rownames_str.begin(), sv.begin(), [](string& lls, const string& name) { return name + "  " + lls; });	
 		} else if(is<IntegerVector>(rownames))
-//			transform(sv.begin(), sv.end(), as<vector<int>>(rownames).begin(), sv.begin(), [](string& lls, const int name) { return lls + "  " + to_string(name); });	
 			transform(sv.begin(), sv.end(), as<vector<int>>(rownames).begin(), sv.begin(), [](string& lls, const int name) { return to_string(name) + "  " + lls; });	
 	}
 	for_each(sv.begin(), sv.end(), [&stream, strwdth](const string& s) { stream << setw(strwdth) << s << "\n"; });
