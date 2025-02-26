@@ -1376,11 +1376,13 @@ CharacterVector formatcoords(NumericVector nv)
 //' @param fmt,value \code{integer}, 1, 2 or 3, indicating the current or desired coordinate format;
 //'   default 1.
 //'
-//' @param wp object of class \code{"waypoints"}, as created by function \code{\link[=waypoints]{waypoints}()}.
+//' @param wp object of class \code{"waypoints"}, as created by function
+//' \code{\link[=waypoints]{waypoints}()}.
 //'
 //' @return
-//' An object of class \code{"waypoints"} comprising a \code{data.frame} with two
-//' \code{boolean vector} attributes \code{"validlat"} and \code{"validlon"} indicating whether the
+//' An object of classes \code{"waypoints"} and \code{"data.frame"}, comprising the original
+//' \code{data.frame} with attributes \code{"fmt"} indicating the coordinate format, and
+//' \code{"validlat"} and \code{"validlon"}, both \code{boolean vector}s indicating whether the
 //' individual coordinate values are indeed valid, as described under \emph{Details}.
 //'
 //' @examples
