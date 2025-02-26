@@ -769,7 +769,7 @@ void WayPoint::print(ostream& stream) const
 					 11, 13, 14 };
 	ostringstream ostrstr;
 	vector<string> ttlvec;
-	ostrstr << "Latitude" << string(spacing[i], ' ') << "Longitude";
+	ostrstr << "Latitude" << string(spacing[i], ' ') << "Longitude ";
 	ttlvec.push_back(ostrstr.str());
 
 	ostrstr.str("");
