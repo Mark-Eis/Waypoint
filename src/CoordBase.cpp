@@ -401,7 +401,6 @@ inline string Format<CoordType::degmin>::operator()(double n)
 //	cout << "@Format<CoordType::degmin>::operator()\n";
 	outstrstr.str("");
 	outstrstr << setw(3) << setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
-//					  << setw(7) << setfill('0') << fixed << setprecision(4) << abs(ff.get_decmin(n)) << "'";
 					  << setw(7) << setfill('0') << fixed << setprecision(4) << abs(ff.get_decmin(n)) << "\u2032";
 	return outstrstr.str();
 }
@@ -414,8 +413,6 @@ inline string Format<CoordType::degminsec>::operator()(double n)
 //	cout << "@Format<CoordType::degminsec>::operator()\n";
 	outstrstr.str("");
 	outstrstr << setw(3) << setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
-//					  << setw(2) << setfill('0') << abs(ff.get_min(n)) << "'"
-//					  << setw(5) << fixed << setprecision(2) << abs(ff.get_sec(n)) << "\"";
 					  << setw(2) << setfill('0') << abs(ff.get_min(n)) << "\u2032"
 					  << setw(5) << fixed << setprecision(2) << abs(ff.get_sec(n)) << "\u2033";
 	return outstrstr.str();
