@@ -24,7 +24,7 @@ inline void checkinherits(T&, const char*);
 template<class T>
 inline bool is_item_in_obj(const T, const int);
 template<class T>
-inline void prefixcoords(vector<string>&, const vector<T>&);
+inline void prefixvecstr(vector<string>&, const vector<T>&);
 
 //CoordType
 enum class CoordType : char { decdeg, degmin, degminsec };
@@ -80,6 +80,7 @@ constexpr auto revalid_WayPoint = &revalidate<DataFrame, WayPoint>;
 
 template<class T, class U>
 inline const T validate(const T);
+
 bool valid_ll(const DataFrame);
 
 // Conversion
@@ -203,11 +204,11 @@ inline bool is_item_in_obj(const T t, const int item)
 
 
 /// __________________________________________________
-/// Prefix coords or waypoints strings with names—default for e.g., vector<string>
+/// Prefix vector<string> elements with elements of vector<T>—default for vector<string> prefix
 template<class T>
-inline void prefixcoords(vector<string>& sv, const vector<T>& prefix)
+inline void prefixvecstr(vector<string>& sv, const vector<T>& prefix)
 {
-//	cout << "prefixcoords<T>(vector<string>&, const vector<T>&)\n";
+	cout << "prefixvecstr<T>(vector<string>&, const vector<T>&)\n";
 	transform(sv.begin(), sv.end(), prefix.begin(), sv.begin(), [](string& lls, const string& name) { return name + "  " + lls; });	
 }
 
@@ -215,9 +216,9 @@ inline void prefixcoords(vector<string>& sv, const vector<T>& prefix)
 /// __________________________________________________
 /// Specialisation for vector<int> prefix
 template<>
-inline void prefixcoords(vector<string>& sv, const vector<int>& prefix)
+inline void prefixvecstr(vector<string>& sv, const vector<int>& prefix)
 {
-//	cout << "prefixcoords<>(vector<string>&, const vector<int>&)\n";
+	cout << "prefixvecstr<>(vector<string>&, const vector<int>&)\n";
 	transform(sv.begin(), sv.end(), prefix.begin(), sv.begin(), [](string& lls, const int name) { return to_string(name) + "  " + lls; });	
 }
 
@@ -661,7 +662,7 @@ void Coord::print(ostream& stream) const
 	vector<string> names { get_vec_attr<NumericVector, string>(nv, "names") };
 	int strwdth = 0;
 	if (names.size()) {
-		prefixcoords(sv, names);
+		prefixvecstr(sv, names);
 		strwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
 	}
 	for_each(sv.begin(), sv.end(), [&stream, strwdth](const string& s) { stream << setw(strwdth) << s << "\n"; });
@@ -802,7 +803,7 @@ void WayPoint::print(ostream& stream) const
 			int namescol = as<int>(df.attr("namescol")) - 1;
 			if (is_item_in_obj(df, namescol))
 				if(is<CharacterVector>(df[namescol]))
-					prefixcoords(sv, as<vector<string>>(df[namescol]));
+					prefixvecstr(sv, as<vector<string>>(df[namescol]));
 				else
 					stop("Invalid \"namescol\" attribute! (df col not a CharacterVector)");
 			else
@@ -812,9 +813,9 @@ void WayPoint::print(ostream& stream) const
 	} else if (df.hasAttribute("row.names")) {
 		RObject rownames = df.attr("row.names");
 		if(is<CharacterVector>(rownames))
-			prefixcoords(sv, as<vector<string>>(rownames));
+			prefixvecstr(sv, as<vector<string>>(rownames));
 		else if(is<IntegerVector>(rownames))
-			prefixcoords(sv, as<vector<int>>(rownames));
+			prefixvecstr(sv, as<vector<int>>(rownames));
 	}
 
 	int strwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
