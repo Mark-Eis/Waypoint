@@ -26,6 +26,9 @@ inline bool is_item_in_obj(const T, const int);
 template<class T>
 inline void prefixvecstr(vector<string>&, const vector<T>&);
 inline bool prefixwithnames(vector<string>&, RObject&);
+inline string str_tolower(string);
+template<class T>
+int nameinobj(const T, const char*);
 
 //CoordType
 enum class CoordType : char { decdeg, degmin, degminsec };
@@ -240,6 +243,8 @@ inline bool prefixwithnames(vector<string>& sv, RObject& namesobj)
 }
 
 
+/// __________________________________________________
+/// string to lower case (see cppreference.com std::tolower)
 inline string str_tolower(string s)
 {
     transform(s.begin(), s.end(), s.begin(), [](unsigned char c){ return tolower(c); });
@@ -248,20 +253,20 @@ inline string str_tolower(string s)
 
 
 /// __________________________________________________
-/// Find name within object names
+/// Find position of name within object names
 template<class T>
 int nameinobj(const T t, const char* name)
 {
-	cout << "@nameinobj<T>(const T, const char*) name is " << name << endl;
+//	cout << "@nameinobj<T>(const T, const char*) name is " << name << endl;
 	static_assert(std::is_same<List, T>::value || std::is_same<DataFrame, T>::value, "T must be List or DataFrame");
 	vector<string> names { get_vec_attr<T, string>(t, "names") };
 	if (!names.size())
 		return -1;
 	int i = 0;
 	for (auto str : names ) {
-		cout << "@nameinobj<T>(const T, const char*) testing " << str << endl;
+//		cout << "@nameinobj<T>(const T, const char*) testing " << str << endl;
 		if (!str_tolower(str).compare(name)) {
-			cout << "@nameinobj<T>(const T, const char*) found " << str << endl;
+//			cout << "@nameinobj<T>(const T, const char*) found " << str << endl;
 			break;
 		}
 		i++;
