@@ -25,6 +25,7 @@ template<class T>
 inline bool is_item_in_obj(const T, const int);
 template<class T>
 inline void prefixvecstr(vector<string>&, const vector<T>&);
+inline bool prefixwithnames(vector<string>&, RObject&);
 
 //CoordType
 enum class CoordType : char { decdeg, degmin, degminsec };
@@ -179,6 +180,7 @@ inline int get_fmt_attribute(const T& t)
 	return as<int>(t.attr("fmt"));
 }
 
+
 /// __________________________________________________
 /// Does object inherit given class?
 template<class T>
@@ -208,7 +210,7 @@ inline bool is_item_in_obj(const T t, const int item)
 template<class T>
 inline void prefixvecstr(vector<string>& sv, const vector<T>& prefix)
 {
-//	cout << "prefixvecstr<T>(vector<string>&, const vector<T>&)\n";
+	cout << "@prefixvecstr<T>(vector<string>&, const vector<T>&)\n";
 	transform(sv.begin(), sv.end(), prefix.begin(), sv.begin(), [](string& lls, const string& name) { return name + "  " + lls; });	
 }
 
@@ -218,8 +220,23 @@ inline void prefixvecstr(vector<string>& sv, const vector<T>& prefix)
 template<>
 inline void prefixvecstr(vector<string>& sv, const vector<int>& prefix)
 {
-//	cout << "prefixvecstr<>(vector<string>&, const vector<int>&)\n";
+	cout << "@prefixvecstr<>(vector<string>&, const vector<int>&)\n";
 	transform(sv.begin(), sv.end(), prefix.begin(), sv.begin(), [](string& lls, const int name) { return to_string(name) + "  " + lls; });	
+}
+
+
+/// __________________________________________________
+/// Prefix vector<string> elements with elements of RObject 
+inline bool prefixwithnames(vector<string>& sv, RObject& namesobj)
+{
+	cout << "@prefixwithnames(vector<string>&, RObject&)\n";
+	if (is<CharacterVector>(namesobj))
+		prefixvecstr(sv, as<vector<string>>(namesobj));
+	else if(is<IntegerVector>(namesobj))
+		prefixvecstr(sv, as<vector<int>>(namesobj));
+	else
+		return false;
+	return true;
 }
 
 
@@ -796,26 +813,19 @@ void WayPoint::print(ostream& stream) const
 			stop("WayPoint::print(ostream&) my bad");
 	}
 
-	vector<string> names_str;
-	if (df.hasAttribute("namescol")) {
-		RObject namescol_tmp = df.attr("namescol");
-		if (is<IntegerVector>(namescol_tmp)) {
-			int namescol = as<int>(df.attr("namescol")) - 1;
-			if (is_item_in_obj(df, namescol))
-				if(is<CharacterVector>(df[namescol]))
-					prefixvecstr(sv, as<vector<string>>(df[namescol]));
-				else
-					stop("Invalid \"namescol\" attribute! (df col not a CharacterVector)");
-			else
-				stop("Invalid \"namescol\" attribute! (item not in object)");
+	vector<int> namescolvec { get_vec_attr<DataFrame, int>(df, "namescol") };
+	if (1 == namescolvec.size()) {
+		int namescol = namescolvec[0] - 1;
+		if (is_item_in_obj(df, namescol)) {
+			RObject names = df[namescol];
+			if (!prefixwithnames(sv, names))
+				stop("Invalid \"namescol\" attribute! (df[namescol] neither a CharacterVector nor IntegerVector)");
 		} else
-			stop("Invalid \"namescol\" attribute! (not an integer)");
+			stop("Invalid \"namescol\" attribute! (item not in object)");
 	} else if (df.hasAttribute("row.names")) {
 		RObject rownames = df.attr("row.names");
-		if(is<CharacterVector>(rownames))
-			prefixvecstr(sv, as<vector<string>>(rownames));
-		else if(is<IntegerVector>(rownames))
-			prefixvecstr(sv, as<vector<int>>(rownames));
+		if (!prefixwithnames(sv, rownames))
+			stop("Invalid \"row.names\" attribute! (neither a CharacterVector nor IntegerVector)");
 	}
 
 	int strwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
