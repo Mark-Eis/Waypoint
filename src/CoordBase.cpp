@@ -220,7 +220,7 @@ inline void prefixvecstr(vector<string>& sv, const vector<T>& prefix)
 template<>
 inline void prefixvecstr(vector<string>& sv, const vector<int>& prefix)
 {
-	cout << "@prefixvecstr<>(vector<string>&, const vector<int>&)\n";
+//	cout << "@prefixvecstr<>(vector<string>&, const vector<int>&)\n";
 	transform(sv.begin(), sv.end(), prefix.begin(), sv.begin(), [](string& lls, const int name) { return to_string(name) + "  " + lls; });	
 }
 
@@ -229,7 +229,7 @@ inline void prefixvecstr(vector<string>& sv, const vector<int>& prefix)
 /// Prefix vector<string> elements with elements of RObject 
 inline bool prefixwithnames(vector<string>& sv, RObject& namesobj)
 {
-	cout << "@prefixwithnames(vector<string>&, RObject&)\n";
+//	cout << "@prefixwithnames(vector<string>&, RObject&)\n";
 	if (is<CharacterVector>(namesobj))
 		prefixvecstr(sv, as<vector<string>>(namesobj));
 	else if(is<IntegerVector>(namesobj))
