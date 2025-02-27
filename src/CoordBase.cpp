@@ -239,15 +239,17 @@ inline bool prefixwithnames(vector<string>& sv, RObject& namesobj)
 	return true;
 }
 
-/*
+
 /// __________________________________________________
 /// Find name within object
 template<class T>
 int nameinobj(const T t)
 {
 	static_assert(std::is_same<List, T>::value || std::is_same<DataFrame, T>::value, "T must be List or DataFrame");
-	for (int i in )	
-} */
+	for (int i; i < t.size(); i++) {
+		
+	}	
+}
 
 
 /// __________________________________________________
@@ -939,18 +941,13 @@ bool valid_ll(const DataFrame df)
 {
 //	cout << "@valid_ll(const DataFrame)\n";
 	bool valid = false;
-	if (df.hasAttribute("llcols")) {
-		RObject llcols = df.attr("llcols");
-		if (is<IntegerVector>(llcols)) {
-			vector<int> llcols_iv = as<vector<int>>(df.attr("llcols"));
-			if (2 == llcols_iv.size()) {
-				transform(llcols_iv.begin(), llcols_iv.end(), llcols_iv.begin(), [](int x){ return --x; });
-				if (is_item_in_obj(df, llcols_iv[0]) && is_item_in_obj(df, llcols_iv[1]) && llcols_iv[0] != llcols_iv[1])
-					if (is<NumericVector>(df[llcols_iv[0]]) && is<NumericVector>(df[llcols_iv[1]]))
-						valid = true;
-			}
-		}
-	} 
+	vector<int> llcols { get_vec_attr<DataFrame, int>(df, "llcols") };
+	if (2 == llcols.size()) {
+		transform(llcols.begin(), llcols.end(), llcols.begin(), [](int x){ return --x; });
+		if (is_item_in_obj(df, llcols[0]) && is_item_in_obj(df, llcols[1]) && llcols[0] != llcols[1])
+			if (is<NumericVector>(df[llcols[0]]) && is<NumericVector>(df[llcols[1]]))
+				valid = true;
+	}
 	return valid;
 }
 
