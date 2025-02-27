@@ -240,15 +240,35 @@ inline bool prefixwithnames(vector<string>& sv, RObject& namesobj)
 }
 
 
-/// __________________________________________________
-/// Find name within object
-template<class T>
-int nameinobj(const T t)
+inline string str_tolower(string s)
 {
+    transform(s.begin(), s.end(), s.begin(), [](unsigned char c){ return tolower(c); });
+    return s;
+}
+
+
+/// __________________________________________________
+/// Find name within object names
+template<class T>
+int nameinobj(const T t, const char* name)
+{
+	cout << "@nameinobj<T>(const T, const char*) name is " << name << endl;
 	static_assert(std::is_same<List, T>::value || std::is_same<DataFrame, T>::value, "T must be List or DataFrame");
-	for (int i; i < t.size(); i++) {
-		
-	}	
+	vector<string> names { get_vec_attr<T, string>(t, "names") };
+	if (!names.size())
+		return -1;
+	int i = 0;
+	for (auto str : names ) {
+		cout << "@nameinobj<T>(const T, const char*) testing " << str << endl;
+		if (!str_tolower(str).compare(name)) {
+			cout << "@nameinobj<T>(const T, const char*) found " << str << endl;
+			break;
+		}
+		i++;
+	}
+	if (i == names.size())
+		i = -1;
+	return i;
 }
 
 
@@ -1451,13 +1471,15 @@ DataFrame waypoints(DataFrame df, int fmt = 1)
 	} else {
 		type = newtype;
 		df.attr("fmt") = fmt;
-		if (!df.hasAttribute("llcols")) {
-			const vector<int> llcols { 2, 3 };									// !!!!!!!! Temporary Solution !!!!!!
-			df.attr("llcols") = llcols;
-		}
+		int namescol = 0;
 		if (!df.hasAttribute("namescol")) {
-			constexpr int namescol = 0;											// !!!!!!!! Temporary Solution !!!!!!
-			df.attr("namescol") = namescol + 1;
+			namescol = nameinobj(df, "name");
+			if (++namescol)
+				df.attr("namescol") = namescol;
+		}
+		if (!df.hasAttribute("llcols")) {
+			const vector<int> llcols { namescol + 1, namescol + 2 };
+			df.attr("llcols") = llcols;
 		}
 	}
 
