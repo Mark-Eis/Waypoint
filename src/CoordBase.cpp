@@ -210,7 +210,7 @@ inline bool is_item_in_obj(const T t, const int item)
 template<class T>
 inline void prefixvecstr(vector<string>& sv, const vector<T>& prefix)
 {
-	cout << "@prefixvecstr<T>(vector<string>&, const vector<T>&)\n";
+//	cout << "@prefixvecstr<T>(vector<string>&, const vector<T>&)\n";
 	transform(sv.begin(), sv.end(), prefix.begin(), sv.begin(), [](string& lls, const string& name) { return name + "  " + lls; });	
 }
 
@@ -238,6 +238,16 @@ inline bool prefixwithnames(vector<string>& sv, RObject& namesobj)
 		return false;
 	return true;
 }
+
+/*
+/// __________________________________________________
+/// Find name within object
+template<class T>
+int nameinobj(const T t)
+{
+	static_assert(std::is_same<List, T>::value || std::is_same<DataFrame, T>::value, "T must be List or DataFrame");
+	for (int i in )	
+} */
 
 
 /// __________________________________________________
@@ -783,8 +793,8 @@ void WayPoint::print(ostream& stream) const
 {
 //	cout << "@WayPoint::print() " << typeid(*this).name() << endl;
 	const int i { coordtype_to_int(ct) };
-	int spacing[] = { 5,  7,  8,
-					 11, 13, 14 };
+	int spacing[] {  5,  7,  8,
+					11, 13, 14 };
 	ostringstream ostrstr;
 	vector<string> ttlvec;
 	ostrstr << "Latitude" << string(spacing[i], ' ') << "Longitude ";
@@ -961,7 +971,7 @@ template<CoordType newtype>
 inline void convert(CoordType type, DataFrame df)
 {
 //	cout << "@convert<CoordType>(const WayPoint&, DataFrame) newtype " << coordtype_to_int(newtype) + 1 << endl;
-	const vector<int> llcols = get_vec_attr<DataFrame, int>(df, "llcols");
+	const vector<int> llcols { get_vec_attr<DataFrame, int>(df, "llcols") };
 	NumericVector nvlat(df[llcols[0] - 1]);
 	NumericVector nvlon(df[llcols[1] - 1]);
 	transform(nvlat.begin(), nvlat.end(), nvlat.begin(), Convertor<newtype>(*vff[coordtype_to_int(type)]));
