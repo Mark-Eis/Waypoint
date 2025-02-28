@@ -312,33 +312,53 @@ format.coords <- function(nv) {
 #'   individual latitude and longitude values are valid geographic locations.}
 #'
 #' @examples
-#' # Dataframe representing latitude and longitude values in decimal degrees
-#' (wp <- data.frame(
+#' ## Dataframe representing waypoint names and latitude and longitude values in degrees, minutes and seconds
+#' wp1 <- data.frame(
+#'     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+#'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
+#'     lat = c(513027.95, 493246.36, 480626.04, 385322.18, 00000.00, -370642.26, -530617.21, -573109.21),
+#'     lon = c(-00740.53, 182354.82, -1224643.22, -770206.87, 00000.00, -121719.07, 733102.22, -251424.56)
+#' )
+#'
+#' ## Create "waypoints" object of degrees, minutes and seconds (fmt = 3)
+#' waypoints(wp1, 3)
+#'
+#' ## Convert to degrees and minutes (fmt = 2)
+#' waypoints(wp1) <- 2
+#' wp1
+#'
+#' ## Convert to decimal degrees (fmt = 1)
+#' waypoints(wp1) <- 1
+#' wp1
+#'
+#' ###
+#' ## Dataframe representing unnamed latitude and longitude values in decimal degrees
+#' wp2 <- data.frame(
 #'     lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -53.104781, -57.519227),
 #'     lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -25.240156)
-#' ))
+#' )
 #'
-#' # Create "waypoints" object of decimal degrees
-#' waypoints(wp)
+#' ## Create "waypoints" object of decimal degrees (default fmt = 1)
+#' waypoints(wp2)
 #'
 #' ## Add row.names
-#' row.names(wp) <-
+#' row.names(wp2) <-
 #'     c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
 #'       "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport")
-#' wp
+#' wp2
 #'
-#' ## Convert "waypoints" object to degrees and minutes
-#' waypoints(wp) <- 2
-#' wp
+#' ## Convert to degrees and minutes (fmt = 2)
+#' waypoints(wp2) <- 2
+#' wp2
 #'
-#' ## Convert "waypoints" object to degrees, minutes and seconds
-#' waypoints(wp) <- 3
-#' wp
+#' ## Convert to degrees, minutes and seconds (fmt = 3)
+#' waypoints(wp2) <- 3
+#' wp2
 #'
 #' ## Show degrees, minutes and seconds as a bare data frame
-#' as.data.frame(wp)
+#' as.data.frame(wp2)
 #'
-#' rm(wp)
+#' rm(wp1, wp2)
 #'
 waypoints <- function(df, fmt = 1L) {
     .Call(`_Waypoint_waypoints`, df, fmt)
