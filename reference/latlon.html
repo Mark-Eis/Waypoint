@@ -9,7 +9,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Waypoint</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.00012</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.00014</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,20 +52,20 @@
 
 
 <dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
-<dd><p>a <code>boolean vector</code> of length <code>1</code> or of <code>length(cd)</code>.</p></dd>
+<dd><p>a <code>logical</code> vector of length <code>1</code> or <code>length(cd)</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Argument <code>cd</code> is returned with <code>boolean vector</code> attribute <code>"latlon"</code>
+    <p>Argument <code>cd</code> is returned with <code>logical</code> vector attribute <code>"latlon"</code>
 updated as appropriate.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Attribute <code>"latlon"</code> is a <code>boolean vector</code> of length <code>1</code> or <code>length(cd)</code>
+    <p>Attribute <code>"latlon"</code> is a <code>logical</code> vector of length <code>1</code> or <code>length(cd)</code>
 for which <code>TRUE</code> values represent latitude and <code>FALSE</code> values represent longitude.
-Setting this attribute to any other length will result in an error. A <code>boolean vector</code> of
-length <code>1L</code> signifies that values are all latitude if <code>TRUE</code>, or longitude if
+Setting this attribute to any other length will result in an error. A <code>logical</code> vector of
+length <code>1L</code> signifies that values are all latitude if <code>TRUE</code>, or all longitude if
 <code>FALSE</code>.</p>
 <p>This attribute is used in formatting printed output and also by
 <code><a href="validate.html">validate</a>()</code>. Indeed, the values of <code>cd</code> are revalidated every time
@@ -81,11 +81,11 @@ attribute <code>"latlon"</code> is added or changed.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Continuing example from `coords()`, named numeric vector representing degrees and minutes</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Create "coords" object of degrees and minutes</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="coords.html">coords</a></span><span class="op">(</span><span class="va">num_dm</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="coords.html">coords</a></span><span class="op">(</span><span class="va">dm</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Set "latlon" attribute to FALSE, length 1</span></span></span>
-<span class="r-in"><span><span class="fu">latlon</span><span class="op">(</span><span class="va">num_dm</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span></span>
-<span class="r-in"><span><span class="va">num_dm</span></span></span>
+<span class="r-in"><span><span class="fu">latlon</span><span class="op">(</span><span class="va">dm</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span></span>
+<span class="r-in"><span><span class="va">dm</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                         Nelson's Column   51°30.4659′ E</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                               Ostravice   49°32.7726′ E</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                Tally Ho   48°06.4339′ E</span>
@@ -93,7 +93,7 @@ attribute <code>"latlon"</code> is added or changed.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                             Null Island    0°00.0000′ E</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                        Tristan da Cunha   37°06.7044′ W</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                             Mawson Peak   53°06.2869′ W</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   57°31.1536′ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   25°14.4093′ W</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                         Nelson's Column    0°07.6754′ W</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                               Ostravice   18°23.9137′ E</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                Tally Ho  122°46.7203′ W</span>
@@ -101,11 +101,11 @@ attribute <code>"latlon"</code> is added or changed.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                             Null Island    0°00.0000′ E</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                        Tristan da Cunha   12°17.3178′ W</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                             Mawson Peak   73°31.0370′ E</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   25°14.4093′ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   57°31.1536′ W</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Set "latlon" attribute to TRUE and FALSE (each n=8)</span></span></span>
-<span class="r-in"><span><span class="fu">latlon</span><span class="op">(</span><span class="va">num_dm</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">num_dm</span></span></span>
+<span class="r-in"><span><span class="fu">latlon</span><span class="op">(</span><span class="va">dm</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">dm</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                         Nelson's Column   51°30.4659′ N</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                               Ostravice   49°32.7726′ N</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                Tally Ho   48°06.4339′ N</span>
@@ -113,7 +113,7 @@ attribute <code>"latlon"</code> is added or changed.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                             Null Island    0°00.0000′ N</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                        Tristan da Cunha   37°06.7044′ S</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                             Mawson Peak   53°06.2869′ S</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   57°31.1536′ S</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   25°14.4093′ S</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                         Nelson's Column    0°07.6754′ W</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                               Ostravice   18°23.9137′ E</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                Tally Ho  122°46.7203′ W</span>
@@ -121,13 +121,13 @@ attribute <code>"latlon"</code> is added or changed.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                             Null Island    0°00.0000′ E</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                        Tristan da Cunha   12°17.3178′ W</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                             Mawson Peak   73°31.0370′ E</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   25°14.4093′ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   57°31.1536′ W</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## Reversing latitude and longitude results in an implausible </span></span></span>
-<span class="r-in"><span><span class="co">## longitude value and a warning message </span></span></span>
-<span class="r-in"><span><span class="fu">latlon</span><span class="op">(</span><span class="va">num_dm</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="cn">TRUE</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co">## Reversing latitude and longitude results in an</span></span></span>
+<span class="r-in"><span><span class="co">## invalid longitude value and a warning</span></span></span>
+<span class="r-in"><span><span class="fu">latlon</span><span class="op">(</span><span class="va">dm</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="cn">TRUE</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Validation failed!</span>
-<span class="r-in"><span><span class="va">num_dm</span></span></span>
+<span class="r-in"><span><span class="va">dm</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Printing invalid coords!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                         Nelson's Column   51°30.4659′ E</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                               Ostravice   49°32.7726′ E</span>
@@ -136,7 +136,7 @@ attribute <code>"latlon"</code> is added or changed.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                             Null Island    0°00.0000′ E</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                        Tristan da Cunha   37°06.7044′ W</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                             Mawson Peak   53°06.2869′ W</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   57°31.1536′ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   25°14.4093′ W</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                         Nelson's Column    0°07.6754′ S</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                               Ostravice   18°23.9137′ N</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                Tally Ho  122°46.7203′ S</span>
@@ -144,9 +144,9 @@ attribute <code>"latlon"</code> is added or changed.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                             Null Island    0°00.0000′ N</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                        Tristan da Cunha   12°17.3178′ S</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                             Mawson Peak   73°31.0370′ N</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   25°14.4093′ S</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   57°31.1536′ S</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">num_dm</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">dm</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
