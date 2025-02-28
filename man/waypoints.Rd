@@ -77,8 +77,8 @@ is re-validated.
 wp1 <- data.frame(
     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
-    lat = c(513027.95, 493246.36, 480626.04, 385322.18, 00000.00, -370642.26, -530617.21, -573109.21),
-    lon = c(-00740.53, 182354.82, -1224643.22, -770206.87, 00000.00, -121719.07, 733102.22, -251424.56)
+    lat = c(513027.95, 493246.36, 480626.04, 385322.18, 00000.00, -370642.26, -530617.21, -251424.56),
+    lon = c(-00740.53, 182354.82, -1224643.22, -770206.87, 00000.00, -121719.07, 733102.22, -573109.21)
 )
 
 ## Create "waypoints" object of degrees, minutes and seconds (fmt = 3)
@@ -95,8 +95,8 @@ wp1
 ###
 ## Dataframe representing unnamed latitude and longitude values in decimal degrees
 wp2 <- data.frame(
-    lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -53.104781, -57.519227),
-    lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -25.240156)
+    lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -53.104781, -25.240156),
+    lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -57.519227)
 )
 
 ## Create "waypoints" object of decimal degrees (default fmt = 1)

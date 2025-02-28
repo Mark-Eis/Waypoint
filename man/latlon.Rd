@@ -34,15 +34,13 @@ attribute \code{"latlon"} is added or changed.
 \examples{
 ## Continuing example from `coords()`, named numeric vector representing degrees and minutes
 \dontshow{
-    (dm <- c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -5731.1536,
-   	             -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -2514.4093) |>
-        setNames(
-            rep(
-                c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
-                  "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2
-            )
-        )
-    )
+   dm <-
+       c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
+	   -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
+
+   names(dm) <- 
+       rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+             "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
 }
 
 ## Create "coords" object of degrees and minutes
@@ -56,8 +54,8 @@ dm
 latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 dm
 
-## Reversing latitude and longitude results in an implausible 
-## longitude value and a warning message 
+## Reversing latitude and longitude results in an
+## invalid longitude value and a warning
 latlon(dm) <- rep(c(FALSE, TRUE), each = 8)
 dm
 

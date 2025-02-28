@@ -38,14 +38,13 @@ non-compliant coordinate values.
 \examples{
 ## Continuing example from `coords()`, named numeric vector representing degrees and minutes
 \dontshow{
-dm <- c(
-        5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -5731.1536,
-        -007.6754, 1823.9137, -12246.7203, -7702.1145,0.0000, -1217.3178, 7331.0370, -2514.4093
-    ) |>
-    setNames(rep(
-        c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
-          "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2
-    ))
+   dm <-
+       c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
+	   -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
+
+   names(dm) <- 
+       rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+             "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
 }
 
 ## Create "coords" object of degrees and minutes
@@ -58,29 +57,35 @@ dm[1] <- 5160.4659
 
 validate(dm)
 
+## Examine valid attribute of dm
+attr(dm, "valid")
+
+###
 ## Continuing example from `waypoints()`, data frame representing waypoint names and latitude
 ## and longitude values in decimal degrees
 \dontshow{
 wp1 <- data.frame(
-    name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument",
-             "Null Island", "Tristan da Cunha", "Mawson Peak",
-             "Silvio Pettirossi International Airport"),
-    lat = c(51.507765, 49.54621, 48.107232, 38.889494,
-            0, -37.11174, -53.104781, -57.519227),
-    lon = c(-0.127924, 18.398562, -122.778671, -77.035242,
-            0, -12.28863, 73.517283, -25.240156)
+    name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+             "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
+    lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -53.104781, -25.240156),
+    lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -57.519227)
 )
 }
 
-# Create "waypoints" object of decimal degrees
+## Create "waypoints" object of decimal degrees
 waypoints(wp1) <- 1
 
 validate(wp1)
 
-## Change third longitude absolute value to have more than 180 degrees
-wp1$lon[3] <- -182.778671
+## Change penultimate latitude absolute value to have more than 90 degrees
+wp1$lat[7] <- -93.104781
 
 validate(wp1)
+
+## Examine validlat attribute of wp1
+attr(wp1, "validlat")
+
+rm(dm, wp1)
 
 }
 \seealso{

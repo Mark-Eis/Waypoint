@@ -54,8 +54,8 @@
 #'
 #' @examples
 #' ## Numeric vector representing degrees and minutes
-#' dm <- c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -5731.1536,
-#'         -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -2514.4093)
+#' dm <- c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
+#'         -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
 #'
 #' ## Create a "coords" object of degrees and minutes
 #' coords(dm, 2)
@@ -119,15 +119,13 @@ coords <- function(nv, fmt = 1L) {
 #' @examples
 #' ## Continuing example from `coords()`, named numeric vector representing degrees and minutes
 #' \dontshow{
-#'     (dm <- c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -5731.1536,
-#'    	             -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -2514.4093) |>
-#'         setNames(
-#'             rep(
-#'                 c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
-#'                   "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2
-#'             )
-#'         )
-#'     )
+#'    dm <-
+#'        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
+#'		   -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
+#'
+#'    names(dm) <- 
+#'        rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+#'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
 #' }
 #'
 #' ## Create "coords" object of degrees and minutes
@@ -141,8 +139,8 @@ coords <- function(nv, fmt = 1L) {
 #' latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 #' dm
 #'
-#' ## Reversing latitude and longitude results in an implausible 
-#' ## longitude value and a warning message 
+#' ## Reversing latitude and longitude results in an
+#' ## invalid longitude value and a warning
 #' latlon(dm) <- rep(c(FALSE, TRUE), each = 8)
 #' dm
 #'
@@ -191,14 +189,13 @@ print.coords <- function(cd) {
 #' @examples
 #' ## Continuing example from `coords()`, named numeric vector representing degrees and minutes
 #' \dontshow{
-#' dm <- c(
-#'         5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -5731.1536,
-#'         -007.6754, 1823.9137, -12246.7203, -7702.1145,0.0000, -1217.3178, 7331.0370, -2514.4093
-#'     ) |>
-#'     setNames(rep(
-#'         c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
-#'           "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2
-#'     ))
+#'    dm <-
+#'        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
+#'		   -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
+#'
+#'    names(dm) <- 
+#'        rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+#'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
 #' }
 #'
 #' ## Create "coords" object of degrees and minutes
@@ -211,29 +208,35 @@ print.coords <- function(cd) {
 #'
 #' validate(dm)
 #'
+#' ## Examine valid attribute of dm
+#' attr(dm, "valid")
+#'
+#' ###
 #' ## Continuing example from `waypoints()`, data frame representing waypoint names and latitude
 #' ## and longitude values in decimal degrees
 #' \dontshow{
 #' wp1 <- data.frame(
-#'     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument",
-#'              "Null Island", "Tristan da Cunha", "Mawson Peak",
-#'              "Silvio Pettirossi International Airport"),
-#'     lat = c(51.507765, 49.54621, 48.107232, 38.889494,
-#'             0, -37.11174, -53.104781, -57.519227),
-#'     lon = c(-0.127924, 18.398562, -122.778671, -77.035242,
-#'             0, -12.28863, 73.517283, -25.240156)
+#'     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+#'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
+#'     lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -53.104781, -25.240156),
+#'     lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -57.519227)
 #' )
 #' }
 #'
-#' # Create "waypoints" object of decimal degrees
+#' ## Create "waypoints" object of decimal degrees
 #' waypoints(wp1) <- 1
 #'
 #' validate(wp1)
 #'
-#' ## Change third longitude absolute value to have more than 180 degrees
-#' wp1$lon[3] <- -182.778671
+#' ## Change penultimate latitude absolute value to have more than 90 degrees
+#' wp1$lat[7] <- -93.104781
 #'
 #' validate(wp1)
+#'
+#' ## Examine validlat attribute of wp1
+#' attr(wp1, "validlat")
+#'
+#' rm(dm, wp1)
 #'
 validate.coords <- function(cd) {
     .Call(`_Waypoint_validatecoords`, cd)
@@ -316,8 +319,8 @@ format.coords <- function(nv) {
 #' wp1 <- data.frame(
 #'     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
 #'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
-#'     lat = c(513027.95, 493246.36, 480626.04, 385322.18, 00000.00, -370642.26, -530617.21, -573109.21),
-#'     lon = c(-00740.53, 182354.82, -1224643.22, -770206.87, 00000.00, -121719.07, 733102.22, -251424.56)
+#'     lat = c(513027.95, 493246.36, 480626.04, 385322.18, 00000.00, -370642.26, -530617.21, -251424.56),
+#'     lon = c(-00740.53, 182354.82, -1224643.22, -770206.87, 00000.00, -121719.07, 733102.22, -573109.21)
 #' )
 #'
 #' ## Create "waypoints" object of degrees, minutes and seconds (fmt = 3)
@@ -334,8 +337,8 @@ format.coords <- function(nv) {
 #' ###
 #' ## Dataframe representing unnamed latitude and longitude values in decimal degrees
 #' wp2 <- data.frame(
-#'     lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -53.104781, -57.519227),
-#'     lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -25.240156)
+#'     lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -53.104781, -25.240156),
+#'     lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -57.519227)
 #' )
 #'
 #' ## Create "waypoints" object of decimal degrees (default fmt = 1)
