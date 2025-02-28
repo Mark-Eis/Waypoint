@@ -25,7 +25,7 @@ The **Waypoint R package** enables conversion, validation and neatly formatted p
 
 - Creates [`"waypoints"`](https://mark-eis.github.io/Waypoint/reference/waypoints.html) objects and converts their formats with `waypoints()` and  [`waypoints<-()`](https://mark-eis.github.io/Waypoint/reference/waypoints.html).
 
-- Assigns latitude and longitude attributes to values within objects of classes `"coords"` with `latlon()` and  [`latlon<-()`](https://mark-eis.github.io/Waypoint/reference/latlon.html).
+- Assigns latitude and longitude attributes to values within objects of classes `"coords"` with [`latlon<-()`](https://mark-eis.github.io/Waypoint/reference/latlon.html).
 
 - Ensures values within objects of classes `"coords"` or `"waypoints"` are plausible geographic locations with `validate()`.
 

@@ -1300,7 +1300,7 @@ NumericVector printcoords(NumericVector cd)
 //'
 //' validate(dm)
 //'
-//' ## Examine valid attribute of dm
+//' ## Examine "valid" attribute of dm
 //' attr(dm, "valid")
 //'
 //' ###
@@ -1325,7 +1325,7 @@ NumericVector printcoords(NumericVector cd)
 //'
 //' validate(wp1)
 //'
-//' ## Examine validlat attribute of wp1
+//' ## Examine "validlat" attribute of wp1
 //' attr(wp1, "validlat")
 //'
 //' rm(dm, wp1)
