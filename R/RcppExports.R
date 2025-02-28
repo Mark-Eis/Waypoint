@@ -386,7 +386,3 @@ as_coord <- function(df, latlon) {
     .Call(`_Waypoint_as_coord`, df, latlon)
 }
 
-rcpp_hello_world <- function() {
-    .Call(`_Waypoint_rcpp_hello_world`)
-}
-
