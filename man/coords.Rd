@@ -13,80 +13,78 @@ coords(nv) <- value
 \method{print}{coords}(cd)
 }
 \arguments{
-\item{nv}{\code{numeric vector} of coordinate values, optionally named.}
+\item{nv}{\code{numeric} vector of coordinate values, optionally named.}
 
-\item{fmt, value}{\code{integer}, 1L, 2L or 3L, indicating the current or desired coordinate format;
-default 1L.}
+\item{fmt, value}{\code{integer}, 1L, 2L or 3L, indicating the current or desired coordinate
+format; default 1L.}
 
-\item{cd}{object of class \code{"coords"}, as created by function \code{\link[=coords]{coords}()}.}
+\item{cd}{object of class \code{"coords"} created by function \code{\link[=coords]{coords}()}.}
 }
 \value{
-An object of class \code{"coords"} comprising a \code{numeric vector} with a
-\code{boolean vector} attribute \code{"valid"}, indicating whether the individual coordinate
-values are indeed valid, as described  under \emph{Details}.
+An object of class \code{"coords"}, comprising the original a \code{numeric} vector argument
+\code{nv} with values possibly converted as appropriate and additional attributes: –
+\item{\code{"fmt"}}{the coordinate format.}
+\item{\code{"valid"}}{a \code{logical} vector indicating whether individual coordinate values
+  are valid geographic locations.}
 }
 \description{
 \code{coords()} creates a robust representation of a series of geographic or GPS
 coordinates instantiated as an object of class \code{"coords"}.
 
-\code{coords()} and replacement form function \verb{coords()<-} also convert the format of
-existing objects of class \code{"coords"} between (i) decimal degrees, (ii) degrees and minutes,
-and (iii) degrees, minutes and seconds.
+\code{coords()} and replacement form \verb{coords()<-} also convert the format of existing
+objects of class \code{"coords"} between (i) decimal degrees, (ii) degrees and minutes, and
+(iii) degrees, minutes and seconds.
 }
 \details{
-Individual values provided in the numeric vector argument \code{nv} should have a decimal
-point after the number of whole degrees in the case of decimal degrees,  after the number of
-whole minutes in the case of degrees and minutes, and after the number of whole seconds in the
-case of degrees, minutes and seconds.
+Individual values provided in the \code{numeric} vector argument \code{nv} should have a decimal
+point after the number of whole degrees in the case of \emph{decimal degrees}, after the number
+of whole minutes in the case of \emph{degrees and minutes}, and after the number of whole
+seconds in the case of \emph{degrees, minutes and seconds}.
 
-The \code{fmt} argument is used to provide the format of values in a numeric vector to be
-converted into a \code{"coords"} object, and the desired  format if a \code{"coords"} object is
-to be converted to a new format.  \code{fmt} should be 1 for decimal degrees, 2 for degrees and
-minutes, and 3 for degrees, minutes and seconds. Note that following conversion, the original data
-structure is modified such that its values are as described in the previous paragraph, and may be
-inspected using standard R code, see examples.
+The \code{fmt} argument should be \code{1L} to represent decimal degrees, \code{2L} for degrees
+and minutes, and \code{3L} for degrees, minutes and seconds and is used to provide both the
+format of values in \code{numeric} vector argument \code{nv} to be converted into a
+\code{"coords"} object and the desired format if a \code{"coords"} object is to be converted to
+a new format. Note that on conversion of a \code{"coords"} object, the original \code{numeric}
+vector argument \code{nv} is modified such that the values are as described in the previous
+paragraph, and may be inspected using standard R code, see examples.
 
-The values of a newly created \code{"coords"} object are validated to ensure their being
-plausible geographic locations as described under \code{\link[=validate]{validate}()}. Likewise,
-a check is made to ensure that that an existing \code{"coords"} object to be converted to a new
-format has already been validated; if not, it is re-validated.
+The values of a newly created \code{"coords"} object are checked to ensure they are valid
+geographic locations as described under \code{\link[=validate]{validate}()}. Likewise, a
+check is made to ensure that an existing \code{"coords"} object to be converted to a new format
+has already been validated; if not, it is re-validated.
 }
 \examples{
-## Named numeric vector representing degrees and minutes
-(num_dm <- c(
-        5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -5731.1536,
-        -007.6754, 1823.9137, -12246.7203, -7702.1145,0.0000, -1217.3178, 7331.0370, -2514.4093
-    ) |>
-    setNames(rep(
-        c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
-          "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2
-    ))
-)
+## Numeric vector representing degrees and minutes
+dm <- c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -5731.1536,
+        -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -2514.4093)
 
-## Create "coords" object of degrees and minutes
-coords(num_dm, 2)
+## Create a "coords" object of degrees and minutes
+coords(dm, 2)
 
-## Convert "coords" object to degrees, minutes and seconds
-coords(num_dm) <- 3
-num_dm
+## Name the "coords" object
+names(dm) <- rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+                   "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
+dm
+
+## Convert to degrees, minutes and seconds
+coords(dm) <- 3
+dm
 
 ## Convert to decimal degrees
-coords(num_dm) <- 1
-num_dm
+coords(dm) <- 1
+dm
 
-## Convert back to degrees and minutes
-coords(num_dm) <- 2
-num_dm
+## Show decimal degrees as a bare numeric vector
+as.numeric(dm)
 
-## Convert to decimal degrees and show as a numeric vector
-coords(num_dm) <- 1
-as.numeric(num_dm)
-
-rm(num_dm)
+rm(dm)
 
 }
 \seealso{
-\code{\link[=latlon]{latlon}()} and \code{\link[=validate]{validate}()}.
+\code{\link[base:attr]{attr()}}, \code{\link[base:attributes]{attributes}},
+  \code{\link[=latlon]{latlon}()}, \code{\link[base:numeric]{numeric()}} and
+  \code{\link[=validate]{validate}()}.
 
 Other coords_waypoints: 
 \code{\link{waypoints}()}

@@ -16,7 +16,7 @@
 \item{df}{object of class \code{"waypoints"}.}
 }
 \value{
-\code{validate()} returns its argument with \code{boolean vector} attribute \code{"valid"},
+\code{validate()} returns its argument with \code{logical} vector attribute \code{"valid"},
 or attributes \code{"validlat"} and \code{"validlon"} updated as appropriate for
 \code{"coords"} and' \code{"waypoints"} objects respectively.
 }
@@ -28,17 +28,17 @@ Individual coordinate values within \code{\link[=coords]{"coords"}} or
 \code{\link[=waypoints]{"waypoints"}} objects are validated to ensure their being plausible
 geographic locations.
 
-The absolute values of coordinates in degrees must not exceed 180, or 90 if degrees of
-latitude. Likewise the absolute values of the minutes and seconds components, where given,
-must not exceed 60 degrees, otherwise a warning will be given and the \code{"valid"} attribute
-in the case of a \code{"coords"} object, or \code{"validlat"} and \code{"validlon"} attributes
-in the case of a \code{"waypoints"} object set to \code{FALSE} for any non-compliant coordinate
-values.
+To be valid, the absolute values of coordinates in degrees must not exceed 180, or 90 if degrees
+of latitude and, similarly, the absolute values of the minutes and seconds components, where
+given, must not exceed 60 degrees. Otherwise a warning will be issued and the \code{"valid"}
+attribute in the case of a \code{"coords"} object, or \code{"validlat"} and \code{"validlon"}
+attributes in the case of a \code{"waypoints"} object will be set to \code{FALSE} for any
+non-compliant coordinate values.
 }
 \examples{
 ## Continuing example from `coords()`, named numeric vector representing degrees and minutes
 \dontshow{
-num_dm <- c(
+dm <- c(
         5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -5731.1536,
         -007.6754, 1823.9137, -12246.7203, -7702.1145,0.0000, -1217.3178, 7331.0370, -2514.4093
     ) |>
@@ -49,16 +49,16 @@ num_dm <- c(
 }
 
 ## Create "coords" object of degrees and minutes
-coords(num_dm) <- 2
+coords(dm) <- 2
 
-validate(num_dm)
+validate(dm)
 
 ## Change first value to have more than 60 minutes
-num_dm[1] <- 5160.4659
+dm[1] <- 5160.4659
 
-validate(num_dm)
+validate(dm)
 
-## Continuing example from `waypoints()`, dataframe representing waypoint names and latitude
+## Continuing example from `waypoints()`, data frame representing waypoint names and latitude
 ## and longitude values in decimal degrees
 \dontshow{
 wp1 <- data.frame(

@@ -1049,76 +1049,74 @@ void convene(T t, CoordType newtype)
 //' \code{coords()} creates a robust representation of a series of geographic or GPS
 //' coordinates instantiated as an object of class \code{"coords"}.
 //' 
-//' \code{coords()} and replacement form function \verb{coords()<-} also convert the format of
-//' existing objects of class \code{"coords"} between (i) decimal degrees, (ii) degrees and minutes,
-//' and (iii) degrees, minutes and seconds.
+//' \code{coords()} and replacement form \verb{coords()<-} also convert the format of existing
+//' objects of class \code{"coords"} between (i) decimal degrees, (ii) degrees and minutes, and
+//' (iii) degrees, minutes and seconds.
 //'
 //' @details
-//' Individual values provided in the numeric vector argument \code{nv} should have a decimal
-//' point after the number of whole degrees in the case of decimal degrees,  after the number of
-//' whole minutes in the case of degrees and minutes, and after the number of whole seconds in the
-//' case of degrees, minutes and seconds.
+//' Individual values provided in the \code{numeric} vector argument \code{nv} should have a decimal
+//' point after the number of whole degrees in the case of \emph{decimal degrees}, after the number
+//' of whole minutes in the case of \emph{degrees and minutes}, and after the number of whole
+//' seconds in the case of \emph{degrees, minutes and seconds}.
 //'
-//' The \code{fmt} argument is used to provide the format of values in a numeric vector to be
-//' converted into a \code{"coords"} object, and the desired  format if a \code{"coords"} object is
-//' to be converted to a new format.  \code{fmt} should be 1 for decimal degrees, 2 for degrees and
-//' minutes, and 3 for degrees, minutes and seconds. Note that following conversion, the original data
-//' structure is modified such that its values are as described in the previous paragraph, and may be
-//' inspected using standard R code, see examples.
+//' The \code{fmt} argument should be \code{1L} to represent decimal degrees, \code{2L} for degrees
+//' and minutes, and \code{3L} for degrees, minutes and seconds and is used to provide both the
+//' format of values in \code{numeric} vector argument \code{nv} to be converted into a
+//' \code{"coords"} object and the desired format if a \code{"coords"} object is to be converted to
+//' a new format. Note that on conversion of a \code{"coords"} object, the original \code{numeric}
+//' vector argument \code{nv} is modified such that the values are as described in the previous
+//' paragraph, and may be inspected using standard R code, see examples.
 //'
-//' The values of a newly created \code{"coords"} object are validated to ensure their being
-//' plausible geographic locations as described under \code{\link[=validate]{validate}()}. Likewise,
-//' a check is made to ensure that that an existing \code{"coords"} object to be converted to a new
-//' format has already been validated; if not, it is re-validated. 
+//' The values of a newly created \code{"coords"} object are checked to ensure they are valid
+//' geographic locations as described under \code{\link[=validate]{validate}()}. Likewise, a
+//' check is made to ensure that an existing \code{"coords"} object to be converted to a new format
+//' has already been validated; if not, it is re-validated. 
 //'
 //' @family coords_waypoints
 //' @seealso
-//' \code{\link[=latlon]{latlon}()} and \code{\link[=validate]{validate}()}.
+//' \code{\link[base:attr]{attr()}}, \code{\link[base:attributes]{attributes}},
+//'   \code{\link[=latlon]{latlon}()}, \code{\link[base:numeric]{numeric()}} and
+//'   \code{\link[=validate]{validate}()}.
 //'
-//' @param nv \code{numeric vector} of coordinate values, optionally named.
+//' @param nv \code{numeric} vector of coordinate values, optionally named.
 //'
-//' @param fmt,value \code{integer}, 1L, 2L or 3L, indicating the current or desired coordinate format;
-//'   default 1L.
+//' @param fmt,value \code{integer}, 1L, 2L or 3L, indicating the current or desired coordinate
+//'   format; default 1L.
 //'
-//' @param cd object of class \code{"coords"}, as created by function \code{\link[=coords]{coords}()}.
+//' @param cd object of class \code{"coords"} created by function \code{\link[=coords]{coords}()}.
 //'
 //' @return
-//' An object of class \code{"coords"} comprising a \code{numeric vector} with a
-//' \code{boolean vector} attribute \code{"valid"}, indicating whether the individual coordinate
-//' values are indeed valid, as described  under \emph{Details}.
+//' An object of class \code{"coords"}, comprising the original a \code{numeric} vector argument
+//' \code{nv} with values possibly converted as appropriate and additional attributes: –
+//' \item{\code{"fmt"}}{the coordinate format.}
+//' \item{\code{"valid"}}{a \code{logical} vector indicating whether individual coordinate values
+//'   are valid geographic locations.}
 //'
 //' @examples
-//' ## Named numeric vector representing degrees and minutes
-//' (num_dm <- c(
-//'         5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -5731.1536,
-//'         -007.6754, 1823.9137, -12246.7203, -7702.1145,0.0000, -1217.3178, 7331.0370, -2514.4093
-//'     ) |>
-//'     setNames(rep(
-//'         c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
-//'           "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2
-//'     ))
-//' )
+//' ## Numeric vector representing degrees and minutes
+//' dm <- c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -5731.1536,
+//'         -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -2514.4093)
 //'
-//' ## Create "coords" object of degrees and minutes
-//' coords(num_dm, 2)
+//' ## Create a "coords" object of degrees and minutes
+//' coords(dm, 2)
 //'
-//' ## Convert "coords" object to degrees, minutes and seconds
-//' coords(num_dm) <- 3
-//' num_dm
+//' ## Name the "coords" object
+//' names(dm) <- rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+//'                    "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
+//' dm
+//'
+//' ## Convert to degrees, minutes and seconds
+//' coords(dm) <- 3
+//' dm
 //'
 //' ## Convert to decimal degrees
-//' coords(num_dm) <- 1
-//' num_dm
+//' coords(dm) <- 1
+//' dm
 //'
-//' ## Convert back to degrees and minutes
-//' coords(num_dm) <- 2
-//' num_dm
+//' ## Show decimal degrees as a bare numeric vector
+//' as.numeric(dm)
 //'
-//' ## Convert to decimal degrees and show as a numeric vector
-//' coords(num_dm) <- 1
-//' as.numeric(num_dm)
-//'
-//' rm(num_dm)
+//' rm(dm)
 //'
 // [[Rcpp::export]]
 NumericVector coords(NumericVector nv, const int fmt = 1)
@@ -1167,10 +1165,10 @@ NumericVector coords_replace(NumericVector nv, int value)
 //' \code{\link[=coords]{"coords"}}, or modifies an existing \code{"latlon"} attribute.
 //'
 //' @details
-//' Attribute \code{"latlon"} is a \code{boolean vector} of length \code{1} or \code{length(cd)}
+//' Attribute \code{"latlon"} is a \code{logical} vector of length \code{1} or \code{length(cd)}
 //' for which \code{TRUE} values represent latitude and \code{FALSE} values represent longitude.
-//' Setting this attribute to any other length will result in an error. A \code{boolean vector} of
-//' length \code{1L} signifies that values are all latitude if \code{TRUE}, or longitude if
+//' Setting this attribute to any other length will result in an error. A \code{logical} vector of
+//' length \code{1L} signifies that values are all latitude if \code{TRUE}, or all longitude if
 //' \code{FALSE}.
 //'
 //' This attribute is used in formatting printed output and also by
@@ -1182,16 +1180,16 @@ NumericVector coords_replace(NumericVector nv, int value)
 //'
 //' @param cd object of class \code{\link[=coords]{"coords"}}.
 //'
-//' @param value a \code{boolean vector} of length \code{1} or of \code{length(cd)}.
+//' @param value a \code{logical} vector of length \code{1} or \code{length(cd)}.
 //'
 //' @return
-//' Argument \code{cd} is returned with \code{boolean vector} attribute \code{"latlon"}
+//' Argument \code{cd} is returned with \code{logical} vector attribute \code{"latlon"}
 //' updated as appropriate.
 //'
 //' @examples
 //' ## Continuing example from `coords()`, named numeric vector representing degrees and minutes
 //' \dontshow{
-//'     (num_dm <- c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -5731.1536,
+//'     (dm <- c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -5731.1536,
 //'    	             -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -2514.4093) |>
 //'         setNames(
 //'             rep(
@@ -1203,22 +1201,22 @@ NumericVector coords_replace(NumericVector nv, int value)
 //' }
 //'
 //' ## Create "coords" object of degrees and minutes
-//' coords(num_dm) <- 2
+//' coords(dm) <- 2
 //'
 //' ## Set "latlon" attribute to FALSE, length 1
-//' latlon(num_dm) <- FALSE
-//' num_dm
+//' latlon(dm) <- FALSE
+//' dm
 //'
 //' ## Set "latlon" attribute to TRUE and FALSE (each n=8)
-//' latlon(num_dm) <- rep(c(TRUE, FALSE), each = 8)
-//' num_dm
+//' latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
+//' dm
 //'
 //' ## Reversing latitude and longitude results in an implausible 
 //' ## longitude value and a warning message 
-//' latlon(num_dm) <- rep(c(FALSE, TRUE), each = 8)
-//' num_dm
+//' latlon(dm) <- rep(c(FALSE, TRUE), each = 8)
+//' dm
 //'
-//' rm(num_dm)
+//' rm(dm)
 //'
 // [[Rcpp::export(name = "`latlon<-`")]]
 NumericVector latlon(NumericVector cd, LogicalVector& value)
@@ -1235,7 +1233,7 @@ NumericVector latlon(NumericVector cd, LogicalVector& value)
 
 
 /// __________________________________________________
-/// Print coords vector - S3 method print.coords()	  /////// "invisible" not working ///////
+/// Print coords vector - S3 method print.coords()
 //' @rdname coords
 // [[Rcpp::export(name = "print.coords", invisible = true)]]
 NumericVector printcoords(NumericVector cd)
@@ -1263,12 +1261,12 @@ NumericVector printcoords(NumericVector cd)
 //' \code{\link[=waypoints]{"waypoints"}} objects are validated to ensure their being plausible
 //' geographic locations.
 //'
-//' The absolute values of coordinates in degrees must not exceed 180, or 90 if degrees of
-//' latitude. Likewise the absolute values of the minutes and seconds components, where given,
-//' must not exceed 60 degrees, otherwise a warning will be given and the \code{"valid"} attribute
-//' in the case of a \code{"coords"} object, or \code{"validlat"} and \code{"validlon"} attributes
-//' in the case of a \code{"waypoints"} object set to \code{FALSE} for any non-compliant coordinate
-//' values.
+//' To be valid, the absolute values of coordinates in degrees must not exceed 180, or 90 if degrees
+//' of latitude and, similarly, the absolute values of the minutes and seconds components, where
+//' given, must not exceed 60 degrees. Otherwise a warning will be issued and the \code{"valid"}
+//' attribute in the case of a \code{"coords"} object, or \code{"validlat"} and \code{"validlon"}
+//' attributes in the case of a \code{"waypoints"} object will be set to \code{FALSE} for any
+//' non-compliant coordinate values.
 //'
 //' @seealso
 //' \code{\link[=coords]{"coords"}} and \code{\link[=waypoints]{"waypoints"}}.
@@ -1278,14 +1276,14 @@ NumericVector printcoords(NumericVector cd)
 //' @param df object of class \code{"waypoints"}.
 //'
 //' @return
-//' \code{validate()} returns its argument with \code{boolean vector} attribute \code{"valid"},
+//' \code{validate()} returns its argument with \code{logical} vector attribute \code{"valid"},
 //' or attributes \code{"validlat"} and \code{"validlon"} updated as appropriate for
 //' \code{"coords"} and' \code{"waypoints"} objects respectively.
 //'
 //' @examples
 //' ## Continuing example from `coords()`, named numeric vector representing degrees and minutes
 //' \dontshow{
-//' num_dm <- c(
+//' dm <- c(
 //'         5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -5731.1536,
 //'         -007.6754, 1823.9137, -12246.7203, -7702.1145,0.0000, -1217.3178, 7331.0370, -2514.4093
 //'     ) |>
@@ -1296,16 +1294,16 @@ NumericVector printcoords(NumericVector cd)
 //' }
 //'
 //' ## Create "coords" object of degrees and minutes
-//' coords(num_dm) <- 2
+//' coords(dm) <- 2
 //'
-//' validate(num_dm)
+//' validate(dm)
 //'
 //' ## Change first value to have more than 60 minutes
-//' num_dm[1] <- 5160.4659
+//' dm[1] <- 5160.4659
 //'
-//' validate(num_dm)
+//' validate(dm)
 //'
-//' ## Continuing example from `waypoints()`, dataframe representing waypoint names and latitude
+//' ## Continuing example from `waypoints()`, data frame representing waypoint names and latitude
 //' ## and longitude values in decimal degrees
 //' \dontshow{
 //' wp1 <- data.frame(
@@ -1377,86 +1375,94 @@ CharacterVector formatcoords(NumericVector nv)
 //' \code{waypoints()} creates a robust representation of a series of geographic or GPS waypoints
 //' instantiated as an object of class \code{"waypoints"}.
 //' 
-//' \code{waypoints()} and replacement form function \verb{waypoints()<-} also convert the format
-//' of existing objects of class \code{"waypoints"} between (i) decimal degrees, (ii) degrees and
+//' \code{waypoints()} and replacement form \verb{waypoints()<-} also convert the format of
+//' existing objects of class \code{"waypoints"} between (i) decimal degrees, (ii) degrees and
 //' minutes, and (iii) degrees, minutes and seconds.
 //'
 //' @details
-//' Individual values provided in the \code{numeric vector} latitude and longitude columns of
-//' argument \code{df} should have a decimal point after the number of whole degrees in the case of
-//' decimal degrees, after the number of whole minutes in the case of degrees and minutes, and after
-//' the number of whole seconds in the case of degrees, minutes and seconds.
+//' By default, the names of the waypoints should be included in a "Name" column of data frame
+//' argument \code{df}, and the latitude and longitude in the two columns immediately on the right
+//' hand side of "Name". An alternative column for waypoint names may be specified by setting an
+//' \code{integer} attribute, \code{"namescol"} indicating its position in \code{df}, while setting
+//' this attribute to \code{NA} supresses printing of waypoint names. If \code{df} has neither a
+//' "Name" column nor a \code{"namescol"} attribute, the \code{"row.names"} attribute is used for
+//' waypoint names if present in \code{df}. Similarly, alternative columns for the latitude and
+//' longitude may be specified by setting \code{"llcols"} as a length 2 \code{integer} vector
+//' attribute indicating their positions in \code{df}.
 //'
-//' By default, the names of the waypoints should be included in the first column of argument
-//' \code{df}, and the latitude and longitude in the second and third columns. If other columns are
-//' preferred for the latitude and longitude, these may be specified in a length 2
-//' \code{integer vector} attribute of \code{df}, \code{"llcols"}. Similarly, an alternative names
-//' column may be specified using an \code{integer} attribute, \code{"namescol"}; if \code{df} has
-//' no such \code{"namescol"} attribute, the \code{"row.names"} attribute of \code{df} is used, if
-//' present. Setting attribute \code{"namescol"} to \code{NA} supresses printing of names.
+//' Individual values provided in the \code{numeric} vector latitude and longitude columns of data
+//' frame argument \code{df} should have a decimal point after the number of whole degrees in the
+//' case of \emph{decimal degrees}, after the number of whole minutes in the case of
+//' \emph{degrees and minutes}, and after the number of whole seconds in the case of
+//' \emph{degrees, minutes and seconds}.
 //'
-//' The \code{fmt} argument is used to provide the format of values in a dataframe to be converted
-//' into a \code{"waypoints"} object, and the desired  format if a \code{"waypoints"} object is to
-//' be converted to a new format. \code{fmt} should be 1 for decimal degrees, 2 for degrees and
-//' minutes, and 3 for degrees, minutes and seconds. Note that following conversion, the original
-//' data structure is modified such that the latitude and longitude values are as described in the
+//' The \code{fmt} argument should be \code{1L} to represent decimal degrees, \code{2L} for degrees
+//' and minutes, and \code{3L} for degrees, minutes and seconds and is used to provide both the
+//' format of values in data frame argument \code{df} to be converted into a \code{"waypoints"}
+//' object and the desired format if a \code{"waypoints"} object is to be converted to a new format.
+//' Note that on conversion of a \code{"waypoints"} object, the original data frame argument
+//' \code{df} is modified such that the latitude and longitude values are as described in the
 //' previous paragraph, and may be inspected using standard R code, see examples.
 //'
-//' The latitude and longitude values of a newly created \code{"waypoints"} object are validated to
-//' ensure their being plausible geographic locations as described under
+//' The latitude and longitude values of a newly created \code{"waypoints"} object are checked to
+//' ensure they are valid geographic locations as described under
 //' \code{\link[=validate]{validate}()}. Likewise, a check is made to ensure that an existing
-//' \code{"coords"} object to be converted to a new format has already been validated; if not, it is
-//' re-validated. 
+//' \code{"waypoints"} object to be converted to a new format has already been validated; if not, it
+//' is re-validated. 
 //'
 //' @family coords_waypoints
 //' @seealso
-//' \code{\link[base:attr]{attribute}}, \code{\link[=validate]{validate}()}.
+//' \code{\link[base:attr]{attr()}}, \code{\link[base:attributes]{attributes}},
+//'   \code{\link[base:data.frame]{data.frame()}}, and \code{\link[=validate]{validate}()}.
 //'
-//' @param df a \code{dataframe} comprising at least two \code{numeric} columns containing values of
-//'   latitude and longitude and optionally a \code{character} column of names, and with each row
-//'   representing a waypoint.
+//' @param df a data frame with each row representing a waypoint, comprising at least two
+//'   \code{numeric} columns containing values of latitude and longitude, and optionally a
+//'   \code{character} column of waypoint names (see \emph{Details}). 
 //'
-//' @param fmt,value \code{integer}, 1, 2 or 3, indicating the current or desired coordinate format;
-//'   default 1.
+//' @param fmt,value an \code{integer} of value 1L, 2L or 3L, indicating the current or desired
+//'   coordinate format (see \emph{Details}); default 1L.
 //'
-//' @param wp object of class \code{"waypoints"}, as created by function
+//' @param wp an object of class \code{"waypoints"} created by function
 //' \code{\link[=waypoints]{waypoints}()}.
 //'
 //' @return
-//' An object of classes \code{"waypoints"} and \code{"data.frame"}, comprising the original
-//' \code{data.frame} with attributes \code{"fmt"} indicating the coordinate format, and
-//' \code{"validlat"} and \code{"validlon"}, both \code{boolean vector}s indicating whether the
-//' individual coordinate values are indeed valid, as described under \emph{Details}.
+//' An object of classes \code{"waypoints"} and \code{"data.frame"}, comprising the original data
+//' frame argument \code{df}, with latitude and longitude values possibly converted as appropriate
+//' and additional attributes: –
+//' \item{\code{"fmt"}}{the coordinate format.}
+//' \item{\code{"namescol"}}{the position of waypoint names, if present within \code{df}.}
+//' \item{\code{"llcols"}}{the position of latitude and longitude columns within \code{df}.}
+//' \item{\code{"validlat"} and \code{"validlon"}}{\code{logical} vectors indicating whether
+//'   individual latitude and longitude values are valid geographic locations.}
 //'
 //' @examples
-//' # Dataframe representing waypoint names and latitude and longitude values in decimal degrees
-//' (wp1 <- data.frame(
-//'     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
-//'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
+//' # Dataframe representing latitude and longitude values in decimal degrees
+//' (wp <- data.frame(
 //'     lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -53.104781, -57.519227),
 //'     lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -25.240156)
 //' ))
 //'
 //' # Create "waypoints" object of decimal degrees
-//' waypoints(wp1)
+//' waypoints(wp)
+//'
+//' ## Add row.names
+//' row.names(wp) <-
+//'     c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+//'       "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport")
+//' wp
 //'
 //' ## Convert "waypoints" object to degrees and minutes
-//' waypoints(wp1) <- 2
-//' wp1
+//' waypoints(wp) <- 2
+//' wp
 //'
 //' ## Convert "waypoints" object to degrees, minutes and seconds
-//' waypoints(wp1) <- 3
-//' wp1
+//' waypoints(wp) <- 3
+//' wp
 //'
-//' ## Convert back to decimal degrees
-//' waypoints(wp1) <- 1
-//' wp1
+//' ## Show degrees, minutes and seconds as a bare data frame
+//' as.data.frame(wp)
 //'
-//' ## Convert to degrees, minutes and seconds and show as a dataframe
-//' waypoints(wp1) <- 3
-//' as.data.frame(wp1)
-//'
-//' rm(wp1)
+//' rm(wp)
 //'
 // [[Rcpp::export]]
 DataFrame waypoints(DataFrame df, int fmt = 1)
@@ -1508,7 +1514,7 @@ DataFrame waypoints_replace(DataFrame df, int value)
 
 
 /// __________________________________________________
-/// Print waypoints vector - S3 method print.waypoints()	  /////// "invisible" not working ///////
+/// Print waypoints vector - S3 method print.waypoints()
 //' @rdname waypoints
 // [[Rcpp::export(name = "print.waypoints", invisible = true)]]
 DataFrame printwaypoints(DataFrame wp)

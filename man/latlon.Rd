@@ -10,10 +10,10 @@ latlon(cd) <- value
 \arguments{
 \item{cd}{object of class \code{\link[=coords]{"coords"}}.}
 
-\item{value}{a \code{boolean vector} of length \code{1} or of \code{length(cd)}.}
+\item{value}{a \code{logical} vector of length \code{1} or \code{length(cd)}.}
 }
 \value{
-Argument \code{cd} is returned with \code{boolean vector} attribute \code{"latlon"}
+Argument \code{cd} is returned with \code{logical} vector attribute \code{"latlon"}
 updated as appropriate.
 }
 \description{
@@ -21,10 +21,10 @@ updated as appropriate.
 \code{\link[=coords]{"coords"}}, or modifies an existing \code{"latlon"} attribute.
 }
 \details{
-Attribute \code{"latlon"} is a \code{boolean vector} of length \code{1} or \code{length(cd)}
+Attribute \code{"latlon"} is a \code{logical} vector of length \code{1} or \code{length(cd)}
 for which \code{TRUE} values represent latitude and \code{FALSE} values represent longitude.
-Setting this attribute to any other length will result in an error. A \code{boolean vector} of
-length \code{1L} signifies that values are all latitude if \code{TRUE}, or longitude if
+Setting this attribute to any other length will result in an error. A \code{logical} vector of
+length \code{1L} signifies that values are all latitude if \code{TRUE}, or all longitude if
 \code{FALSE}.
 
 This attribute is used in formatting printed output and also by
@@ -34,7 +34,7 @@ attribute \code{"latlon"} is added or changed.
 \examples{
 ## Continuing example from `coords()`, named numeric vector representing degrees and minutes
 \dontshow{
-    (num_dm <- c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -5731.1536,
+    (dm <- c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -5731.1536,
    	             -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -2514.4093) |>
         setNames(
             rep(
@@ -46,22 +46,22 @@ attribute \code{"latlon"} is added or changed.
 }
 
 ## Create "coords" object of degrees and minutes
-coords(num_dm) <- 2
+coords(dm) <- 2
 
 ## Set "latlon" attribute to FALSE, length 1
-latlon(num_dm) <- FALSE
-num_dm
+latlon(dm) <- FALSE
+dm
 
 ## Set "latlon" attribute to TRUE and FALSE (each n=8)
-latlon(num_dm) <- rep(c(TRUE, FALSE), each = 8)
-num_dm
+latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
+dm
 
 ## Reversing latitude and longitude results in an implausible 
 ## longitude value and a warning message 
-latlon(num_dm) <- rep(c(FALSE, TRUE), each = 8)
-num_dm
+latlon(dm) <- rep(c(FALSE, TRUE), each = 8)
+dm
 
-rm(num_dm)
+rm(dm)
 
 }
 \seealso{
