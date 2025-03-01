@@ -73,12 +73,13 @@ ensure they are valid geographic locations as described under
 is re-validated.
 }
 \examples{
-## Dataframe representing waypoint names and latitude and longitude values in degrees, minutes and seconds
+## Dataframe representing waypoint names and latitude and
+## longitude values in degrees, minutes and seconds
 wp1 <- data.frame(
     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
-    lat = c(513027.95, 493246.36, 480626.04, 385322.18, 00000.00, -370642.26, -530617.21, -251424.56),
-    lon = c(-00740.53, 182354.82, -1224643.22, -770206.87, 00000.00, -121719.07, 733102.22, -573109.21)
+    lat = c(513027.95, 493246.36, 480626.04, 385322.18, 0, -370642.26, -530617.21, -251424.56),
+    lon = c(-00740.53, 182354.82, -1224643.22, -770206.87, 0, -121719.07, 733102.22, -573109.21)
 )
 
 ## Create "waypoints" object of degrees, minutes and seconds (fmt = 3)

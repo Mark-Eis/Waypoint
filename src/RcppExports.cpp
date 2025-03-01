@@ -69,13 +69,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // formatcoords
-CharacterVector formatcoords(NumericVector nv);
-RcppExport SEXP _Waypoint_formatcoords(SEXP nvSEXP) {
+CharacterVector formatcoords(NumericVector cd);
+RcppExport SEXP _Waypoint_formatcoords(SEXP cdSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type nv(nvSEXP);
-    rcpp_result_gen = Rcpp::wrap(formatcoords(nv));
+    Rcpp::traits::input_parameter< NumericVector >::type cd(cdSEXP);
+    rcpp_result_gen = Rcpp::wrap(formatcoords(cd));
     return rcpp_result_gen;
 END_RCPP
 }

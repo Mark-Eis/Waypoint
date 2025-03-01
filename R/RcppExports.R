@@ -208,7 +208,7 @@ print.coords <- function(cd) {
 #'
 #' validate(dm)
 #'
-#' ## Examine valid attribute of dm
+#' ## Examine "valid" attribute of dm
 #' attr(dm, "valid")
 #'
 #' ###
@@ -233,7 +233,7 @@ print.coords <- function(cd) {
 #'
 #' validate(wp1)
 #'
-#' ## Examine validlat attribute of wp1
+#' ## Examine "validlat" attribute of wp1
 #' attr(wp1, "validlat")
 #'
 #' rm(dm, wp1)
@@ -242,8 +242,9 @@ validate.coords <- function(cd) {
     .Call(`_Waypoint_validatecoords`, cd)
 }
 
-format.coords <- function(nv) {
-    .Call(`_Waypoint_formatcoords`, nv)
+#' @rdname coords
+format.coords <- function(cd) {
+    .Call(`_Waypoint_formatcoords`, cd)
 }
 
 #' @title Geographic or GPS Waypoint Class
@@ -315,12 +316,13 @@ format.coords <- function(nv) {
 #'   individual latitude and longitude values are valid geographic locations.}
 #'
 #' @examples
-#' ## Dataframe representing waypoint names and latitude and longitude values in degrees, minutes and seconds
+#' ## Dataframe representing waypoint names and latitude and
+#' ## longitude values in degrees, minutes and seconds
 #' wp1 <- data.frame(
 #'     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
 #'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
-#'     lat = c(513027.95, 493246.36, 480626.04, 385322.18, 00000.00, -370642.26, -530617.21, -251424.56),
-#'     lon = c(-00740.53, 182354.82, -1224643.22, -770206.87, 00000.00, -121719.07, 733102.22, -573109.21)
+#'     lat = c(513027.95, 493246.36, 480626.04, 385322.18, 0, -370642.26, -530617.21, -251424.56),
+#'     lon = c(-00740.53, 182354.82, -1224643.22, -770206.87, 0, -121719.07, 733102.22, -573109.21)
 #' )
 #'
 #' ## Create "waypoints" object of degrees, minutes and seconds (fmt = 3)

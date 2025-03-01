@@ -57,7 +57,7 @@ dm[1] <- 5160.4659
 
 validate(dm)
 
-## Examine valid attribute of dm
+## Examine "valid" attribute of dm
 attr(dm, "valid")
 
 ###
@@ -82,7 +82,7 @@ wp1$lat[7] <- -93.104781
 
 validate(wp1)
 
-## Examine validlat attribute of wp1
+## Examine "validlat" attribute of wp1
 attr(wp1, "validlat")
 
 rm(dm, wp1)
