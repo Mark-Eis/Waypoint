@@ -647,6 +647,7 @@ class Coord : public Coordbase {
 		void validate(bool warn = true) const;
 		template<CoordType type>
 		vector<string> format() const;
+		vector<string> format_switch() const;
 		void print(ostream&) const;
 };
 
@@ -677,11 +678,11 @@ void Coord::validate(bool warn) const
 
 
 /// __________________________________________________
-/// Formatted coordinate strings for printing
+/// Format coordinates as vector<string>
 template<CoordType type>
 vector<string> Coord::format() const
 {
-//	cout << "@Coord::format<CoordType>() " << typeid(*this).name() << endl;
+	cout << "@Coord::format<CoordType>() " << typeid(*this).name() << endl;
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), Format<type>(ff));
 	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<Coord, type>(ff, latlon));
@@ -690,10 +691,10 @@ vector<string> Coord::format() const
 
 
 /// __________________________________________________
-/// Print coords vector
-void Coord::print(ostream& stream) const
+/// Format coords vector<string>
+vector<string> Coord::format_switch() const
 {
-//	cout << "@Coord::print() " << typeid(*this).name() << endl;
+	cout << "@Coord::format_switch() " << typeid(*this).name() << endl;
 	vector<string> sv; 
 	switch (ct)
 	{
@@ -710,9 +711,18 @@ void Coord::print(ostream& stream) const
 			break;
 
 		default:
-			stop("Coord::print(ostream&) my bad");
+			stop("Coord::format_switch(ostream&) my bad");
 	}
+	return sv;
+}
 
+
+/// __________________________________________________
+/// Print coords vector
+void Coord::print(ostream& stream) const
+{
+	cout << "@Coord::print() " << typeid(*this).name() << endl;
+	vector<string>&& sv = format_switch();
 	vector<string> names { get_vec_attr<NumericVector, string>(nv, "names") };
 	int strwdth = 0;
 	if (names.size()) {
