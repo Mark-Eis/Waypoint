@@ -100,9 +100,9 @@ inline void convert(CoordType, DataFrame);
 NumericVector coords(NumericVector, const int);
 NumericVector coords_replace(NumericVector, int);
 NumericVector latlon(NumericVector, LogicalVector&);
-NumericVector printcoord(NumericVector);
 NumericVector validatecoord(NumericVector);
 CharacterVector formatcoord(NumericVector);
+NumericVector printcoord(NumericVector);
 DataFrame waypoints(DataFrame, int);
 DataFrame waypoints_replace(DataFrame, int);
 DataFrame printwaypoint(DataFrame);
@@ -1241,21 +1241,6 @@ NumericVector latlon(NumericVector cd, LogicalVector& value)
 
 
 /// __________________________________________________
-/// Print coords vector - S3 method print.coords()
-//' @rdname coords
-// [[Rcpp::export(name = "print.coords", invisible = true)]]
-NumericVector printcoords(NumericVector cd)
-{
-//	cout << "——Rcpp::export——printcoords(NumericVector) format " << get_fmt_attribute(cd) << endl;
-	checkinherits(cd, "coords");
-	if (!check_valid(cd))
-		warning("Printing invalid coords!");
-	Rcout << Coord(get_coordtype(cd), cd);
-	return cd;
-}
-
-
-/// __________________________________________________
 /// Validate coords or waypoints vector
 //' @title Validate Coords or Waypoints
 //' 
@@ -1355,25 +1340,27 @@ NumericVector validatecoords(NumericVector cd)
 // [[Rcpp::export(name = "format.coords")]]
 CharacterVector formatcoords(NumericVector cd)
 {
+	cout << "——Rcpp::export——formatcoords(NumericVector)\n";
 	checkinherits(cd, "coords");
 	if (!check_valid(cd))
 		warning("Formatting invalid coords!");
-	Coord c(get_coordtype(cd), cd);
+	CharacterVector out = wrap(Coord(get_coordtype(cd), cd).format_switch());
+	return out;
+}
 
-	switch (get_coordtype(cd))
-	{
-		case CoordType::decdeg:
-			return wrap(c.format<CoordType::decdeg>());
 
-		case CoordType::degmin:
-			return wrap(c.format<CoordType::degmin>());
-
-		case CoordType::degminsec:
-			return wrap(c.format<CoordType::degminsec>());
-
-		default:
-			stop("formatcoord(NumericVector) my bad");
-	}
+/// __________________________________________________
+/// Print coords vector - S3 method print.coords()
+//' @rdname coords
+// [[Rcpp::export(name = "print.coords", invisible = true)]]
+NumericVector printcoords(NumericVector cd)
+{
+	cout << "——Rcpp::export——printcoords(NumericVector) format " << get_fmt_attribute(cd) << endl;
+	checkinherits(cd, "coords");
+	if (!check_valid(cd))
+		warning("Printing invalid coords!");
+	Rcout << Coord(get_coordtype(cd), cd);
+	return cd;
 }
 
 
