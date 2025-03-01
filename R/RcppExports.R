@@ -150,11 +150,6 @@ coords <- function(nv, fmt = 1L) {
     .Call(`_Waypoint_latlon`, cd, value)
 }
 
-#' @rdname coords
-print.coords <- function(cd) {
-    invisible(.Call(`_Waypoint_printcoords`, cd))
-}
-
 #' @title Validate Coords or Waypoints
 #' 
 #' @name validate
@@ -245,6 +240,11 @@ validate.coords <- function(cd) {
 #' @rdname coords
 format.coords <- function(cd) {
     .Call(`_Waypoint_formatcoords`, cd)
+}
+
+#' @rdname coords
+print.coords <- function(cd) {
+    invisible(.Call(`_Waypoint_printcoords`, cd))
 }
 
 #' @title Geographic or GPS Waypoint Class

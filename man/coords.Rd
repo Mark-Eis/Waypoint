@@ -3,17 +3,17 @@
 \name{coords}
 \alias{coords}
 \alias{coords<-}
-\alias{print.coords}
 \alias{format.coords}
+\alias{print.coords}
 \title{Geographic or GPS Coordinate Class}
 \usage{
 coords(nv, fmt = 1L)
 
 coords(nv) <- value
 
-\method{print}{coords}(cd)
-
 \method{format}{coords}(cd)
+
+\method{print}{coords}(cd)
 }
 \arguments{
 \item{nv}{\code{numeric} vector of coordinate values, optionally named.}

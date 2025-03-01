@@ -682,7 +682,7 @@ void Coord::validate(bool warn) const
 template<CoordType type>
 vector<string> Coord::format() const
 {
-	cout << "@Coord::format<CoordType>() " << typeid(*this).name() << endl;
+//	cout << "@Coord::format<CoordType>() " << typeid(*this).name() << endl;
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), Format<type>(ff));
 	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<Coord, type>(ff, latlon));
@@ -694,7 +694,7 @@ vector<string> Coord::format() const
 /// Format coords vector<string>
 vector<string> Coord::format_switch() const
 {
-	cout << "@Coord::format_switch() " << typeid(*this).name() << endl;
+//	cout << "@Coord::format_switch() " << typeid(*this).name() << endl;
 	vector<string> sv; 
 	switch (ct)
 	{
@@ -721,7 +721,7 @@ vector<string> Coord::format_switch() const
 /// Print coords vector
 void Coord::print(ostream& stream) const
 {
-	cout << "@Coord::print() " << typeid(*this).name() << endl;
+//	cout << "@Coord::print() " << typeid(*this).name() << endl;
 	vector<string>&& sv = format_switch();
 	vector<string> names { get_vec_attr<NumericVector, string>(nv, "names") };
 	int strwdth = 0;
@@ -1340,12 +1340,11 @@ NumericVector validatecoords(NumericVector cd)
 // [[Rcpp::export(name = "format.coords")]]
 CharacterVector formatcoords(NumericVector cd)
 {
-	cout << "——Rcpp::export——formatcoords(NumericVector)\n";
+//	cout << "——Rcpp::export——formatcoords(NumericVector)\n";
 	checkinherits(cd, "coords");
 	if (!check_valid(cd))
 		warning("Formatting invalid coords!");
-	CharacterVector out = wrap(Coord(get_coordtype(cd), cd).format_switch());
-	return out;
+	return wrap(Coord(get_coordtype(cd), cd).format_switch());
 }
 
 
@@ -1355,7 +1354,7 @@ CharacterVector formatcoords(NumericVector cd)
 // [[Rcpp::export(name = "print.coords", invisible = true)]]
 NumericVector printcoords(NumericVector cd)
 {
-	cout << "——Rcpp::export——printcoords(NumericVector) format " << get_fmt_attribute(cd) << endl;
+//	cout << "——Rcpp::export——printcoords(NumericVector) format " << get_fmt_attribute(cd) << endl;
 	checkinherits(cd, "coords");
 	if (!check_valid(cd))
 		warning("Printing invalid coords!");
