@@ -76,7 +76,14 @@
 #' ## Show decimal degrees as a bare numeric vector
 #' as.numeric(dm)
 #'
-#' rm(dm)
+#' ## Convert to degrees and minutes, and format as a character vector
+#' coords(dm) <- 2
+#' (dm_chr <- format(dm))
+#'
+#' ## Output using {base} cat()
+#' cat(dm_chr, fill = 18, labels = paste0("{#", 1:16, "}:"))
+#'
+#' rm(dm, dm_chr)
 #'
 coords <- function(nv, fmt = 1L) {
     .Call(`_Waypoint_coords`, nv, fmt)
@@ -316,8 +323,8 @@ print.coords <- function(cd) {
 #'   individual latitude and longitude values are valid geographic locations.}
 #'
 #' @examples
-#' ## Dataframe representing waypoint names and latitude and
-#' ## longitude values in degrees, minutes and seconds
+#' ## Dataframe representing waypoint names, and latitude and longitude values
+#' ## of degrees, minutes and seconds
 #' wp1 <- data.frame(
 #'     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
 #'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
@@ -374,14 +381,19 @@ waypoints <- function(df, fmt = 1L) {
     .Call(`_Waypoint_waypoints_replace`, df, value)
 }
 
-#' @rdname waypoints
-print.waypoints <- function(wp) {
-    invisible(.Call(`_Waypoint_printwaypoints`, wp))
-}
-
 #' @rdname validate
 validate.waypoints <- function(df) {
     .Call(`_Waypoint_validatewaypoints`, df)
+}
+
+#' @rdname waypoints
+format.waypoints <- function(wp) {
+    .Call(`_Waypoint_formatwaypoints`, wp)
+}
+
+#' @rdname waypoints
+print.waypoints <- function(wp) {
+    invisible(.Call(`_Waypoint_printwaypoints`, wp))
 }
 
 as_coord <- function(df, latlon) {

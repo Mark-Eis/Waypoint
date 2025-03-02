@@ -3,12 +3,15 @@
 \name{waypoints}
 \alias{waypoints}
 \alias{waypoints<-}
+\alias{format.waypoints}
 \alias{print.waypoints}
 \title{Geographic or GPS Waypoint Class}
 \usage{
 waypoints(df, fmt = 1L)
 
 waypoints(df) <- value
+
+\method{format}{waypoints}(wp)
 
 \method{print}{waypoints}(wp)
 }
@@ -73,8 +76,8 @@ ensure they are valid geographic locations as described under
 is re-validated.
 }
 \examples{
-## Dataframe representing waypoint names and latitude and
-## longitude values in degrees, minutes and seconds
+## Dataframe representing waypoint names, and latitude and longitude values
+## of degrees, minutes and seconds
 wp1 <- data.frame(
     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),

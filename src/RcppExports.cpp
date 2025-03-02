@@ -103,17 +103,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// printwaypoints
-DataFrame printwaypoints(DataFrame wp);
-RcppExport SEXP _Waypoint_printwaypoints(SEXP wpSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< DataFrame >::type wp(wpSEXP);
-    rcpp_result_gen = Rcpp::wrap(printwaypoints(wp));
-    return rcpp_result_gen;
-END_RCPP
-}
 // validatewaypoints
 DataFrame validatewaypoints(DataFrame df);
 RcppExport SEXP _Waypoint_validatewaypoints(SEXP dfSEXP) {
@@ -122,6 +111,28 @@ BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
     rcpp_result_gen = Rcpp::wrap(validatewaypoints(df));
+    return rcpp_result_gen;
+END_RCPP
+}
+// formatwaypoints
+CharacterVector formatwaypoints(DataFrame wp);
+RcppExport SEXP _Waypoint_formatwaypoints(SEXP wpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< DataFrame >::type wp(wpSEXP);
+    rcpp_result_gen = Rcpp::wrap(formatwaypoints(wp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// printwaypoints
+DataFrame printwaypoints(DataFrame wp);
+RcppExport SEXP _Waypoint_printwaypoints(SEXP wpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< DataFrame >::type wp(wpSEXP);
+    rcpp_result_gen = Rcpp::wrap(printwaypoints(wp));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -149,8 +160,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Waypoint_printcoords", (DL_FUNC) &_Waypoint_printcoords, 1},
     {"_Waypoint_waypoints", (DL_FUNC) &_Waypoint_waypoints, 2},
     {"_Waypoint_waypoints_replace", (DL_FUNC) &_Waypoint_waypoints_replace, 2},
-    {"_Waypoint_printwaypoints", (DL_FUNC) &_Waypoint_printwaypoints, 1},
     {"_Waypoint_validatewaypoints", (DL_FUNC) &_Waypoint_validatewaypoints, 1},
+    {"_Waypoint_formatwaypoints", (DL_FUNC) &_Waypoint_formatwaypoints, 1},
+    {"_Waypoint_printwaypoints", (DL_FUNC) &_Waypoint_printwaypoints, 1},
     {"_Waypoint_as_coord", (DL_FUNC) &_Waypoint_as_coord, 2},
     {"_rcpp_module_boot_stdVector", (DL_FUNC) &_rcpp_module_boot_stdVector, 0},
     {NULL, NULL, 0}

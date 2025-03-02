@@ -1142,7 +1142,14 @@ void convene(T t, CoordType newtype)
 //' ## Show decimal degrees as a bare numeric vector
 //' as.numeric(dm)
 //'
-//' rm(dm)
+//' ## Convert to degrees and minutes, and format as a character vector
+//' coords(dm) <- 2
+//' (dm_chr <- format(dm))
+//'
+//' ## Output using {base} cat()
+//' cat(dm_chr, fill = 18, labels = paste0("{#", 1:16, "}:"))
+//'
+//' rm(dm, dm_chr)
 //'
 // [[Rcpp::export]]
 NumericVector coords(NumericVector nv, const int fmt = 1)
