@@ -1214,7 +1214,7 @@ NumericVector coords_replace(NumericVector nv, int value)
 //' dm
 //'
 //' ## Reversing latitude and longitude results in an
-//' ## invalid longitude value and a warning
+//' ## invalid latitude value and a warning
 //' latlon(dm) <- rep(c(FALSE, TRUE), each = 8)
 //' dm
 //'
