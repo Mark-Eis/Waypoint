@@ -105,8 +105,9 @@ CharacterVector formatcoord(NumericVector);
 NumericVector printcoord(NumericVector);
 DataFrame waypoints(DataFrame, int);
 DataFrame waypoints_replace(DataFrame, int);
-DataFrame printwaypoint(DataFrame);
 DataFrame validatewaypoint(DataFrame);
+CharacterVector formatwaypoint(NumericVector);
+DataFrame printwaypoint(DataFrame);
 NumericVector as_coord(DataFrame, bool);
 
 
@@ -826,7 +827,7 @@ vector<string> WayPoint::format() const
 
 
 /// __________________________________________________
-/// Format coords vector<string> CoordType switch 
+/// Format waypoints vector<string> CoordType switch 
 vector<string> WayPoint::format_switch() const
 {
 //	cout << "@WayPoint::format_switch() " << typeid(*this).name() << endl;
@@ -1446,8 +1447,8 @@ NumericVector printcoords(NumericVector cd)
 //'   individual latitude and longitude values are valid geographic locations.}
 //'
 //' @examples
-//' ## Dataframe representing waypoint names and latitude and
-//' ## longitude values in degrees, minutes and seconds
+//' ## Dataframe representing waypoint names, and latitude and longitude values
+//' ## of degrees, minutes and seconds
 //' wp1 <- data.frame(
 //'     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
 //'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
@@ -1545,23 +1546,6 @@ DataFrame waypoints_replace(DataFrame df, int value)
 
 
 /// __________________________________________________
-/// Print waypoints vector - S3 method print.waypoints()
-//' @rdname waypoints
-// [[Rcpp::export(name = "print.waypoints", invisible = true)]]
-DataFrame printwaypoints(DataFrame wp)
-{
-//	cout << "——Rcpp::export——printwaypoints(DataFrame) format " << get_fmt_attribute(wp) << endl;
-	checkinherits(wp, "waypoints");
-	if(!valid_ll(wp))
-		stop("Invalid llcols attribute!");
-	if (!check_valid(wp))
-		warning("Invalid waypoints!");
-	Rcout << WayPoint(get_coordtype(wp), wp);	
-	return wp;
-}
-
-
-/// __________________________________________________
 /// Validate waypoints vector
 //' @rdname validate
 // [[Rcpp::export(name = "validate.waypoints")]]
@@ -1572,6 +1556,39 @@ DataFrame validatewaypoints(DataFrame df)
 	if(!valid_ll(df))
 		stop("Invalid llcols attribute!");
 	return validate<DataFrame, WayPoint>(df);
+}
+
+
+/// __________________________________________________
+/// Format waypoints vector - S3 method format.waypoints()
+//' @rdname waypoints
+// [[Rcpp::export(name = "format.waypoints")]]
+CharacterVector formatwaypoints(DataFrame wp)
+{
+//	cout << "——Rcpp::export——formatwaypoints(NumericVector)\n";
+	checkinherits(wp, "waypoints");
+	if(!valid_ll(wp))
+		stop("Invalid llcols attribute!");
+	if (!check_valid(wp))
+		warning("Formatting invalid waypoints!");
+	return wrap(WayPoint(get_coordtype(wp), wp).format_switch());
+}
+
+
+/// __________________________________________________
+/// Print waypoints vector - S3 method print.waypoints()
+//' @rdname waypoints
+// [[Rcpp::export(name = "print.waypoints", invisible = true)]]
+DataFrame printwaypoints(DataFrame wp)
+{
+//	cout << "——Rcpp::export——printwaypoints(DataFrame) format " << get_fmt_attribute(wp) << endl;
+	checkinherits(wp, "waypoints");
+	if(!valid_ll(wp))
+		stop("Invalid llcols attribute!");
+	if (!check_valid(wp))
+		warning("Printing Invalid waypoints!");
+	Rcout << WayPoint(get_coordtype(wp), wp);	
+	return wp;
 }
 
 
