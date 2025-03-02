@@ -95,8 +95,11 @@ bool valid_ll(const DataFrame);
 template<class T, class U>
 void convene(T, CoordType newtype);
 
-template<CoordType newtype>
-inline void convert(CoordType, NumericVector);
+template<class T, class U>
+void convert_switch(T, CoordType);
+
+//template<CoordType newtype>
+//inline void convert(CoordType, NumericVector);
 template<CoordType newtype>
 inline void convert(CoordType, DataFrame);
 
@@ -677,6 +680,8 @@ class Coord : public Coordbase {
 		~Coord() = default;
 //		~Coord() { cout << "§Coord::~Coord() "; _ctrsgn(typeid(*this), true); }
 
+		template<CoordType type>
+		void convert(NumericVector) const;
 		void validate(bool warn = true) const;
 		template<CoordType type>
 		vector<string> format() const;
@@ -689,6 +694,16 @@ Coord::Coord(CoordType ct, const NumericVector nv) :
 	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") } //,
 {
 //	cout << "§Coord::Coord(CoordType, const NumericVector) "; _ctrsgn(typeid(*this));
+}
+
+
+/// __________________________________________________
+/// Convert NumericVector coordinate format
+template<CoordType newtype>
+inline void Coord::convert(NumericVector new_nv) const
+{
+	cout << "@Coord::convert<CoordType>(NumericVector) newtype " << coordtype_to_int(newtype) + 1 << endl;
+	transform(nv.begin(), nv.end(), new_nv.begin(), Convertor<newtype>(ff));
 }
 
 
@@ -978,13 +993,13 @@ bool valid_ll(const DataFrame df)
 /// __________________________________________________
 /// __________________________________________________
 /// Conversion functions
-
+/*
 template<CoordType newtype>
 inline void convert(CoordType type, NumericVector nv)
 {
-//	cout << "@convert<CoordType>(const Coord&, NumericVector) newtype " << coordtype_to_int(newtype) + 1 << endl;
+	cout << "@convert<CoordType>(const Coord&, NumericVector) newtype " << coordtype_to_int(newtype) + 1 << endl;
 	transform(nv.begin(), nv.end(), nv.begin(), Convertor<newtype>(*vff[coordtype_to_int(type)]));
-}
+} */
 
 
 template<CoordType newtype>
@@ -1004,7 +1019,7 @@ inline void convert(CoordType type, DataFrame df)
 template<class T, class U>
 void convene(T t, CoordType newtype)
 {
-//	cout << "@convene<T&, U>(T, CoordType)\n";
+	cout << "@convene<T&, U>(T, CoordType)\n";
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	CoordType type = get_coordtype(t);
 	U(type, t).validate();
@@ -1026,6 +1041,40 @@ void convene(T t, CoordType newtype)
 
 			default:
 				stop("convene<T&, U>(const T&, U) my bad");
+		}
+		t.attr("fmt") = coordtype_to_int(newtype) + 1;
+	}
+}
+
+
+/// __________________________________________________
+/// Convert coords or waypoints format CoordType switch 
+template<class T, class U>
+void convert_switch(T t, CoordType newtype)
+{
+	cout << "@convert_switch<T&, U>(T, CoordType)\n";
+	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
+	CoordType type = get_coordtype(t);
+	U u(type, t);
+	u.validate();
+
+	if (type != newtype) {
+		switch (newtype)
+		{
+			case CoordType::decdeg:
+				u.template convert<CoordType::decdeg>(t);
+				break;
+
+			case CoordType::degmin:
+				u.template convert<CoordType::degmin>(t);
+				break;
+
+			case CoordType::degminsec:
+				u.template convert<CoordType:: degminsec>(t);
+				break;
+
+			default:
+				stop("convert_switch<T&, U>(const T&, U) my bad");
 		}
 		t.attr("fmt") = coordtype_to_int(newtype) + 1;
 	}
@@ -1126,7 +1175,7 @@ void convene(T t, CoordType newtype)
 // [[Rcpp::export]]
 NumericVector coords(NumericVector nv, const int fmt = 1)
 {
-//	cout << "——Rcpp::export——coords(NumericVector)\n";
+	cout << "——Rcpp::export——coords(NumericVector)\n";
 	CoordType newtype = get_coordtype(fmt);
 	CoordType type;
 	if (nv.inherits("coords")) {
@@ -1143,7 +1192,8 @@ NumericVector coords(NumericVector nv, const int fmt = 1)
 		nv.attr("fmt") = fmt;
 	}
 
-	convene<NumericVector, Coord>(nv, newtype);
+//	convene<NumericVector, Coord>(nv, newtype);
+	convert_switch<NumericVector, Coord>(nv, newtype);
 	nv.attr("class") = "coords";
 	return nv;
 }
@@ -1155,7 +1205,7 @@ NumericVector coords(NumericVector nv, const int fmt = 1)
 // [[Rcpp::export(name = "`coords<-`")]]
 NumericVector coords_replace(NumericVector nv, int value)
 {
-//	cout << "——Rcpp::export——`coords_replace(NumericVector, int)<-`\n";
+	cout << "——Rcpp::export——`coords_replace(NumericVector, int)<-`\n";
 	return coords(nv, value);
 }
 
