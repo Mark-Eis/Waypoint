@@ -123,6 +123,13 @@ wp2
 ## Show degrees, minutes and seconds as a bare data frame
 as.data.frame(wp2)
 
+## Convert to decimal degrees, and format as a character vector
+waypoints(wp2) <- 1
+(wp2_chr <- format(wp2))
+
+## Output using {base} cat()
+cat(wp2_chr, fill = 26, labels = paste0("{#", 1:8, "}:"))
+
 rm(wp1, wp2)
 
 }
