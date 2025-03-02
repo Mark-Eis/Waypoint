@@ -678,7 +678,7 @@ void Coord::validate(bool warn) const
 
 
 /// __________________________________________________
-/// Format coordinates as vector<string>
+/// Format coordinates as vector<string> of CoordType
 template<CoordType type>
 vector<string> Coord::format() const
 {
@@ -691,7 +691,7 @@ vector<string> Coord::format() const
 
 
 /// __________________________________________________
-/// Format coords vector<string>
+/// Format coords vector<string> CoordType switch 
 vector<string> Coord::format_switch() const
 {
 //	cout << "@Coord::format_switch() " << typeid(*this).name() << endl;
@@ -762,6 +762,7 @@ class WayPoint : public Coordbase {
 		void validate(bool = true) const;
 		template<CoordType type>
 		vector<string> format() const;
+		vector<string> format_switch() const;
 		void print(ostream& stream) const;
 };
 
@@ -806,7 +807,7 @@ void WayPoint::validate(bool warn) const
 
 
 /// __________________________________________________
-/// Formatted character strings for printing
+/// Format waypoints as vector<string> of CoordType
 template<CoordType type>
 vector<string> WayPoint::format() const
 {
@@ -821,6 +822,33 @@ vector<string> WayPoint::format() const
 	vector<string> out(sv_lat.size());
 	transform(sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(), [](string& latstr, string& lonstr) { return latstr + "  " + lonstr; });
 	return out;
+}
+
+
+/// __________________________________________________
+/// Format coords vector<string> CoordType switch 
+vector<string> WayPoint::format_switch() const
+{
+//	cout << "@WayPoint::format_switch() " << typeid(*this).name() << endl;
+	vector<string> sv; 
+	switch (ct)
+	{
+		case CoordType::decdeg:
+			sv = format<CoordType::decdeg>();
+			break;
+
+		case CoordType::degmin:
+			sv = format<CoordType::degmin>();
+			break;
+
+		case CoordType::degminsec:
+			sv = format<CoordType::degminsec>();
+			break;
+
+		default:
+			stop("WayPoint::format_switch(ostream&) my bad");
+	}
+	return sv;
 }
 
 
@@ -841,24 +869,7 @@ void WayPoint::print(ostream& stream) const
 	ostrstr	<< string(spacing[i + 3], '_') << string(2, ' ') << string(spacing[i + 3] + 1, '_');
 	ttlvec.push_back(ostrstr.str());
 
-	vector<string> sv; 
-	switch (ct)
-	{
-		case CoordType::decdeg:
-			sv = format<CoordType::decdeg>();
-			break;
-
-		case CoordType::degmin:
-			sv = format<CoordType::degmin>();
-			break;
-
-		case CoordType::degminsec:
-			sv = format<CoordType::degminsec>();
-			break;
-
-		default:
-			stop("WayPoint::print(ostream&) my bad");
-	}
+	vector<string>&& sv = format_switch();
 
 	vector<int> namescolvec { get_vec_attr<DataFrame, int>(df, "namescol") };
 	if (1 == namescolvec.size()) {
