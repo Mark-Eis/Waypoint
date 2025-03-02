@@ -727,7 +727,7 @@ vector<string> Coord::format() const
 void Coord::print(ostream& stream) const
 {
 //	cout << "@Coord::print() " << typeid(*this).name() << endl;
-	vector<string>&& sv = ::format_switch(*this, ct);
+	vector<string>&& sv = format_switch(*this, ct);
 	vector<string> names { get_vec_attr<NumericVector, string>(nv, "names") };
 	int strwdth = 0;
 	if (names.size()) {
@@ -767,7 +767,6 @@ class WayPoint : public Coordbase {
 		void validate(bool = true) const;
 		template<CoordType type>
 		vector<string> format() const;
-		vector<string> format_switch() const;
 		void print(ostream& stream) const;
 };
 
@@ -831,33 +830,6 @@ vector<string> WayPoint::format() const
 
 
 /// __________________________________________________
-/// Format waypoints vector<string> CoordType switch 
-vector<string> WayPoint::format_switch() const
-{
-//	cout << "@WayPoint::format_switch() " << typeid(*this).name() << endl;
-	vector<string> sv; 
-	switch (ct)
-	{
-		case CoordType::decdeg:
-			sv = format<CoordType::decdeg>();
-			break;
-
-		case CoordType::degmin:
-			sv = format<CoordType::degmin>();
-			break;
-
-		case CoordType::degminsec:
-			sv = format<CoordType::degminsec>();
-			break;
-
-		default:
-			stop("WayPoint::format_switch() my bad");
-	}
-	return sv;
-}
-
-
-/// __________________________________________________
 /// Print WayPoint
 void WayPoint::print(ostream& stream) const
 {
@@ -874,7 +846,7 @@ void WayPoint::print(ostream& stream) const
 	ostrstr	<< string(spacing[i + 3], '_') << string(2, ' ') << string(spacing[i + 3] + 1, '_');
 	ttlvec.push_back(ostrstr.str());
 
-	vector<string>&& sv = format_switch();
+	vector<string>&& sv = format_switch(*this, ct);
 
 	vector<int> namescolvec { get_vec_attr<DataFrame, int>(df, "namescol") };
 	if (1 == namescolvec.size()) {
@@ -1583,7 +1555,9 @@ CharacterVector formatwaypoints(DataFrame wp)
 		stop("Invalid llcols attribute!");
 	if (!check_valid(wp))
 		warning("Formatting invalid waypoints!");
-	return wrap(WayPoint(get_coordtype(wp), wp).format_switch());
+//	return wrap(WayPoint(get_coordtype(wp), wp).format_switch());
+	CoordType ct = get_coordtype(wp);
+	return wrap(format_switch(WayPoint(ct, wp), ct));
 }
 
 
