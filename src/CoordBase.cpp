@@ -683,7 +683,7 @@ void Coord::validate(bool warn) const
 template<CoordType type>
 vector<string> Coord::format() const
 {
-//	cout << "@Coord::format<CoordType>() " << typeid(*this).name() << endl;
+	cout << "@Coord::format<CoordType>() " << typeid(*this).name() << endl;
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), Format<type>(ff));
 	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<Coord, type>(ff, latlon));
@@ -693,9 +693,37 @@ vector<string> Coord::format() const
 
 /// __________________________________________________
 /// Format coords vector<string> CoordType switch 
+template<class T>
+vector<string> format_switch(const T& t, CoordType ct)
+{
+	cout << "@format_switch<T>(const T&, CoordType) " << typeid(t).name() << endl;
+	vector<string> sv; 
+	switch (ct)
+	{
+		case CoordType::decdeg:
+			sv = t.template format<CoordType::decdeg>();
+			break;
+
+		case CoordType::degmin:
+			sv = t.template format<CoordType::degmin>();
+			break;
+
+		case CoordType::degminsec:
+			sv = t.template format<CoordType::degminsec>();
+			break;
+
+		default:
+			stop("format_switch(const T&, CoordType) my bad");
+	}
+	return sv;
+}
+
+
+/// __________________________________________________
+/// Format coords vector<string> CoordType switch 
 vector<string> Coord::format_switch() const
 {
-//	cout << "@Coord::format_switch() " << typeid(*this).name() << endl;
+	cout << "@Coord::format_switch() " << typeid(*this).name() << endl;
 	vector<string> sv; 
 	switch (ct)
 	{
@@ -712,7 +740,7 @@ vector<string> Coord::format_switch() const
 			break;
 
 		default:
-			stop("Coord::format_switch(ostream&) my bad");
+			stop("Coord::format_switch() my bad");
 	}
 	return sv;
 }
@@ -722,8 +750,9 @@ vector<string> Coord::format_switch() const
 /// Print coords vector
 void Coord::print(ostream& stream) const
 {
-//	cout << "@Coord::print() " << typeid(*this).name() << endl;
-	vector<string>&& sv = format_switch();
+	cout << "@Coord::print() " << typeid(*this).name() << endl;
+//	vector<string>&& sv = format_switch();
+	vector<string>&& sv = ::format_switch(*this, ct);
 	vector<string> names { get_vec_attr<NumericVector, string>(nv, "names") };
 	int strwdth = 0;
 	if (names.size()) {
@@ -738,7 +767,7 @@ void Coord::print(ostream& stream) const
 /// Output Coord derived object to ostream
 ostream& operator<<(ostream& stream, const Coord& c)
 {
-//	cout << "@operator<<(ostream&, const Coord&)\n";
+	cout << "@operator<<(ostream&, const Coord&)\n";
 	c.print(stream);
 	return stream;
 }
@@ -847,7 +876,7 @@ vector<string> WayPoint::format_switch() const
 			break;
 
 		default:
-			stop("WayPoint::format_switch(ostream&) my bad");
+			stop("WayPoint::format_switch() my bad");
 	}
 	return sv;
 }
@@ -1352,11 +1381,18 @@ NumericVector validatecoords(NumericVector cd)
 // [[Rcpp::export(name = "format.coords")]]
 CharacterVector formatcoords(NumericVector cd)
 {
-//	cout << "——Rcpp::export——formatcoords(NumericVector)\n";
+	cout << "——Rcpp::export——formatcoords(NumericVector)\n";
 	checkinherits(cd, "coords");
 	if (!check_valid(cd))
 		warning("Formatting invalid coords!");
-	return wrap(Coord(get_coordtype(cd), cd).format_switch());
+	CoordType ct = get_coordtype(cd);
+//	Coord c(ct, cd);
+//	vector<string>&& sv = format_switch(c, ct);
+//	CharacterVector out = wrap(sv);
+//	return out;
+//	return wrap(sv);
+//	return wrap(format_switch(c, ct));
+	return wrap(format_switch(Coord(ct, cd), ct));
 }
 
 
@@ -1366,7 +1402,7 @@ CharacterVector formatcoords(NumericVector cd)
 // [[Rcpp::export(name = "print.coords", invisible = true)]]
 NumericVector printcoords(NumericVector cd)
 {
-//	cout << "——Rcpp::export——printcoords(NumericVector) format " << get_fmt_attribute(cd) << endl;
+	cout << "——Rcpp::export——printcoords(NumericVector) format " << get_fmt_attribute(cd) << endl;
 	checkinherits(cd, "coords");
 	if (!check_valid(cd))
 		warning("Printing invalid coords!");
