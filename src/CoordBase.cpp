@@ -1111,7 +1111,7 @@ void convene(T t, CoordType newtype)
 //' coords(dm) <- 1
 //' dm
 //'
-//' ## Show decimal degrees as a bare numeric vector
+//' ## Decimal degrees as a standard numeric vector
 //' as.numeric(dm)
 //'
 //' ## Convert to degrees and minutes, and format as a character vector
@@ -1475,7 +1475,7 @@ NumericVector printcoords(NumericVector cd)
 //' waypoints(wp2) <- 3
 //' wp2
 //'
-//' ## Show degrees, minutes and seconds as a bare data frame
+//' ## Degrees, minutes and seconds as a standard data frame
 //' as.data.frame(wp2)
 //'
 //' ## Convert to decimal degrees, and format as a character vector

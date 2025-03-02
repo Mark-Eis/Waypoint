@@ -78,7 +78,7 @@ dm
 coords(dm) <- 1
 dm
 
-## Show decimal degrees as a bare numeric vector
+## Decimal degrees as a standard numeric vector
 as.numeric(dm)
 
 ## Convert to degrees and minutes, and format as a character vector
