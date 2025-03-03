@@ -149,8 +149,6 @@ BEGIN_RCPP
 END_RCPP
 }
 
-RcppExport SEXP _rcpp_module_boot_stdVector();
-
 static const R_CallMethodDef CallEntries[] = {
     {"_Waypoint_coords", (DL_FUNC) &_Waypoint_coords, 2},
     {"_Waypoint_coords_replace", (DL_FUNC) &_Waypoint_coords_replace, 2},
@@ -164,7 +162,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Waypoint_formatwaypoints", (DL_FUNC) &_Waypoint_formatwaypoints, 1},
     {"_Waypoint_printwaypoints", (DL_FUNC) &_Waypoint_printwaypoints, 1},
     {"_Waypoint_as_coord", (DL_FUNC) &_Waypoint_as_coord, 2},
-    {"_rcpp_module_boot_stdVector", (DL_FUNC) &_rcpp_module_boot_stdVector, 0},
     {NULL, NULL, 0}
 };
 
