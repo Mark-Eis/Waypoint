@@ -21,11 +21,11 @@ or attributes \code{"validlat"} and \code{"validlon"} updated as appropriate for
 \code{"coords"} and' \code{"waypoints"} objects respectively.
 }
 \description{
-\code{validate()} validate objects of class \code{"coords"} or \code{"waypoints"}.
+\code{validate()} validates objects of class \code{"coords"} or \code{"waypoints"}.
 }
 \details{
 Individual coordinate values within \code{\link[=coords]{"coords"}} or
-\code{\link[=waypoints]{"waypoints"}} objects are validated to ensure their being plausible
+\code{\link[=waypoints]{"waypoints"}} objects are checked to ensure they represent valid
 geographic locations.
 
 To be valid, the absolute values of coordinates in degrees must not exceed 180, or 90 if degrees
@@ -90,4 +90,8 @@ rm(dm, wp1)
 }
 \seealso{
 \code{\link[=coords]{"coords"}} and \code{\link[=waypoints]{"waypoints"}}.
+
+Other validate: 
+\code{\link{review}()}
 }
+\concept{validate}

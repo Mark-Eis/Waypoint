@@ -1243,11 +1243,11 @@ NumericVector latlon(NumericVector cd, LogicalVector& value)
 //' @name validate
 //' 
 //' @description
-//' \code{validate()} validate objects of class \code{"coords"} or \code{"waypoints"}.
+//' \code{validate()} validates objects of class \code{"coords"} or \code{"waypoints"}.
 //'
 //' @details
 //' Individual coordinate values within \code{\link[=coords]{"coords"}} or
-//' \code{\link[=waypoints]{"waypoints"}} objects are validated to ensure their being plausible
+//' \code{\link[=waypoints]{"waypoints"}} objects are checked to ensure they represent valid
 //' geographic locations.
 //'
 //' To be valid, the absolute values of coordinates in degrees must not exceed 180, or 90 if degrees
@@ -1257,6 +1257,7 @@ NumericVector latlon(NumericVector cd, LogicalVector& value)
 //' attributes in the case of a \code{"waypoints"} object will be set to \code{FALSE} for any
 //' non-compliant coordinate values.
 //'
+//' @family validate
 //' @seealso
 //' \code{\link[=coords]{"coords"}} and \code{\link[=waypoints]{"waypoints"}}.
 //'

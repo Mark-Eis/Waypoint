@@ -8,7 +8,7 @@
 
 # ========================================
 #  Validate Coordinates and Waypoints
-#  S3generic validate()
+#  S3generic validate(x, ...)
 #
 #' @export
 
@@ -17,22 +17,55 @@ validate <- function(x, ...)
     
 
 # ========================================
-#  Analyse Coordinates and Waypoints
-#  S3generic checkvalid()
-#
-#' @export
-
-checkvalid <- function(x, ...) 
-    UseMethod("checkvalid")
-
-
-# ========================================
-#  Analyse Coordinates
-#  S3method checkvalid.coords()
+#' @title
+#' Review Coordinates and Waypoints
+#'
+#' @description
+#' Review validity of elements of \code{"coords"} and  \code{"waypoints"} objects
+#'
+#' @details
+#' \code{review()} reveals elements of \code{"coords"} and  \code{"waypoints"} objects that do not
+#' conform to the criteria checked by \code{\link[=validate]{validate}()}, i.e. are not valid
+#' geographic locations.
+#'
+#' @family validate
+#' @seealso
+#' \code{\link[=coords]{"coords"}} and \code{\link[=waypoints]{"waypoints"}}.
+#'
+#' @param x object of class \code{"coords"} or \code{"waypoints"}.
+#'
+#' @param show_n \code{integer}, the maximum number of invalid elements of argument \code{x} to
+#' include in the output; default \code{20L}.
+#'
+#' @param ... further arguments passed to or from other methods.
+#'
+#' @return
+#' A \code{list} comprising the following components: -
+#'
+#' \item{allvalid}{\code{logical}, whether or not all the elements of argument \code{x} are valid.}
+#' \item{n_invalid}{\code{integer}, the number of invalid elements in argument \code{x}, if any.}
+#' \item{invalids}{\code{numeric} vector including invalid elements of argument \code{x}, if any.}
+#' \item{which_invalid}{\code{integer} vector specifying which elements of argument \code{x} are
+#' 	 invalid, if any.}
 #'
 #' @export
 
-checkvalid.coords <- function(x, ..., show_n = 20) {
+# ========================================
+#  Review Coordinates and Waypoints
+#  S3generic review(x, ...)
+#
+review <- function(x, ...) 
+    UseMethod("review")
+
+
+# ========================================
+#  Review Coordinates and Waypoints
+#  S3method review.coords(x, ...)
+#'
+#' @rdname review
+#' @export
+
+review.coords <- function(x, ..., show_n = 20L) {
     if (!inherits(x, "coords"))
         stop("Argument `coords` must have class `\"coords\"`\n", call. = FALSE)
     invalid <- !attr(x, "valid")
@@ -47,7 +80,7 @@ checkvalid.coords <- function(x, ..., show_n = 20) {
         tmp <- lapply(attributes(x), \(x) x[seq_len(min(length(x), last_invalid))])
         x <- x[seq_len(last_invalid)]
         attributes(x) <- tmp
-        return(checkvalid(x, show_n))
+        return(review(x, show_n))
     }
     fmt <- attr(x, "fmt");
     if (n_invalid) {
@@ -108,13 +141,4 @@ checkvalid.coords <- function(x, ..., show_n = 20) {
 
 `%L%` <- function (x, y) 
 if (length(x)) x else y
-
-#' Work in progress
-#'
-
-which_ll <- function(candidate = c("latitude", "longitude"))
-{
-    candidate <- tolower(candidate)
-    match.arg(candidate)
-}
 
