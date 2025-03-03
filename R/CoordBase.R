@@ -32,7 +32,7 @@ checkvalid <- function(x, ...)
 #'
 #' @export
 
-checkvalid.coords <- function(x, show_n = 20) {
+checkvalid.coords <- function(x, ..., show_n = 20) {
     if (!inherits(x, "coords"))
         stop("Argument `coords` must have class `\"coords\"`\n", call. = FALSE)
     invalid <- !attr(x, "valid")
