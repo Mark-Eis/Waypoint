@@ -26,7 +26,7 @@ coordinate format (see \emph{Details}); default 1L.}
 \item{x}{an object of class \code{"waypoints"} created by function
 \code{\link[=waypoints]{waypoints}()}.}
 
-\item{...}{further arguments passed to or from other methods.}
+\item{\dots}{further arguments passed to or from other methods.}
 }
 \value{
 An object of classes \code{"waypoints"} and \code{"data.frame"}, comprising the original data

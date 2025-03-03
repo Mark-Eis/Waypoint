@@ -23,7 +23,7 @@ format; default 1L.}
 
 \item{x}{object of class \code{"coords"} created by function \code{\link[=coords]{coords}()}.}
 
-\item{...}{further arguments passed to or from other methods.}
+\item{\dots}{further arguments passed to or from other methods.}
 }
 \value{
 An object of class \code{"coords"}, comprising the original a \code{numeric} vector argument

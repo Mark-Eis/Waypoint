@@ -37,7 +37,7 @@ validate <- function(x, ...)
 #' @param show_n \code{integer}, the maximum number of invalid elements of argument \code{x} to
 #' include in the output; default \code{20L}.
 #'
-#' @param ... further arguments passed to or from other methods.
+#' @param \dots further arguments passed to or from other methods.
 #'
 #' @return
 #' A \code{list} comprising the following components: -

@@ -13,7 +13,7 @@
 \arguments{
 \item{x}{object of class \code{"coords"} or \code{"waypoints"}.}
 
-\item{...}{further arguments passed to or from other methods.}
+\item{\dots}{further arguments passed to or from other methods.}
 }
 \value{
 \code{validate()} returns its argument with \code{logical} vector attribute \code{"valid"},

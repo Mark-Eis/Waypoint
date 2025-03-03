@@ -45,7 +45,7 @@
 #'
 #' @param x object of class \code{"coords"} created by function \code{\link[=coords]{coords}()}.
 #'
-#' @param ... further arguments passed to or from other methods.
+#' @param \dots further arguments passed to or from other methods.
 #'
 #' @return
 #' An object of class \code{"coords"}, comprising the original a \code{numeric} vector argument
@@ -184,7 +184,7 @@ coords <- function(nv, fmt = 1L) {
 #'
 #' @param x object of class \code{"coords"} or \code{"waypoints"}.
 #'
-#' @param ... further arguments passed to or from other methods.
+#' @param \dots further arguments passed to or from other methods.
 #'
 #' @return
 #' \code{validate()} returns its argument with \code{logical} vector attribute \code{"valid"},
@@ -315,7 +315,7 @@ print.coords <- function(x, ...) {
 #' @param x an object of class \code{"waypoints"} created by function
 #' \code{\link[=waypoints]{waypoints}()}.
 #'
-#' @param ... further arguments passed to or from other methods.
+#' @param \dots further arguments passed to or from other methods.
 #'
 #' @return
 #' An object of classes \code{"waypoints"} and \code{"data.frame"}, comprising the original data

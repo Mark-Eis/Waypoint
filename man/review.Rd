@@ -12,7 +12,7 @@ review(x, ...)
 \arguments{
 \item{x}{object of class \code{"coords"} or \code{"waypoints"}.}
 
-\item{...}{further arguments passed to or from other methods.}
+\item{\dots}{further arguments passed to or from other methods.}
 
 \item{show_n}{\code{integer}, the maximum number of invalid elements of argument \code{x} to
 include in the output; default \code{20L}.}
