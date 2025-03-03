@@ -11,9 +11,9 @@ coords(nv, fmt = 1L)
 
 coords(nv) <- value
 
-\method{format}{coords}(cd)
+\method{format}{coords}(x, ...)
 
-\method{print}{coords}(cd)
+\method{print}{coords}(x, ...)
 }
 \arguments{
 \item{nv}{\code{numeric} vector of coordinate values, optionally named.}
@@ -21,7 +21,9 @@ coords(nv) <- value
 \item{fmt, value}{\code{integer}, 1L, 2L or 3L, indicating the current or desired coordinate
 format; default 1L.}
 
-\item{cd}{object of class \code{"coords"} created by function \code{\link[=coords]{coords}()}.}
+\item{x}{object of class \code{"coords"} created by function \code{\link[=coords]{coords}()}.}
+
+\item{...}{further arguments passed to or from other methods.}
 }
 \value{
 An object of class \code{"coords"}, comprising the original a \code{numeric} vector argument

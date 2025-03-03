@@ -43,7 +43,9 @@
 #' @param fmt,value \code{integer}, 1L, 2L or 3L, indicating the current or desired coordinate
 #'   format; default 1L.
 #'
-#' @param cd object of class \code{"coords"} created by function \code{\link[=coords]{coords}()}.
+#' @param x object of class \code{"coords"} created by function \code{\link[=coords]{coords}()}.
+#'
+#' @param ... further arguments passed to or from other methods.
 #'
 #' @return
 #' An object of class \code{"coords"}, comprising the original a \code{numeric} vector argument
@@ -147,7 +149,7 @@ coords <- function(nv, fmt = 1L) {
 #' dm
 #'
 #' ## Reversing latitude and longitude results in an
-#' ## invalid longitude value and a warning
+#' ## invalid latitude value and a warning
 #' latlon(dm) <- rep(c(FALSE, TRUE), each = 8)
 #' dm
 #'
@@ -179,9 +181,9 @@ coords <- function(nv, fmt = 1L) {
 #' @seealso
 #' \code{\link[=coords]{"coords"}} and \code{\link[=waypoints]{"waypoints"}}.
 #'
-#' @param cd object of class \code{"coords"}.
+#' @param x object of class \code{"coords"} or \code{"waypoints"}.
 #'
-#' @param df object of class \code{"waypoints"}.
+#' @param ... further arguments passed to or from other methods.
 #'
 #' @return
 #' \code{validate()} returns its argument with \code{logical} vector attribute \code{"valid"},
@@ -240,18 +242,18 @@ coords <- function(nv, fmt = 1L) {
 #'
 #' rm(dm, wp1)
 #'
-validate.coords <- function(cd) {
-    .Call(`_Waypoint_validatecoords`, cd)
+validate.coords <- function(x, ...) {
+    .Call(`_Waypoint_validatecoords`, x)
 }
 
 #' @rdname coords
-format.coords <- function(cd) {
-    .Call(`_Waypoint_formatcoords`, cd)
+format.coords <- function(x, ...) {
+    .Call(`_Waypoint_formatcoords`, x)
 }
 
 #' @rdname coords
-print.coords <- function(cd) {
-    invisible(.Call(`_Waypoint_printcoords`, cd))
+print.coords <- function(x, ...) {
+    invisible(.Call(`_Waypoint_printcoords`, x))
 }
 
 #' @title Geographic or GPS Waypoint Class
@@ -309,8 +311,10 @@ print.coords <- function(cd) {
 #' @param fmt,value an \code{integer} of value 1L, 2L or 3L, indicating the current or desired
 #'   coordinate format (see \emph{Details}); default 1L.
 #'
-#' @param wp an object of class \code{"waypoints"} created by function
+#' @param x an object of class \code{"waypoints"} created by function
 #' \code{\link[=waypoints]{waypoints}()}.
+#'
+#' @param ... further arguments passed to or from other methods.
 #'
 #' @return
 #' An object of classes \code{"waypoints"} and \code{"data.frame"}, comprising the original data
@@ -389,18 +393,18 @@ waypoints <- function(df, fmt = 1L) {
 }
 
 #' @rdname validate
-validate.waypoints <- function(df) {
-    .Call(`_Waypoint_validatewaypoints`, df)
+validate.waypoints <- function(x, ...) {
+    .Call(`_Waypoint_validatewaypoints`, x)
 }
 
 #' @rdname waypoints
-format.waypoints <- function(wp) {
-    .Call(`_Waypoint_formatwaypoints`, wp)
+format.waypoints <- function(x, ...) {
+    .Call(`_Waypoint_formatwaypoints`, x)
 }
 
 #' @rdname waypoints
-print.waypoints <- function(wp) {
-    invisible(.Call(`_Waypoint_printwaypoints`, wp))
+print.waypoints <- function(x, ...) {
+    invisible(.Call(`_Waypoint_printwaypoints`, x))
 }
 
 as_coord <- function(df, latlon) {

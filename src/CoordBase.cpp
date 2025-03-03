@@ -1080,7 +1080,9 @@ bool valid_ll(const DataFrame df)
 //' @param fmt,value \code{integer}, 1L, 2L or 3L, indicating the current or desired coordinate
 //'   format; default 1L.
 //'
-//' @param cd object of class \code{"coords"} created by function \code{\link[=coords]{coords}()}.
+//' @param x object of class \code{"coords"} created by function \code{\link[=coords]{coords}()}.
+//'
+//' @param ... further arguments passed to or from other methods.
 //'
 //' @return
 //' An object of class \code{"coords"}, comprising the original a \code{numeric} vector argument
@@ -1258,9 +1260,9 @@ NumericVector latlon(NumericVector cd, LogicalVector& value)
 //' @seealso
 //' \code{\link[=coords]{"coords"}} and \code{\link[=waypoints]{"waypoints"}}.
 //'
-//' @param cd object of class \code{"coords"}.
+//' @param x object of class \code{"coords"} or \code{"waypoints"}.
 //'
-//' @param df object of class \code{"waypoints"}.
+//' @param ... further arguments passed to or from other methods.
 //'
 //' @return
 //' \code{validate()} returns its argument with \code{logical} vector attribute \code{"valid"},
@@ -1320,11 +1322,11 @@ NumericVector latlon(NumericVector cd, LogicalVector& value)
 //' rm(dm, wp1)
 //'
 // [[Rcpp::export(name = "validate.coords")]]
-NumericVector validatecoords(NumericVector cd)
+NumericVector validatecoords(NumericVector x)
 {
-//	cout << "——Rcpp::export——validatecoords(NumericVector)\n";
-	checkinherits(cd, "coords");
-	return validate<NumericVector, Coord>(cd);
+//	cout << "——Rcpp::export——validatecoords(NumericVector) format " << get_fmt_attribute(x) << endl;
+	checkinherits(x, "coords");
+	return validate<NumericVector, Coord>(x);
 }
 
 
@@ -1332,14 +1334,14 @@ NumericVector validatecoords(NumericVector cd)
 /// Format coords vector - S3 method format.coords()
 //' @rdname coords
 // [[Rcpp::export(name = "format.coords")]]
-CharacterVector formatcoords(NumericVector cd)
+CharacterVector formatcoords(NumericVector x)
 {
 //	cout << "——Rcpp::export——formatcoords(NumericVector)\n";
-	checkinherits(cd, "coords");
-	if (!check_valid(cd))
+	checkinherits(x, "coords");
+	if (!check_valid(x))
 		warning("Formatting invalid coords!");
-	CoordType ct = get_coordtype(cd);
-	return wrap(format_switch(Coord(ct, cd), ct));
+	CoordType ct = get_coordtype(x);
+	return wrap(format_switch(Coord(ct, x), ct));
 }
 
 
@@ -1347,14 +1349,14 @@ CharacterVector formatcoords(NumericVector cd)
 /// Print coords vector - S3 method print.coords()
 //' @rdname coords
 // [[Rcpp::export(name = "print.coords", invisible = true)]]
-NumericVector printcoords(NumericVector cd)
+NumericVector printcoords(NumericVector x)
 {
-//	cout << "——Rcpp::export——printcoords(NumericVector) format " << get_fmt_attribute(cd) << endl;
-	checkinherits(cd, "coords");
-	if (!check_valid(cd))
+//	cout << "——Rcpp::export——printcoords(NumericVector) format " << get_fmt_attribute(x) << endl;
+	checkinherits(x, "coords");
+	if (!check_valid(x))
 		warning("Printing invalid coords!");
-	Rcout << Coord(get_coordtype(cd), cd);
-	return cd;
+	Rcout << Coord(get_coordtype(x), x);
+	return x;
 }
 
 
@@ -1416,8 +1418,10 @@ NumericVector printcoords(NumericVector cd)
 //' @param fmt,value an \code{integer} of value 1L, 2L or 3L, indicating the current or desired
 //'   coordinate format (see \emph{Details}); default 1L.
 //'
-//' @param wp an object of class \code{"waypoints"} created by function
+//' @param x an object of class \code{"waypoints"} created by function
 //' \code{\link[=waypoints]{waypoints}()}.
+//'
+//' @param ... further arguments passed to or from other methods.
 //'
 //' @return
 //' An object of classes \code{"waypoints"} and \code{"data.frame"}, comprising the original data
@@ -1539,13 +1543,13 @@ DataFrame waypoints_replace(DataFrame df, int value)
 /// Validate waypoints vector
 //' @rdname validate
 // [[Rcpp::export(name = "validate.waypoints")]]
-DataFrame validatewaypoints(DataFrame df)
+DataFrame validatewaypoints(DataFrame x)
 {
-//	cout << "——Rcpp::export——validatewaypoints(DataFrame) format " << get_fmt_attribute(df) << endl;
-	checkinherits(df, "waypoints");
-	if(!valid_ll(df))
+//	cout << "——Rcpp::export——validatewaypoints(DataFrame) format " << get_fmt_attribute(x) << endl;
+	checkinherits(x, "waypoints");
+	if(!valid_ll(x))
 		stop("Invalid llcols attribute!");
-	return validate<DataFrame, WayPoint>(df);
+	return validate<DataFrame, WayPoint>(x);
 }
 
 
@@ -1553,17 +1557,17 @@ DataFrame validatewaypoints(DataFrame df)
 /// Format waypoints vector - S3 method format.waypoints()
 //' @rdname waypoints
 // [[Rcpp::export(name = "format.waypoints")]]
-CharacterVector formatwaypoints(DataFrame wp)
+CharacterVector formatwaypoints(DataFrame x)
 {
 //	cout << "——Rcpp::export——formatwaypoints(NumericVector)\n";
-	checkinherits(wp, "waypoints");
-	if(!valid_ll(wp))
+	checkinherits(x, "waypoints");
+	if(!valid_ll(x))
 		stop("Invalid llcols attribute!");
-	if (!check_valid(wp))
+	if (!check_valid(x))
 		warning("Formatting invalid waypoints!");
-//	return wrap(WayPoint(get_coordtype(wp), wp).format_switch());
-	CoordType ct = get_coordtype(wp);
-	return wrap(format_switch(WayPoint(ct, wp), ct));
+//	return wrap(WayPoint(get_coordtype(x), x).format_switch());
+	CoordType ct = get_coordtype(x);
+	return wrap(format_switch(WayPoint(ct, x), ct));
 }
 
 
@@ -1571,16 +1575,16 @@ CharacterVector formatwaypoints(DataFrame wp)
 /// Print waypoints vector - S3 method print.waypoints()
 //' @rdname waypoints
 // [[Rcpp::export(name = "print.waypoints", invisible = true)]]
-DataFrame printwaypoints(DataFrame wp)
+DataFrame printwaypoints(DataFrame x)
 {
-//	cout << "——Rcpp::export——printwaypoints(DataFrame) format " << get_fmt_attribute(wp) << endl;
-	checkinherits(wp, "waypoints");
-	if(!valid_ll(wp))
+//	cout << "——Rcpp::export——printwaypoints(DataFrame) format " << get_fmt_attribute(x) << endl;
+	checkinherits(x, "waypoints");
+	if(!valid_ll(x))
 		stop("Invalid llcols attribute!");
-	if (!check_valid(wp))
+	if (!check_valid(x))
 		warning("Printing Invalid waypoints!");
-	Rcout << WayPoint(get_coordtype(wp), wp);	
-	return wp;
+	Rcout << WayPoint(get_coordtype(x), x);	
+	return x;
 }
 
 

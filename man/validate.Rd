@@ -6,14 +6,14 @@
 \alias{validate.waypoints}
 \title{Validate Coords or Waypoints}
 \usage{
-\method{validate}{coords}(cd)
+\method{validate}{coords}(x, ...)
 
-\method{validate}{waypoints}(df)
+\method{validate}{waypoints}(x, ...)
 }
 \arguments{
-\item{cd}{object of class \code{"coords"}.}
+\item{x}{object of class \code{"coords"} or \code{"waypoints"}.}
 
-\item{df}{object of class \code{"waypoints"}.}
+\item{...}{further arguments passed to or from other methods.}
 }
 \value{
 \code{validate()} returns its argument with \code{logical} vector attribute \code{"valid"},

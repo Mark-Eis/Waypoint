@@ -12,7 +12,7 @@
 #
 #' @export
 
-validate <- function(object, ...) 
+validate <- function(x, ...) 
     UseMethod("validate")
     
 
@@ -22,7 +22,7 @@ validate <- function(object, ...)
 #
 #' @export
 
-checkvalid <- function(object, ...) 
+checkvalid <- function(x, ...) 
     UseMethod("checkvalid")
 
 
@@ -32,10 +32,10 @@ checkvalid <- function(object, ...)
 #'
 #' @export
 
-checkvalid.coords <- function(coord, show_n = 20) {
-    if (!inherits(coord, "coords"))
+checkvalid.coords <- function(x, show_n = 20) {
+    if (!inherits(x, "coords"))
         stop("Argument `coords` must have class `\"coords\"`\n", call. = FALSE)
-    invalid <- !attr(coord, "valid")
+    invalid <- !attr(x, "valid")
     n_invalid = sum(invalid, na.rm = TRUE)
     last_invalid = which(invalid)[show_n]
     if (n_invalid > show_n) {
@@ -44,16 +44,16 @@ checkvalid.coords <- function(coord, show_n = 20) {
             "\n\t(use arg `show_n` to see more) ",
             call.= FALSE
         )
-        tmp <- lapply(attributes(coord), \(x) x[seq_len(min(length(x), last_invalid))])
-        coord <- coord[seq_len(last_invalid)]
-        attributes(coord) <- tmp
-        return(checkvalid(coord, show_n))
+        tmp <- lapply(attributes(x), \(x) x[seq_len(min(length(x), last_invalid))])
+        x <- x[seq_len(last_invalid)]
+        attributes(x) <- tmp
+        return(checkvalid(x, show_n))
     }
-    fmt <- attr(coord, "fmt");
+    fmt <- attr(x, "fmt");
     if (n_invalid) {
-        invalids <- coord[invalid]
+        invalids <- x[invalid]
         suppressWarnings(coords(invalids) <- fmt)
-        acl <- attr(coord, "latlon")
+        acl <- attr(x, "latlon")
         if (!is.null(acl)) {
             if (length(acl) > 1)
                 suppressWarnings(latlon(invalids) <- acl[invalid])
@@ -63,7 +63,7 @@ checkvalid.coords <- function(coord, show_n = 20) {
     } else
         invalids <- NA_integer_
     list(
-        allvalid = all(attr(coord, "valid")),
+        allvalid = all(attr(x, "valid")),
         n_invalid = n_invalid,
         invalids = invalids,
         which_invalid = which(invalid) %L% NA_integer_

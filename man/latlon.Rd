@@ -55,7 +55,7 @@ latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 dm
 
 ## Reversing latitude and longitude results in an
-## invalid longitude value and a warning
+## invalid latitude value and a warning
 latlon(dm) <- rep(c(FALSE, TRUE), each = 8)
 dm
 

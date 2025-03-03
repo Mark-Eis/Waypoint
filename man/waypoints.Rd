@@ -11,9 +11,9 @@ waypoints(df, fmt = 1L)
 
 waypoints(df) <- value
 
-\method{format}{waypoints}(wp)
+\method{format}{waypoints}(x, ...)
 
-\method{print}{waypoints}(wp)
+\method{print}{waypoints}(x, ...)
 }
 \arguments{
 \item{df}{a data frame with each row representing a waypoint, comprising at least two
@@ -23,8 +23,10 @@ waypoints(df) <- value
 \item{fmt, value}{an \code{integer} of value 1L, 2L or 3L, indicating the current or desired
 coordinate format (see \emph{Details}); default 1L.}
 
-\item{wp}{an object of class \code{"waypoints"} created by function
+\item{x}{an object of class \code{"waypoints"} created by function
 \code{\link[=waypoints]{waypoints}()}.}
+
+\item{...}{further arguments passed to or from other methods.}
 }
 \value{
 An object of classes \code{"waypoints"} and \code{"data.frame"}, comprising the original data

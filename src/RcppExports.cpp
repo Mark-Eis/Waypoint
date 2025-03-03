@@ -47,35 +47,35 @@ BEGIN_RCPP
 END_RCPP
 }
 // validatecoords
-NumericVector validatecoords(NumericVector cd);
-RcppExport SEXP _Waypoint_validatecoords(SEXP cdSEXP) {
+NumericVector validatecoords(NumericVector x);
+RcppExport SEXP _Waypoint_validatecoords(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type cd(cdSEXP);
-    rcpp_result_gen = Rcpp::wrap(validatecoords(cd));
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(validatecoords(x));
     return rcpp_result_gen;
 END_RCPP
 }
 // formatcoords
-CharacterVector formatcoords(NumericVector cd);
-RcppExport SEXP _Waypoint_formatcoords(SEXP cdSEXP) {
+CharacterVector formatcoords(NumericVector x);
+RcppExport SEXP _Waypoint_formatcoords(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type cd(cdSEXP);
-    rcpp_result_gen = Rcpp::wrap(formatcoords(cd));
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(formatcoords(x));
     return rcpp_result_gen;
 END_RCPP
 }
 // printcoords
-NumericVector printcoords(NumericVector cd);
-RcppExport SEXP _Waypoint_printcoords(SEXP cdSEXP) {
+NumericVector printcoords(NumericVector x);
+RcppExport SEXP _Waypoint_printcoords(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type cd(cdSEXP);
-    rcpp_result_gen = Rcpp::wrap(printcoords(cd));
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(printcoords(x));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -104,35 +104,35 @@ BEGIN_RCPP
 END_RCPP
 }
 // validatewaypoints
-DataFrame validatewaypoints(DataFrame df);
-RcppExport SEXP _Waypoint_validatewaypoints(SEXP dfSEXP) {
+DataFrame validatewaypoints(DataFrame x);
+RcppExport SEXP _Waypoint_validatewaypoints(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
-    rcpp_result_gen = Rcpp::wrap(validatewaypoints(df));
+    Rcpp::traits::input_parameter< DataFrame >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(validatewaypoints(x));
     return rcpp_result_gen;
 END_RCPP
 }
 // formatwaypoints
-CharacterVector formatwaypoints(DataFrame wp);
-RcppExport SEXP _Waypoint_formatwaypoints(SEXP wpSEXP) {
+CharacterVector formatwaypoints(DataFrame x);
+RcppExport SEXP _Waypoint_formatwaypoints(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< DataFrame >::type wp(wpSEXP);
-    rcpp_result_gen = Rcpp::wrap(formatwaypoints(wp));
+    Rcpp::traits::input_parameter< DataFrame >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(formatwaypoints(x));
     return rcpp_result_gen;
 END_RCPP
 }
 // printwaypoints
-DataFrame printwaypoints(DataFrame wp);
-RcppExport SEXP _Waypoint_printwaypoints(SEXP wpSEXP) {
+DataFrame printwaypoints(DataFrame x);
+RcppExport SEXP _Waypoint_printwaypoints(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< DataFrame >::type wp(wpSEXP);
-    rcpp_result_gen = Rcpp::wrap(printwaypoints(wp));
+    Rcpp::traits::input_parameter< DataFrame >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(printwaypoints(x));
     return rcpp_result_gen;
 END_RCPP
 }
