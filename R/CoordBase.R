@@ -49,6 +49,49 @@ validate <- function(x, ...)
 #' 	 invalid, if any.}
 #'
 #' @export
+#'
+#' @examples
+#' ## Continuing example from `coords()`, named numeric vector representing degrees and minutes,
+#' ## the erroneous first value having more than 60 minutes
+#' \dontshow{
+#'    oldopt <- options(warn = -1)
+#'    dm <-
+#'        c(5160.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
+#'		   -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
+#'
+#'    names(dm) <- 
+#'        rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+#'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
+#' }
+#'
+#' ## Create "coords" object of degrees and minutes
+#' coords(dm) <- 2
+#'
+#' review(dm)
+#'
+#' ###
+#' ## Continuing example from `waypoints()`, data frame representing waypoint names and latitude
+#' ## and longitude values in decimal degrees, the erroneous penultimate latitude having more than
+#' ## 90 degrees absolute value
+#' \dontshow{
+#' wp1 <- data.frame(
+#'     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+#'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
+#'     lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -93.104781, -25.240156),
+#'     lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -57.519227)
+#' )
+#' }
+#'
+#' ## Create "waypoints" object of decimal degrees
+#' waypoints(wp1) <- 1
+#'
+#' review(wp1)
+#'
+#' rm(dm, wp1)
+#' 
+#' \dontshow{
+#'    options(oldopt)
+#' }
 
 # ========================================
 #  Review Coordinates and Waypoints
@@ -65,7 +108,8 @@ review <- function(x, ...)
 #' @rdname review
 #' @export
 
-review.coords <- function(x, ..., show_n = 20L) {
+review.coords <- function(x, ..., show_n = 20L)
+{
     if (!inherits(x, "coords"))
         stop("Argument `coords` must have class `\"coords\"`\n", call. = FALSE)
     invalid <- !attr(x, "valid")
@@ -102,6 +146,17 @@ review.coords <- function(x, ..., show_n = 20L) {
         which_invalid = which(invalid) %L% NA_integer_
     )
 }
+
+
+# ========================================
+#  Review Coordinates and Waypoints
+#  S3method review.waypoints(x, ...)
+#'
+#' @rdname review
+#' @export
+
+review.waypoints <- function(x, ..., show_n = 20L)
+	lapply(c(TRUE, FALSE), \(y) review(as_coord(x, y), show_n)) |> setNames(c("Lat", "Lon"))
 
 # ========================================
 #' @title

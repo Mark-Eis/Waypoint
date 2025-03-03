@@ -1594,9 +1594,9 @@ DataFrame printwaypoints(DataFrame x)
 // [[Rcpp::export]]
 NumericVector as_coord(DataFrame df, bool latlon)
 {
-//	cout << "——Rcpp::export——as_coord(DataFrame)\n;
+//	cout << "——Rcpp::export——as_coord(DataFrame)\n";
 	checkinherits(df, "waypoints");
-	NumericVector nv = df[get_vec_attr<DataFrame, int>(df, "llcols")[latlon ? 0 : 1]];
+	NumericVector nv = df[get_vec_attr<DataFrame, int>(df, "llcols")[latlon ? 0 : 1] - 1];
 	nv = clone(nv);
 	nv.attr("class") = "coords";
 	nv.attr("fmt") = df.attr("fmt");
