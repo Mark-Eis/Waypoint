@@ -734,6 +734,7 @@ class Coord : public Coordbase {
 		void validate(bool warn = true) const;
 		template<CoordType type>
 		vector<string> format_ct() const;
+		vector<string> format(bool usenames = true) const;
 		void print(ostream&) const;
 };
 
@@ -783,6 +784,24 @@ vector<string> Coord::format_ct() const
 	transform(nv.begin(), nv.end(), out.begin(), Format<type>(ff));
 	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<Coord, type>(ff, latlon));
 	return out;
+}
+
+
+/// __________________________________________________
+/// Format coords vector<string> with names
+vector<string> Coord::format(bool usenames) const
+{
+//	cout << "@Coord::format() " << Demangler(typeid(*this)) << endl;
+	ostringstream outstrstr;
+	vector<string>&& sv = format_switch(*this, ct);
+	vector<string> names { get_vec_attr<NumericVector, string>(nv, "names") };
+	int strwdth = 0;
+	if (names.size() && usenames) {
+		prefixvecstr(sv, names);
+		strwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
+	}
+	transform(sv.begin(), sv.end(), sv.begin(), [&outstrstr, strwdth](const string& s) { outstrstr.str(""); outstrstr << setw(strwdth) << s; return outstrstr.str(); });
+	return sv;
 }
 
 
@@ -1361,8 +1380,9 @@ CharacterVector formatcoords(NumericVector x)
 	checkinherits(x, "coords");
 	if (!check_valid(x))
 		warning("Formatting invalid coords!");
-	CoordType ct = get_coordtype(x);
-	return wrap(format_switch(Coord(ct, x), ct));
+//	CoordType ct = get_coordtype(x);
+//	return wrap(format_switch(Coord(ct, x), ct));
+	return wrap(Coord(get_coordtype(x), x).format());
 }
 
 
