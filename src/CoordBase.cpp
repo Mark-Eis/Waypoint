@@ -334,7 +334,7 @@ inline string cardi_b(bool negative)
 /// FamousFive Class and Derived Classes
 
 struct FamousFive {
-	FamousFive() { cout << "§FamousFive() "; _ctrsgn(typeid(*this)); }
+//	FamousFive() { cout << "§FamousFive() "; _ctrsgn(typeid(*this)); }
 	virtual ~FamousFive() = 0;	
 	virtual int get_deg(double x) const = 0;
 	virtual double get_decdeg(double x) const = 0;
@@ -345,15 +345,15 @@ struct FamousFive {
 
 FamousFive::~FamousFive()
 {
-	cout << "§~FamousFive(CoordType) "; _ctrsgn(typeid(*this), true); 
+//	cout << "§~FamousFive(CoordType) "; _ctrsgn(typeid(*this), true); 
 }	
 
 /// __________________________________________________
 /// Derived class for decimal degrees	
 struct FF_decdeg : public FamousFive {
-	FF_decdeg() { cout << "§FF_decdeg() "; _ctrsgn(typeid(*this)); }	
-//	~FF_decdeg() = default;
-	~FF_decdeg() { cout << "§~FF_decdeg::FF_decdeg() "; _ctrsgn(typeid(*this), true); }
+//	FF_decdeg() { cout << "§FF_decdeg() "; _ctrsgn(typeid(*this)); }	
+	~FF_decdeg() = default;
+//	~FF_decdeg() { cout << "§~FF_decdeg::FF_decdeg() "; _ctrsgn(typeid(*this), true); }
 	int get_deg(double x) const { return int(x); }
 	double get_decdeg(double x) const { return x; }
 	int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
@@ -364,9 +364,9 @@ struct FF_decdeg : public FamousFive {
 /// __________________________________________________
 /// Derived class for degrees and minutes
 struct FF_degmin : public FamousFive {
-	FF_degmin() { cout << "§FF_degmin() "; _ctrsgn(typeid(*this)); }	
-//	~FF_degmin() = default;
-	~FF_degmin() { cout << "§~FF_degmin::FF_degmin() "; _ctrsgn(typeid(*this), true); }
+//	FF_degmin() { cout << "§FF_degmin() "; _ctrsgn(typeid(*this)); }	
+	~FF_degmin() = default;
+//	~FF_degmin() { cout << "§~FF_degmin::FF_degmin() "; _ctrsgn(typeid(*this), true); }
 	int get_deg(double x) const { return int(x / 1e2); }
 	double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
 	int get_min(double x) const { return int(x) % int(1e2); }
@@ -377,9 +377,9 @@ struct FF_degmin : public FamousFive {
 /// __________________________________________________
 /// Derived class for degrees, minutes and seconds
 struct FF_degminsec : public FamousFive {
-	FF_degminsec() { cout << "§FF_degminsec() "; _ctrsgn(typeid(*this)); }	
-//	~FF_degminsec() = default;
-	~FF_degminsec() { cout << "§~FF_degminsec::FF_degminsec() "; _ctrsgn(typeid(*this), true); }
+//	FF_degminsec() { cout << "§FF_degminsec() "; _ctrsgn(typeid(*this)); }	
+	~FF_degminsec() = default;
+//	~FF_degminsec() { cout << "§~FF_degminsec::FF_degminsec() "; _ctrsgn(typeid(*this), true); }
 	int get_deg(double x) const { return int(x / 1e4); }
 	double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
 	int get_min(double x) const { return (int(x) % int(1e4)) / 1e2; }
@@ -401,10 +401,10 @@ class Convertor {
 	public:
 		Convertor(const FamousFive& _ff) : ff(_ff)
 		{
-			cout << "§Convertor<CoordType>::Convertor(const FamousFive&) "; _ctrsgn(typeid(*this));
+//			cout << "§Convertor<CoordType>::Convertor(const FamousFive&) "; _ctrsgn(typeid(*this));
 		}
-//		~Convertor() = default;
-		~Convertor() { cout << "§Convertor<type>::~Convertor() "; _ctrsgn(typeid(*this), true); }
+		~Convertor() = default;
+//		~Convertor() { cout << "§Convertor<type>::~Convertor() "; _ctrsgn(typeid(*this), true); }
 		double operator()(double n);
 };
 
@@ -451,10 +451,10 @@ class Format {
 	public:
 		Format(const FamousFive& _ff) : ff(_ff)
 		{
-			cout << "§Format<CoordType>::Format(const FamousFive&) "; _ctrsgn(typeid(*this));
+//			cout << "§Format<CoordType>::Format(const FamousFive&) "; _ctrsgn(typeid(*this));
 		}
-//		~Format() = default;
-		~Format() { cout << "§Format<CoordType>::~Format() "; _ctrsgn(typeid(*this), true); }
+		~Format() = default;
+//		~Format() { cout << "§Format<CoordType>::~Format() "; _ctrsgn(typeid(*this), true); }
 		string operator()(double n);
 };
 
@@ -508,11 +508,11 @@ class FormatLL {
 	public:
 		FormatLL(const FamousFive& _ff, const vector<bool>& ll) : ff(_ff), ll_it(ll.begin()), ll_size(ll.size())
 		{
-			cout << "§FormatLL<T, CoordType>::FormatLL(const FamousFive&, vector<bool>&) "; _ctrsgn(typeid(*this));
+//			cout << "§FormatLL<T, CoordType>::FormatLL(const FamousFive&, vector<bool>&) "; _ctrsgn(typeid(*this));
 			static_assert(std::is_same<Coord, T>::value || std::is_same<WayPoint, T>::value, "T must be Coord or WayPoint");
 		}
-//		~FormatLL() = default;
-		~FormatLL() { cout << "§FormatLL<T, CoordType>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
+		~FormatLL() = default;
+//		~FormatLL() { cout << "§FormatLL<T, CoordType>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
 		string operator()(string ostr, double n)
 		{
 //			cout << "@FormatLL<T, CoordType>::operator(string, double) [default for CoordType::degmin and CoordType::degminsec]\n";
@@ -529,10 +529,10 @@ class FormatLL<Coord, CoordType::decdeg> {
 	public:
 		FormatLL(const FamousFive& _ff, const vector<bool>& ll) : ll_it(ll.begin()), ll_size(ll.size())
 		{
-			cout << "§FormatLL<Coord, CoordType::decdeg>::FormatLL(const FamousFive&, vector<bool>&) "; _ctrsgn(typeid(*this));
+//			cout << "§FormatLL<Coord, CoordType::decdeg>::FormatLL(const FamousFive&, vector<bool>&) "; _ctrsgn(typeid(*this));
 		}
-//		~FormatLL() = default;
-		~FormatLL() { cout << "§FormatLL<Coord, CoordType::decdeg>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
+		~FormatLL() = default;
+//		~FormatLL() { cout << "§FormatLL<Coord, CoordType::decdeg>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
 		string operator()(string ostr, double n)
 		{
 //			cout << "@FormatLL<Coord, CoordType::decdeg>::operator(string, double)\n";
@@ -552,10 +552,10 @@ class FormatLL<WayPoint, CoordType::decdeg> {
 	public:
 		FormatLL(const FamousFive& _ff, const vector<bool>& ll) : ll_it(ll.begin()), ll_size(ll.size())
 		{
-			cout << "§FormatLL<WayPoint, CoordType::decdeg>::FormatLL(const FamousFive&, vector<bool>&) "; _ctrsgn(typeid(*this));
+//			cout << "§FormatLL<WayPoint, CoordType::decdeg>::FormatLL(const FamousFive&, vector<bool>&) "; _ctrsgn(typeid(*this));
 		}
-//		~FormatLL() = default;
-		~FormatLL() { cout << "§FormatLL<WayPoint, CoordType::decdeg>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
+		~FormatLL() = default;
+//		~FormatLL() { cout << "§FormatLL<WayPoint, CoordType::decdeg>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
 		string operator()(string ostr, double n)
 		{
 //			cout << "@FormatLL<WayPoint, CoordType::decdeg>::operator(string, double)\n";
@@ -575,10 +575,10 @@ class Validator {
 	public:
 		Validator(const FamousFive& _ff, const vector<bool>& ll) : ff(_ff), ll_it(ll.begin()), ll_size(ll.size())
 		{
-			cout << "§Validator::Validator(const FamousFive&, vector<bool>&) "; _ctrsgn(typeid(*this));
+//			cout << "§Validator::Validator(const FamousFive&, vector<bool>&) "; _ctrsgn(typeid(*this));
 		}
-//		~Validator() = default;
-		~Validator() { cout << "§Validator::~Validator() "; _ctrsgn(typeid(*this), true); }
+		~Validator() = default;
+//		~Validator() { cout << "§Validator::~Validator() "; _ctrsgn(typeid(*this), true); }
 		bool operator()(double n)
 		{
 //			cout << "@Validator() " << " validating: " << setw(9) << setfill(' ') << n << endl;
@@ -678,13 +678,13 @@ class Coordbase {
 Coordbase::Coordbase(CoordType _ct) :
 	ct(_ct), ff(*vff[coordtype_to_int(ct)])
 {
-	cout << "§Coordbase::Coordbase(CoordType) "; _ctrsgn(typeid(*this));
+//	cout << "§Coordbase::Coordbase(CoordType) "; _ctrsgn(typeid(*this));
 }
 
 
 Coordbase::~Coordbase()
 {
-	cout << "§Coordbase::~Coordbase() "; _ctrsgn(typeid(*this), true);
+//	cout << "§Coordbase::~Coordbase() "; _ctrsgn(typeid(*this), true);
 }
 
 
@@ -707,8 +707,8 @@ class Coord : public Coordbase {
 
 	public:
 		Coord(CoordType, const NumericVector);
-//		~Coord() = default;
-		~Coord() { cout << "§Coord::~Coord() "; _ctrsgn(typeid(*this), true); }
+		~Coord() = default;
+//		~Coord() { cout << "§Coord::~Coord() "; _ctrsgn(typeid(*this), true); }
 
 		template<CoordType type>
 		void convert() const;
@@ -723,7 +723,7 @@ Coord::Coord(CoordType ct, const NumericVector nv) :
 	Coordbase(ct), nv(nv),
 	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") } //,
 {
-	cout << "§Coord::Coord(CoordType, const NumericVector) "; _ctrsgn(typeid(*this));
+//	cout << "§Coord::Coord(CoordType, const NumericVector) "; _ctrsgn(typeid(*this));
 }
 
 
@@ -806,8 +806,8 @@ class WayPoint : public Coordbase {
 		const vector<bool> validlon { false };
 	public:
 		explicit WayPoint(CoordType, const DataFrame);
-//		~WayPoint() = default;
-		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
+		~WayPoint() = default;
+//		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
 
 		template<CoordType type>
 		void convert() const;
@@ -823,7 +823,7 @@ WayPoint::WayPoint(CoordType ct, const DataFrame df) :
 	nvlat(df[get_vec_attr<DataFrame, int>(df, "llcols")[0] - 1]), 
 	nvlon(df[get_vec_attr<DataFrame, int>(df, "llcols")[1] - 1])
 {
-	cout << "§WayPoint::WayPoint(CoordType ct, const DataFrame) "; _ctrsgn(typeid(*this));
+//	cout << "§WayPoint::WayPoint(CoordType ct, const DataFrame) "; _ctrsgn(typeid(*this));
 }
 
 
