@@ -15,22 +15,27 @@
 validate <- function(x, ...) 
     UseMethod("validate")
     
-
 # ========================================
 #' @title
-#' Review Coordinates and Waypoints
+#' Review Coordinates and Waypoints Validity
 #'
 #' @description
-#' Review validity of elements of \code{"coords"} and  \code{"waypoints"} objects
+#' \code{review()} review validity of elements of \code{"coords"} and \code{"waypoints"} objects.
+#'
+#' \code{as_coords()} creates an object of class \code{"coords"} based on either the latitude or
+#' longitude components of a \code{"waypoints"} object.
 #'
 #' @details
 #' \code{review()} reveals elements of \code{"coords"} and  \code{"waypoints"} objects that do not
 #' conform to the criteria checked by \code{\link[=validate]{validate}()}, i.e. are not valid
 #' geographic locations.
 #'
+#' \code{as_coord()} is primarily intended for internal use by \code{review()} but is also exposed
+#' to the user as potentially of use.
+#'
 #' @family validate
 #' @seealso
-#' \code{\link[=coords]{"coords"}} and \code{\link[=waypoints]{"waypoints"}}.
+#' \code{"\link[=coords]{coords}"} and \code{"\link[=waypoints]{waypoints}"}.
 #'
 #' @param x object of class \code{"coords"} or \code{"waypoints"}.
 #'
@@ -39,8 +44,14 @@ validate <- function(x, ...)
 #'
 #' @param \dots further arguments passed to or from other methods.
 #'
+#' @param wp object of class \code{"waypoints"}.
+#'
+#' @param latlon logical indicating whether \code{as_coords()} extracts the latitude component of
+#'   argument \code{wp} if \code{TRUE}, or if \code{FALSE} the longitude.
+#'
 #' @return
-#' A \code{list} comprising the following components: -
+#' The \code{review()} method for class \code{"coords"} returns a \code{\link[base:list]{list}} comprising the
+#' following elements: -
 #'
 #' \item{allvalid}{\code{logical}, whether or not all the elements of argument \code{x} are valid.}
 #' \item{n_invalid}{\code{integer}, the number of invalid elements in argument \code{x}, if any.}
@@ -48,10 +59,16 @@ validate <- function(x, ...)
 #' \item{which_invalid}{\code{integer} vector specifying which elements of argument \code{x} are
 #' 	 invalid, if any.}
 #'
+#' The method for class \code{"waypoints"} returns a list of two sub-lists, each sub-list with
+#' elements as described for the method for class \code{"coords"}, one each for latitude and
+#' longitude.
+#'
+#' \code{as_coord} returns an object of class \code{"coords"} based on either the latitude or longitude.
+#'
 #' @export
 #'
 #' @examples
-#' ## Continuing example from `coords()`, named numeric vector representing degrees and minutes,
+#' ## Continuing example from `validate()`, named numeric vector representing degrees and minutes,
 #' ## the erroneous first value having more than 60 minutes
 #' \dontshow{
 #'    oldopt <- options(warn = -1)
@@ -70,7 +87,7 @@ validate <- function(x, ...)
 #' review(dm)
 #'
 #' ###
-#' ## Continuing example from `waypoints()`, data frame representing waypoint names and latitude
+#' ## Continuing example from `validate()`, data frame representing waypoint names and latitude
 #' ## and longitude values in decimal degrees, the erroneous penultimate latitude having more than
 #' ## 90 degrees absolute value
 #' \dontshow{
@@ -100,7 +117,6 @@ validate <- function(x, ...)
 review <- function(x, ...) 
     UseMethod("review")
 
-
 # ========================================
 #  Review Coordinates and Waypoints
 #  S3method review.coords(x, ...)
@@ -108,7 +124,7 @@ review <- function(x, ...)
 #' @rdname review
 #' @export
 
-review.coords <- function(x, ..., show_n = 20L)
+review.coords <- function(x, show_n = 20L, ...)
 {
     if (!inherits(x, "coords"))
         stop("Argument `coords` must have class `\"coords\"`\n", call. = FALSE)
@@ -155,8 +171,9 @@ review.coords <- function(x, ..., show_n = 20L)
 #' @rdname review
 #' @export
 
-review.waypoints <- function(x, ..., show_n = 20L)
-	lapply(c(TRUE, FALSE), \(y) review(as_coord(x, y), show_n)) |> setNames(c("Lat", "Lon"))
+review.waypoints <- function(x, show_n = 20L, ...)
+	lapply(c(TRUE, FALSE), \(y) review(as_coords(x, y), show_n)) |> setNames(c("Lat", "Lon"))
+
 
 # ========================================
 #' @title

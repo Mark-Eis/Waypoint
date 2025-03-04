@@ -8,7 +8,7 @@
 latlon(cd) <- value
 }
 \arguments{
-\item{cd}{object of class \code{\link[=coords]{"coords"}}.}
+\item{cd}{object of class \code{"\link[=coords]{coords}"}.}
 
 \item{value}{a \code{logical} vector of length \code{1} or \code{length(cd)}.}
 }
@@ -18,7 +18,7 @@ updated as appropriate.
 }
 \description{
 \code{latlon()<-} adds the attribute \code{"latlon"} to objects of class
-\code{\link[=coords]{"coords"}}, or modifies an existing \code{"latlon"} attribute.
+\code{"\link[=coords]{coords}"}, or modifies an existing \code{"latlon"} attribute.
 }
 \details{
 Attribute \code{"latlon"} is a \code{logical} vector of length \code{1} or \code{length(cd)}
@@ -43,19 +43,18 @@ attribute \code{"latlon"} is added or changed.
              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
 }
 
-## Create "coords" object of degrees and minutes
+## Create "coords" object of degrees and minutes (fmt = 2)
 coords(dm) <- 2
 
-## Set "latlon" attribute to FALSE, length 1
+## Set "latlon" attribute to FALSE, length 1; all values are longitude
 latlon(dm) <- FALSE
 dm
 
-## Set "latlon" attribute to TRUE and FALSE (each n=8)
+## Set "latlon" attribute to TRUE (n=8) and FALSE (n=8); i.e., 8 each of latitude and longitude
 latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 dm
 
-## Reversing latitude and longitude results in an
-## invalid latitude value and a warning
+## Reversing latitude and longitude results in an invalid latitude, throwing a warning
 latlon(dm) <- rep(c(FALSE, TRUE), each = 8)
 dm
 
@@ -63,5 +62,5 @@ rm(dm)
 
 }
 \seealso{
-\code{\link[=coords]{"coords"}}.
+\code{"\link[=coords]{coords}"}.
 }

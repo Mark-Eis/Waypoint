@@ -1071,8 +1071,8 @@ bool valid_ll(const DataFrame df)
 //'
 //' @family coords_waypoints
 //' @seealso
-//' \code{\link[base:attr]{attr()}}, \code{\link[base:attributes]{attributes}},
-//'   \code{\link[=latlon]{latlon}()}, \code{\link[base:numeric]{numeric()}} and
+//' \code{\link[base:attr]{attr}()}, \code{\link[base:attributes]{attributes}},
+//'   \code{\link[=latlon]{latlon}()}, \code{\link[base:numeric]{numeric}()} and
 //'   \code{\link[=validate]{validate}()}.
 //'
 //' @param nv \code{numeric} vector of coordinate values, optionally named.
@@ -1096,7 +1096,7 @@ bool valid_ll(const DataFrame df)
 //' dm <- c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
 //'         -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
 //'
-//' ## Create a "coords" object of degrees and minutes
+//' ## Create a "coords" object of degrees and minutes (fmt = 2)
 //' coords(dm, 2)
 //'
 //' ## Name the "coords" object
@@ -1104,22 +1104,22 @@ bool valid_ll(const DataFrame df)
 //'                    "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
 //' dm
 //'
-//' ## Convert to degrees, minutes and seconds
+//' ## Convert to degrees, minutes and seconds (fmt = 3)
 //' coords(dm) <- 3
 //' dm
 //'
-//' ## Convert to decimal degrees
+//' ## Convert to decimal degrees (fmt = 1)
 //' coords(dm) <- 1
 //' dm
 //'
-//' ## Decimal degrees as a standard numeric vector
+//' ## Decimal degrees as an ordinary R numeric vector
 //' as.numeric(dm)
 //'
-//' ## Convert to degrees and minutes, and format as a character vector
+//' ## Convert to degrees and minutes, format as a character vector…
 //' coords(dm) <- 2
 //' (dm_chr <- format(dm))
 //'
-//' ## Output using {base} cat()
+//' ## …and output using {base} cat()
 //' cat(dm_chr, fill = 18, labels = paste0("{#", 1:16, "}:"))
 //'
 //' rm(dm, dm_chr)
@@ -1168,7 +1168,7 @@ NumericVector coords_replace(NumericVector nv, int value)
 //' @name latlon
 //'
 //' @description \code{latlon()<-} adds the attribute \code{"latlon"} to objects of class
-//' \code{\link[=coords]{"coords"}}, or modifies an existing \code{"latlon"} attribute.
+//' \code{"\link[=coords]{coords}"}, or modifies an existing \code{"latlon"} attribute.
 //'
 //' @details
 //' Attribute \code{"latlon"} is a \code{logical} vector of length \code{1} or \code{length(cd)}
@@ -1182,9 +1182,9 @@ NumericVector coords_replace(NumericVector nv, int value)
 //' attribute \code{"latlon"} is added or changed.
 //'
 //' @seealso
-//' \code{\link[=coords]{"coords"}}.
+//' \code{"\link[=coords]{coords}"}.
 //'
-//' @param cd object of class \code{\link[=coords]{"coords"}}.
+//' @param cd object of class \code{"\link[=coords]{coords}"}.
 //'
 //' @param value a \code{logical} vector of length \code{1} or \code{length(cd)}.
 //'
@@ -1204,19 +1204,18 @@ NumericVector coords_replace(NumericVector nv, int value)
 //'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
 //' }
 //'
-//' ## Create "coords" object of degrees and minutes
+//' ## Create "coords" object of degrees and minutes (fmt = 2)
 //' coords(dm) <- 2
 //'
-//' ## Set "latlon" attribute to FALSE, length 1
+//' ## Set "latlon" attribute to FALSE, length 1; all values are longitude
 //' latlon(dm) <- FALSE
 //' dm
 //'
-//' ## Set "latlon" attribute to TRUE and FALSE (each n=8)
+//' ## Set "latlon" attribute to TRUE (n=8) and FALSE (n=8); i.e., 8 each of latitude and longitude
 //' latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 //' dm
 //'
-//' ## Reversing latitude and longitude results in an
-//' ## invalid latitude value and a warning
+//' ## Reversing latitude and longitude results in an invalid latitude, throwing a warning
 //' latlon(dm) <- rep(c(FALSE, TRUE), each = 8)
 //' dm
 //'
@@ -1246,8 +1245,8 @@ NumericVector latlon(NumericVector cd, LogicalVector& value)
 //' \code{validate()} validates objects of class \code{"coords"} or \code{"waypoints"}.
 //'
 //' @details
-//' Individual coordinate values within \code{\link[=coords]{"coords"}} or
-//' \code{\link[=waypoints]{"waypoints"}} objects are checked to ensure they represent valid
+//' Individual coordinate values within \code{"\link[=coords]{coords}"} or
+//' \code{"\link[=waypoints]{waypoints}"} objects are checked to ensure they represent valid
 //' geographic locations.
 //'
 //' To be valid, the absolute values of coordinates in degrees must not exceed 180, or 90 if degrees
@@ -1259,7 +1258,7 @@ NumericVector latlon(NumericVector cd, LogicalVector& value)
 //'
 //' @family validate
 //' @seealso
-//' \code{\link[=coords]{"coords"}} and \code{\link[=waypoints]{"waypoints"}}.
+//' \code{"\link[=coords]{coords}"} and \code{"\link[=waypoints]{waypoints}"}.
 //'
 //' @param x object of class \code{"coords"} or \code{"waypoints"}.
 //'
@@ -1409,8 +1408,8 @@ NumericVector printcoords(NumericVector x)
 //'
 //' @family coords_waypoints
 //' @seealso
-//' \code{\link[base:attr]{attr()}}, \code{\link[base:attributes]{attributes}},
-//'   \code{\link[base:data.frame]{data.frame()}}, and \code{\link[=validate]{validate}()}.
+//' \code{\link[base:attr]{attr}()}, \code{\link[base:attributes]{attributes}},
+//'   \code{\link[base:data.frame]{data.frame}()}, and \code{\link[=validate]{validate}()}.
 //'
 //' @param df a data frame with each row representing a waypoint, comprising at least two
 //'   \code{numeric} columns containing values of latitude and longitude, and optionally a
@@ -1479,14 +1478,14 @@ NumericVector printcoords(NumericVector x)
 //' waypoints(wp2) <- 3
 //' wp2
 //'
-//' ## Degrees, minutes and seconds as a standard data frame
+//' ## Degrees, minutes and seconds values as an ordinary R data frame
 //' as.data.frame(wp2)
 //'
-//' ## Convert to decimal degrees, and format as a character vector
+//' ## Convert to decimal degrees, format as a character vector…
 //' waypoints(wp2) <- 1
 //' (wp2_chr <- format(wp2))
 //'
-//' ## Output using {base} cat()
+//' ## …and output using {base} cat()
 //' cat(wp2_chr, fill = 26, labels = paste0("{#", 1:8, "}:"))
 //'
 //' rm(wp1, wp2)
@@ -1591,17 +1590,18 @@ DataFrame printwaypoints(DataFrame x)
 
 /// __________________________________________________
 /// Clone coords object from waypoints vector
+//' @rdname review
 // [[Rcpp::export]]
-NumericVector as_coord(DataFrame df, bool latlon)
+NumericVector as_coords(DataFrame wp, bool latlon)
 {
 //	cout << "——Rcpp::export——as_coord(DataFrame)\n";
-	checkinherits(df, "waypoints");
-	NumericVector nv = df[get_vec_attr<DataFrame, int>(df, "llcols")[latlon ? 0 : 1] - 1];
+	checkinherits(wp, "waypoints");
+	NumericVector nv = wp[get_vec_attr<DataFrame, int>(wp, "llcols")[latlon ? 0 : 1] - 1];
 	nv = clone(nv);
 	nv.attr("class") = "coords";
-	nv.attr("fmt") = df.attr("fmt");
+	nv.attr("fmt") = wp.attr("fmt");
 	nv.attr("latlon") = latlon ? vector<bool>{ TRUE } : vector<bool>{ FALSE };
-	nv.attr("valid") = df.attr(latlon ? "validlat" : "validlon");
+	nv.attr("valid") = wp.attr(latlon ? "validlat" : "validlon");
 	return nv;
 }
 

@@ -122,22 +122,22 @@ wp2
 waypoints(wp2) <- 3
 wp2
 
-## Degrees, minutes and seconds as a standard data frame
+## Degrees, minutes and seconds values as an ordinary R data frame
 as.data.frame(wp2)
 
-## Convert to decimal degrees, and format as a character vector
+## Convert to decimal degrees, format as a character vector…
 waypoints(wp2) <- 1
 (wp2_chr <- format(wp2))
 
-## Output using {base} cat()
+## …and output using {base} cat()
 cat(wp2_chr, fill = 26, labels = paste0("{#", 1:8, "}:"))
 
 rm(wp1, wp2)
 
 }
 \seealso{
-\code{\link[base:attr]{attr()}}, \code{\link[base:attributes]{attributes}},
-  \code{\link[base:data.frame]{data.frame()}}, and \code{\link[=validate]{validate}()}.
+\code{\link[base:attr]{attr}()}, \code{\link[base:attributes]{attributes}},
+  \code{\link[base:data.frame]{data.frame}()}, and \code{\link[=validate]{validate}()}.
 
 Other coords_waypoints: 
 \code{\link{coords}()}

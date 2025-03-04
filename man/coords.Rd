@@ -64,7 +64,7 @@ has already been validated; if not, it is re-validated.
 dm <- c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
         -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
 
-## Create a "coords" object of degrees and minutes
+## Create a "coords" object of degrees and minutes (fmt = 2)
 coords(dm, 2)
 
 ## Name the "coords" object
@@ -72,30 +72,30 @@ names(dm) <- rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monum
                    "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
 dm
 
-## Convert to degrees, minutes and seconds
+## Convert to degrees, minutes and seconds (fmt = 3)
 coords(dm) <- 3
 dm
 
-## Convert to decimal degrees
+## Convert to decimal degrees (fmt = 1)
 coords(dm) <- 1
 dm
 
-## Decimal degrees as a standard numeric vector
+## Decimal degrees as an ordinary R numeric vector
 as.numeric(dm)
 
-## Convert to degrees and minutes, and format as a character vector
+## Convert to degrees and minutes, format as a character vector…
 coords(dm) <- 2
 (dm_chr <- format(dm))
 
-## Output using {base} cat()
+## …and output using {base} cat()
 cat(dm_chr, fill = 18, labels = paste0("{#", 1:16, "}:"))
 
 rm(dm, dm_chr)
 
 }
 \seealso{
-\code{\link[base:attr]{attr()}}, \code{\link[base:attributes]{attributes}},
-  \code{\link[=latlon]{latlon}()}, \code{\link[base:numeric]{numeric()}} and
+\code{\link[base:attr]{attr}()}, \code{\link[base:attributes]{attributes}},
+  \code{\link[=latlon]{latlon}()}, \code{\link[base:numeric]{numeric}()} and
   \code{\link[=validate]{validate}()}.
 
 Other coords_waypoints: 
