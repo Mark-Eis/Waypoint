@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include <cxxabi.h>
 using namespace Rcpp;
 using namespace std;
 
@@ -6,7 +7,9 @@ using namespace std;
 /// __________________________________________________
 /// Class and Function declarations
 
+// Development and debugging
 void _ctrsgn(const type_info&, bool);
+unique_ptr<char> demangle(const type_info&, int&);
 
 // Formula simplification
 inline double mod1by60(double);
@@ -75,7 +78,7 @@ class WayPoint;
 
 ostream& operator<<(ostream&, const WayPoint&);
 
-// validation
+// Validation
 bool check_valid(const NumericVector);
 bool check_valid(const DataFrame);
 
@@ -93,7 +96,7 @@ inline const T validate(const T);
 
 bool valid_ll(const DataFrame);
 
-// exported
+// Exported
 NumericVector coords(NumericVector, const int);
 NumericVector coords_replace(NumericVector, int);
 NumericVector latlon(NumericVector, LogicalVector&);
@@ -118,6 +121,14 @@ void _ctrsgn(const type_info& obj, bool destruct = false)
 	cout << (destruct ? "Destroying " : "Constructing ") << flush;
     string s = obj.name();
     system(("c++filt -t " + s).data());
+}
+
+
+/// Demangle names
+unique_ptr<char> demangle(const type_info& obj, int& status)
+{
+	cout << "@demangle(const type_info&, int&) obj " << obj.name() << endl; 
+ 	return unique_ptr<char>(abi::__cxa_demangle(obj.name(), NULL, NULL, &status));
 }
 
 
@@ -998,7 +1009,9 @@ const T revalidate(const T t)
 {
 	cout << "@revalidate<T, U>(const T) t" << typeid(t).name() << endl;
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
-	warning("Unvalidated %s! Revalidating…", typeid(t).name());
+	int status = 0;
+	unique_ptr<char> realname = demangle(typeid(t), status);
+	warning("Unvalidated \"%s\"! (status %i) Revalidating…", realname.get(), status);
 	validate<T, U>(t);	
 	return check_valid(t);
 }
