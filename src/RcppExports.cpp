@@ -58,24 +58,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // formatcoords
-CharacterVector formatcoords(NumericVector x);
-RcppExport SEXP _Waypoint_formatcoords(SEXP xSEXP) {
+CharacterVector formatcoords(NumericVector x, bool usenames);
+RcppExport SEXP _Waypoint_formatcoords(SEXP xSEXP, SEXP usenamesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(formatcoords(x));
-    return rcpp_result_gen;
-END_RCPP
-}
-// printcoords
-NumericVector printcoords(NumericVector x);
-RcppExport SEXP _Waypoint_printcoords(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(printcoords(x));
+    Rcpp::traits::input_parameter< bool >::type usenames(usenamesSEXP);
+    rcpp_result_gen = Rcpp::wrap(formatcoords(x, usenames));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -154,8 +144,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Waypoint_coords_replace", (DL_FUNC) &_Waypoint_coords_replace, 2},
     {"_Waypoint_latlon", (DL_FUNC) &_Waypoint_latlon, 2},
     {"_Waypoint_validatecoords", (DL_FUNC) &_Waypoint_validatecoords, 1},
-    {"_Waypoint_formatcoords", (DL_FUNC) &_Waypoint_formatcoords, 1},
-    {"_Waypoint_printcoords", (DL_FUNC) &_Waypoint_printcoords, 1},
+    {"_Waypoint_formatcoords", (DL_FUNC) &_Waypoint_formatcoords, 2},
     {"_Waypoint_waypoints", (DL_FUNC) &_Waypoint_waypoints, 2},
     {"_Waypoint_waypoints_replace", (DL_FUNC) &_Waypoint_waypoints_replace, 2},
     {"_Waypoint_validatewaypoints", (DL_FUNC) &_Waypoint_validatewaypoints, 1},

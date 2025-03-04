@@ -11,9 +11,9 @@ waypoints(df, fmt = 1L)
 
 waypoints(df) <- value
 
-\method{format}{waypoints}(x, ...)
+\method{format}{waypoints}(x)
 
-\method{print}{waypoints}(x, ...)
+\method{print}{waypoints}(x)
 }
 \arguments{
 \item{df}{a data frame with each row representing a waypoint, comprising at least two
@@ -140,6 +140,6 @@ rm(wp1, wp2)
   \code{\link[base:data.frame]{data.frame}()}, and \code{\link[=validate]{validate}()}.
 
 Other coords_waypoints: 
-\code{\link{coords}()}
+\code{\link{print.coords}()}
 }
 \concept{coords_waypoints}

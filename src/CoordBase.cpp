@@ -71,8 +71,6 @@ class Format;
 template<class T, CoordType type>
 class FormatLL;
 
-ostream& operator<<(ostream&, const Coord&);
-
 // WayPoint
 class WayPoint;
 
@@ -100,15 +98,15 @@ bool valid_ll(const DataFrame);
 NumericVector coords(NumericVector, const int);
 NumericVector coords_replace(NumericVector, int);
 NumericVector latlon(NumericVector, LogicalVector&);
-NumericVector validatecoord(NumericVector);
-CharacterVector formatcoord(NumericVector);
-NumericVector printcoord(NumericVector);
+NumericVector validatecoords(NumericVector);
+CharacterVector formatcoords(NumericVector, bool);
+NumericVector printcoords(NumericVector);
 DataFrame waypoints(DataFrame, int);
 DataFrame waypoints_replace(DataFrame, int);
-DataFrame validatewaypoint(DataFrame);
-CharacterVector formatwaypoint(NumericVector);
-DataFrame printwaypoint(DataFrame);
-NumericVector as_coord(DataFrame, bool);
+DataFrame validatewaypoints(DataFrame);
+CharacterVector formatwaypoints(NumericVector);
+DataFrame printwaypoints(DataFrame);
+NumericVector as_coords(DataFrame, bool);
 
 
 /// __________________________________________________
@@ -651,7 +649,7 @@ void convert_switch(T t, CoordType newtype)
 template<class T>
 vector<string> format_switch(const T& t, CoordType ct)
 {
-//	cout << "@format_switch<T>(const T&, CoordType) " << Demangler(typeid(t)) << " ct " << coordtype_to_int(ct) << endl;
+	cout << "@format_switch<T>(const T&, CoordType) " << Demangler(typeid(t)) << " ct " << coordtype_to_int(ct) << endl;
 	vector<string> sv; 
 	switch (ct)
 	{
@@ -734,8 +732,7 @@ class Coord : public Coordbase {
 		void validate(bool warn = true) const;
 		template<CoordType type>
 		vector<string> format_ct() const;
-		vector<string> format(bool usenames = true) const;
-		void print(ostream&) const;
+		vector<string> format(bool usenames) const;
 };
 
 
@@ -779,7 +776,7 @@ void Coord::validate(bool warn) const
 template<CoordType type>
 vector<string> Coord::format_ct() const
 {
-//	cout << "@Coord::format_ct<CoordType>() " << Demangler(typeid(*this)) << endl;
+	cout << "@Coord::format_ct<CoordType>() " << Demangler(typeid(*this)) << endl;
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), Format<type>(ff));
 	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<Coord, type>(ff, latlon));
@@ -791,7 +788,7 @@ vector<string> Coord::format_ct() const
 /// Format coords vector<string> with names
 vector<string> Coord::format(bool usenames) const
 {
-//	cout << "@Coord::format() " << Demangler(typeid(*this)) << endl;
+	cout << "@Coord::format() " << Demangler(typeid(*this)) << endl;
 	ostringstream outstrstr;
 	vector<string>&& sv = format_switch(*this, ct);
 	vector<string> names { get_vec_attr<NumericVector, string>(nv, "names") };
@@ -802,32 +799,6 @@ vector<string> Coord::format(bool usenames) const
 	}
 	transform(sv.begin(), sv.end(), sv.begin(), [&outstrstr, strwdth](const string& s) { outstrstr.str(""); outstrstr << setw(strwdth) << s; return outstrstr.str(); });
 	return sv;
-}
-
-
-/// __________________________________________________
-/// Print coords vector
-void Coord::print(ostream& stream) const
-{
-//	cout << "@Coord::print() " << Demangler(typeid(*this)) << endl;
-	vector<string>&& sv = format_switch(*this, ct);
-	vector<string> names { get_vec_attr<NumericVector, string>(nv, "names") };
-	int strwdth = 0;
-	if (names.size()) {
-		prefixvecstr(sv, names);
-		strwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
-	}
-	for_each(sv.begin(), sv.end(), [&stream, strwdth](const string& s) { stream << setw(strwdth) << s << "\n"; });
-}
-
-
-/// __________________________________________________
-/// Output Coord derived object to ostream
-ostream& operator<<(ostream& stream, const Coord& c)
-{
-//	cout << "@operator<<(ostream&, const Coord&)\n";
-	c.print(stream);
-	return stream;
 }
 
 
@@ -1374,30 +1345,13 @@ NumericVector validatecoords(NumericVector x)
 /// Format coords vector - S3 method format.coords()
 //' @rdname coords
 // [[Rcpp::export(name = "format.coords")]]
-CharacterVector formatcoords(NumericVector x)
+CharacterVector formatcoords(NumericVector x, bool usenames = true)
 {
 //	cout << "——Rcpp::export——formatcoords(NumericVector)\n";
 	checkinherits(x, "coords");
 	if (!check_valid(x))
 		warning("Formatting invalid coords!");
-//	CoordType ct = get_coordtype(x);
-//	return wrap(format_switch(Coord(ct, x), ct));
-	return wrap(Coord(get_coordtype(x), x).format());
-}
-
-
-/// __________________________________________________
-/// Print coords vector - S3 method print.coords()
-//' @rdname coords
-// [[Rcpp::export(name = "print.coords", invisible = true)]]
-NumericVector printcoords(NumericVector x)
-{
-//	cout << "——Rcpp::export——printcoords(NumericVector) format " << get_fmt_attribute(x) << endl;
-	checkinherits(x, "coords");
-	if (!check_valid(x))
-		warning("Printing invalid coords!");
-	Rcout << Coord(get_coordtype(x), x);
-	return x;
+	return wrap(Coord(get_coordtype(x), x).format(usenames));
 }
 
 

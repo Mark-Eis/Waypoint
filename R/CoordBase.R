@@ -6,6 +6,33 @@
 #
 # CoordBase.R
 
+
+# ========================================
+#  Print Coordinates
+#  S3method print.coords(x, ...)
+#'
+#' @rdname coords
+#' @export
+
+print.coords <- function (x, ...) {
+    writeLines(format(x, ...))
+    invisible(x)
+}
+
+
+# ========================================
+#  Print Waypoints
+#  S3method print.waypoints(x, ...)
+#'
+#' @rdname waypoints
+#' @export
+
+print.waypoints <- function (x, ...) {
+    writeLines(format(x, ...))
+    invisible(x)
+}
+
+
 # ========================================
 #  Validate Coordinates and Waypoints
 #  S3generic validate(x, ...)
@@ -118,7 +145,7 @@ review <- function(x, ...)
     UseMethod("review")
 
 # ========================================
-#  Review Coordinates and Waypoints
+#  Review Coordinates
 #  S3method review.coords(x, ...)
 #'
 #' @rdname review
@@ -165,7 +192,7 @@ review.coords <- function(x, show_n = 20L, ...)
 
 
 # ========================================
-#  Review Coordinates and Waypoints
+#  Review Waypoints
 #  S3method review.waypoints(x, ...)
 #'
 #' @rdname review
