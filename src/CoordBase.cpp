@@ -656,15 +656,15 @@ vector<string> format_switch(const T& t, CoordType ct)
 	switch (ct)
 	{
 		case CoordType::decdeg:
-			sv = t.template format<CoordType::decdeg>();
+			sv = t.template format_ct<CoordType::decdeg>();
 			break;
 
 		case CoordType::degmin:
-			sv = t.template format<CoordType::degmin>();
+			sv = t.template format_ct<CoordType::degmin>();
 			break;
 
 		case CoordType::degminsec:
-			sv = t.template format<CoordType::degminsec>();
+			sv = t.template format_ct<CoordType::degminsec>();
 			break;
 
 		default:
@@ -733,7 +733,7 @@ class Coord : public Coordbase {
 		void convert() const;
 		void validate(bool warn = true) const;
 		template<CoordType type>
-		vector<string> format() const;
+		vector<string> format_ct() const;
 		void print(ostream&) const;
 };
 
@@ -776,9 +776,9 @@ void Coord::validate(bool warn) const
 /// __________________________________________________
 /// Format coordinates as vector<string> of CoordType
 template<CoordType type>
-vector<string> Coord::format() const
+vector<string> Coord::format_ct() const
 {
-//	cout << "@Coord::format<CoordType>() " << Demangler(typeid(*this)) << endl;
+//	cout << "@Coord::format_ct<CoordType>() " << Demangler(typeid(*this)) << endl;
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), Format<type>(ff));
 	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<Coord, type>(ff, latlon));
@@ -832,7 +832,7 @@ class WayPoint : public Coordbase {
 		void convert() const;
 		void validate(bool = true) const;
 		template<CoordType type>
-		vector<string> format() const;
+		vector<string> format_ct() const;
 		void print(ostream& stream) const;
 };
 
@@ -890,9 +890,9 @@ void WayPoint::validate(bool warn) const
 /// __________________________________________________
 /// Format waypoints as vector<string> of CoordType
 template<CoordType type>
-vector<string> WayPoint::format() const
+vector<string> WayPoint::format_ct() const
 {
-//	cout << "@WayPoint::format()\n";
+//	cout << "@WayPoint::format_ct()\n";
 	vector<string> sv_lat(nvlat.size());
 	transform(nvlat.begin(), nvlat.end(), sv_lat.begin(), Format<type>(ff));
 	transform(sv_lat.begin(), sv_lat.end(), nvlat.begin(), sv_lat.begin(), FormatLL<WayPoint, type>(ff, vector<bool>{ true }));
