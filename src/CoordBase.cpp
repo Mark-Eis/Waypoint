@@ -115,7 +115,6 @@ NumericVector as_coord(DataFrame, bool);
 /// Report object construction and destruction
 void _ctrsgn(const type_info& obj, bool destruct = false)
 {
-//	cout << (destruct ? "Destroying " : "Constructing ") << obj.name() << endl;
 	cout << (destruct ? "Destroying " : "Constructing ") << flush;
     string s = obj.name();
     system(("c++filt -t " + s).data());
