@@ -9,7 +9,7 @@ using namespace std;
 
 // Development and debugging
 void _ctrsgn(const type_info&, bool);
-unique_ptr<char> demangle(const type_info&, int&);
+//unique_ptr<char> demangle(const type_info&, int&);
 
 // Formula simplification
 inline double mod1by60(double);
@@ -123,12 +123,20 @@ void _ctrsgn(const type_info& obj, bool destruct = false)
     system(("c++filt -t " + s).data());
 }
 
+/// Demangle object names functor
+class Demangler {
+	char* p;
+	int status = 0;
+public:
+	Demangler(const type_info& obj) : p(abi::__cxa_demangle(obj.name(), NULL, NULL, &status)) {}
+	~Demangler() { std::free(p); }
+	operator string() const { return string("\"") + p + "\" (status " + to_string(status) + ")"; }
+};
 
-/// Demangle names
-unique_ptr<char> demangle(const type_info& obj, int& status)
+ostream& operator<< (ostream& stream, const Demangler& d)
 {
-	cout << "@demangle(const type_info&, int&) obj " << obj.name() << endl; 
- 	return unique_ptr<char>(abi::__cxa_demangle(obj.name(), NULL, NULL, &status));
+//  cout << "ostream& operator<< (ostream&, const Demangler&) ";
+  return stream << string(d);
 }
 
 
@@ -200,7 +208,7 @@ inline int get_fmt_attribute(const T& t)
 template<class T>
 inline void checkinherits(T& t, const char* classname)
 {
-//	cout << "@checkinherits<T>(T& t, const char* classname) t " << typeid(t).name() << " classname " << classname << endl;
+	cout << "@checkinherits<T>(T& t, const char* classname) t " << Demangler(typeid(t))  << " classname \"" << classname << "\"" << endl;
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	if (!t.inherits(classname)) stop("Argument must be a \"%s\" object", classname);
 }
@@ -609,7 +617,7 @@ class Validator {
 template<class T, class U>
 void convert_switch(T t, CoordType newtype)
 {
-//	cout << "@convert_switch<T&, U>(T, CoordType) " << typeid(t).name() << endl;
+	cout << "@convert_switch<T&, U>(T, CoordType) t " << Demangler(typeid(t)) << " newtype " << coordtype_to_int(newtype) << endl;
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	CoordType type = get_coordtype(t);
 	U u(type, t);
@@ -643,7 +651,7 @@ void convert_switch(T t, CoordType newtype)
 template<class T>
 vector<string> format_switch(const T& t, CoordType ct)
 {
-//	cout << "@format_switch<T>(const T&, CoordType) " << typeid(t).name() << endl;
+	cout << "@format_switch<T>(const T&, CoordType) " << Demangler(typeid(t)) << " ct " << coordtype_to_int(ct) << endl;
 	vector<string> sv; 
 	switch (ct)
 	{
@@ -752,7 +760,7 @@ inline void Coord::convert() const
 /// Validate coords vector
 void Coord::validate(bool warn) const
 {
-//	cout << "@Coord::validate() " << typeid(*this).name() << " latlon " << LogicalVector(wrap(latlon)) << endl;
+	cout << "@Coord::validate() " << Demangler(typeid(*this)) << " latlon " << LogicalVector(wrap(latlon)) << endl;
 	vector<bool>& non_const_valid { const_cast<vector<bool>&>(valid) };
 	non_const_valid.assign(nv.size(), {false});
 	transform(nv.begin(), nv.end(), non_const_valid.begin(), Validator(ff, latlon));
@@ -770,7 +778,7 @@ void Coord::validate(bool warn) const
 template<CoordType type>
 vector<string> Coord::format() const
 {
-//	cout << "@Coord::format<CoordType>() " << typeid(*this).name() << endl;
+//	cout << "@Coord::format<CoordType>() " << Demangler(typeid(*this)) << endl;
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), Format<type>(ff));
 	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<Coord, type>(ff, latlon));
@@ -782,7 +790,7 @@ vector<string> Coord::format() const
 /// Print coords vector
 void Coord::print(ostream& stream) const
 {
-//	cout << "@Coord::print() " << typeid(*this).name() << endl;
+//	cout << "@Coord::print() " << Demangler(typeid(*this)) << endl;
 	vector<string>&& sv = format_switch(*this, ct);
 	vector<string> names { get_vec_attr<NumericVector, string>(nv, "names") };
 	int strwdth = 0;
@@ -853,7 +861,7 @@ inline void WayPoint::convert() const
 /// Validate WayPoint
 void WayPoint::validate(bool warn) const
 {
-//	cout << "@WayPoint::validate(bool)\n";
+	cout << "@WayPoint::validate(bool) " << Demangler(typeid(*this)) << endl;
 
 	vector<bool>& non_const_validlat { const_cast<vector<bool>&>(validlat) };
 	non_const_validlat.assign(nvlat.size(), {false});
@@ -902,7 +910,7 @@ vector<string> WayPoint::format() const
 /// Print WayPoint
 void WayPoint::print(ostream& stream) const
 {
-//	cout << "@WayPoint::print() " << typeid(*this).name() << endl;
+	cout << "@WayPoint::print() " << Demangler(typeid(*this)) << endl;
 	const int i { coordtype_to_int(ct) };
 	int spacing[] {  5,  7,  8,
 					11, 13, 14 };
@@ -1007,11 +1015,9 @@ bool validated(T t, const char* attrname, bool& unvalidated)
 template<class T, class U>
 const T revalidate(const T t)
 {
-	cout << "@revalidate<T, U>(const T) t" << typeid(t).name() << endl;
+	cout << "@revalidate<T, U>(const T) t" << Demangler(typeid(t))  << endl;
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
-	int status = 0;
-	unique_ptr<char> realname = demangle(typeid(t), status);
-	warning("Unvalidated \"%s\"! (status %i) Revalidating…", realname.get(), status);
+	warning("Revalidating %s…!", Demangler(typeid(t)));
 	validate<T, U>(t);	
 	return check_valid(t);
 }
