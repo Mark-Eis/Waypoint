@@ -72,8 +72,8 @@ wp1 <- data.frame(
 )
 }
 
-## Create "waypoints" object of decimal degrees
-waypoints(wp1) <- 1
+## Create "waypoints" object of decimal degrees (fmt = 1)
+as_waypoints(wp1, fmt = 1)
 
 validate(wp1)
 

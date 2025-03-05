@@ -101,13 +101,149 @@
 #'
 
 ## ========================================
-##  Create Coordinates and Waypoints
+##  Create Coordinates
 ##  S3generic as_coords(object, ...)
 #'
 #' @export
 
 as_coords <- function(object, ...) 
     UseMethod("as_coords")
+
+## __________________________________________________
+## Add "waypoints" to R data.frame object class and validate,
+## or convert format of R waypoints object and return
+#' @title Geographic or GPS Waypoint Class
+#' 
+#' @name Waypoints
+#' 
+#' @description
+#' \code{as_waypoints()} creates a robust representation of a series of geographic or GPS waypoints
+#' instantiated as an object of class \code{"waypoints"}.
+#' 
+#' \code{convert()} converts the format of existing objects of class \code{"waypoints"} between (i)
+#' decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
+#'
+#' @details
+#' By default, the names of the waypoints should be included in a "Name" column of data frame
+#' argument \code{df}, and the latitude and longitude in the two columns immediately on the right
+#' hand side of "Name". An alternative column for waypoint names may be specified by setting an
+#' \code{integer} attribute, \code{"namescol"} indicating its position in \code{df}, while setting
+#' this attribute to \code{NA} supresses printing of waypoint names. If \code{df} has neither a
+#' "Name" column nor a \code{"namescol"} attribute, the \code{"row.names"} attribute is used for
+#' waypoint names if present in \code{df}. Similarly, alternative columns for the latitude and
+#' longitude may be specified by setting \code{"llcols"} as a length 2 \code{integer} vector
+#' attribute indicating their positions in \code{df}.
+#'
+#' Individual values provided in the \code{numeric} vector latitude and longitude columns of data
+#' frame argument \code{df} should have a decimal point after the number of whole degrees in the
+#' case of \emph{decimal degrees}, after the number of whole minutes in the case of
+#' \emph{degrees and minutes}, and after the number of whole seconds in the case of
+#' \emph{degrees, minutes and seconds}.
+#'
+#' The \code{fmt} argument should be \code{1L} to represent decimal degrees, \code{2L} for degrees
+#' and minutes, and \code{3L} for degrees, minutes and seconds and is used to provide both the
+#' format of values in data frame argument \code{df} to be converted into a \code{"waypoints"}
+#' object and the desired format if a \code{"waypoints"} object is to be converted to a new format.
+#' Note that on conversion of a \code{"waypoints"} object, the original data frame argument
+#' \code{df} is modified such that the latitude and longitude values are as described in the
+#' previous paragraph, and may be inspected using standard R code, see examples.
+#'
+#' The latitude and longitude values of a newly created \code{"waypoints"} object are checked to
+#' ensure they are valid geographic locations as described under
+#' \code{\link[=validate]{validate}()}. Likewise, a check is made to ensure that an existing
+#' \code{"waypoints"} object to be converted to a new format has already been validated; if not, it
+#' is re-validated. 
+#'
+#' @family coords_waypoints
+#' @seealso
+#' \code{\link[base:attr]{attr}()}, \code{\link[base:attributes]{attributes}},
+#'   \code{\link[base:data.frame]{data.frame}()}, and \code{\link[=validate]{validate}()}.
+#'
+#' @param object a data frame with each row representing a waypoint, comprising at least two
+#'   \code{numeric} columns containing values of latitude and longitude, and optionally a
+#'   \code{character} column of waypoint names (see \emph{Details}). 
+#'
+#' @param \dots further arguments passed to or from other methods.
+#'
+#' @param x an object of class \code{"waypoints"} created by function
+#' \code{\link[=as_waypoints]{as_waypoints}()}.
+#'
+#' @param fmt an \code{integer} of value 1L, 2L or 3L, indicating the current or desired coordinate
+#'   format (see \emph{Details}).
+#'
+#' @param usenames \code{logical}, whether or not to include waypoint names in formatted output.
+#'
+#' @return
+#' An object of classes \code{"waypoints"} and \code{"data.frame"}, comprising the original data
+#' frame argument \code{df}, with latitude and longitude values possibly converted as appropriate
+#' and additional attributes: –
+#' \item{\code{"fmt"}}{the coordinate format.}
+#' \item{\code{"namescol"}}{the position of waypoint names, if present within \code{df}.}
+#' \item{\code{"llcols"}}{the position of latitude and longitude columns within \code{df}.}
+#' \item{\code{"validlat"} and \code{"validlon"}}{\code{logical} vectors indicating whether
+#'   individual latitude and longitude values are valid geographic locations.}
+#'
+#' @examples
+#' ## Dataframe representing waypoint names, and latitude and longitude values
+#' ## of degrees, minutes and seconds
+#' wp1 <- data.frame(
+#'     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+#'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
+#'     lat = c(513027.95, 493246.36, 480626.04, 385322.18, 0, -370642.26, -530617.21, -251424.56),
+#'     lon = c(-00740.53, 182354.82, -1224643.22, -770206.87, 0, -121719.07, 733102.22, -573109.21)
+#' )
+#'
+#' ## Create "waypoints" object of degrees, minutes and seconds (fmt = 3)
+#' as_waypoints(wp1, fmt = 3)
+#'
+#' ## Convert to degrees and minutes (fmt = 2)
+#' convert(wp1, 2)
+#'
+#' ## Convert to decimal degrees (fmt = 1)
+#' convert(wp1, 1)
+#'
+#' ###
+#' ## Dataframe representing unnamed latitude and longitude values in decimal degrees
+#' wp2 <- data.frame(
+#'     lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -53.104781, -25.240156),
+#'     lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -57.519227)
+#' )
+#'
+#' ## Create "waypoints" object of decimal degrees (default fmt = 1)
+#' as_waypoints(wp2, fmt = 1)
+#'
+#' ## Add row.names
+#' row.names(wp2) <-
+#'     c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+#'       "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport")
+#' wp2
+#'
+#' ## Convert to degrees and minutes (fmt = 2)
+#' convert(wp2, 2)
+#'
+#' ## Convert to degrees, minutes and seconds (fmt = 3)
+#' convert(wp2, 3)
+#'
+#' ## Degrees, minutes and seconds values as an ordinary R data frame
+#' as.data.frame(wp2)
+#'
+#' ## Convert to decimal degrees, then format as a fixed-width
+#' ## character vector without names…
+#' convert(wp2, 3) |> format(usenames = FALSE)
+#'
+#' ## …or with them
+#' format(wp2)
+#'
+#' rm(wp1, wp2)
+#'
+## ========================================
+##  Create Waypoints
+##  S3generic as_waypoints(object, ...)
+#'
+#' @export
+
+as_waypoints <- function(object, ...) 
+    UseMethod("as_waypoints")
 
 
 ## ========================================
@@ -138,7 +274,7 @@ print.coords <- function (x, ...) {
 ##  Print Waypoints
 ##  S3method print.waypoints(x, ...)
 #'
-#' @rdname waypoints
+#' @rdname Waypoints
 #' @export
 
 print.waypoints <- function (x, ...) {

@@ -114,6 +114,6 @@ rm(dm)
   \code{\link[=validate]{validate}()}.
 
 Other coords_waypoints: 
-\code{\link{print.waypoints}()}
+\code{\link{Waypoints}}
 }
 \concept{coords_waypoints}

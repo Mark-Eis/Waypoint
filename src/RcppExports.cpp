@@ -81,27 +81,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// waypoints
-DataFrame waypoints(DataFrame df, int fmt);
-RcppExport SEXP _Waypoint_waypoints(SEXP dfSEXP, SEXP fmtSEXP) {
+// as_waypoints
+DataFrame as_waypoints(DataFrame object, const int fmt);
+RcppExport SEXP _Waypoint_as_waypoints(SEXP objectSEXP, SEXP fmtSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
-    Rcpp::traits::input_parameter< int >::type fmt(fmtSEXP);
-    rcpp_result_gen = Rcpp::wrap(waypoints(df, fmt));
+    Rcpp::traits::input_parameter< DataFrame >::type object(objectSEXP);
+    Rcpp::traits::input_parameter< const int >::type fmt(fmtSEXP);
+    rcpp_result_gen = Rcpp::wrap(as_waypoints(object, fmt));
     return rcpp_result_gen;
 END_RCPP
 }
-// waypoints_replace
-DataFrame waypoints_replace(DataFrame df, int value);
-RcppExport SEXP _Waypoint_waypoints_replace(SEXP dfSEXP, SEXP valueSEXP) {
+// convertwaypoints
+DataFrame convertwaypoints(DataFrame x, const int fmt);
+RcppExport SEXP _Waypoint_convertwaypoints(SEXP xSEXP, SEXP fmtSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< DataFrame >::type df(dfSEXP);
-    Rcpp::traits::input_parameter< int >::type value(valueSEXP);
-    rcpp_result_gen = Rcpp::wrap(waypoints_replace(df, value));
+    Rcpp::traits::input_parameter< DataFrame >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const int >::type fmt(fmtSEXP);
+    rcpp_result_gen = Rcpp::wrap(convertwaypoints(x, fmt));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -136,8 +136,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Waypoint_validatecoords", (DL_FUNC) &_Waypoint_validatecoords, 1},
     {"_Waypoint_formatcoords", (DL_FUNC) &_Waypoint_formatcoords, 2},
     {"_Waypoint_as_coordswaypoints", (DL_FUNC) &_Waypoint_as_coordswaypoints, 2},
-    {"_Waypoint_waypoints", (DL_FUNC) &_Waypoint_waypoints, 2},
-    {"_Waypoint_waypoints_replace", (DL_FUNC) &_Waypoint_waypoints_replace, 2},
+    {"_Waypoint_as_waypoints", (DL_FUNC) &_Waypoint_as_waypoints, 2},
+    {"_Waypoint_convertwaypoints", (DL_FUNC) &_Waypoint_convertwaypoints, 2},
     {"_Waypoint_validatewaypoints", (DL_FUNC) &_Waypoint_validatewaypoints, 1},
     {"_Waypoint_formatwaypoints", (DL_FUNC) &_Waypoint_formatwaypoints, 2},
     {NULL, NULL, 0}

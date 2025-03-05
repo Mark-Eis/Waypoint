@@ -100,8 +100,7 @@ NumericVector latlon(NumericVector, LogicalVector&);
 NumericVector validatecoords(NumericVector);
 CharacterVector formatcoords(NumericVector, bool);
 NumericVector as_coordswaypoints(DataFrame, bool);
-DataFrame waypoints(DataFrame, int);
-//DataFrame waypoints_replace(DataFrame, int);
+DataFrame as_waypointsdefault(DataFrame, const int);
 DataFrame convertwaypoints(DataFrame, const int);
 DataFrame validatewaypoints(DataFrame);
 CharacterVector formatwaypoints(NumericVector, bool);
@@ -914,7 +913,7 @@ vector<string> WayPoint::format(bool usenames) const
 	vector<string>&& sv = format_switch(*this, ct);
 
 	vector<int> namescolvec { get_vec_attr<DataFrame, int>(df, "namescol") };
-	if (1 == namescolvec.size()) {
+	if (1 == namescolvec.size() && usenames) {
 		int namescol = namescolvec[0] - 1;
 		if (is_item_in_obj(df, namescol)) {
 			RObject names = df[namescol];
@@ -922,7 +921,7 @@ vector<string> WayPoint::format(bool usenames) const
 				stop("Invalid \"namescol\" attribute! (df[namescol] neither a CharacterVector nor IntegerVector)");
 		} else
 			stop("Invalid \"namescol\" attribute! (item not in object)");
-	} else if (df.hasAttribute("row.names")) {
+	} else if (df.hasAttribute("row.names") && usenames) {
 		RObject rownames = df.attr("row.names");
 		if (!prefixwithnames(sv, rownames))
 			stop("Invalid \"row.names\" attribute! (neither a CharacterVector nor IntegerVector)");
@@ -1039,6 +1038,9 @@ bool valid_ll(const DataFrame df)
 /// __________________________________________________
 /// __________________________________________________
 /// Exported functions
+
+/// __________________________________________________
+/// Create coords
 //' @rdname Coords 
 // [[Rcpp::export(name = "as_coords.default")]]
 NumericVector as_coords(NumericVector object, const int fmt = 1)
@@ -1216,8 +1218,8 @@ NumericVector latlon(NumericVector cd, LogicalVector& value)
 //' )
 //' }
 //'
-//' ## Create "waypoints" object of decimal degrees
-//' waypoints(wp1) <- 1
+//' ## Create "waypoints" object of decimal degrees (fmt = 1)
+//' as_waypoints(wp1, fmt = 1)
 //'
 //' validate(wp1)
 //'
@@ -1273,184 +1275,45 @@ NumericVector as_coordswaypoints(DataFrame object, bool latlon)
 
 
 /// __________________________________________________
-/// Add "waypoints" to R data.frame object class and validate,
-/// or convert format of R waypoints object and return
-//' @title Geographic or GPS Waypoint Class
-//' 
-//' @name waypoints
-//' 
-//' @description
-//' \code{waypoints()} creates a robust representation of a series of geographic or GPS waypoints
-//' instantiated as an object of class \code{"waypoints"}.
-//' 
-//' \code{waypoints()} and replacement form \verb{waypoints()<-} also convert the format of
-//' existing objects of class \code{"waypoints"} between (i) decimal degrees, (ii) degrees and
-//' minutes, and (iii) degrees, minutes and seconds.
-//'
-//' @details
-//' By default, the names of the waypoints should be included in a "Name" column of data frame
-//' argument \code{df}, and the latitude and longitude in the two columns immediately on the right
-//' hand side of "Name". An alternative column for waypoint names may be specified by setting an
-//' \code{integer} attribute, \code{"namescol"} indicating its position in \code{df}, while setting
-//' this attribute to \code{NA} supresses printing of waypoint names. If \code{df} has neither a
-//' "Name" column nor a \code{"namescol"} attribute, the \code{"row.names"} attribute is used for
-//' waypoint names if present in \code{df}. Similarly, alternative columns for the latitude and
-//' longitude may be specified by setting \code{"llcols"} as a length 2 \code{integer} vector
-//' attribute indicating their positions in \code{df}.
-//'
-//' Individual values provided in the \code{numeric} vector latitude and longitude columns of data
-//' frame argument \code{df} should have a decimal point after the number of whole degrees in the
-//' case of \emph{decimal degrees}, after the number of whole minutes in the case of
-//' \emph{degrees and minutes}, and after the number of whole seconds in the case of
-//' \emph{degrees, minutes and seconds}.
-//'
-//' The \code{fmt} argument should be \code{1L} to represent decimal degrees, \code{2L} for degrees
-//' and minutes, and \code{3L} for degrees, minutes and seconds and is used to provide both the
-//' format of values in data frame argument \code{df} to be converted into a \code{"waypoints"}
-//' object and the desired format if a \code{"waypoints"} object is to be converted to a new format.
-//' Note that on conversion of a \code{"waypoints"} object, the original data frame argument
-//' \code{df} is modified such that the latitude and longitude values are as described in the
-//' previous paragraph, and may be inspected using standard R code, see examples.
-//'
-//' The latitude and longitude values of a newly created \code{"waypoints"} object are checked to
-//' ensure they are valid geographic locations as described under
-//' \code{\link[=validate]{validate}()}. Likewise, a check is made to ensure that an existing
-//' \code{"waypoints"} object to be converted to a new format has already been validated; if not, it
-//' is re-validated. 
-//'
-//' @family coords_waypoints
-//' @seealso
-//' \code{\link[base:attr]{attr}()}, \code{\link[base:attributes]{attributes}},
-//'   \code{\link[base:data.frame]{data.frame}()}, and \code{\link[=validate]{validate}()}.
-//'
-//' @param df a data frame with each row representing a waypoint, comprising at least two
-//'   \code{numeric} columns containing values of latitude and longitude, and optionally a
-//'   \code{character} column of waypoint names (see \emph{Details}). 
-//'
-//' @param fmt,value an \code{integer} of value 1L, 2L or 3L, indicating the current or desired
-//'   coordinate format (see \emph{Details}); default 1L.
-//'
-//' @param x an object of class \code{"waypoints"} created by function
-//' \code{\link[=waypoints]{waypoints}()}.
-//'
-//' @param \dots further arguments passed to or from other methods.
-//'
-//' @param usenames \code{logical}, whether or not to include waypoint names in formatted output.
-//'
-//' @return
-//' An object of classes \code{"waypoints"} and \code{"data.frame"}, comprising the original data
-//' frame argument \code{df}, with latitude and longitude values possibly converted as appropriate
-//' and additional attributes: –
-//' \item{\code{"fmt"}}{the coordinate format.}
-//' \item{\code{"namescol"}}{the position of waypoint names, if present within \code{df}.}
-//' \item{\code{"llcols"}}{the position of latitude and longitude columns within \code{df}.}
-//' \item{\code{"validlat"} and \code{"validlon"}}{\code{logical} vectors indicating whether
-//'   individual latitude and longitude values are valid geographic locations.}
-//'
-//' @examples
-//' ## Dataframe representing waypoint names, and latitude and longitude values
-//' ## of degrees, minutes and seconds
-//' wp1 <- data.frame(
-//'     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
-//'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
-//'     lat = c(513027.95, 493246.36, 480626.04, 385322.18, 0, -370642.26, -530617.21, -251424.56),
-//'     lon = c(-00740.53, 182354.82, -1224643.22, -770206.87, 0, -121719.07, 733102.22, -573109.21)
-//' )
-//'
-//' ## Create "waypoints" object of degrees, minutes and seconds (fmt = 3)
-//' waypoints(wp1, 3)
-//'
-//' ## Convert to degrees and minutes (fmt = 2)
-//' waypoints(wp1) <- 2
-//' wp1
-//'
-//' ## Convert to decimal degrees (fmt = 1)
-//' waypoints(wp1) <- 1
-//' wp1
-//'
-//' ###
-//' ## Dataframe representing unnamed latitude and longitude values in decimal degrees
-//' wp2 <- data.frame(
-//'     lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -53.104781, -25.240156),
-//'     lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -57.519227)
-//' )
-//'
-//' ## Create "waypoints" object of decimal degrees (default fmt = 1)
-//' waypoints(wp2)
-//'
-//' ## Add row.names
-//' row.names(wp2) <-
-//'     c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
-//'       "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport")
-//' wp2
-//'
-//' ## Convert to degrees and minutes (fmt = 2)
-//' waypoints(wp2) <- 2
-//' wp2
-//'
-//' ## Convert to degrees, minutes and seconds (fmt = 3)
-//' waypoints(wp2) <- 3
-//' wp2
-//'
-//' ## Degrees, minutes and seconds values as an ordinary R data frame
-//' as.data.frame(wp2)
-//'
-//' ## Convert to decimal degrees, format as a character vector…
-//' waypoints(wp2) <- 1
-//' (wp2_chr <- format(wp2))
-//'
-//' ## …and output using {base} cat()
-//' cat(wp2_chr, fill = 26, labels = paste0("{#", 1:8, "}:"))
-//'
-//' rm(wp1, wp2)
-//'
-// [[Rcpp::export]]
-DataFrame waypoints(DataFrame df, int fmt = 1)
+/// Create waypoints
+//' @rdname Waypoints
+// [[Rcpp::export(name = "as_waypoints.default")]]
+DataFrame as_waypoints(DataFrame object, const int fmt = 1)
 {
-//	cout << "——Rcpp::export——waypoints(DataFrame, int)\n";
-	CoordType newtype = get_coordtype(fmt);
-	CoordType type;
-	if (df.inherits("waypoints")) {
-		type = get_coordtype(df);
-//		cout << "argument df is already a \"waypoints\" vector of type " << coordtype_to_int(type) + 1 << endl;
-		if (newtype == type) {
-//			cout << "——fmt out == fmt in!——" << endl;
-			if (!check_valid(df))
-				stop("Invalid waypoints!");
-			return df;
-		}
-	} else {
-		type = newtype;
-		df.attr("fmt") = fmt;
-		int namescol = 0;
-		if (!df.hasAttribute("namescol")) {
-			namescol = nameinobj(df, "name");
-			if (++namescol)
-				df.attr("namescol") = namescol;
-		}
-		if (!df.hasAttribute("llcols")) {
-			const vector<int> llcols { namescol + 1, namescol + 2 };
-			df.attr("llcols") = llcols;
-		}
+//	cout << "——Rcpp::export——as_waypoints(DataFrame, const int)\n";
+	checkinherits(object, "data.frame");
+	CoordType type = get_coordtype(fmt);
+	object.attr("fmt") = fmt;
+	int namescol = 0;
+	if (!object.hasAttribute("namescol")) {
+		namescol = nameinobj(object, "name");
+		if (++namescol)
+			object.attr("namescol") = namescol;
 	}
-
-	if(!valid_ll(df))
+	if (!object.hasAttribute("llcols")) {
+		const vector<int> llcols { namescol + 1, namescol + 2 };
+		object.attr("llcols") = llcols;
+	}
+	if(!valid_ll(object))
 		stop("Invalid llcols attribute!");
-	convert_switch<DataFrame, WayPoint>(df, newtype);
-	df.attr("class") = CharacterVector{"waypoints", "data.frame"};
-	return df;
+	convert_switch<DataFrame, WayPoint>(object, type);
+	object.attr("class") = CharacterVector{"waypoints", "data.frame"};
+	return object;
 }
 
 
+/// __________________________________________________
+/// Convert waypoints format
+//' @rdname Waypoints
 // [[Rcpp::export(name = "convert.waypoints")]]
 DataFrame convertwaypoints(DataFrame x, const int fmt)
 {
-	cout << "——Rcpp::export——convertwaypoints(DataFrame, int) from " << get_fmt_attribute(x) << " to " << fmt << endl;
+//	cout << "——Rcpp::export——convertwaypoints(DataFrame, int) from " << get_fmt_attribute(x) << " to " << fmt << endl;
 	checkinherits(x, "waypoints");
 	CoordType newtype = get_coordtype(fmt);
 	CoordType type = get_coordtype(x);
 	if (newtype == type) {
-		cout << "——fmt out == fmt in!——" << endl;
+//		cout << "——fmt out == fmt in!——" << endl;
 		if (!check_valid(x))
 			stop("Invalid waypoints!");
 	} else {
@@ -1461,17 +1324,6 @@ DataFrame convertwaypoints(DataFrame x, const int fmt)
 	return x;
 }
 
-/*
-/// __________________________________________________
-/// waypoints() as replacement function
-//' @rdname waypoints
-// [[Rcpp::export(name = "`waypoints<-`")]]
-DataFrame waypoints_replace(DataFrame df, int value)
-{
-//	cout << "——Rcpp::export——`waypoints_replace(DataFrame, int)<-`\n";
-	return waypoints(df, value);
-}
-*/
 
 /// __________________________________________________
 /// Validate waypoints vector
@@ -1489,7 +1341,7 @@ DataFrame validatewaypoints(DataFrame x)
 
 /// __________________________________________________
 /// Format waypoints vector - S3 method format.waypoints()
-//' @rdname waypoints
+//' @rdname Waypoints
 // [[Rcpp::export(name = "format.waypoints")]]
 CharacterVector formatwaypoints(DataFrame x, bool usenames = true)
 {
