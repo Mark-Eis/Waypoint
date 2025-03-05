@@ -9,7 +9,8 @@ using namespace std;
 
 // Development and debugging
 void _ctrsgn(const type_info&, bool);
-//unique_ptr<char> demangle(const type_info&, int&);
+class Demangler;
+ostream& operator<< (ostream&, const Demangler&);
 
 // Formula simplification
 inline double mod1by60(double);
@@ -74,8 +75,6 @@ class FormatLL;
 // WayPoint
 class WayPoint;
 
-ostream& operator<<(ostream&, const WayPoint&);
-
 // Validation
 bool check_valid(const NumericVector);
 bool check_valid(const DataFrame);
@@ -100,12 +99,10 @@ NumericVector coords_replace(NumericVector, int);
 NumericVector latlon(NumericVector, LogicalVector&);
 NumericVector validatecoords(NumericVector);
 CharacterVector formatcoords(NumericVector, bool);
-NumericVector printcoords(NumericVector);
 DataFrame waypoints(DataFrame, int);
 DataFrame waypoints_replace(DataFrame, int);
 DataFrame validatewaypoints(DataFrame);
-CharacterVector formatwaypoints(NumericVector);
-DataFrame printwaypoints(DataFrame);
+CharacterVector formatwaypoints(NumericVector, bool);
 NumericVector as_coords(DataFrame, bool);
 
 
@@ -788,7 +785,7 @@ vector<string> Coord::format_ct() const
 /// Format coords vector<string> with names
 vector<string> Coord::format(bool usenames) const
 {
-	cout << "@Coord::format() " << Demangler(typeid(*this)) << endl;
+	cout << "@Coord::format(bool) " << Demangler(typeid(*this)) << endl;
 	ostringstream outstrstr;
 	vector<string>&& sv = format_switch(*this, ct);
 	vector<string> names { get_vec_attr<NumericVector, string>(nv, "names") };
@@ -823,7 +820,7 @@ class WayPoint : public Coordbase {
 		void validate(bool = true) const;
 		template<CoordType type>
 		vector<string> format_ct() const;
-		void print(ostream& stream) const;
+		vector<string> format(bool usenames) const;
 };
 
 
@@ -882,7 +879,7 @@ void WayPoint::validate(bool warn) const
 template<CoordType type>
 vector<string> WayPoint::format_ct() const
 {
-//	cout << "@WayPoint::format_ct()\n";
+	cout << "@WayPoint::format_ct() " << Demangler(typeid(*this)) << endl;
 	vector<string> sv_lat(nvlat.size());
 	transform(nvlat.begin(), nvlat.end(), sv_lat.begin(), Format<type>(ff));
 	transform(sv_lat.begin(), sv_lat.end(), nvlat.begin(), sv_lat.begin(), FormatLL<WayPoint, type>(ff, vector<bool>{ true }));
@@ -897,10 +894,10 @@ vector<string> WayPoint::format_ct() const
 
 
 /// __________________________________________________
-/// Print WayPoint
-void WayPoint::print(ostream& stream) const
+/// Format waypoints vector<string> with names
+vector<string> WayPoint::format(bool usenames) const
 {
-//	cout << "@WayPoint::print() " << Demangler(typeid(*this)) << endl;
+	cout << "@WayPoint::format(bool) " << Demangler(typeid(*this)) << endl;
 	const int i { coordtype_to_int(ct) };
 	int spacing[] {  5,  7,  8,
 					11, 13, 14 };
@@ -931,18 +928,14 @@ void WayPoint::print(ostream& stream) const
 	}
 
 	int strwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
-	for_each(ttlvec.begin(), ttlvec.end(), [&stream, strwdth, i](const string& s) { int fudge[] = { 2, 6, 10 }; stream << setw(strwdth - fudge[i]) << s << "\n"; });
-	for_each(sv.begin(), sv.end(), [&stream, strwdth](const string& s) { stream << setw(strwdth) << s << "\n"; });
-}
+//	for_each(ttlvec.begin(), ttlvec.end(), [&stream, strwdth, i](const string& s) { int fudge[] = { 2, 6, 10 }; stream << setw(strwdth - fudge[i]) << s << "\n"; });
+	transform(ttlvec.begin(), ttlvec.end(), ttlvec.begin(),
+		[& ostrstr, strwdth, i](const string& s) { ostrstr.str(""); int fudge[] = { 2, 6, 10 }; ostrstr << setw(strwdth - fudge[i]) << s << "\n"; return ostrstr.str(); });
 
+//	for_each(sv.begin(), sv.end(), [&stream, strwdth](const string& s) { stream << setw(strwdth) << s << "\n"; });
 
-/// __________________________________________________
-/// Output WayPoint to ostream
-ostream& operator<<(ostream& stream, const WayPoint& wp)
-{
-//	cout << "@operator<<(ostream&, const WayPoint&)\n";
-	wp.print(stream);
-	return stream;
+	transform(sv.begin(), sv.end(), sv.begin(), [&ostrstr, strwdth](const string& s) { ostrstr.str(""); ostrstr << setw(strwdth) << s; return ostrstr.str(); });
+	return sv;
 }
 
 
@@ -1552,34 +1545,18 @@ DataFrame validatewaypoints(DataFrame x)
 /// Format waypoints vector - S3 method format.waypoints()
 //' @rdname waypoints
 // [[Rcpp::export(name = "format.waypoints")]]
-CharacterVector formatwaypoints(DataFrame x)
+CharacterVector formatwaypoints(DataFrame x, bool usenames = true)
 {
-//	cout << "——Rcpp::export——formatwaypoints(NumericVector)\n";
+	cout << "——Rcpp::export——formatwaypoints(NumericVector)\n";
 	checkinherits(x, "waypoints");
 	if(!valid_ll(x))
 		stop("Invalid llcols attribute!");
 	if (!check_valid(x))
 		warning("Formatting invalid waypoints!");
 //	return wrap(WayPoint(get_coordtype(x), x).format_switch());
-	CoordType ct = get_coordtype(x);
-	return wrap(format_switch(WayPoint(ct, x), ct));
-}
-
-
-/// __________________________________________________
-/// Print waypoints vector - S3 method print.waypoints()
-//' @rdname waypoints
-// [[Rcpp::export(name = "print.waypoints", invisible = true)]]
-DataFrame printwaypoints(DataFrame x)
-{
-//	cout << "——Rcpp::export——printwaypoints(DataFrame) format " << get_fmt_attribute(x) << endl;
-	checkinherits(x, "waypoints");
-	if(!valid_ll(x))
-		stop("Invalid llcols attribute!");
-	if (!check_valid(x))
-		warning("Printing Invalid waypoints!");
-	Rcout << WayPoint(get_coordtype(x), x);	
-	return x;
+//	CoordType ct = get_coordtype(x);
+//	return wrap(format_switch(WayPoint(ct, x), ct));
+	return wrap(WayPoint(get_coordtype(x), x).format(usenames));
 }
 
 
