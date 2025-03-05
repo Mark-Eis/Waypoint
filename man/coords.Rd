@@ -13,7 +13,7 @@ coords(nv, fmt = 1L)
 
 coords(nv) <- value
 
-\method{format}{coords}(x, usenames = TRUE)
+\method{format}{coords}(x, usenames = TRUE, ...)
 }
 \arguments{
 \item{x}{object of class \code{"coords"} created by function \code{\link[=coords]{coords}()}.}
@@ -99,6 +99,6 @@ rm(dm, dm_chr)
   \code{\link[=validate]{validate}()}.
 
 Other coords_waypoints: 
-\code{\link{waypoints}()}
+\code{\link{print.waypoints}()}
 }
 \concept{coords_waypoints}

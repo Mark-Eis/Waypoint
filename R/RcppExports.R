@@ -242,12 +242,12 @@ coords <- function(nv, fmt = 1L) {
 #'
 #' rm(dm, wp1)
 #'
-validate.coords <- function(x) {
+validate.coords <- function(x, ...) {
     .Call(`_Waypoint_validatecoords`, x)
 }
 
 #' @rdname coords
-format.coords <- function(x, usenames = TRUE) {
+format.coords <- function(x, usenames = TRUE, ...) {
     .Call(`_Waypoint_formatcoords`, x, usenames)
 }
 
@@ -388,18 +388,13 @@ waypoints <- function(df, fmt = 1L) {
 }
 
 #' @rdname validate
-validate.waypoints <- function(x) {
+validate.waypoints <- function(x, ...) {
     .Call(`_Waypoint_validatewaypoints`, x)
 }
 
 #' @rdname waypoints
-format.waypoints <- function(x) {
-    .Call(`_Waypoint_formatwaypoints`, x)
-}
-
-#' @rdname waypoints
-print.waypoints <- function(x) {
-    invisible(.Call(`_Waypoint_printwaypoints`, x))
+format.waypoints <- function(x, usenames = TRUE, ...) {
+    .Call(`_Waypoint_formatwaypoints`, x, usenames)
 }
 
 #' @rdname review

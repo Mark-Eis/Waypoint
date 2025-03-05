@@ -105,24 +105,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // formatwaypoints
-CharacterVector formatwaypoints(DataFrame x);
-RcppExport SEXP _Waypoint_formatwaypoints(SEXP xSEXP) {
+CharacterVector formatwaypoints(DataFrame x, bool usenames);
+RcppExport SEXP _Waypoint_formatwaypoints(SEXP xSEXP, SEXP usenamesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< DataFrame >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(formatwaypoints(x));
-    return rcpp_result_gen;
-END_RCPP
-}
-// printwaypoints
-DataFrame printwaypoints(DataFrame x);
-RcppExport SEXP _Waypoint_printwaypoints(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< DataFrame >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(printwaypoints(x));
+    Rcpp::traits::input_parameter< bool >::type usenames(usenamesSEXP);
+    rcpp_result_gen = Rcpp::wrap(formatwaypoints(x, usenames));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -148,8 +138,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Waypoint_waypoints", (DL_FUNC) &_Waypoint_waypoints, 2},
     {"_Waypoint_waypoints_replace", (DL_FUNC) &_Waypoint_waypoints_replace, 2},
     {"_Waypoint_validatewaypoints", (DL_FUNC) &_Waypoint_validatewaypoints, 1},
-    {"_Waypoint_formatwaypoints", (DL_FUNC) &_Waypoint_formatwaypoints, 1},
-    {"_Waypoint_printwaypoints", (DL_FUNC) &_Waypoint_printwaypoints, 1},
+    {"_Waypoint_formatwaypoints", (DL_FUNC) &_Waypoint_formatwaypoints, 2},
     {"_Waypoint_as_coords", (DL_FUNC) &_Waypoint_as_coords, 2},
     {NULL, NULL, 0}
 };

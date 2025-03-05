@@ -461,7 +461,7 @@ template<CoordType type>
 class Format {
 	protected:
 		const FamousFive& ff;
-		ostringstream outstrstr;
+		ostringstream ostrstr;
 	public:
 		Format(const FamousFive& _ff) : ff(_ff)
 		{
@@ -478,9 +478,9 @@ template<CoordType type>
 inline string Format<type>::operator()(double n)
 {
 //	cout << "@Format<CoordType>::operator() [default for CoordType::decdeg]\n";
-	outstrstr.str("");
-	outstrstr << setw(11) << setfill(' ')  << fixed << setprecision(6) << ff.get_decdeg(n) << "\u00B0";
-	return outstrstr.str();
+	ostrstr.str("");
+	ostrstr << setw(11) << setfill(' ')  << fixed << setprecision(6) << ff.get_decdeg(n) << "\u00B0";
+	return ostrstr.str();
 }
 
 /// __________________________________________________
@@ -489,10 +489,10 @@ template<>
 inline string Format<CoordType::degmin>::operator()(double n)
 {
 //	cout << "@Format<CoordType::degmin>::operator()\n";
-	outstrstr.str("");
-	outstrstr << setw(3) << setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
+	ostrstr.str("");
+	ostrstr << setw(3) << setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
 					  << setw(7) << setfill('0') << fixed << setprecision(4) << abs(ff.get_decmin(n)) << "\u2032";
-	return outstrstr.str();
+	return ostrstr.str();
 }
 
 /// __________________________________________________
@@ -501,11 +501,11 @@ template<>
 inline string Format<CoordType::degminsec>::operator()(double n)
 {
 //	cout << "@Format<CoordType::degminsec>::operator()\n";
-	outstrstr.str("");
-	outstrstr << setw(3) << setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
+	ostrstr.str("");
+	ostrstr << setw(3) << setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
 					  << setw(2) << setfill('0') << abs(ff.get_min(n)) << "\u2032"
 					  << setw(5) << fixed << setprecision(2) << abs(ff.get_sec(n)) << "\u2033";
-	return outstrstr.str();
+	return ostrstr.str();
 }
 
 
@@ -786,7 +786,7 @@ vector<string> Coord::format_ct() const
 vector<string> Coord::format(bool usenames) const
 {
 	cout << "@Coord::format(bool) " << Demangler(typeid(*this)) << endl;
-	ostringstream outstrstr;
+	ostringstream ostrstr;
 	vector<string>&& sv = format_switch(*this, ct);
 	vector<string> names { get_vec_attr<NumericVector, string>(nv, "names") };
 	int strwdth = 0;
@@ -794,7 +794,7 @@ vector<string> Coord::format(bool usenames) const
 		prefixvecstr(sv, names);
 		strwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
 	}
-	transform(sv.begin(), sv.end(), sv.begin(), [&outstrstr, strwdth](const string& s) { outstrstr.str(""); outstrstr << setw(strwdth) << s; return outstrstr.str(); });
+	transform(sv.begin(), sv.end(), sv.begin(), [&ostrstr, strwdth](const string& s) { ostrstr.str(""); ostrstr << setw(strwdth) << s; return ostrstr.str(); });
 	return sv;
 }
 
