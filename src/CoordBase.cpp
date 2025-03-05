@@ -1157,6 +1157,27 @@ NumericVector coords(NumericVector nv, const int fmt = 1)
 
 
 /// __________________________________________________
+/// Convert coords format
+//' @rdname coords
+// [[Rcpp::export(name = "`convert.coords<-`")]]
+NumericVector convertcoord(NumericVector nv, const int value)
+{
+	cout << "——Rcpp::export——convertcoords(NumericVector, const int) from " << get_fmt_attribute(nv) << " to " << value << endl;
+	checkinherits(nv, "coords");
+	CoordType newtype = get_coordtype(value);
+	CoordType type;
+	type = get_coordtype(nv);
+	if (newtype == type) {
+		cout << "——fmt out == fmt in!——" << endl;
+		if (!check_valid(nv))
+			stop("Invalid coords!");
+	} else 
+		convert_switch<NumericVector, Coord>(nv, newtype);
+	return nv;
+}
+
+
+/// __________________________________________________
 /// coords() as replacement function
 //' @rdname coords
 // [[Rcpp::export(name = "`coords<-`")]]
