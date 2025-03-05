@@ -646,7 +646,7 @@ void convert_switch(T t, CoordType newtype)
 template<class T>
 vector<string> format_switch(const T& t, CoordType ct)
 {
-	cout << "@format_switch<T>(const T&, CoordType) " << Demangler(typeid(t)) << " ct " << coordtype_to_int(ct) << endl;
+//	cout << "@format_switch<T>(const T&, CoordType) " << Demangler(typeid(t)) << " ct " << coordtype_to_int(ct) << endl;
 	vector<string> sv; 
 	switch (ct)
 	{
@@ -773,7 +773,7 @@ void Coord::validate(bool warn) const
 template<CoordType type>
 vector<string> Coord::format_ct() const
 {
-	cout << "@Coord::format_ct<CoordType>() " << Demangler(typeid(*this)) << endl;
+//	cout << "@Coord::format_ct<CoordType>() " << Demangler(typeid(*this)) << endl;
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), Format<type>(ff));
 	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<Coord, type>(ff, latlon));
@@ -785,7 +785,7 @@ vector<string> Coord::format_ct() const
 /// Format coords vector<string> with names
 vector<string> Coord::format(bool usenames) const
 {
-	cout << "@Coord::format(bool) " << Demangler(typeid(*this)) << endl;
+//	cout << "@Coord::format(bool) " << Demangler(typeid(*this)) << endl;
 	ostringstream ostrstr;
 	vector<string>&& sv = format_switch(*this, ct);
 	vector<string> names { get_vec_attr<NumericVector, string>(nv, "names") };
@@ -879,7 +879,7 @@ void WayPoint::validate(bool warn) const
 template<CoordType type>
 vector<string> WayPoint::format_ct() const
 {
-	cout << "@WayPoint::format_ct() " << Demangler(typeid(*this)) << endl;
+//	cout << "@WayPoint::format_ct() " << Demangler(typeid(*this)) << endl;
 	vector<string> sv_lat(nvlat.size());
 	transform(nvlat.begin(), nvlat.end(), sv_lat.begin(), Format<type>(ff));
 	transform(sv_lat.begin(), sv_lat.end(), nvlat.begin(), sv_lat.begin(), FormatLL<WayPoint, type>(ff, vector<bool>{ true }));
@@ -897,7 +897,7 @@ vector<string> WayPoint::format_ct() const
 /// Format waypoints vector<string> with names
 vector<string> WayPoint::format(bool usenames) const
 {
-	cout << "@WayPoint::format(bool) " << Demangler(typeid(*this)) << endl;
+//	cout << "@WayPoint::format(bool) " << Demangler(typeid(*this)) << endl;
 	const int i { coordtype_to_int(ct) };
 	int spacing[] {  5,  7,  8,
 					11, 13, 14 };
@@ -1087,6 +1087,8 @@ bool valid_ll(const DataFrame df)
 //' @param x object of class \code{"coords"} created by function \code{\link[=coords]{coords}()}.
 //'
 //' @param \dots further arguments passed to or from other methods.
+//'
+//' @param usenames \code{logical}, whether or not to include coord names in formatted output.
 //'
 //' @return
 //' An object of class \code{"coords"}, comprising the original a \code{numeric} vector argument
@@ -1411,6 +1413,8 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true)
 //'
 //' @param \dots further arguments passed to or from other methods.
 //'
+//' @param usenames \code{logical}, whether or not to include waypoint names in formatted output.
+//'
 //' @return
 //' An object of classes \code{"waypoints"} and \code{"data.frame"}, comprising the original data
 //' frame argument \code{df}, with latitude and longitude values possibly converted as appropriate
@@ -1547,7 +1551,7 @@ DataFrame validatewaypoints(DataFrame x)
 // [[Rcpp::export(name = "format.waypoints")]]
 CharacterVector formatwaypoints(DataFrame x, bool usenames = true)
 {
-	cout << "——Rcpp::export——formatwaypoints(NumericVector)\n";
+//	cout << "——Rcpp::export——formatwaypoints(NumericVector)\n";
 	checkinherits(x, "waypoints");
 	if(!valid_ll(x))
 		stop("Invalid llcols attribute!");

@@ -24,6 +24,8 @@ coords(nv) <- value
 
 \item{fmt, value}{\code{integer}, 1L, 2L or 3L, indicating the current or desired coordinate
 format; default 1L.}
+
+\item{usenames}{\code{logical}, whether or not to include coord names in formatted output.}
 }
 \value{
 An object of class \code{"coords"}, comprising the original a \code{numeric} vector argument

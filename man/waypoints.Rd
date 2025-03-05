@@ -27,6 +27,8 @@ waypoints(df) <- value
 
 \item{fmt, value}{an \code{integer} of value 1L, 2L or 3L, indicating the current or desired
 coordinate format (see \emph{Details}); default 1L.}
+
+\item{usenames}{\code{logical}, whether or not to include waypoint names in formatted output.}
 }
 \value{
 An object of classes \code{"waypoints"} and \code{"data.frame"}, comprising the original data

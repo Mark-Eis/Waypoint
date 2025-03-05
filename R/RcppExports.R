@@ -47,6 +47,8 @@
 #'
 #' @param \dots further arguments passed to or from other methods.
 #'
+#' @param usenames \code{logical}, whether or not to include coord names in formatted output.
+#'
 #' @return
 #' An object of class \code{"coords"}, comprising the original a \code{numeric} vector argument
 #' \code{nv} with values possibly converted as appropriate and additional attributes: –
@@ -310,6 +312,8 @@ format.coords <- function(x, usenames = TRUE, ...) {
 #' \code{\link[=waypoints]{waypoints}()}.
 #'
 #' @param \dots further arguments passed to or from other methods.
+#'
+#' @param usenames \code{logical}, whether or not to include waypoint names in formatted output.
 #'
 #' @return
 #' An object of classes \code{"waypoints"} and \code{"data.frame"}, comprising the original data
