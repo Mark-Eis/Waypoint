@@ -3,15 +3,14 @@
 
 #' @title Geographic or GPS Coordinate Class
 #' 
-#' @name coords
+#' @name as_coords
 #' 
 #' @description
-#' \code{coords()} creates a robust representation of a series of geographic or GPS
+#' \code{as_coords()} creates a robust representation of a series of geographic or GPS
 #' coordinates instantiated as an object of class \code{"coords"}.
 #' 
-#' \code{coords()} and replacement form \verb{coords()<-} also convert the format of existing
-#' objects of class \code{"coords"} between (i) decimal degrees, (ii) degrees and minutes, and
-#' (iii) degrees, minutes and seconds.
+#' \code{convert()} converts the format of existing objects of class \code{"coords"} between (i)
+#' decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
 #'
 #' @details
 #' Individual values provided in the \code{numeric} vector argument \code{nv} should have a decimal
@@ -38,16 +37,21 @@
 #'   \code{\link[=latlon]{latlon}()}, \code{\link[base:numeric]{numeric}()} and
 #'   \code{\link[=validate]{validate}()}.
 #'
-#' @param nv \code{numeric} vector of coordinate values, optionally named.
-#'
-#' @param fmt,value \code{integer}, 1L, 2L or 3L, indicating the current or desired coordinate
-#'   format; default 1L.
-#'
-#' @param x object of class \code{"coords"} created by function \code{\link[=coords]{coords}()}.
+#' @param object a \code{numeric} vector of coordinate values, optionally named, or an object of
+#'   class \code{"waypoints"}.
 #'
 #' @param \dots further arguments passed to or from other methods.
 #'
-#' @param usenames \code{logical}, whether or not to include coord names in formatted output.
+#' @param x object of class \code{"coords"} created by function
+#'   \code{\link[=as_coords]{as_coords}()}.
+#'
+#' @param fmt \code{integer}, 1L, 2L or 3L, indicating the current or desired coordinate format.
+#'
+#' @param usenames \code{logical}, whether or not to include names in formatted output.
+#'
+#' @param latlon \code{logical}, indicating whether the \code{as_coords()} S3 method for class
+#'   \code{"waypoints"} extracts the latitude component of argument \code{object} (if \code{TRUE}),
+#'   or the longitude (if \code{FALSE}).
 #'
 #' @return
 #' An object of class \code{"coords"}, comprising the original a \code{numeric} vector argument
@@ -62,7 +66,7 @@
 #'         -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
 #'
 #' ## Create a "coords" object of degrees and minutes (fmt = 2)
-#' coords(dm, 2)
+#' as_coords(dm, fmt = 2)
 #'
 #' ## Name the "coords" object
 #' names(dm) <- rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
@@ -70,32 +74,30 @@
 #' dm
 #'
 #' ## Convert to degrees, minutes and seconds (fmt = 3)
-#' coords(dm) <- 3
-#' dm
+#' convert(dm, 3)
 #'
 #' ## Convert to decimal degrees (fmt = 1)
-#' coords(dm) <- 1
-#' dm
+#' convert(dm, 1)
 #'
 #' ## Decimal degrees as an ordinary R numeric vector
 #' as.numeric(dm)
 #'
-#' ## Convert to degrees and minutes, format as a character vector…
-#' coords(dm) <- 2
-#' (dm_chr <- format(dm))
+#' ## Convert to degrees and minutes, then format as a fixed-width
+#' ## character vector without names…
+#' convert(dm, 3) |> format(usenames = FALSE)
 #'
-#' ## …and output using {base} cat()
-#' cat(dm_chr, fill = 18, labels = paste0("{#", 1:16, "}:"))
+#' ## …or with them
+#' format(dm)
 #'
-#' rm(dm, dm_chr)
+#' rm(dm)
 #'
-coords <- function(nv, fmt = 1L) {
-    .Call(`_Waypoint_coords`, nv, fmt)
+as_coords.default <- function(object, ..., fmt = 1L) {
+    .Call(`_Waypoint_as_coords`, object, fmt)
 }
 
-#' @rdname coords
-`coords<-` <- function(nv, value) {
-    .Call(`_Waypoint_coords_replace`, nv, value)
+#' @rdname as_coords
+convert.coords <- function(x, fmt, ...) {
+    .Call(`_Waypoint_convertcoords`, x, fmt)
 }
 
 #' @title Latitude or Longitude Attribute for Coords
@@ -140,7 +142,7 @@ coords <- function(nv, fmt = 1L) {
 #' }
 #'
 #' ## Create "coords" object of degrees and minutes (fmt = 2)
-#' coords(dm) <- 2
+#' as_coords(dm, 2)
 #'
 #' ## Set "latlon" attribute to FALSE, length 1; all values are longitude
 #' latlon(dm) <- FALSE
@@ -205,7 +207,7 @@ coords <- function(nv, fmt = 1L) {
 #' }
 #'
 #' ## Create "coords" object of degrees and minutes
-#' coords(dm) <- 2
+#' as_coords(dm, 2)
 #'
 #' validate(dm)
 #'
@@ -248,9 +250,14 @@ validate.coords <- function(x, ...) {
     .Call(`_Waypoint_validatecoords`, x)
 }
 
-#' @rdname coords
-format.coords <- function(x, usenames = TRUE, ...) {
+#' @rdname as_coords
+format.coords <- function(x, ..., usenames = TRUE) {
     .Call(`_Waypoint_formatcoords`, x, usenames)
+}
+
+#' @rdname as_coords
+as_coords.waypoints <- function(object, latlon, ...) {
+    .Call(`_Waypoint_as_coordswaypoints`, object, latlon)
 }
 
 #' @title Geographic or GPS Waypoint Class
@@ -397,12 +404,7 @@ validate.waypoints <- function(x, ...) {
 }
 
 #' @rdname waypoints
-format.waypoints <- function(x, usenames = TRUE, ...) {
+format.waypoints <- function(x, ..., usenames = TRUE) {
     .Call(`_Waypoint_formatwaypoints`, x, usenames)
-}
-
-#' @rdname review
-as_coords <- function(wp, latlon) {
-    .Call(`_Waypoint_as_coords`, wp, latlon)
 }
 

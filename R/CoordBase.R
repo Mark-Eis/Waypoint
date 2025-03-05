@@ -8,10 +8,32 @@
 
 
 # ========================================
+#  Create Coordinates and Waypoints
+#  S3generic as_coords(object, ...)
+#'
+#' @rdname as_coords
+#' @export
+
+as_coords <- function(object, ...) 
+    UseMethod("as_coords")
+
+
+# ========================================
+#  Convert Coordinates and Waypoints
+#  S3generic convert(x, ...)
+#'
+#' @rdname as_coords
+#' @export
+
+convert <- function(x, ...) 
+    UseMethod("convert")
+
+
+# ========================================
 #  Print Coordinates
 #  S3method print.coords(x, ...)
 #'
-#' @rdname coords
+#' @rdname as_coords
 #' @export
 
 print.coords <- function (x, ...) {
@@ -49,16 +71,10 @@ validate <- function(x, ...)
 #' @description
 #' \code{review()} review validity of elements of \code{"coords"} and \code{"waypoints"} objects.
 #'
-#' \code{as_coords()} creates an object of class \code{"coords"} based on either the latitude or
-#' longitude components of a \code{"waypoints"} object.
-#'
 #' @details
 #' \code{review()} reveals elements of \code{"coords"} and  \code{"waypoints"} objects that do not
 #' conform to the criteria checked by \code{\link[=validate]{validate}()}, i.e. are not valid
 #' geographic locations.
-#'
-#' \code{as_coord()} is primarily intended for internal use by \code{review()} but is also exposed
-#' to the user as potentially of use.
 #'
 #' @family validate
 #' @seealso
@@ -70,11 +86,6 @@ validate <- function(x, ...)
 #' include in the output; default \code{20L}.
 #'
 #' @param \dots further arguments passed to or from other methods.
-#'
-#' @param wp object of class \code{"waypoints"}.
-#'
-#' @param latlon logical indicating whether \code{as_coords()} extracts the latitude component of
-#'   argument \code{wp} if \code{TRUE}, or if \code{FALSE} the longitude.
 #'
 #' @return
 #' The \code{review()} method for class \code{"coords"} returns a \code{\link[base:list]{list}} comprising the
@@ -146,12 +157,12 @@ review <- function(x, ...)
 
 # ========================================
 #  Review Coordinates
-#  S3method review.coords(x, ...)
+#  S3method review.coords(x, ..., show_n = 20L)
 #'
 #' @rdname review
 #' @export
 
-review.coords <- function(x, show_n = 20L, ...)
+review.coords <- function(x, ..., show_n = 20L)
 {
     if (!inherits(x, "coords"))
         stop("Argument `coords` must have class `\"coords\"`\n", call. = FALSE)
@@ -193,12 +204,12 @@ review.coords <- function(x, show_n = 20L, ...)
 
 # ========================================
 #  Review Waypoints
-#  S3method review.waypoints(x, ...)
+#  S3method review.waypoints(x, ..., show_n = 20L)
 #'
 #' @rdname review
 #' @export
 
-review.waypoints <- function(x, show_n = 20L, ...)
+review.waypoints <- function(x, ..., show_n = 20L)
 	lapply(c(TRUE, FALSE), \(y) review(as_coords(x, y), show_n)) |> setNames(c("Lat", "Lon"))
 
 

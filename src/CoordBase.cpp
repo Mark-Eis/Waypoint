@@ -94,16 +94,16 @@ inline const T validate(const T);
 bool valid_ll(const DataFrame);
 
 // Exported
-NumericVector coords(NumericVector, const int);
-NumericVector coords_replace(NumericVector, int);
+NumericVector as_coordsdefault(NumericVector, const int);
+NumericVector convertcoords(NumericVector, const int);
 NumericVector latlon(NumericVector, LogicalVector&);
 NumericVector validatecoords(NumericVector);
 CharacterVector formatcoords(NumericVector, bool);
+NumericVector as_coordswaypoints(DataFrame, bool);
 DataFrame waypoints(DataFrame, int);
 DataFrame waypoints_replace(DataFrame, int);
 DataFrame validatewaypoints(DataFrame);
 CharacterVector formatwaypoints(NumericVector, bool);
-NumericVector as_coords(DataFrame, bool);
 
 
 /// __________________________________________________
@@ -113,7 +113,7 @@ NumericVector as_coords(DataFrame, bool);
 /// Report object construction and destruction
 void _ctrsgn(const type_info& obj, bool destruct = false)
 {
-//	cout << (destruct ? "Destroying " : "Constructing ") << flush;
+	cout << (destruct ? "Destroying " : "Constructing ") << flush;
     string s = obj.name();
     system(("c++filt -t " + s).data());
 }
@@ -1044,15 +1044,14 @@ bool valid_ll(const DataFrame df)
 /// or convert format of R coords object and return
 //' @title Geographic or GPS Coordinate Class
 //' 
-//' @name coords
+//' @name as_coords
 //' 
 //' @description
-//' \code{coords()} creates a robust representation of a series of geographic or GPS
+//' \code{as_coords()} creates a robust representation of a series of geographic or GPS
 //' coordinates instantiated as an object of class \code{"coords"}.
 //' 
-//' \code{coords()} and replacement form \verb{coords()<-} also convert the format of existing
-//' objects of class \code{"coords"} between (i) decimal degrees, (ii) degrees and minutes, and
-//' (iii) degrees, minutes and seconds.
+//' \code{convert()} converts the format of existing objects of class \code{"coords"} between (i)
+//' decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
 //'
 //' @details
 //' Individual values provided in the \code{numeric} vector argument \code{nv} should have a decimal
@@ -1079,16 +1078,21 @@ bool valid_ll(const DataFrame df)
 //'   \code{\link[=latlon]{latlon}()}, \code{\link[base:numeric]{numeric}()} and
 //'   \code{\link[=validate]{validate}()}.
 //'
-//' @param nv \code{numeric} vector of coordinate values, optionally named.
-//'
-//' @param fmt,value \code{integer}, 1L, 2L or 3L, indicating the current or desired coordinate
-//'   format; default 1L.
-//'
-//' @param x object of class \code{"coords"} created by function \code{\link[=coords]{coords}()}.
+//' @param object a \code{numeric} vector of coordinate values, optionally named, or an object of
+//'   class \code{"waypoints"}.
 //'
 //' @param \dots further arguments passed to or from other methods.
 //'
-//' @param usenames \code{logical}, whether or not to include coord names in formatted output.
+//' @param x object of class \code{"coords"} created by function
+//'   \code{\link[=as_coords]{as_coords}()}.
+//'
+//' @param fmt \code{integer}, 1L, 2L or 3L, indicating the current or desired coordinate format.
+//'
+//' @param usenames \code{logical}, whether or not to include names in formatted output.
+//'
+//' @param latlon \code{logical}, indicating whether the \code{as_coords()} S3 method for class
+//'   \code{"waypoints"} extracts the latitude component of argument \code{object} (if \code{TRUE}),
+//'   or the longitude (if \code{FALSE}).
 //'
 //' @return
 //' An object of class \code{"coords"}, comprising the original a \code{numeric} vector argument
@@ -1103,7 +1107,7 @@ bool valid_ll(const DataFrame df)
 //'         -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
 //'
 //' ## Create a "coords" object of degrees and minutes (fmt = 2)
-//' coords(dm, 2)
+//' as_coords(dm, fmt = 2)
 //'
 //' ## Name the "coords" object
 //' names(dm) <- rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
@@ -1111,80 +1115,51 @@ bool valid_ll(const DataFrame df)
 //' dm
 //'
 //' ## Convert to degrees, minutes and seconds (fmt = 3)
-//' coords(dm) <- 3
-//' dm
+//' convert(dm, 3)
 //'
 //' ## Convert to decimal degrees (fmt = 1)
-//' coords(dm) <- 1
-//' dm
+//' convert(dm, 1)
 //'
 //' ## Decimal degrees as an ordinary R numeric vector
 //' as.numeric(dm)
 //'
-//' ## Convert to degrees and minutes, format as a character vector…
-//' coords(dm) <- 2
-//' (dm_chr <- format(dm))
+//' ## Convert to degrees and minutes, then format as a fixed-width
+//' ## character vector without names…
+//' convert(dm, 3) |> format(usenames = FALSE)
 //'
-//' ## …and output using {base} cat()
-//' cat(dm_chr, fill = 18, labels = paste0("{#", 1:16, "}:"))
+//' ## …or with them
+//' format(dm)
 //'
-//' rm(dm, dm_chr)
+//' rm(dm)
 //'
-// [[Rcpp::export]]
-NumericVector coords(NumericVector nv, const int fmt = 1)
+// [[Rcpp::export(name = "as_coords.default")]]
+NumericVector as_coords(NumericVector object, const int fmt = 1)
 {
 //	cout << "——Rcpp::export——coords(NumericVector)\n";
-	CoordType newtype = get_coordtype(fmt);
-	CoordType type;
-	if (nv.inherits("coords")) {
-		type = get_coordtype(nv);
-//		cout <<  "@coords() nv is already a \"coords\" vector of type " << coordtype_to_int(type) + 1 << endl;
-		if (newtype == type) {
-//			cout << "——fmt out == fmt in!——" << endl;
-			if (!check_valid(nv))
-				stop("Invalid coords!");
-			return nv;
-		}
-	} else {
-		type = newtype;
-		nv.attr("fmt") = fmt;
-	}
-
-	convert_switch<NumericVector, Coord>(nv, newtype);
-	nv.attr("class") = "coords";
-	return nv;
+	object.attr("fmt") = fmt;
+	convert_switch<NumericVector, Coord>(object, get_coordtype(fmt));
+	object.attr("class") = "coords";
+	return object;
 }
 
 
 /// __________________________________________________
 /// Convert coords format
-//' @rdname coords
-// [[Rcpp::export(name = "`convert.coords<-`")]]
-NumericVector convertcoord(NumericVector nv, const int value)
+//' @rdname as_coords
+// [[Rcpp::export(name = "convert.coords")]]
+NumericVector convertcoords(NumericVector x, const int fmt)
 {
-	cout << "——Rcpp::export——convertcoords(NumericVector, const int) from " << get_fmt_attribute(nv) << " to " << value << endl;
-	checkinherits(nv, "coords");
-	CoordType newtype = get_coordtype(value);
-	CoordType type;
-	type = get_coordtype(nv);
+//	cout << "——Rcpp::export——convertcoords(NumericVector, const int) from " << get_fmt_attribute(x) << " to " << fmt << endl;
+	checkinherits(x, "coords");
+	CoordType type = get_coordtype(x);
+	CoordType newtype = get_coordtype(fmt);
 	if (newtype == type) {
-		cout << "——fmt out == fmt in!——" << endl;
-		if (!check_valid(nv))
-			stop("Invalid coords!");
+//		cout << "——fmt out == fmt in!——" << endl;
+		if (!check_valid(x))
+			stop("Ixalid coords!");
 	} else 
-		convert_switch<NumericVector, Coord>(nv, newtype);
-	return nv;
-}
-
-
-/// __________________________________________________
-/// coords() as replacement function
-//' @rdname coords
-// [[Rcpp::export(name = "`coords<-`")]]
-NumericVector coords_replace(NumericVector nv, int value)
-{
-//	cout << "——Rcpp::export——`coords_replace(NumericVector, int)<-`\n";
-	return coords(nv, value);
+		convert_switch<NumericVector, Coord>(x, newtype);
+	return x;
 }
 
 
@@ -1232,7 +1207,7 @@ NumericVector coords_replace(NumericVector nv, int value)
 //' }
 //'
 //' ## Create "coords" object of degrees and minutes (fmt = 2)
-//' coords(dm) <- 2
+//' as_coords(dm, 2)
 //'
 //' ## Set "latlon" attribute to FALSE, length 1; all values are longitude
 //' latlon(dm) <- FALSE
@@ -1309,7 +1284,7 @@ NumericVector latlon(NumericVector cd, LogicalVector& value)
 //' }
 //'
 //' ## Create "coords" object of degrees and minutes
-//' coords(dm) <- 2
+//' as_coords(dm, 2)
 //'
 //' validate(dm)
 //'
@@ -1359,7 +1334,7 @@ NumericVector validatecoords(NumericVector x)
 
 /// __________________________________________________
 /// Format coords vector - S3 method format.coords()
-//' @rdname coords
+//' @rdname as_coords
 // [[Rcpp::export(name = "format.coords")]]
 CharacterVector formatcoords(NumericVector x, bool usenames = true)
 {
@@ -1368,6 +1343,24 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true)
 	if (!check_valid(x))
 		warning("Formatting invalid coords!");
 	return wrap(Coord(get_coordtype(x), x).format(usenames));
+}
+
+
+/// __________________________________________________
+/// Clone coords object from waypoints vector
+//' @rdname as_coords
+// [[Rcpp::export(name = "as_coords.waypoints")]]
+NumericVector as_coordswaypoints(DataFrame object, bool latlon)
+{
+//	cout << "——Rcpp::export——as_coord(DataFrame)\n";
+	checkinherits(object, "waypoints");
+	NumericVector nv = object[get_vec_attr<DataFrame, int>(object, "llcols")[latlon ? 0 : 1] - 1];
+	nv = clone(nv);
+	nv.attr("class") = "coords";
+	nv.attr("fmt") = object.attr("fmt");
+	nv.attr("latlon") = latlon ? vector<bool>{ TRUE } : vector<bool>{ FALSE };
+	nv.attr("valid") = object.attr(latlon ? "validlat" : "validlon");
+	return nv;
 }
 
 
@@ -1582,24 +1575,6 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true)
 //	CoordType ct = get_coordtype(x);
 //	return wrap(format_switch(WayPoint(ct, x), ct));
 	return wrap(WayPoint(get_coordtype(x), x).format(usenames));
-}
-
-
-/// __________________________________________________
-/// Clone coords object from waypoints vector
-//' @rdname review
-// [[Rcpp::export]]
-NumericVector as_coords(DataFrame wp, bool latlon)
-{
-//	cout << "——Rcpp::export——as_coord(DataFrame)\n";
-	checkinherits(wp, "waypoints");
-	NumericVector nv = wp[get_vec_attr<DataFrame, int>(wp, "llcols")[latlon ? 0 : 1] - 1];
-	nv = clone(nv);
-	nv.attr("class") = "coords";
-	nv.attr("fmt") = wp.attr("fmt");
-	nv.attr("latlon") = latlon ? vector<bool>{ TRUE } : vector<bool>{ FALSE };
-	nv.attr("valid") = wp.attr(latlon ? "validlat" : "validlon");
-	return nv;
 }
 
 

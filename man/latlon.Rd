@@ -44,7 +44,7 @@ attribute \code{"latlon"} is added or changed.
 }
 
 ## Create "coords" object of degrees and minutes (fmt = 2)
-coords(dm) <- 2
+as_coords(dm, 2)
 
 ## Set "latlon" attribute to FALSE, length 1; all values are longitude
 latlon(dm) <- FALSE

@@ -13,7 +13,7 @@ waypoints(df, fmt = 1L)
 
 waypoints(df) <- value
 
-\method{format}{waypoints}(x, usenames = TRUE, ...)
+\method{format}{waypoints}(x, ..., usenames = TRUE)
 }
 \arguments{
 \item{x}{an object of class \code{"waypoints"} created by function
@@ -142,6 +142,6 @@ rm(wp1, wp2)
   \code{\link[base:data.frame]{data.frame}()}, and \code{\link[=validate]{validate}()}.
 
 Other coords_waypoints: 
-\code{\link{print.coords}()}
+\code{\link{as_coords}()}
 }
 \concept{coords_waypoints}

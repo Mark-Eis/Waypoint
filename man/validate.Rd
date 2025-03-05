@@ -48,7 +48,7 @@ non-compliant coordinate values.
 }
 
 ## Create "coords" object of degrees and minutes
-coords(dm) <- 2
+as_coords(dm, 2)
 
 validate(dm)
 
