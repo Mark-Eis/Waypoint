@@ -13,11 +13,11 @@ as_waypoints(object, ...)
 
 \method{print}{waypoints}(x, ...)
 
-\method{as_waypoints}{default}(object, fmt = 1L)
+\method{as_waypoints}{default}(object, ..., fmt = 1L)
 
-\method{convert}{waypoints}(x, fmt)
+\method{convert}{waypoints}(x, fmt, ...)
 
-\method{format}{waypoints}(x, usenames = TRUE)
+\method{format}{waypoints}(x, ..., usenames = TRUE)
 }
 \arguments{
 \item{object}{a data frame with each row representing a waypoint, comprising at least two
