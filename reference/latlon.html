@@ -35,7 +35,7 @@
 
     <div class="ref-description section level2">
     <p><code>latlon()&lt;-</code> adds the attribute <code>"latlon"</code> to objects of class
-<code>"<a href="coords.html">coords</a>"</code>, or modifies an existing <code>"latlon"</code> attribute.</p>
+<code>"<a href="Coords.html">coords</a>"</code>, or modifies an existing <code>"latlon"</code> attribute.</p>
     </div>
 
     <div class="section level2">
@@ -48,7 +48,7 @@
 
 
 <dl><dt id="arg-cd">cd<a class="anchor" aria-label="anchor" href="#arg-cd"></a></dt>
-<dd><p>object of class <code>"<a href="coords.html">coords</a>"</code>.</p></dd>
+<dd><p>object of class <code>"<a href="Coords.html">coords</a>"</code>.</p></dd>
 
 
 <dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
@@ -73,7 +73,7 @@ attribute <code>"latlon"</code> is added or changed.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code>"<a href="coords.html">coords</a>"</code>.</p></div>
+    <div class="dont-index"><p><code>"<a href="Coords.html">coords</a>"</code>.</p></div>
     </div>
 
     <div class="section level2">
@@ -81,69 +81,91 @@ attribute <code>"latlon"</code> is added or changed.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Continuing example from `coords()`, named numeric vector representing degrees and minutes</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Create "coords" object of degrees and minutes (fmt = 2)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="coords.html">coords</a></span><span class="op">(</span><span class="va">dm</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">2</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="Coords.html">as_coords</a></span><span class="op">(</span><span class="va">dm</span>, <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Validation failed!</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Formatting invalid coords!</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          Nelson's Column  5130.465900°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                Ostravice  4932.772600°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                 Tally Ho  4806.433900°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      Washington Monument  3853.369600°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              Null Island     0.000000°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        Tristan da Cunha  -3706.704400°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                             Mawson Peak  -5306.286900°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport  -2514.409300°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          Nelson's Column    -7.675400°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                Ostravice  1823.913700°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                               Tally Ho  -12246.720300°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                     Washington Monument  -7702.114500°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              Null Island     0.000000°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        Tristan da Cunha  -1217.317800°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              Mawson Peak  7331.037000°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport  -5731.153600°</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Set "latlon" attribute to FALSE, length 1; all values are longitude</span></span></span>
 <span class="r-in"><span><span class="fu">latlon</span><span class="op">(</span><span class="va">dm</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">FALSE</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Validation failed!</span>
 <span class="r-in"><span><span class="va">dm</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         Nelson's Column   51°30.4659′ E</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                               Ostravice   49°32.7726′ E</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                Tally Ho   48°06.4339′ E</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     Washington Monument   38°53.3696′ E</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                             Null Island    0°00.0000′ E</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                        Tristan da Cunha   37°06.7044′ W</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                             Mawson Peak   53°06.2869′ W</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   25°14.4093′ W</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         Nelson's Column    0°07.6754′ W</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                               Ostravice   18°23.9137′ E</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                Tally Ho  122°46.7203′ W</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     Washington Monument   77°02.1145′ W</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                             Null Island    0°00.0000′ E</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                        Tristan da Cunha   12°17.3178′ W</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                             Mawson Peak   73°31.0370′ E</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   57°31.1536′ W</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Formatting invalid coords!</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          Nelson's Column  5130.465900° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                Ostravice  4932.772600° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                 Tally Ho  4806.433900° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      Washington Monument  3853.369600° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              Null Island     0.000000° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        Tristan da Cunha  -3706.704400° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                             Mawson Peak  -5306.286900° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport  -2514.409300° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          Nelson's Column    -7.675400° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                Ostravice  1823.913700° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                               Tally Ho  -12246.720300° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                     Washington Monument  -7702.114500° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              Null Island     0.000000° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        Tristan da Cunha  -1217.317800° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              Mawson Peak  7331.037000° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport  -5731.153600° lon</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Set "latlon" attribute to TRUE (n=8) and FALSE (n=8); i.e., 8 each of latitude and longitude</span></span></span>
 <span class="r-in"><span><span class="fu">latlon</span><span class="op">(</span><span class="va">dm</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Validation failed!</span>
 <span class="r-in"><span><span class="va">dm</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         Nelson's Column   51°30.4659′ N</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                               Ostravice   49°32.7726′ N</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                Tally Ho   48°06.4339′ N</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     Washington Monument   38°53.3696′ N</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                             Null Island    0°00.0000′ N</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                        Tristan da Cunha   37°06.7044′ S</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                             Mawson Peak   53°06.2869′ S</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   25°14.4093′ S</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         Nelson's Column    0°07.6754′ W</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                               Ostravice   18°23.9137′ E</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                Tally Ho  122°46.7203′ W</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     Washington Monument   77°02.1145′ W</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                             Null Island    0°00.0000′ E</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                        Tristan da Cunha   12°17.3178′ W</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                             Mawson Peak   73°31.0370′ E</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   57°31.1536′ W</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Formatting invalid coords!</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          Nelson's Column  5130.465900° lat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                Ostravice  4932.772600° lat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                 Tally Ho  4806.433900° lat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      Washington Monument  3853.369600° lat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              Null Island     0.000000° lat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        Tristan da Cunha  -3706.704400° lat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                             Mawson Peak  -5306.286900° lat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport  -2514.409300° lat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          Nelson's Column    -7.675400° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                Ostravice  1823.913700° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                               Tally Ho  -12246.720300° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                     Washington Monument  -7702.114500° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              Null Island     0.000000° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        Tristan da Cunha  -1217.317800° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              Mawson Peak  7331.037000° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport  -5731.153600° lon</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Reversing latitude and longitude results in an invalid latitude, throwing a warning</span></span></span>
 <span class="r-in"><span><span class="fu">latlon</span><span class="op">(</span><span class="va">dm</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">FALSE</span>, <span class="cn">TRUE</span><span class="op">)</span>, each <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Validation failed!</span>
 <span class="r-in"><span><span class="va">dm</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Formatting invalid coords!</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         Nelson's Column   51°30.4659′ E</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                               Ostravice   49°32.7726′ E</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                Tally Ho   48°06.4339′ E</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     Washington Monument   38°53.3696′ E</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                             Null Island    0°00.0000′ E</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                        Tristan da Cunha   37°06.7044′ W</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                             Mawson Peak   53°06.2869′ W</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   25°14.4093′ W</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         Nelson's Column    0°07.6754′ S</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                               Ostravice   18°23.9137′ N</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                Tally Ho  122°46.7203′ S</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                     Washington Monument   77°02.1145′ S</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                             Null Island    0°00.0000′ N</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                        Tristan da Cunha   12°17.3178′ S</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                             Mawson Peak   73°31.0370′ N</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   57°31.1536′ S</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          Nelson's Column  5130.465900° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                Ostravice  4932.772600° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                 Tally Ho  4806.433900° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      Washington Monument  3853.369600° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              Null Island     0.000000° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        Tristan da Cunha  -3706.704400° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                             Mawson Peak  -5306.286900° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport  -2514.409300° lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                          Nelson's Column    -7.675400° lat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                Ostravice  1823.913700° lat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                               Tally Ho  -12246.720300° lat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                     Washington Monument  -7702.114500° lat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              Null Island     0.000000° lat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        Tristan da Cunha  -1217.317800° lat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                              Mawson Peak  7331.037000° lat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport  -5731.153600° lat</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">dm</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
