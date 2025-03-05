@@ -13,7 +13,7 @@ waypoints(df, fmt = 1L)
 
 waypoints(df) <- value
 
-\method{format}{waypoints}(x, ..., usenames = TRUE)
+\method{format}{waypoints}(x, usenames = TRUE)
 }
 \arguments{
 \item{x}{an object of class \code{"waypoints"} created by function

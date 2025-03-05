@@ -101,7 +101,8 @@ NumericVector validatecoords(NumericVector);
 CharacterVector formatcoords(NumericVector, bool);
 NumericVector as_coordswaypoints(DataFrame, bool);
 DataFrame waypoints(DataFrame, int);
-DataFrame waypoints_replace(DataFrame, int);
+//DataFrame waypoints_replace(DataFrame, int);
+DataFrame convertwaypoints(DataFrame, const int);
 DataFrame validatewaypoints(DataFrame);
 CharacterVector formatwaypoints(NumericVector, bool);
 
@@ -113,7 +114,7 @@ CharacterVector formatwaypoints(NumericVector, bool);
 /// Report object construction and destruction
 void _ctrsgn(const type_info& obj, bool destruct = false)
 {
-	cout << (destruct ? "Destroying " : "Constructing ") << flush;
+//	cout << (destruct ? "Destroying " : "Constructing ") << flush;
     string s = obj.name();
     system(("c++filt -t " + s).data());
 }
@@ -1441,6 +1442,26 @@ DataFrame waypoints(DataFrame df, int fmt = 1)
 }
 
 
+// [[Rcpp::export(name = "convert.waypoints")]]
+DataFrame convertwaypoints(DataFrame x, const int fmt)
+{
+	cout << "——Rcpp::export——convertwaypoints(DataFrame, int) from " << get_fmt_attribute(x) << " to " << fmt << endl;
+	checkinherits(x, "waypoints");
+	CoordType newtype = get_coordtype(fmt);
+	CoordType type = get_coordtype(x);
+	if (newtype == type) {
+		cout << "——fmt out == fmt in!——" << endl;
+		if (!check_valid(x))
+			stop("Invalid waypoints!");
+	} else {
+		if(!valid_ll(x))
+			stop("Invalid llcols attribute!");
+		convert_switch<DataFrame, WayPoint>(x, newtype);
+	}
+	return x;
+}
+
+/*
 /// __________________________________________________
 /// waypoints() as replacement function
 //' @rdname waypoints
@@ -1450,7 +1471,7 @@ DataFrame waypoints_replace(DataFrame df, int value)
 //	cout << "——Rcpp::export——`waypoints_replace(DataFrame, int)<-`\n";
 	return waypoints(df, value);
 }
-
+*/
 
 /// __________________________________________________
 /// Validate waypoints vector
