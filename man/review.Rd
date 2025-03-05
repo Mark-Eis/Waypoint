@@ -33,8 +33,6 @@ following elements: -
 The method for class \code{"waypoints"} returns a list of two sub-lists, each sub-list with
 elements as described for the method for class \code{"coords"}, one each for latitude and
 longitude.
-
-\code{as_coord} returns an object of class \code{"coords"} based on either the latitude or longitude.
 }
 \description{
 \code{review()} review validity of elements of \code{"coords"} and \code{"waypoints"} objects.
@@ -59,7 +57,7 @@ geographic locations.
 }
 
 ## Create "coords" object of degrees and minutes
-coords(dm) <- 2
+as_coords(dm, fmt = 2)
 
 review(dm)
 
@@ -88,7 +86,7 @@ rm(dm, wp1)
 }
 }
 \seealso{
-\code{"\link[=coords]{coords}"} and \code{"\link[=waypoints]{waypoints}"}.
+\code{"\link[=as_coords]{coords}"} and \code{"\link[=waypoints]{waypoints}"}.
 
 Other validate: 
 \code{\link{validate}()}

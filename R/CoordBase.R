@@ -1,39 +1,131 @@
-# Waypoint R Package
-# Mark Eisler Feb 2025
-# For conversion and validation of geographic coordinates
-#
-# Requires R version 4.4.2 (2024-10-31) -- "Pile of Leaves" or later
-#
-# CoordBase.R
+## Waypoint R Package
+## Mark Eisler (c) March 2025
+## For conversion and validation of geographic coordinates
+##
+## Requires R version 4.4.2 (2024-10-31) -- "Pile of Leaves" or later
+##
+## CoordBase.R
 
-
-# ========================================
-#  Create Coordinates and Waypoints
-#  S3generic as_coords(object, ...)
+## __________________________________________________
+## Set R vector object class to coords and return,
+## or convert format of R coords object and return
+#' @title Geographic or GPS Coordinate Class
+#' 
+#' @name Coords
+#' 
+#' @description
+#' \code{as_coords()} creates a robust representation of a series of geographic or GPS
+#' coordinates instantiated as an object of class \code{"coords"}.
+#' 
+#' \code{convert()} converts the format of existing objects of class \code{"coords"} between (i)
+#' decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
 #'
-#' @rdname as_coords
+#' @details
+#' Individual values provided in the \code{numeric} vector argument \code{nv} should have a decimal
+#' point after the number of whole degrees in the case of \emph{decimal degrees}, after the number
+#' of whole minutes in the case of \emph{degrees and minutes}, and after the number of whole
+#' seconds in the case of \emph{degrees, minutes and seconds}.
+#'
+#' The \code{fmt} argument should be \code{1L} to represent decimal degrees, \code{2L} for degrees
+#' and minutes, and \code{3L} for degrees, minutes and seconds and is used to provide both the
+#' format of values in \code{numeric} vector argument \code{nv} to be converted into a
+#' \code{"coords"} object and the desired format if a \code{"coords"} object is to be converted to
+#' a new format. Note that on conversion of a \code{"coords"} object, the original \code{numeric}
+#' vector argument \code{nv} is modified such that the values are as described in the previous
+#' paragraph, and may be inspected using standard R code, see examples.
+#'
+#' The values of a newly created \code{"coords"} object are checked to ensure they are valid
+#' geographic locations as described under \code{\link[=validate]{validate}()}. Likewise, a
+#' check is made to ensure that an existing \code{"coords"} object to be converted to a new format
+#' has already been validated; if not, it is re-validated. 
+#'
+#' @family coords_waypoints
+#' @seealso
+#' \code{\link[base:attr]{attr}()}, \code{\link[base:attributes]{attributes}},
+#'   \code{\link[=latlon]{latlon}()}, \code{\link[base:numeric]{numeric}()} and
+#'   \code{\link[=validate]{validate}()}.
+#'
+#' @param object a \code{numeric} vector of coordinate values, optionally named, or an object of
+#'   class \code{"waypoints"}.
+#'
+#' @param \dots further arguments passed to or from other methods.
+#'
+#' @param x object of class \code{"coords"} created by function
+#'   \code{\link[=as_coords]{as_coords}()}.
+#'
+#' @param fmt \code{integer}, 1L, 2L or 3L, indicating the current or desired coordinate format.
+#'
+#' @param usenames \code{logical}, whether or not to include names in formatted output.
+#'
+#' @param latlon \code{logical}, indicating whether the \code{as_coords()} S3 method for class
+#'   \code{"waypoints"} extracts the latitude component of argument \code{object} (if \code{TRUE}),
+#'   or the longitude (if \code{FALSE}).
+#'
+#' @return
+#' An object of class \code{"coords"}, comprising the original a \code{numeric} vector argument
+#' \code{nv} with values possibly converted as appropriate and additional attributes: –
+#' \item{\code{"fmt"}}{the coordinate format.}
+#' \item{\code{"valid"}}{a \code{logical} vector indicating whether individual coordinate values
+#'   are valid geographic locations.}
+#'
+#' @examples
+#' ## Numeric vector representing degrees and minutes
+#' dm <- c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
+#'         -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
+#'
+#' ## Create a "coords" object of degrees and minutes (fmt = 2)
+#' as_coords(dm, fmt = 2)
+#'
+#' ## Name the "coords" object
+#' names(dm) <- rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+#'                    "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
+#' dm
+#'
+#' ## Convert to degrees, minutes and seconds (fmt = 3)
+#' convert(dm, 3)
+#'
+#' ## Convert to decimal degrees (fmt = 1)
+#' convert(dm, 1)
+#'
+#' ## Decimal degrees as an ordinary R numeric vector
+#' as.numeric(dm)
+#'
+#' ## Convert to degrees and minutes, then format as a fixed-width
+#' ## character vector without names…
+#' convert(dm, 3) |> format(usenames = FALSE)
+#'
+#' ## …or with them
+#' format(dm)
+#'
+#' rm(dm)
+#'
+
+## ========================================
+##  Create Coordinates and Waypoints
+##  S3generic as_coords(object, ...)
+#'
 #' @export
 
 as_coords <- function(object, ...) 
     UseMethod("as_coords")
 
 
-# ========================================
-#  Convert Coordinates and Waypoints
-#  S3generic convert(x, ...)
+## ========================================
+##  Convert Coordinates and Waypoints
+##  S3generic convert(x, ...)
 #'
-#' @rdname as_coords
+#' @rdname Coords
 #' @export
 
 convert <- function(x, ...) 
     UseMethod("convert")
 
 
-# ========================================
-#  Print Coordinates
-#  S3method print.coords(x, ...)
+## ========================================
+##  Print Coordinates
+##  S3method print.coords(x, ...)
 #'
-#' @rdname as_coords
+#' @rdname Coords
 #' @export
 
 print.coords <- function (x, ...) {
@@ -42,9 +134,9 @@ print.coords <- function (x, ...) {
 }
 
 
-# ========================================
-#  Print Waypoints
-#  S3method print.waypoints(x, ...)
+## ========================================
+##  Print Waypoints
+##  S3method print.waypoints(x, ...)
 #'
 #' @rdname waypoints
 #' @export
@@ -55,16 +147,16 @@ print.waypoints <- function (x, ...) {
 }
 
 
-# ========================================
-#  Validate Coordinates and Waypoints
-#  S3generic validate(x, ...)
-#
+## ========================================
+##  Validate Coordinates and Waypoints
+##  S3generic validate(x, ...)
+##
 #' @export
 
 validate <- function(x, ...) 
     UseMethod("validate")
     
-# ========================================
+## ========================================
 #' @title
 #' Review Coordinates and Waypoints Validity
 #'
@@ -78,7 +170,7 @@ validate <- function(x, ...)
 #'
 #' @family validate
 #' @seealso
-#' \code{"\link[=coords]{coords}"} and \code{"\link[=waypoints]{waypoints}"}.
+#' \code{"\link[=as_coords]{coords}"} and \code{"\link[=waypoints]{waypoints}"}.
 #'
 #' @param x object of class \code{"coords"} or \code{"waypoints"}.
 #'
@@ -101,8 +193,6 @@ validate <- function(x, ...)
 #' elements as described for the method for class \code{"coords"}, one each for latitude and
 #' longitude.
 #'
-#' \code{as_coord} returns an object of class \code{"coords"} based on either the latitude or longitude.
-#'
 #' @export
 #'
 #' @examples
@@ -120,7 +210,7 @@ validate <- function(x, ...)
 #' }
 #'
 #' ## Create "coords" object of degrees and minutes
-#' coords(dm) <- 2
+#' as_coords(dm, fmt = 2)
 #'
 #' review(dm)
 #'
@@ -148,16 +238,16 @@ validate <- function(x, ...)
 #'    options(oldopt)
 #' }
 
-# ========================================
-#  Review Coordinates and Waypoints
-#  S3generic review(x, ...)
-#
+## ========================================
+##  Review Coordinates and Waypoints
+##  S3generic review(x, ...)
+##
 review <- function(x, ...) 
     UseMethod("review")
 
-# ========================================
-#  Review Coordinates
-#  S3method review.coords(x, ..., show_n = 20L)
+## ========================================
+##  Review Coordinates
+##  S3method review.coords(x, ..., show_n = 20L)
 #'
 #' @rdname review
 #' @export
@@ -183,7 +273,7 @@ review.coords <- function(x, ..., show_n = 20L)
     fmt <- attr(x, "fmt");
     if (n_invalid) {
         invalids <- x[invalid]
-        suppressWarnings(coords(invalids) <- fmt)
+        suppressWarnings(as_coords(invalids, fmt = fmt))
         acl <- attr(x, "latlon")
         if (!is.null(acl)) {
             if (length(acl) > 1)
@@ -202,9 +292,9 @@ review.coords <- function(x, ..., show_n = 20L)
 }
 
 
-# ========================================
-#  Review Waypoints
-#  S3method review.waypoints(x, ..., show_n = 20L)
+## ========================================
+##  Review Waypoints
+##  S3method review.waypoints(x, ..., show_n = 20L)
 #'
 #' @rdname review
 #' @export
@@ -213,7 +303,7 @@ review.waypoints <- function(x, ..., show_n = 20L)
 	lapply(c(TRUE, FALSE), \(y) review(as_coords(x, y), show_n)) |> setNames(c("Lat", "Lon"))
 
 
-# ========================================
+## ========================================
 #' @title
 #' Operator Providing Alternative to Zero-Length Object
 #'

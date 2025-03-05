@@ -8,7 +8,7 @@
 latlon(cd) <- value
 }
 \arguments{
-\item{cd}{object of class \code{"\link[=coords]{coords}"}.}
+\item{cd}{object of class \code{"\link[=as_coords]{coords}"}.}
 
 \item{value}{a \code{logical} vector of length \code{1} or \code{length(cd)}.}
 }
@@ -18,7 +18,7 @@ updated as appropriate.
 }
 \description{
 \code{latlon()<-} adds the attribute \code{"latlon"} to objects of class
-\code{"\link[=coords]{coords}"}, or modifies an existing \code{"latlon"} attribute.
+\code{"\link[=as_coords]{coords}"}, or modifies an existing \code{"latlon"} attribute.
 }
 \details{
 Attribute \code{"latlon"} is a \code{logical} vector of length \code{1} or \code{length(cd)}
@@ -62,5 +62,5 @@ rm(dm)
 
 }
 \seealso{
-\code{"\link[=coords]{coords}"}.
+\code{"\link[=as_coords]{coords}"}.
 }

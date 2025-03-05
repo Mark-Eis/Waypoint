@@ -142,6 +142,6 @@ rm(wp1, wp2)
   \code{\link[base:data.frame]{data.frame}()}, and \code{\link[=validate]{validate}()}.
 
 Other coords_waypoints: 
-\code{\link{as_coords}()}
+\code{\link{Coords}}
 }
 \concept{coords_waypoints}

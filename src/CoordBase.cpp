@@ -1038,100 +1038,7 @@ bool valid_ll(const DataFrame df)
 /// __________________________________________________
 /// __________________________________________________
 /// Exported functions
-
-/// __________________________________________________
-/// Set R vector object class to coords and return,
-/// or convert format of R coords object and return
-//' @title Geographic or GPS Coordinate Class
-//' 
-//' @name as_coords
-//' 
-//' @description
-//' \code{as_coords()} creates a robust representation of a series of geographic or GPS
-//' coordinates instantiated as an object of class \code{"coords"}.
-//' 
-//' \code{convert()} converts the format of existing objects of class \code{"coords"} between (i)
-//' decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
-//'
-//' @details
-//' Individual values provided in the \code{numeric} vector argument \code{nv} should have a decimal
-//' point after the number of whole degrees in the case of \emph{decimal degrees}, after the number
-//' of whole minutes in the case of \emph{degrees and minutes}, and after the number of whole
-//' seconds in the case of \emph{degrees, minutes and seconds}.
-//'
-//' The \code{fmt} argument should be \code{1L} to represent decimal degrees, \code{2L} for degrees
-//' and minutes, and \code{3L} for degrees, minutes and seconds and is used to provide both the
-//' format of values in \code{numeric} vector argument \code{nv} to be converted into a
-//' \code{"coords"} object and the desired format if a \code{"coords"} object is to be converted to
-//' a new format. Note that on conversion of a \code{"coords"} object, the original \code{numeric}
-//' vector argument \code{nv} is modified such that the values are as described in the previous
-//' paragraph, and may be inspected using standard R code, see examples.
-//'
-//' The values of a newly created \code{"coords"} object are checked to ensure they are valid
-//' geographic locations as described under \code{\link[=validate]{validate}()}. Likewise, a
-//' check is made to ensure that an existing \code{"coords"} object to be converted to a new format
-//' has already been validated; if not, it is re-validated. 
-//'
-//' @family coords_waypoints
-//' @seealso
-//' \code{\link[base:attr]{attr}()}, \code{\link[base:attributes]{attributes}},
-//'   \code{\link[=latlon]{latlon}()}, \code{\link[base:numeric]{numeric}()} and
-//'   \code{\link[=validate]{validate}()}.
-//'
-//' @param object a \code{numeric} vector of coordinate values, optionally named, or an object of
-//'   class \code{"waypoints"}.
-//'
-//' @param \dots further arguments passed to or from other methods.
-//'
-//' @param x object of class \code{"coords"} created by function
-//'   \code{\link[=as_coords]{as_coords}()}.
-//'
-//' @param fmt \code{integer}, 1L, 2L or 3L, indicating the current or desired coordinate format.
-//'
-//' @param usenames \code{logical}, whether or not to include names in formatted output.
-//'
-//' @param latlon \code{logical}, indicating whether the \code{as_coords()} S3 method for class
-//'   \code{"waypoints"} extracts the latitude component of argument \code{object} (if \code{TRUE}),
-//'   or the longitude (if \code{FALSE}).
-//'
-//' @return
-//' An object of class \code{"coords"}, comprising the original a \code{numeric} vector argument
-//' \code{nv} with values possibly converted as appropriate and additional attributes: –
-//' \item{\code{"fmt"}}{the coordinate format.}
-//' \item{\code{"valid"}}{a \code{logical} vector indicating whether individual coordinate values
-//'   are valid geographic locations.}
-//'
-//' @examples
-//' ## Numeric vector representing degrees and minutes
-//' dm <- c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
-//'         -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
-//'
-//' ## Create a "coords" object of degrees and minutes (fmt = 2)
-//' as_coords(dm, fmt = 2)
-//'
-//' ## Name the "coords" object
-//' names(dm) <- rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
-//'                    "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
-//' dm
-//'
-//' ## Convert to degrees, minutes and seconds (fmt = 3)
-//' convert(dm, 3)
-//'
-//' ## Convert to decimal degrees (fmt = 1)
-//' convert(dm, 1)
-//'
-//' ## Decimal degrees as an ordinary R numeric vector
-//' as.numeric(dm)
-//'
-//' ## Convert to degrees and minutes, then format as a fixed-width
-//' ## character vector without names…
-//' convert(dm, 3) |> format(usenames = FALSE)
-//'
-//' ## …or with them
-//' format(dm)
-//'
-//' rm(dm)
-//'
+//' @rdname Coords 
 // [[Rcpp::export(name = "as_coords.default")]]
 NumericVector as_coords(NumericVector object, const int fmt = 1)
 {
@@ -1145,7 +1052,7 @@ NumericVector as_coords(NumericVector object, const int fmt = 1)
 
 /// __________________________________________________
 /// Convert coords format
-//' @rdname as_coords
+//' @rdname Coords
 // [[Rcpp::export(name = "convert.coords")]]
 NumericVector convertcoords(NumericVector x, const int fmt)
 {
@@ -1170,7 +1077,7 @@ NumericVector convertcoords(NumericVector x, const int fmt)
 //' @name latlon
 //'
 //' @description \code{latlon()<-} adds the attribute \code{"latlon"} to objects of class
-//' \code{"\link[=coords]{coords}"}, or modifies an existing \code{"latlon"} attribute.
+//' \code{"\link[=as_coords]{coords}"}, or modifies an existing \code{"latlon"} attribute.
 //'
 //' @details
 //' Attribute \code{"latlon"} is a \code{logical} vector of length \code{1} or \code{length(cd)}
@@ -1184,9 +1091,9 @@ NumericVector convertcoords(NumericVector x, const int fmt)
 //' attribute \code{"latlon"} is added or changed.
 //'
 //' @seealso
-//' \code{"\link[=coords]{coords}"}.
+//' \code{"\link[=as_coords]{coords}"}.
 //'
-//' @param cd object of class \code{"\link[=coords]{coords}"}.
+//' @param cd object of class \code{"\link[=as_coords]{coords}"}.
 //'
 //' @param value a \code{logical} vector of length \code{1} or \code{length(cd)}.
 //'
@@ -1247,7 +1154,7 @@ NumericVector latlon(NumericVector cd, LogicalVector& value)
 //' \code{validate()} validates objects of class \code{"coords"} or \code{"waypoints"}.
 //'
 //' @details
-//' Individual coordinate values within \code{"\link[=coords]{coords}"} or
+//' Individual coordinate values within \code{"\link[=as_coords]{coords}"} or
 //' \code{"\link[=waypoints]{waypoints}"} objects are checked to ensure they represent valid
 //' geographic locations.
 //'
@@ -1260,7 +1167,7 @@ NumericVector latlon(NumericVector cd, LogicalVector& value)
 //'
 //' @family validate
 //' @seealso
-//' \code{"\link[=coords]{coords}"} and \code{"\link[=waypoints]{waypoints}"}.
+//' \code{"\link[=as_coords]{coords}"} and \code{"\link[=waypoints]{waypoints}"}.
 //'
 //' @param x object of class \code{"coords"} or \code{"waypoints"}.
 //'
@@ -1334,7 +1241,7 @@ NumericVector validatecoords(NumericVector x)
 
 /// __________________________________________________
 /// Format coords vector - S3 method format.coords()
-//' @rdname as_coords
+//' @rdname Coords
 // [[Rcpp::export(name = "format.coords")]]
 CharacterVector formatcoords(NumericVector x, bool usenames = true)
 {
@@ -1348,7 +1255,7 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true)
 
 /// __________________________________________________
 /// Clone coords object from waypoints vector
-//' @rdname as_coords
+//' @rdname Coords
 // [[Rcpp::export(name = "as_coords.waypoints")]]
 NumericVector as_coordswaypoints(DataFrame object, bool latlon)
 {
