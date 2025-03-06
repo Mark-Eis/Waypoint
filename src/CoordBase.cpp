@@ -27,6 +27,7 @@ template<class T>
 inline void checkinherits(T&, const char*);
 template<class T>
 inline bool is_item_in_obj(const T, const int);
+inline void stdlenstr(vector<string>&);
 template<class T>
 inline void prefixvecstr(vector<string>&, const vector<T>&);
 inline bool prefixwithnames(vector<string>&, RObject&);
@@ -223,11 +224,26 @@ inline bool is_item_in_obj(const T t, const int item)
 
 
 /// __________________________________________________
+/// Standarise width of strings in vector to that of the longest
+inline void stdlenstr(vector<string>& sv)
+{
+	cout << "@ stdlenstr(vector<string>&)\n";
+	int maxwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
+	ostringstream ostrstr;
+    transform(sv.begin(), sv.end(), sv.begin(), [&ostrstr, maxwdth](const string& s) {
+    	ostrstr.str("");
+    	ostrstr << setw(maxwdth) << s;
+    	return ostrstr.str(); 
+    });	
+}
+
+
+/// __________________________________________________
 /// Prefix vector<string> elements with elements of vector<T>—default for vector<string> prefix
 template<class T>
 inline void prefixvecstr(vector<string>& sv, const vector<T>& prefix)
 {
-//	cout << "@prefixvecstr<T>(vector<string>&, const vector<T>&)\n";
+	cout << "@prefixvecstr<T>(vector<string>&, const vector<T>&)\n";
 	transform(sv.begin(), sv.end(), prefix.begin(), sv.begin(), [](string& lls, const string& name) { return name + "  " + lls; });	
 }
 
@@ -246,7 +262,7 @@ inline void prefixvecstr(vector<string>& sv, const vector<int>& prefix)
 /// Prefix vector<string> elements with elements of RObject 
 inline bool prefixwithnames(vector<string>& sv, RObject& namesobj)
 {
-//	cout << "@prefixwithnames(vector<string>&, RObject&)\n";
+	cout << "@prefixwithnames(vector<string>&, RObject&)\n";
 	if (is<CharacterVector>(namesobj))
 		prefixvecstr(sv, as<vector<string>>(namesobj));
 	else if(is<IntegerVector>(namesobj))
@@ -789,12 +805,13 @@ vector<string> Coord::format(bool usenames) const
 	ostringstream ostrstr;
 	vector<string>&& sv = format_switch(*this, ct);
 	vector<string> names { get_vec_attr<NumericVector, string>(nv, "names") };
-	int strwdth = 0;
+//	int strwdth = 0;
 	if (names.size() && usenames) {
+		stdlenstr(names);
 		prefixvecstr(sv, names);
-		strwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
+//		strwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
 	}
-	transform(sv.begin(), sv.end(), sv.begin(), [&ostrstr, strwdth](const string& s) { ostrstr.str(""); ostrstr << setw(strwdth) << s; return ostrstr.str(); });
+//	transform(sv.begin(), sv.end(), sv.begin(), [&ostrstr, strwdth](const string& s) { ostrstr.str(""); ostrstr << setw(strwdth) << s; return ostrstr.str(); });
 	return sv;
 }
 
