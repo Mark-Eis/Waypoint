@@ -5,7 +5,7 @@ Version: 1.0.0.00022
 Date: 2025-03-06
 Author: Mark Eisler
 Maintainer: Mark Eisler <mark@markeisler.com>
-Description: The Waypoint R package enables conversion, validation, and neat formatting and printing of individual geographic positional coordinate values and waypoints of paired latitude and longitude values, using (i) decimal degree, (ii) degrees and minutes, and (iii) degrees, minutes and seconds formats.
+Description: The Waypoint R package enables conversion, validation, and neat formatting and printing of geographic positional coordinate values and waypoints of paired latitude and longitude values, using (i) decimal degree, (ii) degrees and minutes, and (iii) degrees, minutes and seconds formats.
 License: MIT + file LICENSE
 Imports: methods, Rcpp (>= 1.0.13)
 LinkingTo: Rcpp
