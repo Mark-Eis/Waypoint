@@ -1,5 +1,5 @@
 # Waypoint
-### Conversion, Validation, Formatting and Printing of Geographic Coordinates.
+### Conversion, Validation, Formatting and Printing of Geographic Coordinates
 
 The **Waypoint R package** enables conversion, validation, and neat formatting and printing of
 individual geographic positional coordinates and waypoints of paired latitude and longitude.
