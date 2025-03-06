@@ -227,7 +227,7 @@ inline bool is_item_in_obj(const T t, const int item)
 /// Standarise width of strings in vector to that of the longest
 inline void stdlenstr(vector<string>& sv)
 {
-	cout << "@stdlenstr(vector<string>&)\n";
+//	cout << "@stdlenstr(vector<string>&)\n";
 	int maxwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
 	ostringstream ostrstr;
     transform(sv.begin(), sv.end(), sv.begin(), [&ostrstr, maxwdth](const string& s) {
@@ -243,7 +243,7 @@ inline void stdlenstr(vector<string>& sv)
 template<class T>
 inline void prefixvecstr(vector<string>& sv, const vector<T>& prefix)
 {
-	cout << "@prefixvecstr<T>(vector<string>&, const vector<T>&)\n";
+//	cout << "@prefixvecstr<T>(vector<string>&, const vector<T>&)\n";
 	transform(sv.begin(), sv.end(), prefix.begin(), sv.begin(), [](string& lls, const string& name) { return name + "  " + lls; });	
 }
 
@@ -253,7 +253,7 @@ inline void prefixvecstr(vector<string>& sv, const vector<T>& prefix)
 template<>
 inline void prefixvecstr(vector<string>& sv, const vector<int>& prefix)
 {
-	cout << "@prefixvecstr<>(vector<string>&, const vector<int>&)\n";
+//	cout << "@prefixvecstr<>(vector<string>&, const vector<int>&)\n";
 	transform(sv.begin(), sv.end(), prefix.begin(), sv.begin(), [](string& lls, const int name) { return to_string(name) + "  " + lls; });	
 }
 
@@ -262,10 +262,9 @@ inline void prefixvecstr(vector<string>& sv, const vector<int>& prefix)
 /// Prefix vector<string> elements with elements of RObject 
 inline bool prefixwithnames(vector<string>& sv, RObject& namesobj)
 {
-	cout << "@prefixwithnames(vector<string>&, RObject&)\n";
+//	cout << "@prefixwithnames(vector<string>&, RObject&)\n";
 	if (is<CharacterVector>(namesobj)) {
-//		vector<string>&& names = as<vector<string>>(namesobj);
-		vector<string> names = std::move(as<vector<string>>(namesobj));
+		vector<string>&& names = as<vector<string>>(namesobj);
 		stdlenstr(names);
 		prefixvecstr(sv, names);
 	} else if(is<IntegerVector>(namesobj))
@@ -915,7 +914,7 @@ vector<string> WayPoint::format_ct() const
 vector<string> WayPoint::format(bool usenames) const
 {
 //	cout << "@WayPoint::format(bool) " << Demangler(typeid(*this)) << endl;
-	const int i { coordtype_to_int(ct) };
+/*	const int i { coordtype_to_int(ct) };
 	int spacing[] {  5,  7,  8,
 					11, 13, 14 };
 	ostringstream ostrstr;
@@ -926,7 +925,7 @@ vector<string> WayPoint::format(bool usenames) const
 	ostrstr.str("");
 	ostrstr	<< string(spacing[i + 3], '_') << string(2, ' ') << string(spacing[i + 3] + 1, '_');
 	ttlvec.push_back(ostrstr.str());
-
+*/
 	vector<string>&& sv = format_switch(*this, ct);
 
 	vector<int> namescolvec { get_vec_attr<DataFrame, int>(df, "namescol") };
@@ -943,15 +942,6 @@ vector<string> WayPoint::format(bool usenames) const
 		if (!prefixwithnames(sv, rownames))
 			stop("Invalid \"row.names\" attribute! (neither a CharacterVector nor IntegerVector)");
 	}
-
-	int strwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
-//	for_each(ttlvec.begin(), ttlvec.end(), [&stream, strwdth, i](const string& s) { int fudge[] = { 2, 6, 10 }; stream << setw(strwdth - fudge[i]) << s << "\n"; });
-	transform(ttlvec.begin(), ttlvec.end(), ttlvec.begin(),
-		[& ostrstr, strwdth, i](const string& s) { ostrstr.str(""); int fudge[] = { 2, 6, 10 }; ostrstr << setw(strwdth - fudge[i]) << s << "\n"; return ostrstr.str(); });
-
-//	for_each(sv.begin(), sv.end(), [&stream, strwdth](const string& s) { stream << setw(strwdth) << s << "\n"; });
-
-	transform(sv.begin(), sv.end(), sv.begin(), [&ostrstr, strwdth](const string& s) { ostrstr.str(""); ostrstr << setw(strwdth) << s; return ostrstr.str(); });
 	return sv;
 }
 
