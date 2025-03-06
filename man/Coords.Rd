@@ -50,8 +50,8 @@ An object of class \code{"coords"}, comprising the original a \code{numeric} vec
   are valid geographic locations.}
 }
 \description{
-\code{as_coords()} creates a robust representation of a series of geographic or GPS
-coordinates instantiated as an object of class \code{"coords"}.
+\code{as_coords()} creates an object of class \code{"coords"}, a robust representation of a
+series of geographic or GPS coordinate values.
 
 \code{convert()} converts the format of existing objects of class \code{"coords"} between (i)
 decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.

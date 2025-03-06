@@ -45,8 +45,8 @@ and additional attributes: –
   individual latitude and longitude values are valid geographic locations.}
 }
 \description{
-\code{as_waypoints()} creates a robust representation of a series of geographic or GPS waypoints
-instantiated as an object of class \code{"waypoints"}.
+\code{as_waypoints()} creates an object of class \code{"waypoints"}, a robust representation of a
+series of geographic or GPS waypoints of paired latitude and longitude values.
 
 \code{convert()} converts the format of existing objects of class \code{"waypoints"} between (i)
 decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
