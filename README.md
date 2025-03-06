@@ -2,9 +2,9 @@
 ### Conversion, Validation, Formatting and Printing of Geographic Coordinates
 
 The **Waypoint R package** enables conversion, validation, and neat formatting and printing of
-individual geographic positional coordinates and waypoints of paired latitude and longitude.
-Coordinates and waypoints may be converted easily and rapidly between (i) decimal degree, (ii)
-degrees and minutes, and (iii) degrees, minutes and seconds formats.
+individual geographic positional coordinate values and waypoints of paired latitude and longitude
+values. Coordinates and waypoints may be converted easily and rapidly between (i) decimal degree,
+(ii) degrees and minutes, and (iii) degrees, minutes and seconds formats.
 
 ## Installation
 
