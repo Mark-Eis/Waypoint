@@ -227,7 +227,7 @@ inline bool is_item_in_obj(const T t, const int item)
 /// Standarise width of strings in vector to that of the longest
 inline void stdlenstr(vector<string>& sv)
 {
-//	cout << "@stdlenstr(vector<string>&)\n";
+	cout << "@stdlenstr(vector<string>&)\n";
 	int maxwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
 	ostringstream ostrstr;
     transform(sv.begin(), sv.end(), sv.begin(), [&ostrstr, maxwdth](const string& s) {
@@ -243,7 +243,7 @@ inline void stdlenstr(vector<string>& sv)
 template<class T>
 inline void prefixvecstr(vector<string>& sv, const vector<T>& prefix)
 {
-//	cout << "@prefixvecstr<T>(vector<string>&, const vector<T>&)\n";
+	cout << "@prefixvecstr<T>(vector<string>&, const vector<T>&)\n";
 	transform(sv.begin(), sv.end(), prefix.begin(), sv.begin(), [](string& lls, const string& name) { return name + "  " + lls; });	
 }
 
@@ -253,7 +253,7 @@ inline void prefixvecstr(vector<string>& sv, const vector<T>& prefix)
 template<>
 inline void prefixvecstr(vector<string>& sv, const vector<int>& prefix)
 {
-//	cout << "@prefixvecstr<>(vector<string>&, const vector<int>&)\n";
+	cout << "@prefixvecstr<>(vector<string>&, const vector<int>&)\n";
 	transform(sv.begin(), sv.end(), prefix.begin(), sv.begin(), [](string& lls, const int name) { return to_string(name) + "  " + lls; });	
 }
 
@@ -263,9 +263,12 @@ inline void prefixvecstr(vector<string>& sv, const vector<int>& prefix)
 inline bool prefixwithnames(vector<string>& sv, RObject& namesobj)
 {
 	cout << "@prefixwithnames(vector<string>&, RObject&)\n";
-	if (is<CharacterVector>(namesobj))
-		prefixvecstr(sv, as<vector<string>>(namesobj));
-	else if(is<IntegerVector>(namesobj))
+	if (is<CharacterVector>(namesobj)) {
+//		vector<string>&& names = as<vector<string>>(namesobj);
+		vector<string> names = std::move(as<vector<string>>(namesobj));
+		stdlenstr(names);
+		prefixvecstr(sv, names);
+	} else if(is<IntegerVector>(namesobj))
 		prefixvecstr(sv, as<vector<int>>(namesobj));
 	else
 		return false;
