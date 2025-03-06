@@ -56,5 +56,5 @@ waypoint datasets.
 #### Disclaimer
 
 While every effort is made to ensure this package functions as expected, the author accepts no
-responsibility for errors, even if your boat runs aground, your aeroplane crashes into the mountain
-or your map shows your city in the middle of the ocean.
+responsibility for the consequences of errors, even if your boat runs aground, your aeroplane
+crashes into the mountain or your map shows your city in the middle of the ocean.
