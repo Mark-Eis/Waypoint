@@ -48,4 +48,5 @@ devtools::install_github("Mark-Eis/Waypoint")
   "[`waypoints`](https://mark-eis.github.io/Waypoint/reference/waypoints.html)".
 
 *Waypoint* uses high performance C++ code seamlessly integrated into R using
-[`Rcpp`](https://www.rcpp.org) to enable rapid conversion and formatting of large datasets.
+[`Rcpp`](https://www.rcpp.org) to enable rapid conversion and formatting of large coordinate and
+waypoint datasets.
