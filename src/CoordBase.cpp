@@ -914,18 +914,6 @@ vector<string> WayPoint::format_ct() const
 vector<string> WayPoint::format(bool usenames) const
 {
 //	cout << "@WayPoint::format(bool) " << Demangler(typeid(*this)) << endl;
-/*	const int i { coordtype_to_int(ct) };
-	int spacing[] {  5,  7,  8,
-					11, 13, 14 };
-	ostringstream ostrstr;
-	vector<string> ttlvec;
-	ostrstr << "Latitude" << string(spacing[i], ' ') << "Longitude ";
-	ttlvec.push_back(ostrstr.str());
-
-	ostrstr.str("");
-	ostrstr	<< string(spacing[i + 3], '_') << string(2, ' ') << string(spacing[i + 3] + 1, '_');
-	ttlvec.push_back(ostrstr.str());
-*/
 	vector<string>&& sv = format_switch(*this, ct);
 
 	vector<int> namescolvec { get_vec_attr<DataFrame, int>(df, "namescol") };
