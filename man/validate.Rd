@@ -47,8 +47,8 @@ non-compliant coordinate values.
              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
 }
 
-## Create "coords" object of degrees and minutes
-as_coords(dm, 2)
+## Create "coords" object of degrees and minutes (fmt = 2)
+as_coords(dm, fmt = 2)
 
 validate(dm)
 

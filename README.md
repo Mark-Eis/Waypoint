@@ -21,14 +21,14 @@ devtools::install_github("Mark-Eis/Waypoint")
 
 The **Waypoint R package** enables conversion, validation and neatly formatted printing of geographic coordinates and waypoints. Coordinates and waypoints are converted between (i) decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds. More specifically, *Waypoint* does the following: – 
 
-- Creates [`"coords"`](https://mark-eis.github.io/Waypoint/reference/coords.html) objects and converts their formats with `coords()` and [`coords<-()`](https://mark-eis.github.io/Waypoint/reference/coords.html).
+- Creates [`"coords"`](https://mark-eis.github.io/Waypoint/reference/coords.html) objects and converts their formats with `as_coords()` and `convert()`.
 
-- Creates [`"waypoints"`](https://mark-eis.github.io/Waypoint/reference/waypoints.html) objects and converts their formats with `waypoints()` and  [`waypoints<-()`](https://mark-eis.github.io/Waypoint/reference/waypoints.html).
+- Creates [`"waypoints"`](https://mark-eis.github.io/Waypoint/reference/waypoints.html) objects and converts their formats with `as_waypoints()` and   `convert()`.
 
 - Assigns latitude and longitude attributes to values within objects of classes `"coords"` with [`latlon<-()`](https://mark-eis.github.io/Waypoint/reference/latlon.html).
 
-- Ensures values within objects of classes `"coords"` or `"waypoints"` are plausible geographic locations with `validate()`.
+- Ensures values within objects of classes `"coords"` or `"waypoints"` are plausible geographic locations with `validate()` and `review()`.
 
-- Provides S3 `print()` methods for objects of classes `"coords"` or `"waypoints"` for neatly formatted printing.
+- Provides S3 `format()` and `print()` methods for objects of classes `"coords"` and `"waypoints"` for neatly formatted printing.
 
 *Waypoint* uses high performance C++ code seamlessly integrated into R using [`Rcpp`](https://www.rcpp.org).
