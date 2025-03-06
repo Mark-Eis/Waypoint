@@ -46,7 +46,15 @@ devtools::install_github("Mark-Eis/Waypoint")
 * Provides `format()` and `print()` S3 methods for neat formatting and printing of objects of
   classes "[`coords`](https://mark-eis.github.io/Waypoint/reference/coords.html)" and
   "[`waypoints`](https://mark-eis.github.io/Waypoint/reference/waypoints.html)".
+  
+#### Methodology  
 
 *Waypoint* uses high performance C++ code seamlessly integrated into R using
 [`Rcpp`](https://www.rcpp.org) to enable rapid conversion and formatting of large coordinate and
 waypoint datasets.
+
+#### Disclaimer
+
+While every effort is made to ensure this package functions as expected, the author accepts no
+responsibility for errors, even if your boat runs aground, your aeroplane crashes into the mountain
+or your map shows your city in the middle of the ocean.
