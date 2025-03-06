@@ -1,7 +1,7 @@
 # Waypoint
 ### Conversion, Validation and Print Formatting of Geographic Coordinates.
 
-The **Waypoint R package** enables conversion, validation and neatly formatted printing of
+The **Waypoint R package** enables conversion, validation, and neat formatting and printing of
 geographic coordinates and waypoints. Coordinates and waypoints are converted between (i) decimal
 degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
 
@@ -47,4 +47,4 @@ devtools::install_github("Mark-Eis/Waypoint")
   "[`waypoints`](https://mark-eis.github.io/Waypoint/reference/waypoints.html)".
 
 *Waypoint* uses high performance C++ code seamlessly integrated into R using
-[`Rcpp`](https://www.rcpp.org) to enable rapid conversion of large datasets.
+[`Rcpp`](https://www.rcpp.org) to enable rapid conversion and formatting of large datasets.
