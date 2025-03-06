@@ -42,7 +42,6 @@ devtools::install_github("Mark-Eis/Waypoint")
   "[`waypoints`](https://mark-eis.github.io/Waypoint/reference/waypoints.html)" objects are valid
   geographic locations with `validate()` and identifies individual invalid values with `review()`.
 
-#XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 * Provides `format()` and `print()` S3 methods for neat formatting and printing of objects of
   classes "[`coords`](https://mark-eis.github.io/Waypoint/reference/coords.html)" and
   "[`waypoints`](https://mark-eis.github.io/Waypoint/reference/waypoints.html)".
