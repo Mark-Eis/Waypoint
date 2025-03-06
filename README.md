@@ -42,9 +42,10 @@ devtools::install_github("Mark-Eis/Waypoint")
   "[`waypoints`](https://mark-eis.github.io/Waypoint/reference/waypoints.html)" objects are valid
   geographic locations with `validate()` and identifies individual invalid values with `review()`.
 
-* Provides S3 `format()` and `print()` methods for neatly formatted printing of objects of classes
-  "[`coords`](https://mark-eis.github.io/Waypoint/reference/coords.html)" and
+#XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+* Provides `format()` and `print()` S3 methods for neat formatting and printing of objects of
+  classes "[`coords`](https://mark-eis.github.io/Waypoint/reference/coords.html)" and
   "[`waypoints`](https://mark-eis.github.io/Waypoint/reference/waypoints.html)".
 
 *Waypoint* uses high performance C++ code seamlessly integrated into R using
-[`Rcpp`](https://www.rcpp.org).
+[`Rcpp`](https://www.rcpp.org) to enable rapid conversion of large datasets.
