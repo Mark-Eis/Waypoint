@@ -74,8 +74,8 @@ wp1 <- data.frame(
 )
 }
 
-## Create "waypoints" object of decimal degrees
-waypoints(wp1) <- 1
+## Create "waypoints" object of decimal degrees (fmt = 1)
+as_waypoints(wp1, fmt = 1)
 
 review(wp1)
 
@@ -86,7 +86,7 @@ rm(dm, wp1)
 }
 }
 \seealso{
-\code{"\link[=as_coords]{coords}"} and \code{"\link[=waypoints]{waypoints}"}.
+\code{"\link[=as_coords]{coords}"} and \code{"\link[=as_waypoints]{waypoints}"}.
 
 Other validate: 
 \code{\link{validate}()}

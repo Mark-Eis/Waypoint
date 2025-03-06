@@ -82,7 +82,7 @@ convert.coords <- function(x, fmt, ...) {
 #'
 #' @details
 #' Individual coordinate values within \code{"\link[=as_coords]{coords}"} or
-#' \code{"\link[=waypoints]{waypoints}"} objects are checked to ensure they represent valid
+#' \code{"\link[=as_waypoints]{waypoints}"} objects are checked to ensure they represent valid
 #' geographic locations.
 #'
 #' To be valid, the absolute values of coordinates in degrees must not exceed 180, or 90 if degrees
@@ -94,7 +94,7 @@ convert.coords <- function(x, fmt, ...) {
 #'
 #' @family validate
 #' @seealso
-#' \code{"\link[=as_coords]{coords}"} and \code{"\link[=waypoints]{waypoints}"}.
+#' \code{"\link[=as_coords]{coords}"} and \code{"\link[=as_waypoints]{waypoints}"}.
 #'
 #' @param x object of class \code{"coords"} or \code{"waypoints"}.
 #'

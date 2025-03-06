@@ -306,7 +306,7 @@ validate <- function(x, ...)
 #'
 #' @family validate
 #' @seealso
-#' \code{"\link[=as_coords]{coords}"} and \code{"\link[=waypoints]{waypoints}"}.
+#' \code{"\link[=as_coords]{coords}"} and \code{"\link[=as_waypoints]{waypoints}"}.
 #'
 #' @param x object of class \code{"coords"} or \code{"waypoints"}.
 #'
@@ -363,8 +363,8 @@ validate <- function(x, ...)
 #' )
 #' }
 #'
-#' ## Create "waypoints" object of decimal degrees
-#' waypoints(wp1) <- 1
+#' ## Create "waypoints" object of decimal degrees (fmt = 1)
+#' as_waypoints(wp1, fmt = 1)
 #'
 #' review(wp1)
 #'
