@@ -227,12 +227,12 @@ inline bool is_item_in_obj(const T t, const int item)
 /// Standarise width of strings in vector to that of the longest
 inline void stdlenstr(vector<string>& sv)
 {
-	cout << "@ stdlenstr(vector<string>&)\n";
+//	cout << "@stdlenstr(vector<string>&)\n";
 	int maxwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
 	ostringstream ostrstr;
     transform(sv.begin(), sv.end(), sv.begin(), [&ostrstr, maxwdth](const string& s) {
     	ostrstr.str("");
-    	ostrstr << setw(maxwdth) << s;
+    	ostrstr << left << setw(maxwdth) << s;
     	return ostrstr.str(); 
     });	
 }
@@ -243,7 +243,7 @@ inline void stdlenstr(vector<string>& sv)
 template<class T>
 inline void prefixvecstr(vector<string>& sv, const vector<T>& prefix)
 {
-	cout << "@prefixvecstr<T>(vector<string>&, const vector<T>&)\n";
+//	cout << "@prefixvecstr<T>(vector<string>&, const vector<T>&)\n";
 	transform(sv.begin(), sv.end(), prefix.begin(), sv.begin(), [](string& lls, const string& name) { return name + "  " + lls; });	
 }
 
@@ -805,13 +805,10 @@ vector<string> Coord::format(bool usenames) const
 	ostringstream ostrstr;
 	vector<string>&& sv = format_switch(*this, ct);
 	vector<string> names { get_vec_attr<NumericVector, string>(nv, "names") };
-//	int strwdth = 0;
 	if (names.size() && usenames) {
 		stdlenstr(names);
 		prefixvecstr(sv, names);
-//		strwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
 	}
-//	transform(sv.begin(), sv.end(), sv.begin(), [&ostrstr, strwdth](const string& s) { ostrstr.str(""); ostrstr << setw(strwdth) << s; return ostrstr.str(); });
 	return sv;
 }
 
