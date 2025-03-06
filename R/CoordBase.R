@@ -14,8 +14,8 @@
 #' @name Coords
 #' 
 #' @description
-#' \code{as_coords()} creates a robust representation of a series of geographic or GPS
-#' coordinates instantiated as an object of class \code{"coords"}.
+#' \code{as_coords()} creates an object of class \code{"coords"}, a robust representation of a
+#' series of geographic or GPS coordinate values.
 #' 
 #' \code{convert()} converts the format of existing objects of class \code{"coords"} between (i)
 #' decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
@@ -117,8 +117,8 @@ as_coords <- function(object, ...)
 #' @name Waypoints
 #' 
 #' @description
-#' \code{as_waypoints()} creates a robust representation of a series of geographic or GPS waypoints
-#' instantiated as an object of class \code{"waypoints"}.
+#' \code{as_waypoints()} creates an object of class \code{"waypoints"}, a robust representation of a
+#' series of geographic or GPS waypoints of paired latitude and longitude values.
 #' 
 #' \code{convert()} converts the format of existing objects of class \code{"waypoints"} between (i)
 #' decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
