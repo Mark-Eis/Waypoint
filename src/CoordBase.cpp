@@ -1357,7 +1357,7 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true)
 /// __________________________________________________
 /// Latitude and longitude headers for S3 print.waypoint()
 // [[Rcpp::export]]
-CharacterVector ll_headers(int width, const int fmt)
+CharacterVector ll_headers(const CharacterVector cvmatch, const int fmt)
 {
 //	cout << "@ll_headers(int, const int)  width " <<  width << " fmt " << fmt << endl;
 	constexpr int spacing[] { 5,  7,  8,
@@ -1368,7 +1368,7 @@ CharacterVector ll_headers(int width, const int fmt)
 		};
 
 	constexpr int adjust[] = { 2, 6, 10 };
-	width -= adjust[fmt - 1];
+	const int width = (as<vector<string>>(cvmatch)[0]).size() - adjust[fmt - 1];
 	ostringstream ostrstr;
 	transform(sv.begin(), sv.end(), sv.begin(), [&ostrstr, width](const string& s)
 		{ ostrstr.str(""); ostrstr << setw(width) << s; return ostrstr.str(); });

@@ -278,7 +278,9 @@ print.coords <- function (x, ...) {
 #' @export
 
 print.waypoints <- function (x, ...) {
-    writeLines(format(x, ...))
+    fmtx <- format(x, ...)
+    writeLines(ll_headers(fmtx, attr(x, "fmt")))
+    writeLines(fmtx)
     invisible(x)
 }
 
