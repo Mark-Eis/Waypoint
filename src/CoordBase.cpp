@@ -105,6 +105,7 @@ DataFrame as_waypointsdefault(DataFrame, const int);
 DataFrame convertwaypoints(DataFrame, const int);
 DataFrame validatewaypoints(DataFrame);
 CharacterVector formatwaypoints(NumericVector, bool);
+CharacterVector ll_headers(int, const int);
 
 
 /// __________________________________________________
@@ -1350,6 +1351,28 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true)
 //	CoordType ct = get_coordtype(x);
 //	return wrap(format_switch(WayPoint(ct, x), ct));
 	return wrap(WayPoint(get_coordtype(x), x).format(usenames));
+}
+
+
+/// __________________________________________________
+/// Latitude and longitude headers for S3 print.waypoint()
+// [[Rcpp::export]]
+CharacterVector ll_headers(int width, const int fmt)
+{
+//	cout << "@ll_headers(int, const int)  width " <<  width << " fmt " << fmt << endl;
+	constexpr int spacing[] { 5,  7,  8,
+							 11, 13, 14 };
+	vector<string> sv {
+			string("Latitude") + string(spacing[fmt - 1], ' ') + "Longitude ",
+			string(spacing[fmt + 2], '_') + string(2, ' ') + string(spacing[fmt + 2] + 1, '_')
+		};
+
+	constexpr int adjust[] = { 2, 6, 10 };
+	width -= adjust[fmt - 1];
+	ostringstream ostrstr;
+	transform(sv.begin(), sv.end(), sv.begin(), [&ostrstr, width](const string& s)
+		{ ostrstr.str(""); ostrstr << setw(width) << s; return ostrstr.str(); });
+	return wrap(sv);
 }
 
 
