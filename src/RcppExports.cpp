@@ -35,13 +35,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // latlon
-NumericVector latlon(NumericVector cd, LogicalVector& value);
+NumericVector latlon(NumericVector cd, LogicalVector value);
 RcppExport SEXP _Waypoint_latlon(SEXP cdSEXP, SEXP valueSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type cd(cdSEXP);
-    Rcpp::traits::input_parameter< LogicalVector& >::type value(valueSEXP);
+    Rcpp::traits::input_parameter< LogicalVector >::type value(valueSEXP);
     rcpp_result_gen = Rcpp::wrap(latlon(cd, value));
     return rcpp_result_gen;
 END_RCPP
@@ -128,6 +128,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// ll_headers
+CharacterVector ll_headers(int width, const int fmt);
+RcppExport SEXP _Waypoint_ll_headers(SEXP widthSEXP, SEXP fmtSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type width(widthSEXP);
+    Rcpp::traits::input_parameter< const int >::type fmt(fmtSEXP);
+    rcpp_result_gen = Rcpp::wrap(ll_headers(width, fmt));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_Waypoint_as_coords", (DL_FUNC) &_Waypoint_as_coords, 2},
@@ -140,6 +152,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Waypoint_convertwaypoints", (DL_FUNC) &_Waypoint_convertwaypoints, 2},
     {"_Waypoint_validatewaypoints", (DL_FUNC) &_Waypoint_validatewaypoints, 1},
     {"_Waypoint_formatwaypoints", (DL_FUNC) &_Waypoint_formatwaypoints, 2},
+    {"_Waypoint_ll_headers", (DL_FUNC) &_Waypoint_ll_headers, 2},
     {NULL, NULL, 0}
 };
 
