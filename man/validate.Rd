@@ -6,9 +6,9 @@
 \alias{validate.waypoints}
 \title{Validate Coords or Waypoints}
 \usage{
-\method{validate}{coords}(x, ...)
+\method{validate}{coords}(x)
 
-\method{validate}{waypoints}(x, ...)
+\method{validate}{waypoints}(x)
 }
 \arguments{
 \item{x}{object of class \code{"coords"} or \code{"waypoints"}.}

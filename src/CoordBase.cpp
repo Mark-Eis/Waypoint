@@ -1051,7 +1051,7 @@ NumericVector as_coords(NumericVector object, const int fmt = 1)
 
 /// __________________________________________________
 /// Convert coords format
-//' @rdname Coords
+//' @rdname Convert
 // [[Rcpp::export(name = "convert.coords")]]
 NumericVector convertcoords(NumericVector x, const int fmt)
 {
@@ -1062,7 +1062,7 @@ NumericVector convertcoords(NumericVector x, const int fmt)
 	if (newtype == type) {
 //		cout << "——fmt out == fmt in!——" << endl;
 		if (!check_valid(x))
-			stop("Ixalid coords!");
+			stop("Invalid coords!");
 	} else 
 		convert_switch<NumericVector, Coord>(x, newtype);
 	return x;
@@ -1301,7 +1301,7 @@ DataFrame as_waypoints(DataFrame object, const int fmt = 1)
 
 /// __________________________________________________
 /// Convert waypoints format
-//' @rdname Waypoints
+//' @rdname Convert
 // [[Rcpp::export(name = "convert.waypoints")]]
 DataFrame convertwaypoints(DataFrame x, const int fmt)
 {

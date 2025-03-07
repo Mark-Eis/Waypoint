@@ -5,7 +5,6 @@
 \alias{as_waypoints}
 \alias{print.waypoints}
 \alias{as_waypoints.default}
-\alias{convert.waypoints}
 \alias{format.waypoints}
 \title{Geographic or GPS Waypoint Class}
 \usage{
@@ -13,11 +12,9 @@ as_waypoints(object, ...)
 
 \method{print}{waypoints}(x, ...)
 
-\method{as_waypoints}{default}(object, ..., fmt = 1L)
+\method{as_waypoints}{default}(object, fmt = 1L)
 
-\method{convert}{waypoints}(x, fmt, ...)
-
-\method{format}{waypoints}(x, ..., usenames = TRUE)
+\method{format}{waypoints}(x, usenames = TRUE)
 }
 \arguments{
 \item{object}{a data frame with each row representing a waypoint, comprising at least two
@@ -54,13 +51,13 @@ decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and second
 \details{
 By default, the names of the waypoints should be included in a "Name" column of data frame
 argument \code{df}, and the latitude and longitude in the two columns immediately on the right
-hand side of "Name". An alternative column for waypoint names may be specified by setting an
-\code{integer} attribute, \code{"namescol"} indicating its position in \code{df}, while setting
-this attribute to \code{NA} supresses printing of waypoint names. If \code{df} has neither a
-"Name" column nor a \code{"namescol"} attribute, the \code{"row.names"} attribute is used for
-waypoint names if present in \code{df}. Similarly, alternative columns for the latitude and
-longitude may be specified by setting \code{"llcols"} as a length 2 \code{integer} vector
-attribute indicating their positions in \code{df}.
+hand side of "Name". An alternative column for waypoint names may be specified by setting an an
+\code{integer} \code{\link[base:attributes]{attribute}} named "namescol", indicating its position
+in \code{df}, while setting this attribute to \code{NA} supresses printing of waypoint names. If
+\code{df} has neither a "Name" column nor a \code{"namescol"} attribute, the \code{"row.names"}
+attribute is used for waypoint names if present in \code{df}. Similarly, alternative columns for
+the latitude and longitude may be specified by setting \code{"llcols"} as a length 2
+\code{integer} vector attribute indicating their positions in \code{df}.
 
 Individual values provided in the \code{numeric} vector latitude and longitude columns of data
 frame argument \code{df} should have a decimal point after the number of whole degrees in the
@@ -69,12 +66,9 @@ case of \emph{decimal degrees}, after the number of whole minutes in the case of
 \emph{degrees, minutes and seconds}.
 
 The \code{fmt} argument should be \code{1L} to represent decimal degrees, \code{2L} for degrees
-and minutes, and \code{3L} for degrees, minutes and seconds and is used to provide both the
+and minutes, and \code{3L} for degrees, minutes and seconds and is used to provide the
 format of values in data frame argument \code{df} to be converted into a \code{"waypoints"}
-object and the desired format if a \code{"waypoints"} object is to be converted to a new format.
-Note that on conversion of a \code{"waypoints"} object, the original data frame argument
-\code{df} is modified such that the latitude and longitude values are as described in the
-previous paragraph, and may be inspected using standard R code, see examples.
+object.
 
 The latitude and longitude values of a newly created \code{"waypoints"} object are checked to
 ensure they are valid geographic locations as described under
@@ -139,8 +133,8 @@ rm(wp1, wp2)
 
 }
 \seealso{
-\code{\link[base:attr]{attr}()}, \code{\link[base:attributes]{attributes}},
-  \code{\link[base:data.frame]{data.frame}()}, and \code{\link[=validate]{validate}()}.
+\code{\link[base:attr]{attr}()},
+\code{\link[base:data.frame]{data.frame}()}, and \code{\link[=validate]{validate}()}.
 
 Other coords_waypoints: 
 \code{\link{Coords}}

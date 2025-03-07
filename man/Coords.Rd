@@ -3,27 +3,21 @@
 \name{Coords}
 \alias{Coords}
 \alias{as_coords}
-\alias{convert}
 \alias{print.coords}
 \alias{as_coords.default}
-\alias{convert.coords}
 \alias{format.coords}
 \alias{as_coords.waypoints}
 \title{Geographic or GPS Coordinate Class}
 \usage{
 as_coords(object, ...)
 
-convert(x, ...)
-
 \method{print}{coords}(x, ...)
 
-\method{as_coords}{default}(object, ..., fmt = 1L)
+\method{as_coords}{default}(object, fmt = 1L)
 
-\method{convert}{coords}(x, fmt, ...)
+\method{format}{coords}(x, usenames = TRUE)
 
-\method{format}{coords}(x, ..., usenames = TRUE)
-
-\method{as_coords}{waypoints}(object, latlon, ...)
+\method{as_coords}{waypoints}(object, latlon)
 }
 \arguments{
 \item{object}{a \code{numeric} vector of coordinate values, optionally named, or an object of
@@ -62,18 +56,11 @@ point after the number of whole degrees in the case of \emph{decimal degrees}, a
 of whole minutes in the case of \emph{degrees and minutes}, and after the number of whole
 seconds in the case of \emph{degrees, minutes and seconds}.
 
-The \code{fmt} argument should be \code{1L} to represent decimal degrees, \code{2L} for degrees
-and minutes, and \code{3L} for degrees, minutes and seconds and is used to provide both the
-format of values in \code{numeric} vector argument \code{nv} to be converted into a
-\code{"coords"} object and the desired format if a \code{"coords"} object is to be converted to
-a new format. Note that on conversion of a \code{"coords"} object, the original \code{numeric}
-vector argument \code{nv} is modified such that the values are as described in the previous
-paragraph, and may be inspected using standard R code, see examples.
+The \code{fmt} argument is used to specify the format of values in the \code{numeric} vector
+argument \code{object} to be converted into a \code{"coords"} object.
 
 The values of a newly created \code{"coords"} object are checked to ensure they are valid
-geographic locations as described under \code{\link[=validate]{validate}()}. Likewise, a
-check is made to ensure that an existing \code{"coords"} object to be converted to a new format
-has already been validated; if not, it is re-validated.
+geographic locations as described under \code{\link[=validate]{validate}()}.
 }
 \examples{
 ## Numeric vector representing degrees and minutes
@@ -88,21 +75,14 @@ names(dm) <- rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monum
                    "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
 dm
 
-## Convert to degrees, minutes and seconds (fmt = 3)
-convert(dm, 3)
-
-## Convert to decimal degrees (fmt = 1)
-convert(dm, 1)
-
 ## Decimal degrees as an ordinary R numeric vector
 as.numeric(dm)
 
-## Convert to degrees and minutes, then format as a
-## fixed-width character vector without names...
-convert(dm, 3) |> format(usenames = FALSE)
-
-## ...or with them
+## Format as a fixed-width character vector witht names...
 format(dm)
+
+## ...or without them
+format(dm, usenames = FALSE)
 
 rm(dm)
 
