@@ -7,8 +7,7 @@
 ## CoordBase.R
 
 ## __________________________________________________
-## Set R vector object class to coords and return,
-## or convert format of R coords object and return
+## Set R vector object class to coords, validate and set fmt attribute
 #' @title Geographic or GPS Coordinate Class
 #' 
 #' @name Coords
@@ -16,14 +15,14 @@
 #' @description
 #' \code{as_coords()} creates an object of class \code{"coords"}, a robust representation of a
 #' series of geographic or GPS coordinate values.
-#' 
-#' \code{convert()} converts the format of existing objects of class \code{"coords"} between (i)
-#' decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
+#'
+#' \code{latlon()<-} adds the attribute \code{"latlon"} to objects of class
+#' \code{"\link[=as_coords]{coords}"}, or modifies an existing \code{"latlon"} attribute.
 #'
 #' @details
-#' Individual values provided in the \code{numeric} vector argument \code{nv} should have a decimal
-#' point after the number of whole degrees in the case of \emph{decimal degrees}, after the number
-#' of whole minutes in the case of \emph{degrees and minutes}, and after the number of whole
+#' Individual values provided in a \code{numeric} vector argument \code{object} should have a
+#' decimal point after the number of whole degrees in the case of \emph{decimal degrees}, after the
+#' number of whole minutes in the case of \emph{degrees and minutes}, and after the number of whole
 #' seconds in the case of \emph{degrees, minutes and seconds}.
 #'
 #' The \code{fmt} argument is used to specify the format of values in the \code{numeric} vector
@@ -35,31 +34,35 @@
 #' @family coords_waypoints
 #' @seealso
 #' \code{\link[base:attr]{attr}()}, \code{\link[base:attributes]{attributes}},
-#'   \code{\link[=latlon]{latlon}()}, \code{\link[base:numeric]{numeric}()} and
-#'   \code{\link[=validate]{validate}()}.
+#'   and \code{\link[=validate]{validate}()}.
 #'
 #' @param object a \code{numeric} vector of coordinate values, optionally named, or an object of
 #'   class \code{"waypoints"}.
 #'
 #' @param \dots further arguments passed to or from other methods.
 #'
+#' @param fmt \code{integer}, 1L, 2L or 3L, indicating the current or desired coordinate format.
+#'
 #' @param x object of class \code{"coords"} created by function
 #'   \code{\link[=as_coords]{as_coords}()}.
 #'
-#' @param fmt \code{integer}, 1L, 2L or 3L, indicating the current or desired coordinate format.
-#'
 #' @param usenames \code{logical}, whether or not to include names in formatted output.
 #'
-#' @param latlon \code{logical}, indicating whether the \code{as_coords()} S3 method for class
+#' @param which \code{logical}, indicating whether the \code{as_coords()} S3 method for class
 #'   \code{"waypoints"} extracts the latitude component of argument \code{object} (if \code{TRUE}),
 #'   or the longitude (if \code{FALSE}).
 #'
 #' @return
-#' An object of class \code{"coords"}, comprising the original a \code{numeric} vector argument
-#' \code{nv} with values possibly converted as appropriate and additional attributes: –
-#' \item{\code{"fmt"}}{the coordinate format.}
+#' \code{as_cords()} returns an object of class \code{"coords"}, comprising the original
+#' \code{numeric} vector argument \code{object} with additional attributes: –
+#'
+#' \item{\code{"class"}}{the \code{character} string "coords".}
+#' \item{\code{"fmt"}}{an \code{integer} representing the coordinate format.}
 #' \item{\code{"valid"}}{a \code{logical} vector indicating whether individual coordinate values
 #'   are valid geographic locations.}
+#'
+#' \code{latlon()} returns its argument \code{x} with \code{logical} vector attribute \code{"latlon"}
+#' added or updated to reflect argument \code{value}.
 #'
 #' @examples
 #' ## Numeric vector representing degrees and minutes
@@ -74,10 +77,19 @@
 #'                    "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
 #' dm
 #'
+#' ## Set "latlon" attribute to FALSE, length 1; all values are longitude
+#' latlon(dm) <- FALSE
+#' dm
+#'
+#' ## Set "latlon" attribute to TRUE (n=8) and FALSE (n=8)
+#' ## i.e., 8 each of latitude and longitude
+#' latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
+#' dm
+#'
 #' ## Decimal degrees as an ordinary R numeric vector
 #' as.numeric(dm)
 #'
-#' ## Format as a fixed-width character vector witht names...
+#' ## Format as a fixed-width character vector with names...
 #' format(dm)
 #'
 #' ## ...or without them
@@ -111,14 +123,15 @@ as_coords <- function(object, ...)
 #'
 #' @details
 #' By default, the names of the waypoints should be included in a "Name" column of data frame
-#' argument \code{df}, and the latitude and longitude in the two columns immediately on the right
-#' hand side of "Name". An alternative column for waypoint names may be specified by setting an an
-#' \code{integer} \code{\link[base:attributes]{attribute}} named "namescol", indicating its position
-#' in \code{df}, while setting this attribute to \code{NA} supresses printing of waypoint names. If
-#' \code{df} has neither a "Name" column nor a \code{"namescol"} attribute, the \code{"row.names"}
-#' attribute is used for waypoint names if present in \code{df}. Similarly, alternative columns for
-#' the latitude and longitude may be specified by setting \code{"llcols"} as a length 2
-#' \code{integer} vector attribute indicating their positions in \code{df}.
+#' argument \code{object}, and the latitude and longitude in the two columns immediately on the
+#' right hand side of "Name". An alternative column for waypoint names may be specified by setting
+#' an \code{integer} \code{\link[base:attributes]{attribute}} named "namescol", indicating its
+#' position in \code{df}, while setting this attribute to \code{NA} supresses printing of waypoint
+#' names. If \code{df} has neither a "Name" column nor a \code{"namescol"} attribute, the
+#' \code{"row.names"} attribute is used for waypoint names if present in \code{df}. Similarly,
+#' alternative columns for the latitude and longitude may be specified by setting \code{"llcols"} as
+#' a length 2 \code{integer} vector attribute indicating their positions in data frame
+#' \code{object}.
 #'
 #' Individual values provided in the \code{numeric} vector latitude and longitude columns of data
 #' frame argument \code{df} should have a decimal point after the number of whole degrees in the

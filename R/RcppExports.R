@@ -11,68 +11,9 @@ convert.coords <- function(x, fmt) {
     .Call(`_Waypoint_convertcoords`, x, fmt)
 }
 
-#' @title Latitude or Longitude Attribute for Coords
-#' 
-#' @name latlon
-#'
-#' @description \code{latlon()<-} adds the attribute \code{"latlon"} to objects of class
-#' \code{"\link[=as_coords]{coords}"}, or modifies an existing \code{"latlon"} attribute.
-#'
-#' @details
-#' Attribute \code{"latlon"} is a \code{logical} vector of length \code{1} or \code{length(cd)}
-#' for which \code{TRUE} values represent latitude and \code{FALSE} values represent longitude.
-#' Setting this attribute to any other length will result in an error. A \code{logical} vector of
-#' length \code{1L} signifies that values are all latitude if \code{TRUE}, or all longitude if
-#' \code{FALSE}.
-#'
-#' This attribute is used in formatting printed output and also by
-#' \code{\link[=validate]{validate}()}. Indeed, the values of \code{cd} are revalidated every time
-#' attribute \code{"latlon"} is added or changed.
-#'
-#' @seealso
-#' \code{"\link[=as_coords]{coords}"}.
-#'
-#' @param cd object of class \code{"\link[=as_coords]{coords}"}.
-#'
-#' @param value a \code{logical} vector of length \code{1} or \code{length(cd)}.
-#'
-#' @return
-#' Argument \code{cd} is returned with \code{logical} vector attribute \code{"latlon"}
-#' updated as appropriate.
-#'
-#' @examples
-#' ## Continuing example from `coords()`...
-#' ## Create "coords" object in degrees and minutes
-#' \dontshow{
-#'    dm <-
-#'        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
-#'		   -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
-#'
-#'    names(dm) <- 
-#'        rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
-#'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
-#' }
-#'
-#' as_coords(dm, fmt = 2)
-#'
-#' ## Set "latlon" attribute to FALSE, length 1; all values are longitude
-#' latlon(dm) <- FALSE
-#' dm
-#'
-#' ## Set "latlon" attribute to TRUE (n=8) and FALSE (n=8)
-#' ## i.e., 8 each of latitude and longitude
-#' latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
-#' dm
-#'
-#' ## Reversing latitude and longitude results in an invalid latitude,
-#' ## throwing a warning
-#' latlon(dm) <- rep(c(FALSE, TRUE), each = 8)
-#' dm
-#'
-#' rm(dm)
-#'
-`latlon<-` <- function(cd, value) {
-    .Call(`_Waypoint_latlon`, cd, value)
+#' @rdname Coords
+`latlon<-` <- function(x, value) {
+    .Call(`_Waypoint_latlon`, x, value)
 }
 
 #' @title Validate Coords or Waypoints
@@ -168,8 +109,8 @@ format.coords <- function(x, usenames = TRUE) {
 }
 
 #' @rdname Coords
-as_coords.waypoints <- function(object, latlon) {
-    .Call(`_Waypoint_as_coordswaypoints`, object, latlon)
+as_coords.waypoints <- function(object, which) {
+    .Call(`_Waypoint_as_coordswaypoints`, object, which)
 }
 
 #' @rdname Waypoints

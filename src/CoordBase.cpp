@@ -1071,77 +1071,18 @@ NumericVector convertcoords(NumericVector x, const int fmt)
 
 /// __________________________________________________
 /// Set latlon attribute on "coords" NumericVector and revalidate
-//' @title Latitude or Longitude Attribute for Coords
-//' 
-//' @name latlon
-//'
-//' @description \code{latlon()<-} adds the attribute \code{"latlon"} to objects of class
-//' \code{"\link[=as_coords]{coords}"}, or modifies an existing \code{"latlon"} attribute.
-//'
-//' @details
-//' Attribute \code{"latlon"} is a \code{logical} vector of length \code{1} or \code{length(cd)}
-//' for which \code{TRUE} values represent latitude and \code{FALSE} values represent longitude.
-//' Setting this attribute to any other length will result in an error. A \code{logical} vector of
-//' length \code{1L} signifies that values are all latitude if \code{TRUE}, or all longitude if
-//' \code{FALSE}.
-//'
-//' This attribute is used in formatting printed output and also by
-//' \code{\link[=validate]{validate}()}. Indeed, the values of \code{cd} are revalidated every time
-//' attribute \code{"latlon"} is added or changed.
-//'
-//' @seealso
-//' \code{"\link[=as_coords]{coords}"}.
-//'
-//' @param cd object of class \code{"\link[=as_coords]{coords}"}.
-//'
-//' @param value a \code{logical} vector of length \code{1} or \code{length(cd)}.
-//'
-//' @return
-//' Argument \code{cd} is returned with \code{logical} vector attribute \code{"latlon"}
-//' updated as appropriate.
-//'
-//' @examples
-//' ## Continuing example from `coords()`...
-//' ## Create "coords" object in degrees and minutes
-//' \dontshow{
-//'    dm <-
-//'        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
-//'		   -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
-//'
-//'    names(dm) <- 
-//'        rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
-//'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
-//' }
-//'
-//' as_coords(dm, fmt = 2)
-//'
-//' ## Set "latlon" attribute to FALSE, length 1; all values are longitude
-//' latlon(dm) <- FALSE
-//' dm
-//'
-//' ## Set "latlon" attribute to TRUE (n=8) and FALSE (n=8)
-//' ## i.e., 8 each of latitude and longitude
-//' latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
-//' dm
-//'
-//' ## Reversing latitude and longitude results in an invalid latitude,
-//' ## throwing a warning
-//' latlon(dm) <- rep(c(FALSE, TRUE), each = 8)
-//' dm
-//'
-//' rm(dm)
-//'
+//' @rdname Coords
 // [[Rcpp::export(name = "`latlon<-`")]]
-NumericVector latlon(NumericVector cd, LogicalVector value)
+NumericVector latlon(NumericVector x, LogicalVector value)
 {
 //	cout << "——Rcpp::export——latlon(NumericVector, LogicalVector)\n";
-	checkinherits(cd, "coords");
-	if (value.size() != cd.size() && value.size() != 1)
-		stop("value must be either length 1 or length(cd)");
+	checkinherits(x, "coords");
+	if (value.size() != x.size() && value.size() != 1)
+		stop("value must be either length 1 or length(x)");
 	else
-		cd.attr("latlon") = value;
-	validate<NumericVector, Coord>(cd);
-	return cd;
+		x.attr("latlon") = value;
+	validate<NumericVector, Coord>(x);
+	return x;
 }
 
 
@@ -1257,16 +1198,16 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true)
 /// Clone coords object from waypoints vector
 //' @rdname Coords
 // [[Rcpp::export(name = "as_coords.waypoints")]]
-NumericVector as_coordswaypoints(DataFrame object, bool latlon)
+NumericVector as_coordswaypoints(DataFrame object, bool which)
 {
 //	cout << "——Rcpp::export——as_coord(DataFrame)\n";
 	checkinherits(object, "waypoints");
-	NumericVector nv = object[get_vec_attr<DataFrame, int>(object, "llcols")[latlon ? 0 : 1] - 1];
+	NumericVector nv = object[get_vec_attr<DataFrame, int>(object, "llcols")[which ? 0 : 1] - 1];
 	nv = clone(nv);
 	nv.attr("class") = "coords";
 	nv.attr("fmt") = object.attr("fmt");
-	nv.attr("latlon") = latlon ? vector<bool>{ TRUE } : vector<bool>{ FALSE };
-	nv.attr("valid") = object.attr(latlon ? "validlat" : "validlon");
+	nv.attr("which") = which ? vector<bool>{ TRUE } : vector<bool>{ FALSE };
+	nv.attr("valid") = object.attr(which ? "validlat" : "validlon");
 	return nv;
 }
 

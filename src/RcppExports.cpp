@@ -35,14 +35,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // latlon
-NumericVector latlon(NumericVector cd, LogicalVector value);
-RcppExport SEXP _Waypoint_latlon(SEXP cdSEXP, SEXP valueSEXP) {
+NumericVector latlon(NumericVector x, LogicalVector value);
+RcppExport SEXP _Waypoint_latlon(SEXP xSEXP, SEXP valueSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type cd(cdSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
     Rcpp::traits::input_parameter< LogicalVector >::type value(valueSEXP);
-    rcpp_result_gen = Rcpp::wrap(latlon(cd, value));
+    rcpp_result_gen = Rcpp::wrap(latlon(x, value));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -70,14 +70,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // as_coordswaypoints
-NumericVector as_coordswaypoints(DataFrame object, bool latlon);
-RcppExport SEXP _Waypoint_as_coordswaypoints(SEXP objectSEXP, SEXP latlonSEXP) {
+NumericVector as_coordswaypoints(DataFrame object, bool which);
+RcppExport SEXP _Waypoint_as_coordswaypoints(SEXP objectSEXP, SEXP whichSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< DataFrame >::type object(objectSEXP);
-    Rcpp::traits::input_parameter< bool >::type latlon(latlonSEXP);
-    rcpp_result_gen = Rcpp::wrap(as_coordswaypoints(object, latlon));
+    Rcpp::traits::input_parameter< bool >::type which(whichSEXP);
+    rcpp_result_gen = Rcpp::wrap(as_coordswaypoints(object, which));
     return rcpp_result_gen;
 END_RCPP
 }

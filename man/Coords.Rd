@@ -5,6 +5,7 @@
 \alias{as_coords}
 \alias{print.coords}
 \alias{as_coords.default}
+\alias{latlon<-}
 \alias{format.coords}
 \alias{as_coords.waypoints}
 \title{Geographic or GPS Coordinate Class}
@@ -15,9 +16,11 @@ as_coords(object, ...)
 
 \method{as_coords}{default}(object, fmt = 1L)
 
+latlon(x) <- value
+
 \method{format}{coords}(x, usenames = TRUE)
 
-\method{as_coords}{waypoints}(object, latlon)
+\method{as_coords}{waypoints}(object, which)
 }
 \arguments{
 \item{object}{a \code{numeric} vector of coordinate values, optionally named, or an object of
@@ -32,28 +35,33 @@ class \code{"waypoints"}.}
 
 \item{usenames}{\code{logical}, whether or not to include names in formatted output.}
 
-\item{latlon}{\code{logical}, indicating whether the \code{as_coords()} S3 method for class
+\item{which}{\code{logical}, indicating whether the \code{as_coords()} S3 method for class
 \code{"waypoints"} extracts the latitude component of argument \code{object} (if \code{TRUE}),
 or the longitude (if \code{FALSE}).}
 }
 \value{
-An object of class \code{"coords"}, comprising the original a \code{numeric} vector argument
-\code{nv} with values possibly converted as appropriate and additional attributes: –
-\item{\code{"fmt"}}{the coordinate format.}
+\code{as_cords()} returns an object of class \code{"coords"}, comprising the original
+\code{numeric} vector argument \code{object} with additional attributes: –
+
+\item{\code{"class"}}{the \code{character} string "coords".}
+\item{\code{"fmt"}}{an \code{integer} representing the coordinate format.}
 \item{\code{"valid"}}{a \code{logical} vector indicating whether individual coordinate values
   are valid geographic locations.}
+
+\code{latlon()} returns its argument \code{x} with \code{logical} vector attribute \code{"latlon"}
+added or updated to reflect argument \code{value}.
 }
 \description{
 \code{as_coords()} creates an object of class \code{"coords"}, a robust representation of a
 series of geographic or GPS coordinate values.
 
-\code{convert()} converts the format of existing objects of class \code{"coords"} between (i)
-decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
+\code{latlon()<-} adds the attribute \code{"latlon"} to objects of class
+\code{"\link[=as_coords]{coords}"}, or modifies an existing \code{"latlon"} attribute.
 }
 \details{
-Individual values provided in the \code{numeric} vector argument \code{nv} should have a decimal
-point after the number of whole degrees in the case of \emph{decimal degrees}, after the number
-of whole minutes in the case of \emph{degrees and minutes}, and after the number of whole
+Individual values provided in a \code{numeric} vector argument \code{object} should have a
+decimal point after the number of whole degrees in the case of \emph{decimal degrees}, after the
+number of whole minutes in the case of \emph{degrees and minutes}, and after the number of whole
 seconds in the case of \emph{degrees, minutes and seconds}.
 
 The \code{fmt} argument is used to specify the format of values in the \code{numeric} vector
@@ -75,10 +83,19 @@ names(dm) <- rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monum
                    "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
 dm
 
+## Set "latlon" attribute to FALSE, length 1; all values are longitude
+latlon(dm) <- FALSE
+dm
+
+## Set "latlon" attribute to TRUE (n=8) and FALSE (n=8)
+## i.e., 8 each of latitude and longitude
+latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
+dm
+
 ## Decimal degrees as an ordinary R numeric vector
 as.numeric(dm)
 
-## Format as a fixed-width character vector witht names...
+## Format as a fixed-width character vector with names...
 format(dm)
 
 ## ...or without them
@@ -90,8 +107,7 @@ rm(dm)
 }
 \seealso{
 \code{\link[base:attr]{attr}()}, \code{\link[base:attributes]{attributes}},
-  \code{\link[=latlon]{latlon}()}, \code{\link[base:numeric]{numeric}()} and
-  \code{\link[=validate]{validate}()}.
+  and \code{\link[=validate]{validate}()}.
 
 Other coords_waypoints: 
 \code{\link{Waypoints}}

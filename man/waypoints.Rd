@@ -50,14 +50,15 @@ decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and second
 }
 \details{
 By default, the names of the waypoints should be included in a "Name" column of data frame
-argument \code{df}, and the latitude and longitude in the two columns immediately on the right
-hand side of "Name". An alternative column for waypoint names may be specified by setting an an
-\code{integer} \code{\link[base:attributes]{attribute}} named "namescol", indicating its position
-in \code{df}, while setting this attribute to \code{NA} supresses printing of waypoint names. If
-\code{df} has neither a "Name" column nor a \code{"namescol"} attribute, the \code{"row.names"}
-attribute is used for waypoint names if present in \code{df}. Similarly, alternative columns for
-the latitude and longitude may be specified by setting \code{"llcols"} as a length 2
-\code{integer} vector attribute indicating their positions in \code{df}.
+argument \code{object}, and the latitude and longitude in the two columns immediately on the
+right hand side of "Name". An alternative column for waypoint names may be specified by setting
+an \code{integer} \code{\link[base:attributes]{attribute}} named "namescol", indicating its
+position in \code{df}, while setting this attribute to \code{NA} supresses printing of waypoint
+names. If \code{df} has neither a "Name" column nor a \code{"namescol"} attribute, the
+\code{"row.names"} attribute is used for waypoint names if present in \code{df}. Similarly,
+alternative columns for the latitude and longitude may be specified by setting \code{"llcols"} as
+a length 2 \code{integer} vector attribute indicating their positions in data frame
+\code{object}.
 
 Individual values provided in the \code{numeric} vector latitude and longitude columns of data
 frame argument \code{df} should have a decimal point after the number of whole degrees in the
