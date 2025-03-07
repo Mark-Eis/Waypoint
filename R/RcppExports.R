@@ -41,7 +41,8 @@ convert.coords <- function(x, fmt, ...) {
 #' updated as appropriate.
 #'
 #' @examples
-#' ## Continuing example from `coords()`, named numeric vector representing degrees and minutes
+#' ## Continuing example from `coords()`...
+#' ## Create "coords" object in degrees and minutes
 #' \dontshow{
 #'    dm <-
 #'        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
@@ -52,18 +53,19 @@ convert.coords <- function(x, fmt, ...) {
 #'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
 #' }
 #'
-#' ## Create "coords" object of degrees and minutes (fmt = 2)
-#' as_coords(dm, 2)
+#' as_coords(dm, fmt = 2)
 #'
 #' ## Set "latlon" attribute to FALSE, length 1; all values are longitude
 #' latlon(dm) <- FALSE
 #' dm
 #'
-#' ## Set "latlon" attribute to TRUE (n=8) and FALSE (n=8); i.e., 8 each of latitude and longitude
+#' ## Set "latlon" attribute to TRUE (n=8) and FALSE (n=8)
+#' ## i.e., 8 each of latitude and longitude
 #' latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 #' dm
 #'
-#' ## Reversing latitude and longitude results in an invalid latitude, throwing a warning
+#' ## Reversing latitude and longitude results in an invalid latitude,
+#' ## throwing a warning
 #' latlon(dm) <- rep(c(FALSE, TRUE), each = 8)
 #' dm
 #'
@@ -106,7 +108,8 @@ convert.coords <- function(x, fmt, ...) {
 #' \code{"coords"} and' \code{"waypoints"} objects respectively.
 #'
 #' @examples
-#' ## Continuing example from `coords()`, named numeric vector representing degrees and minutes
+#' ## Continuing example from `coords()`...
+#' ## Create "coords" object in degrees and minutes
 #' \dontshow{
 #'    dm <-
 #'        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
@@ -115,10 +118,9 @@ convert.coords <- function(x, fmt, ...) {
 #'    names(dm) <- 
 #'        rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
 #'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
-#' }
 #'
-#' ## Create "coords" object of degrees and minutes (fmt = 2)
 #' as_coords(dm, fmt = 2)
+#' }
 #'
 #' validate(dm)
 #'
@@ -131,8 +133,8 @@ convert.coords <- function(x, fmt, ...) {
 #' attr(dm, "valid")
 #'
 #' ###
-#' ## Continuing example from `waypoints()`, data frame representing waypoint names and latitude
-#' ## and longitude values in decimal degrees
+#' ## Continuing example from `waypoints()`...
+#' ## Create "waypoints" object in decimal degrees
 #' \dontshow{
 #' wp1 <- data.frame(
 #'     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
@@ -140,10 +142,9 @@ convert.coords <- function(x, fmt, ...) {
 #'     lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -53.104781, -25.240156),
 #'     lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -57.519227)
 #' )
-#' }
 #'
-#' ## Create "waypoints" object of decimal degrees (fmt = 1)
 #' as_waypoints(wp1, fmt = 1)
+#' }
 #'
 #' validate(wp1)
 #'

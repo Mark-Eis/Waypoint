@@ -90,11 +90,11 @@
 #' ## Decimal degrees as an ordinary R numeric vector
 #' as.numeric(dm)
 #'
-#' ## Convert to degrees and minutes, then format as a fixed-width
-#' ## character vector without names…
+#' ## Convert to degrees and minutes, then format as a
+#' ## fixed-width character vector without names...
 #' convert(dm, 3) |> format(usenames = FALSE)
 #'
-#' ## …or with them
+#' ## ...or with them
 #' format(dm)
 #'
 #' rm(dm)
@@ -203,7 +203,8 @@ as_coords <- function(object, ...)
 #' convert(wp1, 1)
 #'
 #' ###
-#' ## Dataframe representing unnamed latitude and longitude values in decimal degrees
+#' ## Dataframe representing unnamed latitude and longitude
+#' ## values in decimal degrees
 #' wp2 <- data.frame(
 #'     lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -53.104781, -25.240156),
 #'     lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -57.519227)
@@ -227,11 +228,11 @@ as_coords <- function(object, ...)
 #' ## Degrees, minutes and seconds values as an ordinary R data frame
 #' as.data.frame(wp2)
 #'
-#' ## Convert to decimal degrees, then format as a fixed-width
-#' ## character vector without names…
+#' ## Convert to decimal degrees, then format as a
+#' ## fixed-width character vector without names...
 #' convert(wp2, 3) |> format(usenames = FALSE)
 #'
-#' ## …or with them
+#' ## ...or with them
 #' format(wp2)
 #'
 #' rm(wp1, wp2)

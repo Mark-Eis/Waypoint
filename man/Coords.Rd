@@ -97,11 +97,11 @@ convert(dm, 1)
 ## Decimal degrees as an ordinary R numeric vector
 as.numeric(dm)
 
-## Convert to degrees and minutes, then format as a fixed-width
-## character vector without names…
+## Convert to degrees and minutes, then format as a
+## fixed-width character vector without names...
 convert(dm, 3) |> format(usenames = FALSE)
 
-## …or with them
+## ...or with them
 format(dm)
 
 rm(dm)
