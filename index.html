@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Conversion, Validation, Formatting and Printing of Geographic Coordinates • Waypoint</title>
+<title>Convert, Validate, Format and Print Geographic Coordinates and Waypoints • Waypoint</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Conversion, Validation, Formatting and Printing of Geographic Coordinates">
-<meta name="description" content="The Waypoint R package enables conversion, validation, and neat formatting and printing of geographic positional coordinate values and waypoints of paired latitude and longitude values, using (i) decimal degree, (ii) degrees and minutes, and (iii) degrees, minutes and seconds formats.">
-<meta property="og:description" content="The Waypoint R package enables conversion, validation, and neat formatting and printing of geographic positional coordinate values and waypoints of paired latitude and longitude values, using (i) decimal degree, (ii) degrees and minutes, and (iii) degrees, minutes and seconds formats.">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Convert, Validate, Format and Print Geographic Coordinates and Waypoints">
+<meta name="description" content="Convert, validate, format and elegantly print geographic positional coordinates and waypoints (paired latitude and longitude values) in decimal degrees, degrees and minutes, and degrees, minutes and seconds.">
+<meta property="og:description" content="Convert, validate, format and elegantly print geographic positional coordinates and waypoints (paired latitude and longitude values) in decimal degrees, degrees and minutes, and degrees, minutes and seconds.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">Waypoint</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.00023</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.00024</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,7 +50,7 @@
 <div class="section level3">
 <h3 id="conversion-validation-formatting-and-printing-of-geographic-coordinates">Conversion, Validation, Formatting and Printing of Geographic Coordinates<a class="anchor" aria-label="anchor" href="#conversion-validation-formatting-and-printing-of-geographic-coordinates"></a>
 </h3>
-<p>The <strong>Waypoint R package</strong> enables conversion, validation, and neat formatting and printing of geographic positional coordinate values and waypoints of paired latitude and longitude values. Coordinates and waypoints may be converted easily and rapidly between (i) decimal degree, (ii) degrees and minutes, and (iii) degrees, minutes and seconds formats.</p>
+<p>The <strong>Waypoint R package</strong> enables conversion, validation, formatting and and elegant printing of geographic positional coordinates and waypoints (paired latitude and longitude values). Coordinates and waypoints may be converted easily and rapidly between (i) decimal degree, (ii) degrees and minutes, and (iii) degrees, minutes and seconds formats.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -67,12 +67,12 @@
 <h3 id="waypoint-package-overview-">Waypoint Package Overview: –<a class="anchor" aria-label="anchor" href="#waypoint-package-overview-"></a>
 </h3>
 <ul>
-<li><p>Creates “<a href="https://mark-eis.github.io/Waypoint/reference/coords.html"><code>coords</code></a>” objects in each format with <code>as_coords</code>().</p></li>
-<li><p>Creates “<a href="https://mark-eis.github.io/Waypoint/reference/waypoints.html"><code>waypoints</code></a>” objects in each format with <code>as_waypoints</code>().</p></li>
-<li><p>Converts “<a href="https://mark-eis.github.io/Waypoint/reference/coords.html"><code>coords</code></a>” and “<a href="https://mark-eis.github.io/Waypoint/reference/waypoints.html"><code>waypoints</code></a>” objects between decimal degrees, degrees and minutes, and degrees, minutes and seconds formats with <code><a href="reference/Coords.html">convert()</a></code>.</p></li>
-<li><p>Assigns latitude and longitude attributes to individual coordinate values within “<a href="https://mark-eis.github.io/Waypoint/reference/coords.html"><code>coords</code></a>” objects with <a href="https://mark-eis.github.io/Waypoint/reference/latlon.html"><code>latlon&lt;-</code></a>().</p></li>
-<li><p>Ensures values within “<a href="https://mark-eis.github.io/Waypoint/reference/coords.html"><code>coords</code></a>” and “<a href="https://mark-eis.github.io/Waypoint/reference/waypoints.html"><code>waypoints</code></a>” objects are valid geographic locations with <code><a href="reference/validate.html">validate()</a></code> and identifies individual invalid values with <code><a href="reference/review.html">review()</a></code>.</p></li>
-<li><p>Provides <code><a href="https://rdrr.io/r/base/format.html" class="external-link">format()</a></code> and <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> S3 methods for neat formatting and printing of objects of classes “<a href="https://mark-eis.github.io/Waypoint/reference/coords.html"><code>coords</code></a>” and “<a href="https://mark-eis.github.io/Waypoint/reference/waypoints.html"><code>waypoints</code></a>”.</p></li>
+<li><p>Creates “<a href="https://mark-eis.github.io/Waypoint/reference/Coords.html"><code>coords</code></a>” objects in each format with <code><a href="reference/Coords.html">as_coords()</a></code>.</p></li>
+<li><p>Creates “<a href="https://mark-eis.github.io/Waypoint/reference/Waypoints.html"><code>waypoints</code></a>” objects in each format with <code><a href="reference/waypoints.html">as_waypoints()</a></code>.</p></li>
+<li><p>Converts “<a href="https://mark-eis.github.io/Waypoint/reference/Coords.html"><code>coords</code></a>” and “<a href="https://mark-eis.github.io/Waypoint/reference/Waypoints.html"><code>waypoints</code></a>” objects between decimal degrees, degrees and minutes, and degrees, minutes and seconds formats with <code><a href="reference/Coords.html">convert()</a></code>.</p></li>
+<li><p>Assigns latitude and longitude attributes to individual coordinate values within “<a href="https://mark-eis.github.io/Waypoint/reference/Coords.html"><code>coords</code></a>” objects with <a href="https://mark-eis.github.io/Waypoint/reference/latlon.html"><code>latlon&lt;-</code></a>().</p></li>
+<li><p>Ensures values within “<a href="https://mark-eis.github.io/Waypoint/reference/Coords.html"><code>coords</code></a>” and “<a href="https://mark-eis.github.io/Waypoint/reference/waypoints.html"><code>waypoints</code></a>” objects are valid geographic locations with <code><a href="reference/validate.html">validate()</a></code> and identifies individual invalid values with <code><a href="reference/review.html">review()</a></code>.</p></li>
+<li><p>Provides <code><a href="https://rdrr.io/r/base/format.html" class="external-link">format()</a></code> and <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> S3 methods for neat formatting and printing of objects of classes “<a href="https://mark-eis.github.io/Waypoint/reference/Coords.html"><code>coords</code></a>” and “<a href="https://mark-eis.github.io/Waypoint/reference/Waypoints.html"><code>waypoints</code></a>”.</p></li>
 </ul>
 <div class="section level4">
 <h4 id="methodology">Methodology<a class="anchor" aria-label="anchor" href="#methodology"></a>
