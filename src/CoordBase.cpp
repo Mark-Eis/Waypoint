@@ -95,16 +95,16 @@ inline const T validate(const T);
 bool valid_ll(const DataFrame);
 
 // Exported
-NumericVector as_coordsdefault(NumericVector, const int);
+NumericVector as_coords(NumericVector, const int);
 NumericVector convertcoords(NumericVector, const int);
-NumericVector latlon(NumericVector, LogicalVector&);
+NumericVector latlon(NumericVector, LogicalVector);
 NumericVector validatecoords(NumericVector);
 CharacterVector formatcoords(NumericVector, bool);
 NumericVector as_coordswaypoints(DataFrame, bool);
 DataFrame as_waypointsdefault(DataFrame, const int);
 DataFrame convertwaypoints(DataFrame, const int);
 DataFrame validatewaypoints(DataFrame);
-CharacterVector formatwaypoints(NumericVector, bool);
+CharacterVector formatwaypoints(DataFrame, bool);
 CharacterVector ll_headers(int, const int);
 
 
@@ -1130,7 +1130,7 @@ NumericVector convertcoords(NumericVector x, const int fmt)
 //' rm(dm)
 //'
 // [[Rcpp::export(name = "`latlon<-`")]]
-NumericVector latlon(NumericVector cd, LogicalVector& value)
+NumericVector latlon(NumericVector cd, LogicalVector value)
 {
 //	cout << "——Rcpp::export——latlon(NumericVector, LogicalVector)\n";
 	checkinherits(cd, "coords");
@@ -1341,7 +1341,7 @@ DataFrame validatewaypoints(DataFrame x)
 // [[Rcpp::export(name = "format.waypoints")]]
 CharacterVector formatwaypoints(DataFrame x, bool usenames = true)
 {
-//	cout << "——Rcpp::export——formatwaypoints(NumericVector)\n";
+//	cout << "——Rcpp::export——formatwaypoints(DataFrame)\n";
 	checkinherits(x, "waypoints");
 	if(!valid_ll(x))
 		stop("Invalid llcols attribute!");
