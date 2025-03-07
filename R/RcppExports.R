@@ -191,7 +191,7 @@ format.waypoints <- function(x, ..., usenames = TRUE) {
     .Call(`_Waypoint_formatwaypoints`, x, usenames)
 }
 
-ll_headers <- function(width, fmt, ...) {
-    .Call(`_Waypoint_ll_headers`, width, fmt)
+ll_headers <- function(cvmatch, fmt, ...) {
+    .Call(`_Waypoint_ll_headers`, cvmatch, fmt)
 }
 
