@@ -196,7 +196,8 @@ is re-validated.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   -25.240156°   -57.519225°</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">###</span></span></span>
-<span class="r-in"><span><span class="co">## Dataframe representing unnamed latitude and longitude values in decimal degrees</span></span></span>
+<span class="r-in"><span><span class="co">## Dataframe representing unnamed latitude and longitude</span></span></span>
+<span class="r-in"><span><span class="co">## values in decimal degrees</span></span></span>
 <span class="r-in"><span><span class="va">wp2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    lat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">51.507765</span>, <span class="fl">49.54621</span>, <span class="fl">48.107232</span>, <span class="fl">38.889494</span>, <span class="fl">0</span>, <span class="op">-</span><span class="fl">37.11174</span>, <span class="op">-</span><span class="fl">53.104781</span>, <span class="op">-</span><span class="fl">25.240156</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    lon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.127924</span>, <span class="fl">18.398562</span>, <span class="op">-</span><span class="fl">122.778671</span>, <span class="op">-</span><span class="fl">77.035242</span>, <span class="fl">0</span>, <span class="op">-</span><span class="fl">12.28863</span>, <span class="fl">73.517283</span>, <span class="op">-</span><span class="fl">57.519227</span><span class="op">)</span></span></span>
@@ -269,15 +270,15 @@ is re-validated.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mawson Peak                             -530617.2   733102.2188</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport -251424.6  -573109.2172</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## Convert to decimal degrees, then format as a fixed-width</span></span></span>
-<span class="r-in"><span><span class="co">## character vector without names…</span></span></span>
+<span class="r-in"><span><span class="co">## Convert to decimal degrees, then format as a</span></span></span>
+<span class="r-in"><span><span class="co">## fixed-width character vector without names...</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="Coords.html">convert</a></span><span class="op">(</span><span class="va">wp2</span>, <span class="fl">3</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span>usenames <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] " 51°30′27.95″ N    0°07′40.53″ W" " 49°32′46.36″ N   18°23′54.82″ E"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [3] " 48°06′26.04″ N  122°46′43.22″ W" " 38°53′22.18″ N   77°02′06.87″ W"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [5] "  0°00′00.00″ N    0°00′00.00″ E" " 37°06′42.26″ S   12°17′19.07″ W"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [7] " 53°06′17.21″ S   73°31′02.22″ E" " 25°14′24.56″ S   57°31′09.22″ W"</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## …or with them</span></span></span>
+<span class="r-in"><span><span class="co">## ...or with them</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="va">wp2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Nelson's Column                           51°30′27.95″ N    0°07′40.53″ W"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2] "Ostravice                                 49°32′46.36″ N   18°23′54.82″ E"</span>
