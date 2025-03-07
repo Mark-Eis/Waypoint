@@ -1,11 +1,11 @@
 Package: Waypoint
 Type: Package
-Title: Conversion, Validation, Formatting and Printing of Geographic Coordinates and Waypoints
+Title: Conversion, Validation, Formatting and Elegant Printing of Geographic Coordinates and Waypoints
 Version: 1.0.0.00024
 Date: 2025-03-07
 Author: Mark Eisler
 Maintainer: Mark Eisler <mark@markeisler.com>
-Description: Conversion, validation, and formatting and neat printing of geographic positional coordinate values and waypoints of paired latitude and longitude values, using (i) decimal degree, (ii) degrees and minutes, and (iii) degrees, minutes and seconds formats.
+Description: Conversion, validation, formatting and elegant printing of geographic positional coordinate values and waypoints of paired latitude and longitude values, using (i) decimal degree, (ii) degrees and minutes, and (iii) degrees, minutes and seconds formats.
 License: MIT + file LICENSE
 Imports: methods, Rcpp (>= 1.0.13)
 LinkingTo: Rcpp

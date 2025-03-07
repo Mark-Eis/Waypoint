@@ -17,13 +17,13 @@ convert(x, ...)
 
 \method{print}{coords}(x, ...)
 
-\method{as_coords}{default}(object, ..., fmt = 1L)
+\method{as_coords}{default}(object, fmt = 1L)
 
-\method{convert}{coords}(x, fmt, ...)
+\method{convert}{coords}(x, fmt)
 
-\method{format}{coords}(x, ..., usenames = TRUE)
+\method{format}{coords}(x, usenames = TRUE)
 
-\method{as_coords}{waypoints}(object, latlon, ...)
+\method{as_coords}{waypoints}(object, latlon)
 }
 \arguments{
 \item{object}{a \code{numeric} vector of coordinate values, optionally named, or an object of
