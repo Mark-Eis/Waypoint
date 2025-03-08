@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Waypoint</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.00024</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.00025</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,7 +37,9 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for class 'coords'</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">validate</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'coords'</span></span>
 <span><span class="fu">validate</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'waypoints'</span></span>
@@ -49,7 +51,8 @@
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>object of class <code>"coords"</code> or <code>"waypoints"</code>.</p></dd>
+<dd><p>object of class <code>"<a href="Coords.html">coords</a>"</code> created by function <code><a href="Coords.html">as_coords</a>()</code>, or
+of class <code>"<a href="waypoints.html">waypoints</a>"</code> created by function <code><a href="waypoints.html">as_waypoints</a>()</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -64,9 +67,8 @@ or attributes <code>"validlat"</code> and <code>"validlon"</code> updated as app
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Individual coordinate values within <code>"<a href="Coords.html">coords</a>"</code> or
-<code>"<a href="waypoints.html">waypoints</a>"</code> objects are checked to ensure they represent valid
-geographic locations.</p>
+    <p>Individual coordinate values within <code>"<a href="Coords.html">coords</a>"</code> or <code>"<a href="waypoints.html">waypoints</a>"</code> objects
+are checked to ensure they represent valid geographic locations.</p>
 <p>To be valid, the absolute values of coordinates in degrees must not exceed 180, or 90 if degrees
 of latitude and, similarly, the absolute values of the minutes and seconds components, where
 given, must not exceed 60 degrees. Otherwise a warning will be issued and the <code>"valid"</code>

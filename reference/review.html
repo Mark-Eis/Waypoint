@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Waypoint</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.00024</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.00025</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,7 +51,8 @@
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>object of class <code>"coords"</code> or <code>"waypoints"</code>.</p></dd>
+<dd><p>object of class <code>"<a href="Coords.html">coords</a>"</code> created by function <code><a href="Coords.html">as_coords</a>()</code>, or
+of class <code>"<a href="waypoints.html">waypoints</a>"</code> created by function <code><a href="waypoints.html">as_waypoints</a>()</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -65,16 +66,19 @@ include in the output; default <code>20L</code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>The <code>review()</code> method for class <code>"coords"</code> returns a <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></code> comprising the
-following elements: -</p>
+    <p>The <code>review()</code> method for class <code>"coords"</code> returns a <code><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></code>
+comprising the following elements: -</p>
 <dl><dt>allvalid</dt>
 <dd><p><code>logical</code>, whether or not all the elements of argument <code>x</code> are valid.</p></dd>
+
 
 <dt>n_invalid</dt>
 <dd><p><code>integer</code>, the number of invalid elements in argument <code>x</code>, if any.</p></dd>
 
+
 <dt>invalids</dt>
 <dd><p><code>numeric</code> vector including invalid elements of argument <code>x</code>, if any.</p></dd>
+
 
 <dt>which_invalid</dt>
 <dd><p><code>integer</code> vector specifying which elements of argument <code>x</code> are
@@ -88,8 +92,8 @@ longitude.</p>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p><code>review()</code> reveals elements of <code>"coords"</code> and  <code>"waypoints"</code> objects that do not
-conform to the criteria checked by <code><a href="validate.html">validate</a>()</code>, i.e. are not valid
-geographic locations.</p>
+conform to the criteria checked by <code><a href="validate.html">validate</a>()</code>, i.e. are not valid geographic
+locations.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -142,7 +146,7 @@ geographic locations.</p>
 <span class="r-in"><span><span class="co">## 90 degrees absolute value</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Create "waypoints" object of decimal degrees (fmt = 1)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="waypoints.html">as_waypoints</a></span><span class="op">(</span><span class="va">wp1</span>, fmt <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="waypoints.html">as_waypoints</a></span><span class="op">(</span><span class="va">wp</span>, fmt <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                             Latitude     Longitude </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                           ___________  ____________</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Nelson's Column                            51.507765°    -0.127924°</span>
@@ -154,7 +158,7 @@ geographic locations.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mawson Peak                               -93.104781°    73.517283°</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   -25.240156°   -57.519227°</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">review</span><span class="op">(</span><span class="va">wp1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">review</span><span class="op">(</span><span class="va">wp</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Lat</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Lat$allvalid</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
@@ -163,7 +167,7 @@ geographic locations.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Lat$invalids</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  -93.104781° lat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  -93.104781°</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $Lat$which_invalid</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 7</span>
@@ -184,7 +188,7 @@ geographic locations.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">dm</span>, <span class="va">wp1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">dm</span>, <span class="va">wp</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
