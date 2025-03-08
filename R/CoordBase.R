@@ -31,7 +31,7 @@
 #' \code{"coords"}.
 #'
 #' The values of a newly created \code{"coords"} object are checked to ensure they are valid
-#' geographic locations as described under \code{\link[=validate]{validate}()}.
+#' geographic locations as described under \code{\link{validate}()}.
 #'
 #' Individual coordinate values in a \code{Coords} object may be specified as representing latitude
 #' or longitude using \code{latlon()}. The \code{value} argument may either be a single value,
@@ -55,7 +55,7 @@
 #' @param value a \code{logical} vector of length \code{1} or \code{length(x)}.
 #'
 #' @param cd object of class \code{"coords"} created by function
-#'   \code{\link[=as_coords]{as_coords}()}.
+#'   \code{\link{as_coords}()}.
 #'
 #' @param which \code{logical}, indicating whether the \code{as_coords()} method for class
 #'   \code{"waypoints"} extracts the latitude component of argument \code{object} (if \code{TRUE}),
@@ -156,14 +156,14 @@ as_coords <- function(object, ...)
 #'
 #' The latitude and longitude values of a newly created \code{"waypoints"} object are checked to
 #' ensure they are valid geographic locations as described under
-#' \code{\link[=validate]{validate}()}. Likewise, a check is made to ensure that an existing
+#' \code{\link{validate}()}. Likewise, a check is made to ensure that an existing
 #' \code{"waypoints"} object to be converted to a new format has already been validated; if not, it
 #' is re-validated. 
 #'
 #' @family coordsandway
 #' @seealso
 #' \code{\link[base:attr]{attr}()}, \code{\link[base:data.frame]{data.frame}()},
-#'   and \code{\link[=validate]{validate}()}.
+#'   and \code{\link{validate}()}.
 #'
 #' @param object a data frame with each row representing a waypoint, comprising at least two
 #'   \code{numeric} columns containing values of latitude and longitude, and optionally a
@@ -253,16 +253,15 @@ as_waypoints <- function(object, ...)
 #'
 #' Prior to conversion, the \code{"coords"} or \code{"waypoints"} object to be converted is checked
 #' to ensure its values represent valid geographic locations as described under
-#' \code{\link[=validate]{validate}()}.
+#' \code{\link{validate}()}.
 #'
 #' @family coordsandway
 #' @seealso
-#' \code{"\link[=Coords]{coords}"}, \code{"\link[=Waypoints]{waypoints}"} and
-#' \code{\link[=validate]{validate}()}.
+#' \code{"\link{coords}"}, \code{"\link{waypoints}"} and
+#' \code{\link{validate}()}.
 #'
-#' @param x object of class \code{"\link[=Coords]{coords}"} created by function
-#'   \code{\link[=Coords]{as_coords}()}, or of class \code{"\link[=Waypoints]{waypoints}"} created
-#'   by function \code{\link[=Waypoints]{as_waypoints}()}.
+#' @param x object of class \code{"\link{coords}"} created by function \code{\link{as_coords}()},
+#'   or of class \code{"\link{waypoints}"} created by function \code{\link{as_waypoints}()}.
 #'
 #' @inheritParams coords
 #'
@@ -336,8 +335,8 @@ convert <- function(x, ...)
 #' Format and print objects of class \code{"coords"} or \code{"waypoints"}.
 #'
 #' @details
-#' The \code{format()} methods for \code{"\link[=as_coords]{coords}"} and
-#' \code{"\link[=as_waypoints]{waypoints}"} objects output elegantly formatted \code{character}
+#' The \code{format()} methods for \code{"\link{coords}"} and
+#' \code{"\link{waypoints}"} objects output elegantly formatted \code{character}
 #' vector representations of their arguments, which are used by their respective \code{print()}
 #' methods.
 #'
@@ -347,7 +346,7 @@ convert <- function(x, ...)
 #'
 #' @seealso
 #' \code{\link[base:format]{format}()}, \code{\link[base:print]{print}()},
-#' \code{"\link[=as_coords]{coords}"} and \code{"\link[=as_waypoints]{waypoints}"}.
+#' \code{"\link{coords}"} and \code{"\link{waypoints}"}.
 #'
 #' @param usenames \code{logical}, whether or not to include names in formatted output.
 #'
@@ -445,8 +444,8 @@ print.waypoints <- function (x, ...) {
 #' \code{validate()} validates objects of class \code{"coords"} or \code{"waypoints"}.
 #'
 #' @details
-#' Individual coordinate values within \code{"\link[=as_coords]{coords}"} or
-#' \code{"\link[=as_waypoints]{waypoints}"} objects are checked to ensure they represent valid
+#' Individual coordinate values within \code{"\link{coords}"} or
+#' \code{"\link{waypoints}"} objects are checked to ensure they represent valid
 #' geographic locations.
 #'
 #' To be valid, the absolute values of coordinates in degrees must not exceed 180, or 90 if degrees
@@ -458,7 +457,7 @@ print.waypoints <- function (x, ...) {
 #'
 #' @family validate
 #' @seealso
-#' \code{"\link[=as_coords]{coords}"} and \code{"\link[=as_waypoints]{waypoints}"}.
+#' \code{"\link{coords}"} and \code{"\link{waypoints}"}.
 #'
 #' @inheritParams coords
 #' @inheritParams convert
@@ -539,12 +538,12 @@ validate <- function(x, ...)
 #'
 #' @details
 #' \code{review()} reveals elements of \code{"coords"} and  \code{"waypoints"} objects that do not
-#' conform to the criteria checked by \code{\link[=validate]{validate}()}, i.e. are not valid
+#' conform to the criteria checked by \code{\link{validate}()}, i.e. are not valid
 #' geographic locations.
 #'
 #' @family validate
 #' @seealso
-#' \code{"\link[=as_coords]{coords}"} and \code{"\link[=as_waypoints]{waypoints}"}.
+#' \code{"\link{coords}"} and \code{"\link{waypoints}"}.
 #'
 #' @param show_n \code{integer}, the maximum number of invalid elements of argument \code{x} to
 #' include in the output; default \code{20L}.

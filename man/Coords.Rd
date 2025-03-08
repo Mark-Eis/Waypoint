@@ -26,7 +26,7 @@ class \code{"waypoints"}.}
 format.}
 
 \item{cd}{object of class \code{"coords"} created by function
-\code{\link[=as_coords]{as_coords}()}.}
+\code{\link{as_coords}()}.}
 
 \item{value}{a \code{logical} vector of length \code{1} or \code{length(x)}.}
 
@@ -71,7 +71,7 @@ format of values in the \code{numeric} vector argument \code{object} to be conve
 \code{"coords"}.
 
 The values of a newly created \code{"coords"} object are checked to ensure they are valid
-geographic locations as described under \code{\link[=validate]{validate}()}.
+geographic locations as described under \code{\link{validate}()}.
 
 Individual coordinate values in a \code{Coords} object may be specified as representing latitude
 or longitude using \code{latlon()}. The \code{value} argument may either be a single value,

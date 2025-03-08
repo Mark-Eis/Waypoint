@@ -67,7 +67,7 @@ If neither a "Name" column nor a \code{"namescol"} attribute is present in \code
 
 The latitude and longitude values of a newly created \code{"waypoints"} object are checked to
 ensure they are valid geographic locations as described under
-\code{\link[=validate]{validate}()}. Likewise, a check is made to ensure that an existing
+\code{\link{validate}()}. Likewise, a check is made to ensure that an existing
 \code{"waypoints"} object to be converted to a new format has already been validated; if not, it
 is re-validated.
 }
@@ -111,7 +111,7 @@ rm(wp1, wp2)
 }
 \seealso{
 \code{\link[base:attr]{attr}()}, \code{\link[base:data.frame]{data.frame}()},
-  and \code{\link[=validate]{validate}()}.
+  and \code{\link{validate}()}.
 
 Other coordsandway: 
 \code{\link{convert}()},

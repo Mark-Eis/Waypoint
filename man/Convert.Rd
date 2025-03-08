@@ -13,9 +13,8 @@ convert(x, ...)
 \method{convert}{waypoints}(x, fmt)
 }
 \arguments{
-\item{x}{object of class \code{"\link[=Coords]{coords}"} created by function
-\code{\link[=Coords]{as_coords}()}, or of class \code{"\link[=Waypoints]{waypoints}"} created
-by function \code{\link[=Waypoints]{as_waypoints}()}.}
+\item{x}{object of class \code{"\link{coords}"} created by function \code{\link{as_coords}()},
+or of class \code{"\link{waypoints}"} created by function \code{\link{as_waypoints}()}.}
 
 \item{...}{further arguments passed to or from other methods.}
 
@@ -41,7 +40,7 @@ seconds in the case of degrees, minutes and seconds.
 
 Prior to conversion, the \code{"coords"} or \code{"waypoints"} object to be converted is checked
 to ensure its values represent valid geographic locations as described under
-\code{\link[=validate]{validate}()}.
+\code{\link{validate}()}.
 }
 \examples{
 ## Continuing example from `coords()`...
@@ -89,8 +88,8 @@ rm(dm, wp)
 
 }
 \seealso{
-\code{"\link[=Coords]{coords}"}, \code{"\link[=Waypoints]{waypoints}"} and
-\code{\link[=validate]{validate}()}.
+\code{"\link{coords}"}, \code{"\link{waypoints}"} and
+\code{\link{validate}()}.
 
 Other coordsandway: 
 \code{\link{coords}},

@@ -13,9 +13,8 @@ review(x, ...)
 \method{review}{waypoints}(x, ..., show_n = 20L)
 }
 \arguments{
-\item{x}{object of class \code{"\link[=Coords]{coords}"} created by function
-\code{\link[=Coords]{as_coords}()}, or of class \code{"\link[=Waypoints]{waypoints}"} created
-by function \code{\link[=Waypoints]{as_waypoints}()}.}
+\item{x}{object of class \code{"\link{coords}"} created by function \code{\link{as_coords}()},
+or of class \code{"\link{waypoints}"} created by function \code{\link{as_waypoints}()}.}
 
 \item{...}{further arguments passed to or from other methods.}
 
@@ -41,7 +40,7 @@ longitude.
 }
 \details{
 \code{review()} reveals elements of \code{"coords"} and  \code{"waypoints"} objects that do not
-conform to the criteria checked by \code{\link[=validate]{validate}()}, i.e. are not valid
+conform to the criteria checked by \code{\link{validate}()}, i.e. are not valid
 geographic locations.
 }
 \examples{
@@ -88,7 +87,7 @@ rm(dm, wp)
 }
 }
 \seealso{
-\code{"\link[=as_coords]{coords}"} and \code{"\link[=as_waypoints]{waypoints}"}.
+\code{"\link{coords}"} and \code{"\link{waypoints}"}.
 
 Other validate: 
 \code{\link{validate}()}
