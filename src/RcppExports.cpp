@@ -35,14 +35,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // latlon
-NumericVector latlon(NumericVector x, LogicalVector value);
-RcppExport SEXP _Waypoint_latlon(SEXP xSEXP, SEXP valueSEXP) {
+NumericVector latlon(NumericVector cd, LogicalVector value);
+RcppExport SEXP _Waypoint_latlon(SEXP cdSEXP, SEXP valueSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type cd(cdSEXP);
     Rcpp::traits::input_parameter< LogicalVector >::type value(valueSEXP);
-    rcpp_result_gen = Rcpp::wrap(latlon(x, value));
+    rcpp_result_gen = Rcpp::wrap(latlon(cd, value));
     return rcpp_result_gen;
 END_RCPP
 }

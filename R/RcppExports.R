@@ -12,8 +12,8 @@ convert.coords <- function(x, fmt) {
 }
 
 #' @rdname Coords
-`latlon<-` <- function(x, value) {
-    .Call(`_Waypoint_latlon`, x, value)
+`latlon<-` <- function(cd, value) {
+    .Call(`_Waypoint_latlon`, cd, value)
 }
 
 #' @title Validate Coords or Waypoints
@@ -103,7 +103,7 @@ validate.coords <- function(x) {
     .Call(`_Waypoint_validatecoords`, x)
 }
 
-#' @rdname Coords
+#' @rdname Format
 format.coords <- function(x, usenames = TRUE) {
     .Call(`_Waypoint_formatcoords`, x, usenames)
 }
@@ -123,11 +123,12 @@ validate.waypoints <- function(x) {
     .Call(`_Waypoint_validatewaypoints`, x)
 }
 
-#' @rdname Waypoints
+#' @rdname Format
 format.waypoints <- function(x, usenames = TRUE) {
     .Call(`_Waypoint_formatwaypoints`, x, usenames)
 }
 
+#' @rdname Format
 ll_headers <- function(cvmatch, fmt) {
     .Call(`_Waypoint_ll_headers`, cvmatch, fmt)
 }

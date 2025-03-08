@@ -3,18 +3,12 @@
 \name{Waypoints}
 \alias{Waypoints}
 \alias{as_waypoints}
-\alias{print.waypoints}
 \alias{as_waypoints.default}
-\alias{format.waypoints}
-\title{Geographic or GPS Waypoint Class}
+\title{Geographic Waypoint Class}
 \usage{
 as_waypoints(object, ...)
 
-\method{print}{waypoints}(x, ...)
-
 \method{as_waypoints}{default}(object, fmt = 1L)
-
-\method{format}{waypoints}(x, usenames = TRUE)
 }
 \arguments{
 \item{object}{a data frame with each row representing a waypoint, comprising at least two
@@ -23,13 +17,8 @@ as_waypoints(object, ...)
 
 \item{\dots}{further arguments passed to or from other methods.}
 
-\item{x}{an object of class \code{"waypoints"} created by function
-\code{\link[=as_waypoints]{as_waypoints}()}.}
-
 \item{fmt}{\code{integer}, \code{1L}, \code{2L} or \code{3L}, indicating the coordinate format of
 \code{object}.}
-
-\item{usenames}{\code{logical}, whether or not to include waypoint names in formatted output.}
 }
 \value{
 An object of classes \code{"waypoints"} and \code{"data.frame"}, comprising the original data
@@ -84,7 +73,7 @@ is re-validated.
 }
 \examples{
 ## Dataframe representing waypoint names, and latitude and longitude values
-## of degrees, minutes and seconds
+## in degrees, minutes and seconds
 wp1 <- data.frame(
     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
@@ -95,11 +84,8 @@ wp1 <- data.frame(
 ## Create "waypoints" object of degrees, minutes and seconds (fmt = 3)
 as_waypoints(wp1, fmt = 3)
 
-## Convert to degrees and minutes (fmt = 2)
-convert(wp1, 2)
-
-## Convert to decimal degrees (fmt = 1)
-convert(wp1, 1)
+## Show as an ordinary R data frame
+as.data.frame(wp1)
 
 ###
 ## Dataframe representing unnamed latitude and longitude
@@ -109,30 +95,15 @@ wp2 <- data.frame(
     lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -57.519227)
 )
 
-## Create "waypoints" object of decimal degrees (default fmt = 1)
-as_waypoints(wp2, fmt = 1)
+## Create unnamed "waypoints" object of decimal degrees (default fmt = 1)
+as_waypoints(wp2)
 
 ## Add row.names
 row.names(wp2) <-
     c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
       "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport")
+
 wp2
-
-## Convert to degrees and minutes (fmt = 2)
-convert(wp2, 2)
-
-## Convert to degrees, minutes and seconds (fmt = 3)
-convert(wp2, 3)
-
-## Degrees, minutes and seconds values as an ordinary R data frame
-as.data.frame(wp2)
-
-## Convert to decimal degrees, then format as a
-## fixed-width character vector without names...
-convert(wp2, 3) |> format(usenames = FALSE)
-
-## ...or with them
-format(wp2)
 
 rm(wp1, wp2)
 

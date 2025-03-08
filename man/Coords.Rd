@@ -3,22 +3,16 @@
 \name{Coords}
 \alias{Coords}
 \alias{as_coords}
-\alias{print.coords}
 \alias{as_coords.default}
 \alias{latlon<-}
-\alias{format.coords}
 \alias{as_coords.waypoints}
-\title{Geographic or GPS Coordinate Class}
+\title{Geographic Coordinate Class}
 \usage{
 as_coords(object, ...)
 
-\method{print}{coords}(x, ...)
-
 \method{as_coords}{default}(object, fmt = 1L)
 
-latlon(x) <- value
-
-\method{format}{coords}(x, usenames = TRUE)
+latlon(cd) <- value
 
 \method{as_coords}{waypoints}(object, which)
 }
@@ -28,17 +22,15 @@ class \code{"waypoints"}.}
 
 \item{\dots}{further arguments passed to or from other methods.}
 
-\item{x}{object of class \code{"coords"} created by function
-\code{\link[=as_coords]{as_coords}()}.}
-
 \item{fmt}{\code{integer}, \code{1L}, \code{2L} or \code{3L}, indicating the coordinate format of
 \code{object}.}
 
+\item{cd}{object of class \code{"coords"} created by function
+\code{\link[=as_coords]{as_coords}()}.}
+
 \item{value}{a \code{logical} vector of length \code{1} or \code{length(x)}.}
 
-\item{usenames}{\code{logical}, whether or not to include names in formatted output.}
-
-\item{which}{\code{logical}, indicating whether the \code{as_coords()} S3 method for class
+\item{which}{\code{logical}, indicating whether the \code{as_coords()} method for class
 \code{"waypoints"} extracts the latitude component of argument \code{object} (if \code{TRUE}),
 or the longitude (if \code{FALSE}).}
 }
@@ -93,7 +85,8 @@ whether individual values are latitude or longitude.
 dm <- c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
         -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
 
-## Create a "coords" object of degrees and minutes (fmt = 2)
+## Create an unnamed "coords" object of degrees and minutes (fmt = 2)
+## (Latitude and longitude unspecified)
 as_coords(dm, fmt = 2)
 
 ## Name the "coords" object
@@ -101,23 +94,18 @@ names(dm) <- rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monum
                    "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
 dm
 
-## Set "latlon" attribute to FALSE, length 1; all values are longitude
+## All values to represent longitude
+## ("latlon" attribute set to FALSE, length 1)
 latlon(dm) <- FALSE
 dm
 
-## Set "latlon" attribute to TRUE (n=8) and FALSE (n=8)
-## i.e., 8 each of latitude and longitude
+## Eight values each of latitude and longitude
+## ("latlon" attribute set to TRUE, n=8, and FALSE, n=8)
 latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 dm
 
-## Decimal degrees as an ordinary R numeric vector
+## Show as an ordinary R numeric vector
 as.numeric(dm)
-
-## Format as a fixed-width character vector with names...
-format(dm)
-
-## ...or without them
-format(dm, usenames = FALSE)
 
 rm(dm)
 

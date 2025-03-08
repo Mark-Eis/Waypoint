@@ -16,7 +16,7 @@ convert(x, ...)
 \arguments{
 \item{x}{object of class \code{"\link[=Coords]{coords}"} created by function
 \code{\link[=Coords]{as_coords}()} or of class \code{"\link[=Waypoints]{waypoints}"} created
-by function \code{\link[=Waypoints]{waypoints}())}.}
+by function \code{\link[=Waypoints]{waypoints}()}.}
 
 \item{\dots}{further arguments passed to or from other methods.}
 
@@ -46,7 +46,7 @@ to ensure its values represent valid geographic locations as described under
 }
 \examples{
 ## Continuing example from `coords()`...
-## Create "coords" object in degrees and minutes
+## Create named "coords" object in degrees and minutes
 \dontshow{
    dm <-
        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
@@ -69,7 +69,7 @@ convert(dm, 1)
 ## Continuing example from `waypoints()`...
 ## Create "waypoints" object in degrees, minutes and seconds
 \dontshow{
-wp1 <- data.frame(
+wp <- data.frame(
     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
     lat = c(513027.95, 493246.36, 480626.04, 385322.18, 0, -370642.26, -530617.21, -251424.56),
@@ -77,15 +77,15 @@ wp1 <- data.frame(
 )
 }
 
-as_waypoints(wp1, fmt = 3)
+as_waypoints(wp, fmt = 3)
 
 ## Convert to degrees and minutes (fmt = 2)
-convert(wp1, 2)
+convert(wp, 2)
 
 ## Convert to decimal degrees (fmt = 1)
-convert(wp1, 1)
+convert(wp, 1)
 
-rm(dm, wp1)
+rm(dm, wp)
 
 
 }

@@ -1073,16 +1073,16 @@ NumericVector convertcoords(NumericVector x, const int fmt)
 /// Set latlon attribute on "coords" NumericVector and revalidate
 //' @rdname Coords
 // [[Rcpp::export(name = "`latlon<-`")]]
-NumericVector latlon(NumericVector x, LogicalVector value)
+NumericVector latlon(NumericVector cd, LogicalVector value)
 {
 //	cout << "——Rcpp::export——latlon(NumericVector, LogicalVector)\n";
-	checkinherits(x, "coords");
-	if (value.size() != x.size() && value.size() != 1)
-		stop("value must be either length 1 or length(x)");
+	checkinherits(cd, "coords");
+	if (value.size() != cd.size() && value.size() != 1)
+		stop("value must be either length 1 or length(cd)");
 	else
-		x.attr("latlon") = value;
-	validate<NumericVector, Coord>(x);
-	return x;
+		cd.attr("latlon") = value;
+	validate<NumericVector, Coord>(cd);
+	return cd;
 }
 
 
@@ -1182,7 +1182,7 @@ NumericVector validatecoords(NumericVector x)
 
 /// __________________________________________________
 /// Format coords vector - S3 method format.coords()
-//' @rdname Coords
+//' @rdname Format
 // [[Rcpp::export(name = "format.coords")]]
 CharacterVector formatcoords(NumericVector x, bool usenames = true)
 {
@@ -1261,7 +1261,7 @@ DataFrame validatewaypoints(DataFrame x)
 
 /// __________________________________________________
 /// Format waypoints vector - S3 method format.waypoints()
-//' @rdname Waypoints
+//' @rdname Format
 // [[Rcpp::export(name = "format.waypoints")]]
 CharacterVector formatwaypoints(DataFrame x, bool usenames = true)
 {
@@ -1280,6 +1280,7 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true)
 
 /// __________________________________________________
 /// Latitude and longitude headers for S3 print.waypoint()
+//' @rdname Format
 // [[Rcpp::export]]
 CharacterVector ll_headers(const CharacterVector cvmatch, const int fmt)
 {

@@ -8,7 +8,7 @@
 
 ## __________________________________________________
 ## Set R vector object class to coords, validate and set fmt attribute
-#' @title Geographic or GPS Coordinate Class
+#' @title Geographic Coordinate Class
 #' 
 #' @name Coords
 #' 
@@ -54,12 +54,10 @@
 #'
 #' @param value a \code{logical} vector of length \code{1} or \code{length(x)}.
 #'
-#' @param x object of class \code{"coords"} created by function
+#' @param cd object of class \code{"coords"} created by function
 #'   \code{\link[=as_coords]{as_coords}()}.
 #'
-#' @param usenames \code{logical}, whether or not to include names in formatted output.
-#'
-#' @param which \code{logical}, indicating whether the \code{as_coords()} S3 method for class
+#' @param which \code{logical}, indicating whether the \code{as_coords()} method for class
 #'   \code{"waypoints"} extracts the latitude component of argument \code{object} (if \code{TRUE}),
 #'   or the longitude (if \code{FALSE}).
 #'
@@ -87,7 +85,8 @@
 #' dm <- c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
 #'         -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
 #'
-#' ## Create a "coords" object of degrees and minutes (fmt = 2)
+#' ## Create an unnamed "coords" object of degrees and minutes (fmt = 2)
+#' ## (Latitude and longitude unspecified)
 #' as_coords(dm, fmt = 2)
 #'
 #' ## Name the "coords" object
@@ -95,23 +94,18 @@
 #'                    "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
 #' dm
 #'
-#' ## Set "latlon" attribute to FALSE, length 1; all values are longitude
+#' ## All values to represent longitude
+#' ## ("latlon" attribute set to FALSE, length 1)
 #' latlon(dm) <- FALSE
 #' dm
 #'
-#' ## Set "latlon" attribute to TRUE (n=8) and FALSE (n=8)
-#' ## i.e., 8 each of latitude and longitude
+#' ## Eight values each of latitude and longitude
+#' ## ("latlon" attribute set to TRUE, n=8, and FALSE, n=8)
 #' latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 #' dm
 #'
-#' ## Decimal degrees as an ordinary R numeric vector
+#' ## Show as an ordinary R numeric vector
 #' as.numeric(dm)
-#'
-#' ## Format as a fixed-width character vector with names...
-#' format(dm)
-#'
-#' ## ...or without them
-#' format(dm, usenames = FALSE)
 #'
 #' rm(dm)
 #'
@@ -128,7 +122,7 @@ as_coords <- function(object, ...)
 ## __________________________________________________
 ## Add "waypoints" to R data.frame object class and validate,
 ## or convert format of R waypoints object and return
-#' @title Geographic or GPS Waypoint Class
+#' @title Geographic Waypoint Class
 #' 
 #' @name Waypoints
 #' 
@@ -177,13 +171,8 @@ as_coords <- function(object, ...)
 #'
 #' @param \dots further arguments passed to or from other methods.
 #'
-#' @param x an object of class \code{"waypoints"} created by function
-#' \code{\link[=as_waypoints]{as_waypoints}()}.
-#'
 #' @param fmt \code{integer}, \code{1L}, \code{2L} or \code{3L}, indicating the coordinate format of
 #'   \code{object}.
-#'
-#' @param usenames \code{logical}, whether or not to include waypoint names in formatted output.
 #'
 #' @return
 #' An object of classes \code{"waypoints"} and \code{"data.frame"}, comprising the original data
@@ -204,7 +193,7 @@ as_coords <- function(object, ...)
 #'
 #' @examples
 #' ## Dataframe representing waypoint names, and latitude and longitude values
-#' ## of degrees, minutes and seconds
+#' ## in degrees, minutes and seconds
 #' wp1 <- data.frame(
 #'     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
 #'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
@@ -215,11 +204,8 @@ as_coords <- function(object, ...)
 #' ## Create "waypoints" object of degrees, minutes and seconds (fmt = 3)
 #' as_waypoints(wp1, fmt = 3)
 #'
-#' ## Convert to degrees and minutes (fmt = 2)
-#' convert(wp1, 2)
-#'
-#' ## Convert to decimal degrees (fmt = 1)
-#' convert(wp1, 1)
+#' ## Show as an ordinary R data frame
+#' as.data.frame(wp1)
 #'
 #' ###
 #' ## Dataframe representing unnamed latitude and longitude
@@ -229,30 +215,15 @@ as_coords <- function(object, ...)
 #'     lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -57.519227)
 #' )
 #'
-#' ## Create "waypoints" object of decimal degrees (default fmt = 1)
-#' as_waypoints(wp2, fmt = 1)
+#' ## Create unnamed "waypoints" object of decimal degrees (default fmt = 1)
+#' as_waypoints(wp2)
 #'
 #' ## Add row.names
 #' row.names(wp2) <-
 #'     c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
 #'       "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport")
+#'
 #' wp2
-#'
-#' ## Convert to degrees and minutes (fmt = 2)
-#' convert(wp2, 2)
-#'
-#' ## Convert to degrees, minutes and seconds (fmt = 3)
-#' convert(wp2, 3)
-#'
-#' ## Degrees, minutes and seconds values as an ordinary R data frame
-#' as.data.frame(wp2)
-#'
-#' ## Convert to decimal degrees, then format as a
-#' ## fixed-width character vector without names...
-#' convert(wp2, 3) |> format(usenames = FALSE)
-#'
-#' ## ...or with them
-#' format(wp2)
 #'
 #' rm(wp1, wp2)
 #'
@@ -294,7 +265,7 @@ as_waypoints <- function(object, ...)
 #'
 #' @param x object of class \code{"\link[=Coords]{coords}"} created by function
 #'   \code{\link[=Coords]{as_coords}()} or of class \code{"\link[=Waypoints]{waypoints}"} created
-#'   by function \code{\link[=Waypoints]{waypoints}())}.
+#'   by function \code{\link[=Waypoints]{waypoints}()}.
 #'
 #' @param \dots further arguments passed to or from other methods.
 #'
@@ -308,7 +279,7 @@ as_waypoints <- function(object, ...)
 #'
 #' @examples
 #' ## Continuing example from `coords()`...
-#' ## Create "coords" object in degrees and minutes
+#' ## Create named "coords" object in degrees and minutes
 #' \dontshow{
 #'    dm <-
 #'        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
@@ -331,7 +302,7 @@ as_waypoints <- function(object, ...)
 #' ## Continuing example from `waypoints()`...
 #' ## Create "waypoints" object in degrees, minutes and seconds
 #' \dontshow{
-#' wp1 <- data.frame(
+#' wp <- data.frame(
 #'     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
 #'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
 #'     lat = c(513027.95, 493246.36, 480626.04, 385322.18, 0, -370642.26, -530617.21, -251424.56),
@@ -339,15 +310,15 @@ as_waypoints <- function(object, ...)
 #' )
 #' }
 #'
-#' as_waypoints(wp1, fmt = 3)
+#' as_waypoints(wp, fmt = 3)
 #'
 #' ## Convert to degrees and minutes (fmt = 2)
-#' convert(wp1, 2)
+#' convert(wp, 2)
 #'
 #' ## Convert to decimal degrees (fmt = 1)
-#' convert(wp1, 1)
+#' convert(wp, 1)
 #'
-#' rm(dm, wp1)
+#' rm(dm, wp)
 #'
 
 ## ========================================
@@ -361,11 +332,90 @@ convert <- function(x, ...)
     UseMethod("convert")
 
 
+## __________________________________________________
+## Format coords or waypoints vector
+#' @title Format Coords or Waypoints
+#' 
+#' @name Format
+#' 
+#' @description
+#' Format and print objects of class \code{"coords"} or \code{"waypoints"}.
+#'
+#' @details
+#' \code{"\link[=as_coords]{coords}"} or \code{"\link[=as_waypoints]{waypoints}"} objects are
+#' converted to elegantly formatted \code{character} vectors.
+#'
+#' @seealso
+#' \code{\link[base:format]{format}()}, \code{\link[base:print]{print}()},
+#' \code{"\link[=as_coords]{coords}"} and \code{"\link[=as_waypoints]{waypoints}"}.
+#'
+#' @param x object of class \code{"coords"} created by function
+#' \code{\link[=as_coords]{as_coords}()} or of class \code{"waypoints"} created by function
+#' \code{\link[=as_waypoints]{as_waypoints}()}.
+#'
+#' @param \dots further arguments passed to or from other methods.
+#'
+#' @param usenames \code{logical}, whether or not to include names in formatted output.
+#'
+#' @inheritParams Coords
+#'
+#' @return
+#' The \code{format()} methods for both classes \code{"coords"} and \code{"waypoints"} return a
+#' \code{character} vector, respectively of length \code{length(x)} or \code{nrow(x)}, and
+#' containing values formatted in decimal degrees, degrees and minutes, or degrees, minutes and
+#' seconds as appropriate.
+#'
+#' @examples
+#' ## Continuing example from `coords()`...
+#' ## Create named "coords" object in degrees and minutes
+#' \dontshow{
+#'    dm <-
+#'        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
+#'		   -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
+#'
+#'    names(dm) <- 
+#'        rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+#'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
+#' }
+#'
+#' ## (Silently using print() method for class "coords") 
+#' as_coords(dm, fmt = 2)
+#'
+#' ## Format as a fixed-width character vector with names...
+#' format(dm)
+#'
+#' ## ...or without them
+#' format(dm, usenames = FALSE)
+#'
+#' ###
+#' ## Continuing example from `waypoints()`...
+#' ## Create "waypoints" object in degrees, minutes and seconds
+#' \dontshow{
+#' wp <- data.frame(
+#'     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+#'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
+#'     lat = c(513027.95, 493246.36, 480626.04, 385322.18, 0, -370642.26, -530617.21, -251424.56),
+#'     lon = c(-00740.53, 182354.82, -1224643.22, -770206.87, 0, -121719.07, 733102.22, -573109.21)
+#' )
+#' }
+#'
+#' ## (Silently using print() method for class "waypoints") 
+#' as_waypoints(wp, fmt = 3)
+#'
+#' ## Format as a fixed-width character vector with names...
+#' format(dm)
+#'
+#' ## ...or without them
+#' format(dm, usenames = FALSE)
+#'
+#' rm(dm, wp)
+#'
+
 ## ========================================
 ##  Print Coordinates
 ##  S3method print.coords(x, ...)
 #'
-#' @rdname Coords
+#' @rdname Format
 #' @export
 
 print.coords <- function (x, ...) {
@@ -378,7 +428,7 @@ print.coords <- function (x, ...) {
 ##  Print Waypoints
 ##  S3method print.waypoints(x, ...)
 #'
-#' @rdname Waypoints
+#' @rdname Format
 #' @export
 
 print.waypoints <- function (x, ...) {
@@ -461,7 +511,7 @@ validate <- function(x, ...)
 #' ## and longitude values in decimal degrees, the erroneous penultimate latitude having more than
 #' ## 90 degrees absolute value
 #' \dontshow{
-#' wp1 <- data.frame(
+#' wp <- data.frame(
 #'     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
 #'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
 #'     lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -93.104781, -25.240156),
@@ -470,11 +520,11 @@ validate <- function(x, ...)
 #' }
 #'
 #' ## Create "waypoints" object of decimal degrees (fmt = 1)
-#' as_waypoints(wp1, fmt = 1)
+#' as_waypoints(wp, fmt = 1)
 #'
-#' review(wp1)
+#' review(wp)
 #'
-#' rm(dm, wp1)
+#' rm(dm, wp)
 #' 
 #' \dontshow{
 #'    options(oldopt)

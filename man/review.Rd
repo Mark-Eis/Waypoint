@@ -66,7 +66,7 @@ review(dm)
 ## and longitude values in decimal degrees, the erroneous penultimate latitude having more than
 ## 90 degrees absolute value
 \dontshow{
-wp1 <- data.frame(
+wp <- data.frame(
     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
     lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -93.104781, -25.240156),
@@ -75,11 +75,11 @@ wp1 <- data.frame(
 }
 
 ## Create "waypoints" object of decimal degrees (fmt = 1)
-as_waypoints(wp1, fmt = 1)
+as_waypoints(wp, fmt = 1)
 
-review(wp1)
+review(wp)
 
-rm(dm, wp1)
+rm(dm, wp)
 
 \dontshow{
    options(oldopt)
