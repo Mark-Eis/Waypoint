@@ -10,7 +10,7 @@
 ## Set R vector object class to coords, validate and set fmt attribute
 #' @title Geographic Coordinate Class
 #' 
-#' @name Coords
+#' @name coords
 #' 
 #' @description
 #' \code{as_coords()} creates an object of class \code{"coords"}, a robust representation of a
@@ -42,15 +42,15 @@
 #' @family coordsandway
 #' @seealso
 #' \code{\link[base:attr]{attr}()}, \code{\link[base:attributes]{attributes}},
-#'   and \code{\link[=validate]{validate}()}.
+#'   and \code{\link{validate}()}.
 #'
 #' @param object a \code{numeric} vector of coordinate values, optionally named, or an object of
 #'   class \code{"waypoints"}.
 #'
 #' @param \dots further arguments passed to or from other methods.
 #'
-#' @param fmt \code{integer}, \code{1L}, \code{2L} or \code{3L}, indicating the coordinate format of
-#'   \code{object}.
+#' @param fmt \code{integer}, \code{1L}, \code{2L} or \code{3L}, specifyinig the required coordinate
+#'   format.
 #'
 #' @param value a \code{logical} vector of length \code{1} or \code{length(x)}.
 #'
@@ -124,7 +124,7 @@ as_coords <- function(object, ...)
 ## or convert format of R waypoints object and return
 #' @title Geographic Waypoint Class
 #' 
-#' @name Waypoints
+#' @name waypoints
 #' 
 #' @description
 #' \code{as_waypoints()} creates an object of class \code{"waypoints"}, a robust representation of a
@@ -169,10 +169,7 @@ as_coords <- function(object, ...)
 #'   \code{numeric} columns containing values of latitude and longitude, and optionally a
 #'   \code{character} column of waypoint names (see \emph{Details}). 
 #'
-#' @param \dots further arguments passed to or from other methods.
-#'
-#' @param fmt \code{integer}, \code{1L}, \code{2L} or \code{3L}, indicating the coordinate format of
-#'   \code{object}.
+#' @inheritParams coords
 #'
 #' @return
 #' An object of classes \code{"waypoints"} and \code{"data.frame"}, comprising the original data
@@ -240,7 +237,7 @@ as_waypoints <- function(object, ...)
 ## Convert Format of Coordinates and Waypoints
 #' @title Convert the Format of "coords" and "waypoints" Objects
 #' 
-#' @name Convert
+#' @name convert
 #' 
 #' @description
 #' Converts the format of objects of class \code{"coords"} or \code{"waypoints"} between (i)
@@ -264,13 +261,10 @@ as_waypoints <- function(object, ...)
 #' \code{\link[=validate]{validate}()}.
 #'
 #' @param x object of class \code{"\link[=Coords]{coords}"} created by function
-#'   \code{\link[=Coords]{as_coords}()} or of class \code{"\link[=Waypoints]{waypoints}"} created
-#'   by function \code{\link[=Waypoints]{waypoints}()}.
+#'   \code{\link[=Coords]{as_coords}()}, or of class \code{"\link[=Waypoints]{waypoints}"} created
+#'   by function \code{\link[=Waypoints]{as_waypoints}()}.
 #'
-#' @param \dots further arguments passed to or from other methods.
-#'
-#' @param fmt \code{integer}, \code{1L}, \code{2L} or \code{3L}, indicating the desired new
-#' coordinate format.
+#' @inheritParams coords
 #'
 #' @return
 #' The original argument \code{x}, an object of class \code{"coords"} or \code{"waypoints"} with
@@ -325,7 +319,7 @@ as_waypoints <- function(object, ...)
 ##  Convert Coordinates and Waypoints
 ##  S3generic convert(x, ...)
 #'
-#' @rdname Convert
+#' @rdname convert
 #' @export
 
 convert <- function(x, ...) 
@@ -336,28 +330,31 @@ convert <- function(x, ...)
 ## Format coords or waypoints vector
 #' @title Format Coords or Waypoints
 #' 
-#' @name Format
+#' @name format
 #' 
 #' @description
 #' Format and print objects of class \code{"coords"} or \code{"waypoints"}.
 #'
 #' @details
-#' \code{"\link[=as_coords]{coords}"} or \code{"\link[=as_waypoints]{waypoints}"} objects are
-#' converted to elegantly formatted \code{character} vectors.
+#' The \code{format()} methods for \code{"\link[=as_coords]{coords}"} and
+#' \code{"\link[=as_waypoints]{waypoints}"} objects output elegantly formatted \code{character}
+#' vector representations of their arguments, which are used by their respective \code{print()}
+#' methods.
+#'
+#' \code{ll_headers()} outputs the headings \emph{"Latitude ... Longitude"} formatted to the
+#' same width as argument \code{aswidth}, adjusted for format \code{fmt} and primarily for
+#' use by the \code{print()} method for class \code{"waypoints"}.
 #'
 #' @seealso
 #' \code{\link[base:format]{format}()}, \code{\link[base:print]{print}()},
 #' \code{"\link[=as_coords]{coords}"} and \code{"\link[=as_waypoints]{waypoints}"}.
 #'
-#' @param x object of class \code{"coords"} created by function
-#' \code{\link[=as_coords]{as_coords}()} or of class \code{"waypoints"} created by function
-#' \code{\link[=as_waypoints]{as_waypoints}()}.
-#'
-#' @param \dots further arguments passed to or from other methods.
-#'
 #' @param usenames \code{logical}, whether or not to include names in formatted output.
 #'
-#' @inheritParams Coords
+#' @param aswidth \code{character} vector, used to match width of headers to formatted output.
+#'
+#' @inheritParams coords
+#' @inheritParams convert
 #'
 #' @return
 #' The \code{format()} methods for both classes \code{"coords"} and \code{"waypoints"} return a
@@ -415,7 +412,7 @@ convert <- function(x, ...)
 ##  Print Coordinates
 ##  S3method print.coords(x, ...)
 #'
-#' @rdname Format
+#' @rdname format
 #' @export
 
 print.coords <- function (x, ...) {
@@ -428,7 +425,7 @@ print.coords <- function (x, ...) {
 ##  Print Waypoints
 ##  S3method print.waypoints(x, ...)
 #'
-#' @rdname Format
+#' @rdname format
 #' @export
 
 print.waypoints <- function (x, ...) {
@@ -438,11 +435,96 @@ print.waypoints <- function (x, ...) {
     invisible(x)
 }
 
+## __________________________________________________
+## Validate coords or waypoints vector
+#' @title Validate Coords or Waypoints
+#' 
+#' @name validate
+#' 
+#' @description
+#' \code{validate()} validates objects of class \code{"coords"} or \code{"waypoints"}.
+#'
+#' @details
+#' Individual coordinate values within \code{"\link[=as_coords]{coords}"} or
+#' \code{"\link[=as_waypoints]{waypoints}"} objects are checked to ensure they represent valid
+#' geographic locations.
+#'
+#' To be valid, the absolute values of coordinates in degrees must not exceed 180, or 90 if degrees
+#' of latitude and, similarly, the absolute values of the minutes and seconds components, where
+#' given, must not exceed 60 degrees. Otherwise a warning will be issued and the \code{"valid"}
+#' attribute in the case of a \code{"coords"} object, or \code{"validlat"} and \code{"validlon"}
+#' attributes in the case of a \code{"waypoints"} object will be set to \code{FALSE} for any
+#' non-compliant coordinate values.
+#'
+#' @family validate
+#' @seealso
+#' \code{"\link[=as_coords]{coords}"} and \code{"\link[=as_waypoints]{waypoints}"}.
+#'
+#' @inheritParams coords
+#' @inheritParams convert
+#'
+#' @return
+#' \code{validate()} returns its argument with \code{logical} vector attribute \code{"valid"},
+#' or attributes \code{"validlat"} and \code{"validlon"} updated as appropriate for
+#' \code{"coords"} and' \code{"waypoints"} objects respectively.
+#'
+#' @examples
+#' ## Continuing example from `coords()`...
+#' ## Create "coords" object in degrees and minutes
+#' \dontshow{
+#'    dm <-
+#'        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
+#'		   -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
+#'
+#'    names(dm) <- 
+#'        rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+#'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
+#'
+#' as_coords(dm, fmt = 2)
+#' }
+#'
+#' validate(dm)
+#'
+#' ## Change first value to have more than 60 minutes
+#' dm[1] <- 5160.4659
+#'
+#' validate(dm)
+#'
+#' ## Examine "valid" attribute of dm
+#' attr(dm, "valid")
+#'
+#' ###
+#' ## Continuing example from `waypoints()`...
+#' ## Create "waypoints" object in decimal degrees
+#' \dontshow{
+#' wp1 <- data.frame(
+#'     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+#'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
+#'     lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -53.104781, -25.240156),
+#'     lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -57.519227)
+#' )
+#'
+#' as_waypoints(wp1, fmt = 1)
+#' }
+#'
+#' validate(wp1)
+#'
+#' ## Change penultimate latitude absolute value to have more than 90 degrees
+#' wp1$lat[7] <- -93.104781
+#'
+#' validate(wp1)
+#'
+#' ## Examine "validlat" attribute of wp1
+#' attr(wp1, "validlat")
+#'
+#' rm(dm, wp1)
+#'
 
 ## ========================================
 ##  Validate Coordinates and Waypoints
 ##  S3generic validate(x, ...)
 ##
+#' @rdname validate
 #' @export
 
 validate <- function(x, ...) 
@@ -464,12 +546,11 @@ validate <- function(x, ...)
 #' @seealso
 #' \code{"\link[=as_coords]{coords}"} and \code{"\link[=as_waypoints]{waypoints}"}.
 #'
-#' @param x object of class \code{"coords"} or \code{"waypoints"}.
-#'
 #' @param show_n \code{integer}, the maximum number of invalid elements of argument \code{x} to
 #' include in the output; default \code{20L}.
 #'
-#' @param \dots further arguments passed to or from other methods.
+#' @inheritParams coords
+#' @inheritParams convert
 #'
 #' @return
 #' The \code{review()} method for class \code{"coords"} returns a \code{\link[base:list]{list}} comprising the

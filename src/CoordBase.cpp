@@ -1037,7 +1037,7 @@ bool valid_ll(const DataFrame df)
 
 /// __________________________________________________
 /// Create coords
-//' @rdname Coords 
+//' @rdname coords 
 // [[Rcpp::export(name = "as_coords.default")]]
 NumericVector as_coords(NumericVector object, const int fmt = 1)
 {
@@ -1051,7 +1051,7 @@ NumericVector as_coords(NumericVector object, const int fmt = 1)
 
 /// __________________________________________________
 /// Convert coords format
-//' @rdname Convert
+//' @rdname convert
 // [[Rcpp::export(name = "convert.coords")]]
 NumericVector convertcoords(NumericVector x, const int fmt)
 {
@@ -1071,7 +1071,7 @@ NumericVector convertcoords(NumericVector x, const int fmt)
 
 /// __________________________________________________
 /// Set latlon attribute on "coords" NumericVector and revalidate
-//' @rdname Coords
+//' @rdname coords
 // [[Rcpp::export(name = "`latlon<-`")]]
 NumericVector latlon(NumericVector cd, LogicalVector value)
 {
@@ -1088,89 +1088,7 @@ NumericVector latlon(NumericVector cd, LogicalVector value)
 
 /// __________________________________________________
 /// Validate coords or waypoints vector
-//' @title Validate Coords or Waypoints
-//' 
-//' @name validate
-//' 
-//' @description
-//' \code{validate()} validates objects of class \code{"coords"} or \code{"waypoints"}.
-//'
-//' @details
-//' Individual coordinate values within \code{"\link[=as_coords]{coords}"} or
-//' \code{"\link[=as_waypoints]{waypoints}"} objects are checked to ensure they represent valid
-//' geographic locations.
-//'
-//' To be valid, the absolute values of coordinates in degrees must not exceed 180, or 90 if degrees
-//' of latitude and, similarly, the absolute values of the minutes and seconds components, where
-//' given, must not exceed 60 degrees. Otherwise a warning will be issued and the \code{"valid"}
-//' attribute in the case of a \code{"coords"} object, or \code{"validlat"} and \code{"validlon"}
-//' attributes in the case of a \code{"waypoints"} object will be set to \code{FALSE} for any
-//' non-compliant coordinate values.
-//'
-//' @family validate
-//' @seealso
-//' \code{"\link[=as_coords]{coords}"} and \code{"\link[=as_waypoints]{waypoints}"}.
-//'
-//' @param x object of class \code{"coords"} or \code{"waypoints"}.
-//'
-//' @param \dots further arguments passed to or from other methods.
-//'
-//' @return
-//' \code{validate()} returns its argument with \code{logical} vector attribute \code{"valid"},
-//' or attributes \code{"validlat"} and \code{"validlon"} updated as appropriate for
-//' \code{"coords"} and' \code{"waypoints"} objects respectively.
-//'
-//' @examples
-//' ## Continuing example from `coords()`...
-//' ## Create "coords" object in degrees and minutes
-//' \dontshow{
-//'    dm <-
-//'        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
-//'		   -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
-//'
-//'    names(dm) <- 
-//'        rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
-//'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
-//'
-//' as_coords(dm, fmt = 2)
-//' }
-//'
-//' validate(dm)
-//'
-//' ## Change first value to have more than 60 minutes
-//' dm[1] <- 5160.4659
-//'
-//' validate(dm)
-//'
-//' ## Examine "valid" attribute of dm
-//' attr(dm, "valid")
-//'
-//' ###
-//' ## Continuing example from `waypoints()`...
-//' ## Create "waypoints" object in decimal degrees
-//' \dontshow{
-//' wp1 <- data.frame(
-//'     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
-//'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
-//'     lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -53.104781, -25.240156),
-//'     lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -57.519227)
-//' )
-//'
-//' as_waypoints(wp1, fmt = 1)
-//' }
-//'
-//' validate(wp1)
-//'
-//' ## Change penultimate latitude absolute value to have more than 90 degrees
-//' wp1$lat[7] <- -93.104781
-//'
-//' validate(wp1)
-//'
-//' ## Examine "validlat" attribute of wp1
-//' attr(wp1, "validlat")
-//'
-//' rm(dm, wp1)
-//'
+//' @rdname validate
 // [[Rcpp::export(name = "validate.coords")]]
 NumericVector validatecoords(NumericVector x)
 {
@@ -1182,7 +1100,7 @@ NumericVector validatecoords(NumericVector x)
 
 /// __________________________________________________
 /// Format coords vector - S3 method format.coords()
-//' @rdname Format
+//' @rdname format
 // [[Rcpp::export(name = "format.coords")]]
 CharacterVector formatcoords(NumericVector x, bool usenames = true)
 {
@@ -1196,7 +1114,7 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true)
 
 /// __________________________________________________
 /// Create waypoints
-//' @rdname Waypoints
+//' @rdname waypoints
 // [[Rcpp::export(name = "as_waypoints.default")]]
 DataFrame as_waypoints(DataFrame object, const int fmt = 1)
 {
@@ -1224,7 +1142,7 @@ DataFrame as_waypoints(DataFrame object, const int fmt = 1)
 
 /// __________________________________________________
 /// Convert waypoints format
-//' @rdname Convert
+//' @rdname convert
 // [[Rcpp::export(name = "convert.waypoints")]]
 DataFrame convertwaypoints(DataFrame x, const int fmt)
 {
@@ -1261,7 +1179,7 @@ DataFrame validatewaypoints(DataFrame x)
 
 /// __________________________________________________
 /// Format waypoints vector - S3 method format.waypoints()
-//' @rdname Format
+//' @rdname format
 // [[Rcpp::export(name = "format.waypoints")]]
 CharacterVector formatwaypoints(DataFrame x, bool usenames = true)
 {
@@ -1280,9 +1198,9 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true)
 
 /// __________________________________________________
 /// Latitude and longitude headers for S3 print.waypoint()
-//' @rdname Format
+//' @rdname format
 // [[Rcpp::export]]
-CharacterVector ll_headers(const CharacterVector cvmatch, const int fmt)
+CharacterVector ll_headers(const CharacterVector aswidth, const int fmt)
 {
 //	cout << "@ll_headers(int, const int)  width " <<  width << " fmt " << fmt << endl;
 	constexpr int spacing[] { 5,  7,  8,
@@ -1293,7 +1211,7 @@ CharacterVector ll_headers(const CharacterVector cvmatch, const int fmt)
 		};
 
 	constexpr int adjust[] = { 2, 6, 10 };
-	const int width = (as<vector<string>>(cvmatch)[0]).size() - adjust[fmt - 1];
+	const int width = (as<vector<string>>(aswidth)[0]).size() - adjust[fmt - 1];
 	ostringstream ostrstr;
 	transform(sv.begin(), sv.end(), sv.begin(), [&ostrstr, width](const string& s)
 		{ ostrstr.str(""); ostrstr << setw(width) << s; return ostrstr.str(); });
@@ -1303,7 +1221,7 @@ CharacterVector ll_headers(const CharacterVector cvmatch, const int fmt)
 
 /// __________________________________________________
 /// Clone coords object from waypoints vector
-//' @rdname Coords
+//' @rdname coords
 // [[Rcpp::export(name = "as_coords.waypoints")]]
 NumericVector as_coordswaypoints(DataFrame object, bool which)
 {

@@ -13,9 +13,11 @@ review(x, ...)
 \method{review}{waypoints}(x, ..., show_n = 20L)
 }
 \arguments{
-\item{x}{object of class \code{"coords"} or \code{"waypoints"}.}
+\item{x}{object of class \code{"\link[=Coords]{coords}"} created by function
+\code{\link[=Coords]{as_coords}()}, or of class \code{"\link[=Waypoints]{waypoints}"} created
+by function \code{\link[=Waypoints]{as_waypoints}()}.}
 
-\item{\dots}{further arguments passed to or from other methods.}
+\item{...}{further arguments passed to or from other methods.}
 
 \item{show_n}{\code{integer}, the maximum number of invalid elements of argument \code{x} to
 include in the output; default \code{20L}.}
