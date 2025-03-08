@@ -35,7 +35,7 @@ comprising the following elements: -
 	 invalid, if any.}
 
 The method for class \code{"waypoints"} returns a list of two sub-lists, each sub-list with
-elements as described for the method for class \code{"coords"}, one each for latitude and
+elements as described above for the method for class \code{"coords"}, one each for latitude and
 longitude.
 }
 \description{
@@ -47,8 +47,8 @@ conform to the criteria checked by \code{\link{validate}()}, i.e. are not valid 
 locations.
 }
 \examples{
-## Continuing example from `validate()`, named numeric vector representing degrees and minutes,
-## the erroneous first value having more than 60 minutes
+## Continuing example from `validate()`, named numeric vector representing
+## degrees and minutes, the erroneous first value having more than 60 minutes
 \dontshow{
    oldopt <- options(warn = -1)
    dm <-
@@ -66,9 +66,9 @@ as_coords(dm, fmt = 2)
 review(dm)
 
 ###
-## Continuing example from `validate()`, data frame representing waypoint names and latitude
-## and longitude values in decimal degrees, the erroneous penultimate latitude having more than
-## 90 degrees absolute value
+## Continuing example from `validate()`, data frame representing waypoint
+## names and latitude and longitude values in decimal degrees, the erroneous
+## penultimate latitude having more than 90 degrees absolute value
 \dontshow{
 wp <- data.frame(
     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",

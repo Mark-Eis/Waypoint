@@ -344,7 +344,8 @@ convert <- function(x, ...)
 #' \code{\link[base:format]{format}()}, \code{\link[base:print]{print}()},
 #' \code{"\link{coords}"} and \code{"\link{waypoints}"}.
 #'
-#' @param usenames \code{logical}, whether or not to include names in formatted output.
+#' @param usenames \code{logical}, whether or not to include names in formatted output; default
+#' \code{TRUE}.
 #'
 #' @param aswidth \code{character} vector, used to match width of headers to formatted output.
 #'
@@ -395,10 +396,10 @@ convert <- function(x, ...)
 #' as_waypoints(wp, fmt = 3)
 #'
 #' ## Format as a fixed-width character vector with names...
-#' format(dm)
+#' format(wp)
 #'
 #' ## ...or without them
-#' format(dm, usenames = FALSE)
+#' format(wp, usenames = FALSE)
 #'
 #' rm(dm, wp)
 #'
@@ -443,12 +444,12 @@ print.waypoints <- function (x, ...) {
 #' Individual coordinate values within \code{"\link{coords}"} or \code{"\link{waypoints}"} objects
 #' are checked to ensure they represent valid geographic locations.
 #'
-#' To be valid, the absolute values of coordinates in degrees must not exceed 180, or 90 if degrees
-#' of latitude and, similarly, the absolute values of the minutes and seconds components, where
-#' given, must not exceed 60 degrees. Otherwise a warning will be issued and the \code{"valid"}
-#' attribute in the case of a \code{"coords"} object, or \code{"validlat"} and \code{"validlon"}
-#' attributes in the case of a \code{"waypoints"} object will be set to \code{FALSE} for any
-#' non-compliant coordinate values.
+#' To be valid, the absolute values of coordinates in degrees must not exceed 180\eqn{\degree}, or
+#' 90\eqn{\degree} if degrees of latitude and, similarly, the absolute values of the minutes and
+#' seconds components, where given, must not exceed 60\eqn{\degree}. Otherwise, a warning will be
+#' issued and the \code{"valid"} attribute in the case of a \code{"coords"} object, or
+#' \code{"validlat"} and \code{"validlon"} attributes in the case of a \code{"waypoints"} object
+#' will be set to \code{FALSE} for any non-compliant coordinate values.
 #'
 #' @family validate
 #' @seealso
@@ -560,14 +561,14 @@ validate <- function(x, ...)
 #' 	 invalid, if any.}
 #'
 #' The method for class \code{"waypoints"} returns a list of two sub-lists, each sub-list with
-#' elements as described for the method for class \code{"coords"}, one each for latitude and
+#' elements as described above for the method for class \code{"coords"}, one each for latitude and
 #' longitude.
 #'
 #' @export
 #'
 #' @examples
-#' ## Continuing example from `validate()`, named numeric vector representing degrees and minutes,
-#' ## the erroneous first value having more than 60 minutes
+#' ## Continuing example from `validate()`, named numeric vector representing
+#' ## degrees and minutes, the erroneous first value having more than 60 minutes
 #' \dontshow{
 #'    oldopt <- options(warn = -1)
 #'    dm <-
@@ -585,9 +586,9 @@ validate <- function(x, ...)
 #' review(dm)
 #'
 #' ###
-#' ## Continuing example from `validate()`, data frame representing waypoint names and latitude
-#' ## and longitude values in decimal degrees, the erroneous penultimate latitude having more than
-#' ## 90 degrees absolute value
+#' ## Continuing example from `validate()`, data frame representing waypoint
+#' ## names and latitude and longitude values in decimal degrees, the erroneous
+#' ## penultimate latitude having more than 90 degrees absolute value
 #' \dontshow{
 #' wp <- data.frame(
 #'     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",

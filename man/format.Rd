@@ -25,7 +25,8 @@ of class \code{"\link{waypoints}"} created by function \code{\link{as_waypoints}
 
 \item{...}{further arguments passed to or from other methods.}
 
-\item{usenames}{\code{logical}, whether or not to include names in formatted output.}
+\item{usenames}{\code{logical}, whether or not to include names in formatted output; default
+\code{TRUE}.}
 
 \item{aswidth}{\code{character} vector, used to match width of headers to formatted output.}
 
@@ -88,10 +89,10 @@ wp <- data.frame(
 as_waypoints(wp, fmt = 3)
 
 ## Format as a fixed-width character vector with names...
-format(dm)
+format(wp)
 
 ## ...or without them
-format(dm, usenames = FALSE)
+format(wp, usenames = FALSE)
 
 rm(dm, wp)
 
