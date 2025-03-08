@@ -16,8 +16,8 @@
 #' \code{as_coords()} creates an object of class \code{"coords"}, a robust representation of a
 #' series of geographic or GPS coordinate values.
 #'
-#' \code{latlon()<-} adds the attribute \code{"latlon"} to objects of class
-#' \code{"\link[=as_coords]{coords}"}, or modifies an existing \code{"latlon"} attribute.
+#' \code{latlon()<-} adds information to objects of class \code{"coords"} specifying whether
+#' individual coordinate values represent latitude or longitude.
 #'
 #' @details
 #' Individual values provided in a \code{numeric} vector argument \code{object} should have a
@@ -25,13 +25,21 @@
 #' number of whole minutes in the case of \emph{degrees and minutes}, and after the number of whole
 #' seconds in the case of \emph{degrees, minutes and seconds}.
 #'
-#' The \code{fmt} argument is used to specify the format of values in the \code{numeric} vector
-#' argument \code{object} to be converted into a \code{"coords"} object.
+#' The \code{fmt} argument should be \code{1L} to represent decimal degrees, \code{2L} for degrees
+#' and minutes, and \code{3L} for degrees, minutes and seconds and is used to provide the
+#' format of values in the \code{numeric} vector argument \code{object} to be converted to class
+#' \code{"coords"}.
 #'
 #' The values of a newly created \code{"coords"} object are checked to ensure they are valid
 #' geographic locations as described under \code{\link[=validate]{validate}()}.
 #'
-#' @family coords_waypoints
+#' Individual coordinate values in a \code{Coords} object may be specified as representing latitude
+#' or longitude using \code{latlon()}. The \code{value} argument may either be a single value,
+#' \code{TRUE} signifying that all values are latitude, \code{FALSE} signifying that all values are
+#' longitude, or a \code{logical} vector of the same length as as the \code{Coords} object signifying
+#' whether individual values are latitude or longitude.
+#'
+#' @family coordsandway
 #' @seealso
 #' \code{\link[base:attr]{attr}()}, \code{\link[base:attributes]{attributes}},
 #'   and \code{\link[=validate]{validate}()}.
@@ -41,7 +49,10 @@
 #'
 #' @param \dots further arguments passed to or from other methods.
 #'
-#' @param fmt \code{integer}, 1L, 2L or 3L, indicating the current or desired coordinate format.
+#' @param fmt \code{integer}, \code{1L}, \code{2L} or \code{3L}, indicating the coordinate format of
+#'   \code{object}.
+#'
+#' @param value a \code{logical} vector of length \code{1} or \code{length(x)}.
 #'
 #' @param x object of class \code{"coords"} created by function
 #'   \code{\link[=as_coords]{as_coords}()}.
@@ -53,19 +64,26 @@
 #'   or the longitude (if \code{FALSE}).
 #'
 #' @return
-#' \code{as_cords()} returns an object of class \code{"coords"}, comprising the original
-#' \code{numeric} vector argument \code{object} with additional attributes: –
+#' \code{as_cords()} returns an object of class \code{"coords"}, comprising a \code{numeric} vector
+#' argument with additional attributes: –
 #'
 #' \item{\code{"class"}}{the \code{character} string "coords".}
+#'
 #' \item{\code{"fmt"}}{an \code{integer} representing the coordinate format.}
+#'
 #' \item{\code{"valid"}}{a \code{logical} vector indicating whether individual coordinate values
 #'   are valid geographic locations.}
 #'
-#' \code{latlon()} returns its argument \code{x} with \code{logical} vector attribute \code{"latlon"}
-#' added or updated to reflect argument \code{value}.
+#' The S3 method for class \code{"coords"} returns the original \code{numeric} vector argument
+#' \code{object} modified in place, whereas the S3 method for class 'waypoints' returns a new
+#' \code{numeric} vector.
+#'
+#' \code{latlon()} returns its argument \code{x} with a \code{logical} vector attribute
+#' \code{"latlon"} added or updated to reflect argument \code{value}.
 #'
 #' @examples
-#' ## Numeric vector representing degrees and minutes
+#' ## Numeric vector representing degrees and minutes, with
+#' ## the decimal point after the number of whole minutes
 #' dm <- c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
 #'         -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
 #'
@@ -117,32 +135,30 @@ as_coords <- function(object, ...)
 #' @description
 #' \code{as_waypoints()} creates an object of class \code{"waypoints"}, a robust representation of a
 #' series of geographic or GPS waypoints of paired latitude and longitude values.
-#' 
-#' \code{convert()} converts the format of existing objects of class \code{"waypoints"} between (i)
-#' decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
 #'
 #' @details
-#' By default, the names of the waypoints should be included in a "Name" column of data frame
-#' argument \code{object}, and the latitude and longitude in the two columns immediately on the
-#' right hand side of "Name". An alternative column for waypoint names may be specified by setting
-#' an \code{integer} \code{\link[base:attributes]{attribute}} named "namescol", indicating its
-#' position in \code{df}, while setting this attribute to \code{NA} supresses printing of waypoint
-#' names. If \code{df} has neither a "Name" column nor a \code{"namescol"} attribute, the
-#' \code{"row.names"} attribute is used for waypoint names if present in \code{df}. Similarly,
-#' alternative columns for the latitude and longitude may be specified by setting \code{"llcols"} as
-#' a length 2 \code{integer} vector attribute indicating their positions in data frame
-#' \code{object}.
-#'
-#' Individual values provided in the \code{numeric} vector latitude and longitude columns of data
-#' frame argument \code{df} should have a decimal point after the number of whole degrees in the
+#' Data frame argument \code{object} should have \code{numeric} vector latitude and longitude
+#' columns with individual values having a decimal point after the number of whole degrees in the
 #' case of \emph{decimal degrees}, after the number of whole minutes in the case of
 #' \emph{degrees and minutes}, and after the number of whole seconds in the case of
-#' \emph{degrees, minutes and seconds}.
+#' \emph{degrees, minutes and seconds}. These should be the first two columns of the data frame, or
+#' the second and third columns if the first column contains waypoints names (see below).
+#' Alternative columns may be specified for the latitude and longitude by setting \code{"llcols"} as
+#' a length 2 \code{integer} vector attribute of \code{object} indicating their positions in the
+#' data frame.
 #'
 #' The \code{fmt} argument should be \code{1L} to represent decimal degrees, \code{2L} for degrees
 #' and minutes, and \code{3L} for degrees, minutes and seconds and is used to provide the
-#' format of values in data frame argument \code{df} to be converted into a \code{"waypoints"}
-#' object.
+#' format of values in data frame argument \code{object} to be converted to class
+#' \code{"waypoints"}.
+#'
+#' If the waypoints have names, these should be included in a "Name" column of data frame argument
+#' \code{object}, by default immediately before (on the left-hand side of) the latitude and
+#' longitude columns. An alternative column for waypoint names may be specified by setting an
+#' \code{integer} \code{\link[base:attributes]{attribute}} named "namescol" indicating its position
+#' in \code{object}, while setting this attribute to \code{NA} supresses printing of waypoint names.
+#' If neither a "Name" column nor a \code{"namescol"} attribute is present in \code{object},
+#' \code{\link[base:row.names]{row.names}} are used for waypoint names if present.
 #'
 #' The latitude and longitude values of a newly created \code{"waypoints"} object are checked to
 #' ensure they are valid geographic locations as described under
@@ -150,10 +166,10 @@ as_coords <- function(object, ...)
 #' \code{"waypoints"} object to be converted to a new format has already been validated; if not, it
 #' is re-validated. 
 #'
-#' @family coords_waypoints
+#' @family coordsandway
 #' @seealso
-#' \code{\link[base:attr]{attr}()},
-#' \code{\link[base:data.frame]{data.frame}()}, and \code{\link[=validate]{validate}()}.
+#' \code{\link[base:attr]{attr}()}, \code{\link[base:data.frame]{data.frame}()},
+#'   and \code{\link[=validate]{validate}()}.
 #'
 #' @param object a data frame with each row representing a waypoint, comprising at least two
 #'   \code{numeric} columns containing values of latitude and longitude, and optionally a
@@ -164,18 +180,25 @@ as_coords <- function(object, ...)
 #' @param x an object of class \code{"waypoints"} created by function
 #' \code{\link[=as_waypoints]{as_waypoints}()}.
 #'
-#' @param fmt an \code{integer} of value 1L, 2L or 3L, indicating the current or desired coordinate
-#'   format (see \emph{Details}).
+#' @param fmt \code{integer}, \code{1L}, \code{2L} or \code{3L}, indicating the coordinate format of
+#'   \code{object}.
 #'
 #' @param usenames \code{logical}, whether or not to include waypoint names in formatted output.
 #'
 #' @return
 #' An object of classes \code{"waypoints"} and \code{"data.frame"}, comprising the original data
-#' frame argument \code{df}, with latitude and longitude values possibly converted as appropriate
-#' and additional attributes: –
-#' \item{\code{"fmt"}}{the coordinate format.}
-#' \item{\code{"namescol"}}{the position of waypoint names, if present within \code{df}.}
-#' \item{\code{"llcols"}}{the position of latitude and longitude columns within \code{df}.}
+#' frame argument \code{object}, with additional attributes: –
+#'
+#' \item{\code{"class"}}{the \code{character} string "waypoints".}
+#'
+#' \item{\code{"fmt"}}{an \code{integer} indicating the coordinate format.}
+#'
+#' \item{\code{"namescol"}}{an \code{integer} indicating the position of a waypoint names column,
+#'   if present.}
+#'
+#' \item{\code{"llcols"}}{a length 2 \code{integer} vector indicating the positions of latitude and
+#'   longitude columns.}
+#'
 #' \item{\code{"validlat"} and \code{"validlon"}}{\code{logical} vectors indicating whether
 #'   individual latitude and longitude values are valid geographic locations.}
 #'
@@ -264,6 +287,7 @@ as_waypoints <- function(object, ...)
 #' to ensure its values represent valid geographic locations as described under
 #' \code{\link[=validate]{validate}()}.
 #'
+#' @family coordsandway
 #' @seealso
 #' \code{"\link[=Coords]{coords}"}, \code{"\link[=Waypoints]{waypoints}"} and
 #' \code{\link[=validate]{validate}()}.
@@ -274,7 +298,8 @@ as_waypoints <- function(object, ...)
 #'
 #' @param \dots further arguments passed to or from other methods.
 #'
-#' @param fmt \code{integer}, 1L, 2L or 3L, indicating the desired new coordinate format.
+#' @param fmt \code{integer}, \code{1L}, \code{2L} or \code{3L}, indicating the desired new
+#' coordinate format.
 #'
 #' @return
 #' The original argument \code{x}, an object of class \code{"coords"} or \code{"waypoints"} with

@@ -108,11 +108,6 @@ format.coords <- function(x, usenames = TRUE) {
     .Call(`_Waypoint_formatcoords`, x, usenames)
 }
 
-#' @rdname Coords
-as_coords.waypoints <- function(object, which) {
-    .Call(`_Waypoint_as_coordswaypoints`, object, which)
-}
-
 #' @rdname Waypoints
 as_waypoints.default <- function(object, fmt = 1L) {
     .Call(`_Waypoint_as_waypoints`, object, fmt)
@@ -135,5 +130,10 @@ format.waypoints <- function(x, usenames = TRUE) {
 
 ll_headers <- function(cvmatch, fmt) {
     .Call(`_Waypoint_ll_headers`, cvmatch, fmt)
+}
+
+#' @rdname Coords
+as_coords.waypoints <- function(object, which) {
+    .Call(`_Waypoint_as_coordswaypoints`, object, which)
 }
 

@@ -100,12 +100,12 @@ NumericVector convertcoords(NumericVector, const int);
 NumericVector latlon(NumericVector, LogicalVector);
 NumericVector validatecoords(NumericVector);
 CharacterVector formatcoords(NumericVector, bool);
-NumericVector as_coordswaypoints(DataFrame, bool);
 DataFrame as_waypointsdefault(DataFrame, const int);
 DataFrame convertwaypoints(DataFrame, const int);
 DataFrame validatewaypoints(DataFrame);
 CharacterVector formatwaypoints(DataFrame, bool);
 CharacterVector ll_headers(int, const int);
+NumericVector as_coordswaypoints(DataFrame, bool);
 
 
 /// __________________________________________________
@@ -1195,24 +1195,6 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true)
 
 
 /// __________________________________________________
-/// Clone coords object from waypoints vector
-//' @rdname Coords
-// [[Rcpp::export(name = "as_coords.waypoints")]]
-NumericVector as_coordswaypoints(DataFrame object, bool which)
-{
-//	cout << "——Rcpp::export——as_coord(DataFrame)\n";
-	checkinherits(object, "waypoints");
-	NumericVector nv = object[get_vec_attr<DataFrame, int>(object, "llcols")[which ? 0 : 1] - 1];
-	nv = clone(nv);
-	nv.attr("class") = "coords";
-	nv.attr("fmt") = object.attr("fmt");
-	nv.attr("which") = which ? vector<bool>{ TRUE } : vector<bool>{ FALSE };
-	nv.attr("valid") = object.attr(which ? "validlat" : "validlon");
-	return nv;
-}
-
-
-/// __________________________________________________
 /// Create waypoints
 //' @rdname Waypoints
 // [[Rcpp::export(name = "as_waypoints.default")]]
@@ -1315,6 +1297,24 @@ CharacterVector ll_headers(const CharacterVector cvmatch, const int fmt)
 	transform(sv.begin(), sv.end(), sv.begin(), [&ostrstr, width](const string& s)
 		{ ostrstr.str(""); ostrstr << setw(width) << s; return ostrstr.str(); });
 	return wrap(sv);
+}
+
+
+/// __________________________________________________
+/// Clone coords object from waypoints vector
+//' @rdname Coords
+// [[Rcpp::export(name = "as_coords.waypoints")]]
+NumericVector as_coordswaypoints(DataFrame object, bool which)
+{
+//	cout << "——Rcpp::export——as_coord(DataFrame)\n";
+	checkinherits(object, "waypoints");
+	NumericVector nv = object[get_vec_attr<DataFrame, int>(object, "llcols")[which ? 0 : 1] - 1];
+	nv = clone(nv);
+	nv.attr("class") = "coords";
+	nv.attr("fmt") = object.attr("fmt");
+	nv.attr("which") = which ? vector<bool>{ TRUE } : vector<bool>{ FALSE };
+	nv.attr("valid") = object.attr(which ? "validlat" : "validlon");
+	return nv;
 }
 
 

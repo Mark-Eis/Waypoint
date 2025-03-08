@@ -20,7 +20,8 @@ by function \code{\link[=Waypoints]{waypoints}())}.}
 
 \item{\dots}{further arguments passed to or from other methods.}
 
-\item{fmt}{\code{integer}, 1L, 2L or 3L, indicating the desired new coordinate format.}
+\item{fmt}{\code{integer}, \code{1L}, \code{2L} or \code{3L}, indicating the desired new
+coordinate format.}
 }
 \value{
 The original argument \code{x}, an object of class \code{"coords"} or \code{"waypoints"} with
@@ -91,4 +92,9 @@ rm(dm, wp1)
 \seealso{
 \code{"\link[=Coords]{coords}"}, \code{"\link[=Waypoints]{waypoints}"} and
 \code{\link[=validate]{validate}()}.
+
+Other coordsandway: 
+\code{\link{Coords}},
+\code{\link{Waypoints}}
 }
+\concept{coordsandway}

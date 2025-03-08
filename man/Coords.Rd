@@ -31,7 +31,10 @@ class \code{"waypoints"}.}
 \item{x}{object of class \code{"coords"} created by function
 \code{\link[=as_coords]{as_coords}()}.}
 
-\item{fmt}{\code{integer}, 1L, 2L or 3L, indicating the current or desired coordinate format.}
+\item{fmt}{\code{integer}, \code{1L}, \code{2L} or \code{3L}, indicating the coordinate format of
+\code{object}.}
+
+\item{value}{a \code{logical} vector of length \code{1} or \code{length(x)}.}
 
 \item{usenames}{\code{logical}, whether or not to include names in formatted output.}
 
@@ -40,23 +43,29 @@ class \code{"waypoints"}.}
 or the longitude (if \code{FALSE}).}
 }
 \value{
-\code{as_cords()} returns an object of class \code{"coords"}, comprising the original
-\code{numeric} vector argument \code{object} with additional attributes: –
+\code{as_cords()} returns an object of class \code{"coords"}, comprising a \code{numeric} vector
+argument with additional attributes: –
 
 \item{\code{"class"}}{the \code{character} string "coords".}
+
 \item{\code{"fmt"}}{an \code{integer} representing the coordinate format.}
+
 \item{\code{"valid"}}{a \code{logical} vector indicating whether individual coordinate values
   are valid geographic locations.}
 
-\code{latlon()} returns its argument \code{x} with \code{logical} vector attribute \code{"latlon"}
-added or updated to reflect argument \code{value}.
+The S3 method for class \code{"coords"} returns the original \code{numeric} vector argument
+\code{object} modified in place, whereas the S3 method for class 'waypoints' returns a new
+\code{numeric} vector.
+
+\code{latlon()} returns its argument \code{x} with a \code{logical} vector attribute
+\code{"latlon"} added or updated to reflect argument \code{value}.
 }
 \description{
 \code{as_coords()} creates an object of class \code{"coords"}, a robust representation of a
 series of geographic or GPS coordinate values.
 
-\code{latlon()<-} adds the attribute \code{"latlon"} to objects of class
-\code{"\link[=as_coords]{coords}"}, or modifies an existing \code{"latlon"} attribute.
+\code{latlon()<-} adds information to objects of class \code{"coords"} specifying whether
+individual coordinate values represent latitude or longitude.
 }
 \details{
 Individual values provided in a \code{numeric} vector argument \code{object} should have a
@@ -64,14 +73,23 @@ decimal point after the number of whole degrees in the case of \emph{decimal deg
 number of whole minutes in the case of \emph{degrees and minutes}, and after the number of whole
 seconds in the case of \emph{degrees, minutes and seconds}.
 
-The \code{fmt} argument is used to specify the format of values in the \code{numeric} vector
-argument \code{object} to be converted into a \code{"coords"} object.
+The \code{fmt} argument should be \code{1L} to represent decimal degrees, \code{2L} for degrees
+and minutes, and \code{3L} for degrees, minutes and seconds and is used to provide the
+format of values in the \code{numeric} vector argument \code{object} to be converted to class
+\code{"coords"}.
 
 The values of a newly created \code{"coords"} object are checked to ensure they are valid
 geographic locations as described under \code{\link[=validate]{validate}()}.
+
+Individual coordinate values in a \code{Coords} object may be specified as representing latitude
+or longitude using \code{latlon()}. The \code{value} argument may either be a single value,
+\code{TRUE} signifying that all values are latitude, \code{FALSE} signifying that all values are
+longitude, or a \code{logical} vector of the same length as as the \code{Coords} object signifying
+whether individual values are latitude or longitude.
 }
 \examples{
-## Numeric vector representing degrees and minutes
+## Numeric vector representing degrees and minutes, with
+## the decimal point after the number of whole minutes
 dm <- c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
         -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
 
@@ -109,7 +127,8 @@ rm(dm)
 \code{\link[base:attr]{attr}()}, \code{\link[base:attributes]{attributes}},
   and \code{\link[=validate]{validate}()}.
 
-Other coords_waypoints: 
+Other coordsandway: 
+\code{\link{Convert}},
 \code{\link{Waypoints}}
 }
-\concept{coords_waypoints}
+\concept{coordsandway}
