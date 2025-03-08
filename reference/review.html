@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Waypoint</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.00025</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.00026</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,7 +86,7 @@ comprising the following elements: -</p>
 
 
 </dl><p>The method for class <code>"waypoints"</code> returns a list of two sub-lists, each sub-list with
-elements as described for the method for class <code>"coords"</code>, one each for latitude and
+elements as described above for the method for class <code>"coords"</code>, one each for latitude and
 longitude.</p>
     </div>
     <div class="section level2">
@@ -104,8 +104,8 @@ locations.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Continuing example from `validate()`, named numeric vector representing degrees and minutes,</span></span></span>
-<span class="r-in"><span><span class="co">## the erroneous first value having more than 60 minutes</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Continuing example from `validate()`, named numeric vector representing</span></span></span>
+<span class="r-in"><span><span class="co">## degrees and minutes, the erroneous first value having more than 60 minutes</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Create "coords" object of degrees and minutes</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="Coords.html">as_coords</a></span><span class="op">(</span><span class="va">dm</span>, fmt <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
@@ -141,9 +141,9 @@ locations.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">###</span></span></span>
-<span class="r-in"><span><span class="co">## Continuing example from `validate()`, data frame representing waypoint names and latitude</span></span></span>
-<span class="r-in"><span><span class="co">## and longitude values in decimal degrees, the erroneous penultimate latitude having more than</span></span></span>
-<span class="r-in"><span><span class="co">## 90 degrees absolute value</span></span></span>
+<span class="r-in"><span><span class="co">## Continuing example from `validate()`, data frame representing waypoint</span></span></span>
+<span class="r-in"><span><span class="co">## names and latitude and longitude values in decimal degrees, the erroneous</span></span></span>
+<span class="r-in"><span><span class="co">## penultimate latitude having more than 90 degrees absolute value</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Create "waypoints" object of decimal degrees (fmt = 1)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="waypoints.html">as_waypoints</a></span><span class="op">(</span><span class="va">wp</span>, fmt <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
