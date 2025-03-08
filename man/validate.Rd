@@ -8,13 +8,13 @@
 \usage{
 validate(x, ...)
 
-\method{validate}{coords}(x)
+\method{validate}{coords}(x, ...)
 
-\method{validate}{waypoints}(x)
+\method{validate}{waypoints}(x, ...)
 }
 \arguments{
-\item{x}{object of class \code{"\link{coords}"} created by function \code{\link{as_coords}()},
-or of class \code{"\link{waypoints}"} created by function \code{\link{as_waypoints}()}.}
+\item{x}{object of class \code{"\link{coords}"} created by function \code{\link{as_coords}()}, or
+of class \code{"\link{waypoints}"} created by function \code{\link{as_waypoints}()}.}
 
 \item{...}{further arguments passed to or from other methods.}
 }
@@ -27,9 +27,8 @@ or attributes \code{"validlat"} and \code{"validlon"} updated as appropriate for
 \code{validate()} validates objects of class \code{"coords"} or \code{"waypoints"}.
 }
 \details{
-Individual coordinate values within \code{"\link{coords}"} or
-\code{"\link{waypoints}"} objects are checked to ensure they represent valid
-geographic locations.
+Individual coordinate values within \code{"\link{coords}"} or \code{"\link{waypoints}"} objects
+are checked to ensure they represent valid geographic locations.
 
 To be valid, the absolute values of coordinates in degrees must not exceed 180, or 90 if degrees
 of latitude and, similarly, the absolute values of the minutes and seconds components, where

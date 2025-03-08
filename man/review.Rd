@@ -13,8 +13,8 @@ review(x, ...)
 \method{review}{waypoints}(x, ..., show_n = 20L)
 }
 \arguments{
-\item{x}{object of class \code{"\link{coords}"} created by function \code{\link{as_coords}()},
-or of class \code{"\link{waypoints}"} created by function \code{\link{as_waypoints}()}.}
+\item{x}{object of class \code{"\link{coords}"} created by function \code{\link{as_coords}()}, or
+of class \code{"\link{waypoints}"} created by function \code{\link{as_waypoints}()}.}
 
 \item{...}{further arguments passed to or from other methods.}
 
@@ -22,12 +22,15 @@ or of class \code{"\link{waypoints}"} created by function \code{\link{as_waypoin
 include in the output; default \code{20L}.}
 }
 \value{
-The \code{review()} method for class \code{"coords"} returns a \code{\link[base:list]{list}} comprising the
-following elements: -
+The \code{review()} method for class \code{"coords"} returns a \code{\link[base:list]{list}}
+comprising the following elements: -
 
 \item{allvalid}{\code{logical}, whether or not all the elements of argument \code{x} are valid.}
+
 \item{n_invalid}{\code{integer}, the number of invalid elements in argument \code{x}, if any.}
+
 \item{invalids}{\code{numeric} vector including invalid elements of argument \code{x}, if any.}
+
 \item{which_invalid}{\code{integer} vector specifying which elements of argument \code{x} are
 	 invalid, if any.}
 
@@ -40,8 +43,8 @@ longitude.
 }
 \details{
 \code{review()} reveals elements of \code{"coords"} and  \code{"waypoints"} objects that do not
-conform to the criteria checked by \code{\link{validate}()}, i.e. are not valid
-geographic locations.
+conform to the criteria checked by \code{\link{validate}()}, i.e. are not valid geographic
+locations.
 }
 \examples{
 ## Continuing example from `validate()`, named numeric vector representing degrees and minutes,

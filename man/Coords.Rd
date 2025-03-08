@@ -10,11 +10,11 @@
 \usage{
 as_coords(object, ...)
 
-\method{as_coords}{default}(object, fmt = 1L)
+\method{as_coords}{default}(object, ..., fmt = 1L)
 
 latlon(cd) <- value
 
-\method{as_coords}{waypoints}(object, which)
+\method{as_coords}{waypoints}(object, which, ...)
 }
 \arguments{
 \item{object}{a \code{numeric} vector of coordinate values, optionally named, or an object of
@@ -25,8 +25,7 @@ class \code{"waypoints"}.}
 \item{fmt}{\code{integer}, \code{1L}, \code{2L} or \code{3L}, specifyinig the required coordinate
 format.}
 
-\item{cd}{object of class \code{"coords"} created by function
-\code{\link{as_coords}()}.}
+\item{cd}{object of class \code{"coords"} created by function \code{\link{as_coords}()}.}
 
 \item{value}{a \code{logical} vector of length \code{1} or \code{length(x)}.}
 
@@ -112,8 +111,8 @@ rm(dm)
 
 }
 \seealso{
-\code{\link[base:attr]{attr}()}, \code{\link[base:attributes]{attributes}},
-  and \code{\link{validate}()}.
+\code{\link[base:attr]{attr}()}, \code{\link[base:attributes]{attributes}}, and
+  \code{\link{validate}()}.
 
 Other coordsandway: 
 \code{\link{convert}()},

@@ -17,8 +17,8 @@ x \%L\% y
 Infix function implementing provision of an alternative if an object has zero length.
 }
 \details{
-The infix function \code{\%L\%} may be useful in implementing \code{if (length(x)) x else y} and was inspired by
-the null coalescing operator \code{\link[base:Control]{\%||\%}}.
+The infix function \code{\%L\%} may be useful in implementing \code{if (length(x)) x else y} and
+was inspired by the null coalescing operator \code{\link[base:Control]{\%||\%}}.
 }
 \examples{
 c4 <- letters[1:4]

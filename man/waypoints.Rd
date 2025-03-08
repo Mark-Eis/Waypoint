@@ -8,7 +8,7 @@
 \usage{
 as_waypoints(object, ...)
 
-\method{as_waypoints}{default}(object, fmt = 1L)
+\method{as_waypoints}{default}(object, ..., fmt = 1L)
 }
 \arguments{
 \item{object}{a data frame with each row representing a waypoint, comprising at least two
@@ -66,10 +66,9 @@ If neither a "Name" column nor a \code{"namescol"} attribute is present in \code
 \code{\link[base:row.names]{row.names}} are used for waypoint names if present.
 
 The latitude and longitude values of a newly created \code{"waypoints"} object are checked to
-ensure they are valid geographic locations as described under
-\code{\link{validate}()}. Likewise, a check is made to ensure that an existing
-\code{"waypoints"} object to be converted to a new format has already been validated; if not, it
-is re-validated.
+ensure they are valid geographic locations as described under \code{\link{validate}()}. Likewise,
+a check is made to ensure that an existing \code{"waypoints"} object to be converted to a new 
+format has already been validated; if not, it is re-validated.
 }
 \examples{
 ## Dataframe representing waypoint names, and latitude and longitude values
@@ -110,8 +109,8 @@ rm(wp1, wp2)
 
 }
 \seealso{
-\code{\link[base:attr]{attr}()}, \code{\link[base:data.frame]{data.frame}()},
-  and \code{\link{validate}()}.
+\code{\link[base:attr]{attr}()}, \code{\link[base:data.frame]{data.frame}()}, and
+  \code{\link{validate}()}.
 
 Other coordsandway: 
 \code{\link{convert}()},

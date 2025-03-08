@@ -41,8 +41,8 @@
 #'
 #' @family coordsandway
 #' @seealso
-#' \code{\link[base:attr]{attr}()}, \code{\link[base:attributes]{attributes}},
-#'   and \code{\link{validate}()}.
+#' \code{\link[base:attr]{attr}()}, \code{\link[base:attributes]{attributes}}, and
+#'   \code{\link{validate}()}.
 #'
 #' @param object a \code{numeric} vector of coordinate values, optionally named, or an object of
 #'   class \code{"waypoints"}.
@@ -54,8 +54,7 @@
 #'
 #' @param value a \code{logical} vector of length \code{1} or \code{length(x)}.
 #'
-#' @param cd object of class \code{"coords"} created by function
-#'   \code{\link{as_coords}()}.
+#' @param cd object of class \code{"coords"} created by function \code{\link{as_coords}()}.
 #'
 #' @param which \code{logical}, indicating whether the \code{as_coords()} method for class
 #'   \code{"waypoints"} extracts the latitude component of argument \code{object} (if \code{TRUE}),
@@ -155,15 +154,14 @@ as_coords <- function(object, ...)
 #' \code{\link[base:row.names]{row.names}} are used for waypoint names if present.
 #'
 #' The latitude and longitude values of a newly created \code{"waypoints"} object are checked to
-#' ensure they are valid geographic locations as described under
-#' \code{\link{validate}()}. Likewise, a check is made to ensure that an existing
-#' \code{"waypoints"} object to be converted to a new format has already been validated; if not, it
-#' is re-validated. 
+#' ensure they are valid geographic locations as described under \code{\link{validate}()}. Likewise,
+#' a check is made to ensure that an existing \code{"waypoints"} object to be converted to a new 
+#' format has already been validated; if not, it is re-validated. 
 #'
 #' @family coordsandway
 #' @seealso
-#' \code{\link[base:attr]{attr}()}, \code{\link[base:data.frame]{data.frame}()},
-#'   and \code{\link{validate}()}.
+#' \code{\link[base:attr]{attr}()}, \code{\link[base:data.frame]{data.frame}()}, and
+#'   \code{\link{validate}()}.
 #'
 #' @param object a data frame with each row representing a waypoint, comprising at least two
 #'   \code{numeric} columns containing values of latitude and longitude, and optionally a
@@ -257,11 +255,10 @@ as_waypoints <- function(object, ...)
 #'
 #' @family coordsandway
 #' @seealso
-#' \code{"\link{coords}"}, \code{"\link{waypoints}"} and
-#' \code{\link{validate}()}.
+#' \code{"\link{coords}"}, \code{"\link{waypoints}"} and \code{\link{validate}()}.
 #'
-#' @param x object of class \code{"\link{coords}"} created by function \code{\link{as_coords}()},
-#'   or of class \code{"\link{waypoints}"} created by function \code{\link{as_waypoints}()}.
+#' @param x object of class \code{"\link{coords}"} created by function \code{\link{as_coords}()}, or
+#'   of class \code{"\link{waypoints}"} created by function \code{\link{as_waypoints}()}.
 #'
 #' @inheritParams coords
 #'
@@ -335,10 +332,9 @@ convert <- function(x, ...)
 #' Format and print objects of class \code{"coords"} or \code{"waypoints"}.
 #'
 #' @details
-#' The \code{format()} methods for \code{"\link{coords}"} and
-#' \code{"\link{waypoints}"} objects output elegantly formatted \code{character}
-#' vector representations of their arguments, which are used by their respective \code{print()}
-#' methods.
+#' The \code{format()} methods for \code{"\link{coords}"} and \code{"\link{waypoints}"} objects
+#' output elegantly formatted \code{character} vector representations of their arguments, which are
+#' used by their respective \code{print()} methods.
 #'
 #' \code{ll_headers()} outputs the headings \emph{"Latitude ... Longitude"} formatted to the
 #' same width as argument \code{aswidth}, adjusted for format \code{fmt} and primarily for
@@ -444,9 +440,8 @@ print.waypoints <- function (x, ...) {
 #' \code{validate()} validates objects of class \code{"coords"} or \code{"waypoints"}.
 #'
 #' @details
-#' Individual coordinate values within \code{"\link{coords}"} or
-#' \code{"\link{waypoints}"} objects are checked to ensure they represent valid
-#' geographic locations.
+#' Individual coordinate values within \code{"\link{coords}"} or \code{"\link{waypoints}"} objects
+#' are checked to ensure they represent valid geographic locations.
 #'
 #' To be valid, the absolute values of coordinates in degrees must not exceed 180, or 90 if degrees
 #' of latitude and, similarly, the absolute values of the minutes and seconds components, where
@@ -538,8 +533,8 @@ validate <- function(x, ...)
 #'
 #' @details
 #' \code{review()} reveals elements of \code{"coords"} and  \code{"waypoints"} objects that do not
-#' conform to the criteria checked by \code{\link{validate}()}, i.e. are not valid
-#' geographic locations.
+#' conform to the criteria checked by \code{\link{validate}()}, i.e. are not valid geographic
+#' locations.
 #'
 #' @family validate
 #' @seealso
@@ -552,12 +547,15 @@ validate <- function(x, ...)
 #' @inheritParams convert
 #'
 #' @return
-#' The \code{review()} method for class \code{"coords"} returns a \code{\link[base:list]{list}} comprising the
-#' following elements: -
+#' The \code{review()} method for class \code{"coords"} returns a \code{\link[base:list]{list}}
+#' comprising the following elements: -
 #'
 #' \item{allvalid}{\code{logical}, whether or not all the elements of argument \code{x} are valid.}
+#'
 #' \item{n_invalid}{\code{integer}, the number of invalid elements in argument \code{x}, if any.}
+#'
 #' \item{invalids}{\code{numeric} vector including invalid elements of argument \code{x}, if any.}
+#'
 #' \item{which_invalid}{\code{integer} vector specifying which elements of argument \code{x} are
 #' 	 invalid, if any.}
 #'
@@ -685,8 +683,8 @@ review.waypoints <- function(x, ..., show_n = 20L)
 #' Infix function implementing provision of an alternative if an object has zero length.
 #'
 #' @details
-#' The infix function \code{\%L\%} may be useful in implementing \code{if (length(x)) x else y} and was inspired by
-#' the null coalescing operator \code{\link[base:Control]{\%||\%}}.
+#' The infix function \code{\%L\%} may be useful in implementing \code{if (length(x)) x else y} and
+#' was inspired by the null coalescing operator \code{\link[base:Control]{\%||\%}}.
 #'
 #' @family utils
 #' @seealso \code{\link[base:Control]{\%||\%}}.

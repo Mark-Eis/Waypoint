@@ -8,13 +8,13 @@
 \usage{
 convert(x, ...)
 
-\method{convert}{coords}(x, fmt)
+\method{convert}{coords}(x, fmt, ...)
 
-\method{convert}{waypoints}(x, fmt)
+\method{convert}{waypoints}(x, fmt, ...)
 }
 \arguments{
-\item{x}{object of class \code{"\link{coords}"} created by function \code{\link{as_coords}()},
-or of class \code{"\link{waypoints}"} created by function \code{\link{as_waypoints}()}.}
+\item{x}{object of class \code{"\link{coords}"} created by function \code{\link{as_coords}()}, or
+of class \code{"\link{waypoints}"} created by function \code{\link{as_waypoints}()}.}
 
 \item{...}{further arguments passed to or from other methods.}
 
@@ -88,8 +88,7 @@ rm(dm, wp)
 
 }
 \seealso{
-\code{"\link{coords}"}, \code{"\link{waypoints}"} and
-\code{\link{validate}()}.
+\code{"\link{coords}"}, \code{"\link{waypoints}"} and \code{\link{validate}()}.
 
 Other coordsandway: 
 \code{\link{coords}},
