@@ -21,7 +21,7 @@ ll_headers(aswidth, fmt)
 }
 \arguments{
 \item{x}{object of class \code{"\link{coords}"} created by function \code{\link{as_coords}()}, or
-of class \code{"\link{waypoints}"} created by function \code{\link{as_waypoints}()}.}
+class \code{"\link{waypoints}"} created by function \code{\link{as_waypoints}()}.}
 
 \item{...}{further arguments passed to or from other methods.}
 

@@ -48,7 +48,7 @@
 #'
 #' @param \dots further arguments passed to or from other methods.
 #'
-#' @param fmt \code{integer}, \code{1L}, \code{2L} or \code{3L}, specifyinig the required coordinate
+#' @param fmt \code{integer}, \code{1L}, \code{2L} or \code{3L}, specifying the required coordinate
 #'   format.
 #'
 #' @param value a \code{logical} vector of length \code{1} or \code{length(x)}.
@@ -263,6 +263,8 @@ as_waypoints <- function(object, ...)
 #' The original argument \code{x}, an object of class \code{"coords"} or \code{"waypoints"} with
 #' values converted as described under \emph{details} and a revised \code{"fmt"} attribute
 #' reflecting the new format.
+#'
+#' @keywords programming
 #'
 #' @examples
 #' ## Continuing example from `coords()`...
@@ -689,7 +691,7 @@ review.waypoints <- function(x, ..., show_n = 20L)
 #'
 #' @return \code{x}, or if \code{length(x)} is zero, \code{y}.
 #'
-#' @keywords univar arith
+#' @keywords logic programming
 #' @export
 #' @examples
 #' c4 <- letters[1:4]
