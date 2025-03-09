@@ -13,7 +13,7 @@ individual coordinate values represent latitude or longitude.'></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">Waypoint</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.00028</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.00029</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,11 +106,11 @@ argument with additional attributes: –</p>
   are valid geographic locations.</p></dd>
 
 
-</dl><p>The S3 method for class <code>"coords"</code> returns the original <code>numeric</code> vector argument
-<code>object</code> modified in place, whereas the S3 method for class 'waypoints' returns a new
+</dl><p>The <code>as_cords()</code> method for class <code>"coords"</code> returns its <code>numeric</code> vector argument
+<code>object</code> modified in place, whereas the method for class 'waypoints' returns a new
 <code>numeric</code> vector.</p>
-<p><code>latlon()</code> returns its argument <code>x</code> with a <code>logical</code> vector attribute
-<code>"latlon"</code> added or updated to reflect argument <code>value</code>.</p>
+<p><code>latlon()</code> returns its <code>"coords"</code> argument <code>cd</code> with a <code>logical</code> vector
+attribute <code>"latlon"</code> added or updated to reflect argument <code>value</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -135,7 +135,7 @@ whether individual values are latitude or longitude.</p>
     <div class="dont-index"><p><code><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a>()</code>, <code><a href="https://rdrr.io/r/base/attributes.html" class="external-link">attributes</a></code>, and
   <code><a href="validate.html">validate</a>()</code>.</p>
 <p>Other coordsandway:
-<code><a href="Convert.html">convert</a>()</code>,
+<code><a href="convert.html">convert</a>()</code>,
 <code><a href="waypoints.html">waypoints</a></code></p></div>
     </div>
 
