@@ -74,8 +74,8 @@
 #' \code{object} modified in place, whereas the method for class 'waypoints' returns a new
 #' \code{numeric} vector.
 #'
-#' \code{latlon()} returns its argument \code{x} with a \code{logical} vector attribute
-#' \code{"latlon"} added or updated to reflect argument \code{value}.
+#' \code{latlon()} returns its \code{"coords"} argument \code{cd} with a \code{logical} vector
+#' attribute \code{"latlon"} added or updated to reflect argument \code{value}.
 #'
 #' @examples
 #' ## Numeric vector representing degrees and minutes, with
@@ -332,8 +332,8 @@ convert <- function(x, ...)
 #' used by their respective \code{print()} methods.
 #'
 #' \code{ll_headers()} outputs the headings \emph{"Latitude ... Longitude"} formatted to the
-#' same width as argument \code{aswidth}, adjusted for format \code{fmt} and primarily for
-#' use by the \code{print()} method for class \code{"waypoints"}.
+#' same width as argument \code{aswidth}, adjusted for format \code{fmt} and is primarily intended
+#' for use by the \code{print()} method for class \code{"waypoints"}.
 #'
 #' @seealso
 #' \code{\link[base:format]{format}()}, \code{\link[base:print]{print}()},
