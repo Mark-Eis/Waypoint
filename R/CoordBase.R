@@ -333,7 +333,15 @@ convert <- function(x, ...)
 #' output elegantly formatted \code{character} vector representations of their arguments, which are
 #' used by their respective \code{print()} methods.
 #'
-#' \code{ll_headers()} outputs the headings \emph{"Latitude ... Longitude"} formatted to the
+#' Prior to formatting and printing, \code{"coords"} or \code{"waypoints"} objects are checked to
+#' ensure that their \code{"valid"} attribute (in the case of a \code{"coords"} object), or
+#' \code{"validlat"} and \code{"validlon"} attributes (in the case of a \code{"waypoints"} object)
+#' are present and all \code{TRUE} i.e., valid. If these attributes are found to contain any
+#' \code{FALSE} i.e. invalid values, a warning is issued and similarly, if these attributes are
+#' missing, a warning is issued and the objects are re-validated as described under
+#' \code{\link{validate}()}.
+#' 
+#' \code{ll_headers()} outputs the headings \verb{"Latitude ... Longitude"} formatted to the
 #' same width as argument \code{aswidth}, adjusted for format \code{fmt} and is primarily intended
 #' for use by the \code{print()} method for class \code{"waypoints"}.
 #'
