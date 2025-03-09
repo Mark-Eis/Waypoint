@@ -231,10 +231,10 @@ inline void stdlenstr(vector<string>& sv)
 //	cout << "@stdlenstr(vector<string>&)\n";
 	int maxwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
 	ostringstream ostrstr;
-    transform(sv.begin(), sv.end(), sv.begin(), [&ostrstr, maxwdth](const string& s) {
-    	ostrstr.str("");
-    	ostrstr << left << setw(maxwdth) << s;
-    	return ostrstr.str(); 
+	transform(sv.begin(), sv.end(), sv.begin(), [&ostrstr, maxwdth](const string& s) {
+		ostrstr.str("");
+		ostrstr << left << setw(maxwdth) << s;
+		return ostrstr.str(); 
     });	
 }
 
@@ -1087,7 +1087,7 @@ NumericVector latlon(NumericVector cd, LogicalVector value)
 
 
 /// __________________________________________________
-/// Validate coords or waypoints vector
+/// Validate coords vector
 //' @rdname validate
 // [[Rcpp::export(name = "validate.coords")]]
 NumericVector validatecoords(NumericVector x)
@@ -1189,9 +1189,6 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true)
 		stop("Invalid llcols attribute!");
 	if (!check_valid(x))
 		warning("Formatting invalid waypoints!");
-//	return wrap(WayPoint(get_coordtype(x), x).format_switch());
-//	CoordType ct = get_coordtype(x);
-//	return wrap(format_switch(WayPoint(ct, x), ct));
 	return wrap(WayPoint(get_coordtype(x), x).format(usenames));
 }
 
