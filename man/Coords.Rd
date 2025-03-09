@@ -48,8 +48,8 @@ The \code{as_cords()} method for class \code{"coords"} returns its \code{numeric
 \code{object} modified in place, whereas the method for class 'waypoints' returns a new
 \code{numeric} vector.
 
-\code{latlon()} returns its argument \code{x} with a \code{logical} vector attribute
-\code{"latlon"} added or updated to reflect argument \code{value}.
+\code{latlon()} returns its \code{"coords"} argument \code{cd} with a \code{logical} vector
+attribute \code{"latlon"} added or updated to reflect argument \code{value}.
 }
 \description{
 \code{as_coords()} creates an object of class \code{"coords"}, a robust representation of a

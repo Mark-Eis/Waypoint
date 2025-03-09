@@ -48,8 +48,8 @@ output elegantly formatted \code{character} vector representations of their argu
 used by their respective \code{print()} methods.
 
 \code{ll_headers()} outputs the headings \emph{"Latitude ... Longitude"} formatted to the
-same width as argument \code{aswidth}, adjusted for format \code{fmt} and primarily for
-use by the \code{print()} method for class \code{"waypoints"}.
+same width as argument \code{aswidth}, adjusted for format \code{fmt} and is primarily intended
+for use by the \code{print()} method for class \code{"waypoints"}.
 }
 \examples{
 ## Continuing example from `coords()`...
