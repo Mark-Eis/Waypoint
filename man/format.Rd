@@ -30,7 +30,7 @@ class \code{"\link{waypoints}"} created by function \code{\link{as_waypoints}()}
 
 \item{aswidth}{\code{character} vector, used to match width of headers to formatted output.}
 
-\item{fmt}{\code{integer}, \code{1L}, \code{2L} or \code{3L}, specifyinig the required coordinate
+\item{fmt}{\code{integer}, \code{1L}, \code{2L} or \code{3L}, specifying the required coordinate
 format.}
 }
 \value{
@@ -102,3 +102,5 @@ rm(dm, wp)
 \code{\link[base:format]{format}()}, \code{\link[base:print]{print}()},
 \code{"\link{coords}"} and \code{"\link{waypoints}"}.
 }
+\keyword{character}
+\keyword{print}

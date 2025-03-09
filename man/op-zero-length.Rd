@@ -38,5 +38,5 @@ rm(c4, c0, n3, n0)
 \code{\link[base:Control]{\%||\%}}.
 }
 \concept{utils}
-\keyword{arith}
-\keyword{univar}
+\keyword{logic}
+\keyword{programming}

@@ -355,6 +355,8 @@ convert <- function(x, ...)
 #' containing values formatted in decimal degrees, degrees and minutes, or degrees, minutes and
 #' seconds as appropriate.
 #'
+#' @keywords character print
+#'
 #' @examples
 #' ## Continuing example from `coords()`...
 #' ## Named "coords" object in degrees and minutes

@@ -18,7 +18,7 @@ class \code{"\link{waypoints}"} created by function \code{\link{as_waypoints}()}
 
 \item{...}{further arguments passed to or from other methods.}
 
-\item{fmt}{\code{integer}, \code{1L}, \code{2L} or \code{3L}, specifyinig the required coordinate
+\item{fmt}{\code{integer}, \code{1L}, \code{2L} or \code{3L}, specifying the required coordinate
 format.}
 }
 \value{
@@ -95,3 +95,4 @@ Other coordsandway:
 \code{\link{waypoints}}
 }
 \concept{coordsandway}
+\keyword{programming}

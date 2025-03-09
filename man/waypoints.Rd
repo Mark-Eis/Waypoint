@@ -17,7 +17,7 @@ as_waypoints(object, ...)
 
 \item{...}{further arguments passed to or from other methods.}
 
-\item{fmt}{\code{integer}, \code{1L}, \code{2L} or \code{3L}, specifyinig the required coordinate
+\item{fmt}{\code{integer}, \code{1L}, \code{2L} or \code{3L}, specifying the required coordinate
 format.}
 }
 \value{
