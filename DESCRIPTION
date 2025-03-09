@@ -7,7 +7,7 @@ Authors@R:
 Date: 2025-03-09
 Author: Mark Eisler
 Maintainer: Mark Eisler <mark@markeisler.com>
-Description: Convert, validate, format and elegantly print geographic positional coordinates and waypoints (paired latitude and longitude values) in decimal degrees, degrees and minutes, and degrees, minutes and seconds.
+Description: Convert, validate, format and elegantly print geographic  coordinates and waypoints (paired latitude and longitude values) in decimal degrees, degrees and minutes, and degrees, minutes and seconds.
 License: MIT + file LICENSE
 Imports: methods, Rcpp (>= 1.0.13)
 LinkingTo: Rcpp
