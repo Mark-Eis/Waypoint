@@ -80,8 +80,8 @@ as_waypoints(wp1, fmt = 1)
 
 validate(wp1)
 
-## Deliberately change the penultimate latitude value to
-## an invalid absolute value of greater than 90 degrees
+## Deliberately change the penultimate latitude to an
+## invalid absolute value of greater than 90 degrees
 wp1$lat[7] <- -93.104781
 
 validate(wp1)

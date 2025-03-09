@@ -255,7 +255,7 @@ as_waypoints <- function(object, ...)
 #' \code{"\link{coords}"}, \code{"\link{waypoints}"} and \code{\link{validate}()}.
 #'
 #' @param x object of class \code{"\link{coords}"} created by function \code{\link{as_coords}()}, or
-#'   of class \code{"\link{waypoints}"} created by function \code{\link{as_waypoints}()}.
+#'   class \code{"\link{waypoints}"} created by function \code{\link{as_waypoints}()}.
 #'
 #' @inheritParams coords
 #'
