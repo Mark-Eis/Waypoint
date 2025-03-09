@@ -60,7 +60,7 @@ locations.
              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
 }
 
-## Create "coords" object of degrees and minutes
+## "coords" object in degrees and minutes
 as_coords(dm, fmt = 2)
 
 review(dm)
@@ -78,7 +78,7 @@ wp <- data.frame(
 )
 }
 
-## Create "waypoints" object of decimal degrees (fmt = 1)
+## "waypoints" object in decimal degrees (fmt = 1)
 as_waypoints(wp, fmt = 1)
 
 review(wp)

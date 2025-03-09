@@ -44,7 +44,7 @@ to ensure its values represent valid geographic locations as described under
 }
 \examples{
 ## Continuing example from `coords()`...
-## Create named "coords" object in degrees and minutes
+## Named "coords" object in degrees and minutes
 \dontshow{
    dm <-
        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
@@ -65,7 +65,7 @@ convert(dm, 1)
 
 ###
 ## Continuing example from `waypoints()`...
-## Create "waypoints" object in degrees, minutes and seconds
+## "waypoints" object in degrees, minutes and seconds
 \dontshow{
 wp <- data.frame(
     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",

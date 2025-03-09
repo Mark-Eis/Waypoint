@@ -53,7 +53,7 @@ use by the \code{print()} method for class \code{"waypoints"}.
 }
 \examples{
 ## Continuing example from `coords()`...
-## Create named "coords" object in degrees and minutes
+## Named "coords" object in degrees and minutes
 \dontshow{
    dm <-
        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
@@ -64,7 +64,7 @@ use by the \code{print()} method for class \code{"waypoints"}.
              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
 }
 
-## (Silently using print() method for class "coords") 
+## Silently using print() method for class "coords"
 as_coords(dm, fmt = 2)
 
 ## Format as a fixed-width character vector with names...
@@ -75,7 +75,7 @@ format(dm, usenames = FALSE)
 
 ###
 ## Continuing example from `waypoints()`...
-## Create "waypoints" object in degrees, minutes and seconds
+## "waypoints" object in degrees, minutes and seconds
 \dontshow{
 wp <- data.frame(
     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
@@ -85,7 +85,7 @@ wp <- data.frame(
 )
 }
 
-## (Silently using print() method for class "waypoints") 
+## Silently using print() method for class "waypoints"
 as_waypoints(wp, fmt = 3)
 
 ## Format as a fixed-width character vector with names...

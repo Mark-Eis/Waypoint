@@ -366,7 +366,7 @@ convert <- function(x, ...)
 #'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
 #' }
 #'
-#' ## (Silently using print() method for class "coords") 
+#' ## Silently using print() method for class "coords"
 #' as_coords(dm, fmt = 2)
 #'
 #' ## Format as a fixed-width character vector with names...
@@ -387,7 +387,7 @@ convert <- function(x, ...)
 #' )
 #' }
 #'
-#' ## (Silently using print() method for class "waypoints") 
+#' ## Silently using print() method for class "waypoints"
 #' as_waypoints(wp, fmt = 3)
 #'
 #' ## Format as a fixed-width character vector with names...

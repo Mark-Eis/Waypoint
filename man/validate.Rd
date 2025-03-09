@@ -33,14 +33,14 @@ are checked to ensure they represent valid geographic locations.
 
 To be valid, the absolute values of coordinates in degrees must not exceed 180°, or 90° if
 degrees of latitude and, similarly, the absolute values of the minutes and seconds components,
-where given, must not exceed 60°. Otherwise, a warning will be issued and the \code{"valid"}
+where given, must not exceed 60. Otherwise, a warning will be issued and the \code{"valid"}
 attribute in the case of a \code{"coords"} object, or \code{"validlat"} and \code{"validlon"}
 attributes in the case of a \code{"waypoints"} object will be set to \code{FALSE} for any
 non-compliant coordinate values.
 }
 \examples{
 ## Continuing example from `coords()`...
-## Create "coords" object in degrees and minutes
+## "coords" object in degrees and minutes
 \dontshow{
    dm <-
        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
@@ -55,7 +55,8 @@ as_coords(dm, fmt = 2)
 
 validate(dm)
 
-## Change first value to have more than 60 minutes
+## Deliberately change the first coordinate to have
+## an invalid value with more than 60 minutes
 dm[1] <- 5160.4659
 
 validate(dm)
@@ -65,7 +66,7 @@ attr(dm, "valid")
 
 ###
 ## Continuing example from `waypoints()`...
-## Create "waypoints" object in decimal degrees
+## "waypoints" object in decimal degrees
 \dontshow{
 wp1 <- data.frame(
     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
@@ -79,7 +80,8 @@ as_waypoints(wp1, fmt = 1)
 
 validate(wp1)
 
-## Change penultimate latitude absolute value to have more than 90 degrees
+## Deliberately change the penultimate latitude value to
+## an invalid absolute value of greater than 90 degrees
 wp1$lat[7] <- -93.104781
 
 validate(wp1)
