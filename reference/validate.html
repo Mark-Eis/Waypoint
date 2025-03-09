@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Waypoint</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.00027</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.00028</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,7 +71,7 @@ or attributes <code>"validlat"</code> and <code>"validlon"</code> updated as app
 are checked to ensure they represent valid geographic locations.</p>
 <p>To be valid, the absolute values of coordinates in degrees must not exceed 180°, or 90° if
 degrees of latitude and, similarly, the absolute values of the minutes and seconds components,
-where given, must not exceed 60°. Otherwise, a warning will be issued and the <code>"valid"</code>
+where given, must not exceed 60. Otherwise, a warning will be issued and the <code>"valid"</code>
 attribute in the case of a <code>"coords"</code> object, or <code>"validlat"</code> and <code>"validlon"</code>
 attributes in the case of a <code>"waypoints"</code> object will be set to <code>FALSE</code> for any
 non-compliant coordinate values.</p>
@@ -86,7 +86,7 @@ non-compliant coordinate values.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Continuing example from `coords()`...</span></span></span>
-<span class="r-in"><span><span class="co">## Create "coords" object in degrees and minutes</span></span></span>
+<span class="r-in"><span><span class="co">## "coords" object in degrees and minutes</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">validate</span><span class="op">(</span><span class="va">dm</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Nelson's Column                           51°30.4659′ (N/E)</span>
@@ -106,7 +106,8 @@ non-compliant coordinate values.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mawson Peak                               73°31.0370′ (N/E)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   57°31.1536′ (S/W)</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## Change first value to have more than 60 minutes</span></span></span>
+<span class="r-in"><span><span class="co">## Deliberately change the first coordinate to have</span></span></span>
+<span class="r-in"><span><span class="co">## an invalid value with more than 60 minutes</span></span></span>
 <span class="r-in"><span><span class="va">dm</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">5160.4659</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">validate</span><span class="op">(</span><span class="va">dm</span><span class="op">)</span></span></span>
@@ -136,7 +137,7 @@ non-compliant coordinate values.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">###</span></span></span>
 <span class="r-in"><span><span class="co">## Continuing example from `waypoints()`...</span></span></span>
-<span class="r-in"><span><span class="co">## Create "waypoints" object in decimal degrees</span></span></span>
+<span class="r-in"><span><span class="co">## "waypoints" object in decimal degrees</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">validate</span><span class="op">(</span><span class="va">wp1</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                             Latitude     Longitude </span>
@@ -150,7 +151,8 @@ non-compliant coordinate values.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mawson Peak                               -53.104781°    73.517283°</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   -25.240156°   -57.519227°</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## Change penultimate latitude absolute value to have more than 90 degrees</span></span></span>
+<span class="r-in"><span><span class="co">## Deliberately change the penultimate latitude value to</span></span></span>
+<span class="r-in"><span><span class="co">## an invalid absolute value of greater than 90 degrees</span></span></span>
 <span class="r-in"><span><span class="va">wp1</span><span class="op">$</span><span class="va">lat</span><span class="op">[</span><span class="fl">7</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">93.104781</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">validate</span><span class="op">(</span><span class="va">wp1</span><span class="op">)</span></span></span>
