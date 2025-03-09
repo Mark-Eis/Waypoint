@@ -433,6 +433,7 @@ print.waypoints <- function (x, ...) {
 
 ## __________________________________________________
 ## Validate coords or waypoints vector
+#' @encoding UTF-8
 #' @title Validate Coords or Waypoints
 #' 
 #' @name validate
@@ -444,12 +445,12 @@ print.waypoints <- function (x, ...) {
 #' Individual coordinate values within \code{"\link{coords}"} or \code{"\link{waypoints}"} objects
 #' are checked to ensure they represent valid geographic locations.
 #'
-#' To be valid, the absolute values of coordinates in degrees must not exceed 180\eqn{\degree}, or
-#' 90\eqn{\degree} if degrees of latitude and, similarly, the absolute values of the minutes and
-#' seconds components, where given, must not exceed 60\eqn{\degree}. Otherwise, a warning will be
-#' issued and the \code{"valid"} attribute in the case of a \code{"coords"} object, or
-#' \code{"validlat"} and \code{"validlon"} attributes in the case of a \code{"waypoints"} object
-#' will be set to \code{FALSE} for any non-compliant coordinate values.
+#' To be valid, the absolute values of coordinates in degrees must not exceed 180°, or 90° if
+#' degrees of latitude and, similarly, the absolute values of the minutes and seconds components,
+#' where given, must not exceed 60°. Otherwise, a warning will be issued and the \code{"valid"}
+#' attribute in the case of a \code{"coords"} object, or \code{"validlat"} and \code{"validlon"}
+#' attributes in the case of a \code{"waypoints"} object will be set to \code{FALSE} for any
+#' non-compliant coordinate values.
 #'
 #' @family validate
 #' @seealso
