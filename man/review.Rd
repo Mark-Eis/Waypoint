@@ -39,7 +39,7 @@ elements as described above for the method for class \code{"coords"}, one each f
 longitude.
 }
 \description{
-\code{review()} review validity of elements of \code{"coords"} and \code{"waypoints"} objects.
+Review validity of elements of \code{"coords"} and \code{"waypoints"} objects.
 }
 \details{
 \code{review()} reveals elements of \code{"coords"} and  \code{"waypoints"} objects that do not
