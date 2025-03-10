@@ -9,7 +9,7 @@ decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and second
 
     <a class="navbar-brand me-2" href="../index.html">Waypoint</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.00030</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.00031</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -154,6 +154,13 @@ to ensure its values represent valid geographic locations as described under
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mawson Peak                                73.517283°</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   -57.519227°</span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Show converted values as an ordinary R numeric vector</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">dm</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1]   51.5077650   49.5462100   48.1072317   38.8894933    0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6]  -37.1117400  -53.1047817  -25.2401550   -0.1279233   18.3985617</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] -122.7786717  -77.0352417    0.0000000  -12.2886300   73.5172833</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16]  -57.5192267</span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">###</span></span></span>
 <span class="r-in"><span><span class="co">## Continuing example from `waypoints()`...</span></span></span>
 <span class="r-in"><span><span class="co">## "waypoints" object in degrees, minutes and seconds</span></span></span>
@@ -195,6 +202,18 @@ to ensure its values represent valid geographic locations as described under
 <span class="r-out co"><span class="r-pr">#&gt;</span> Tristan da Cunha                          -37.111739°   -12.288631°</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mawson Peak                               -53.104781°    73.517283°</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   -25.240156°   -57.519225°</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Show converted values as an ordinary R data frame</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">wp</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                      name       lat         lon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                         Nelson's Column  51.50776   -0.127925</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                               Ostravice  49.54621   18.398561</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                                Tally Ho  48.10723 -122.778672</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                     Washington Monument  38.88949  -77.035242</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                             Null Island   0.00000    0.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                        Tristan da Cunha -37.11174  -12.288631</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                             Mawson Peak -53.10478   73.517283</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8 Silvio Pettirossi International Airport -25.24016  -57.519225</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">dm</span>, <span class="va">wp</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
