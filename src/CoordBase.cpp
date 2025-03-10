@@ -113,12 +113,12 @@ NumericVector as_coordswaypoints(DataFrame, bool);
 /// Development and Debugging functions
 
 /// Report object construction and destruction
-void _ctrsgn(const type_info& obj, bool destruct = false)
-{
-//	cout << (destruct ? "Destroying " : "Constructing ") << flush;
-	string s = obj.name();
-	system(("c++filt -t " + s).data());
-}
+//void _ctrsgn(const type_info& obj, bool destruct = false)
+//{
+////	cout << (destruct ? "Destroying " : "Constructing ") << flush;
+//	string s = obj.name();
+//	system(("c++filt -t " + s).data());
+//}
 
 /// Demangle object names functor
 class Demangler {
