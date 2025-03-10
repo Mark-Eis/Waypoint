@@ -151,9 +151,7 @@ as_coords <- function(object, ...)
 #' \code{\link[base:row.names]{row.names}} are used for waypoint names if present.
 #'
 #' The latitude and longitude values of a newly created \code{"waypoints"} object are checked to
-#' ensure they are valid geographic locations as described under \code{\link{validate}()}. Likewise,
-#' a check is made to ensure that an existing \code{"waypoints"} object to be converted to a new 
-#' format has already been validated; if not, it is re-validated. 
+#' ensure they are valid geographic locations as described under \code{\link{validate}()}.
 #'
 #' @family coordsandway
 #' @seealso
@@ -216,6 +214,9 @@ as_coords <- function(object, ...)
 #'       "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport")
 #'
 #' wp2
+#'
+#' ## Show as an ordinary R data frame
+#' as.data.frame(wp2)
 #'
 #' rm(wp1, wp2)
 #'
