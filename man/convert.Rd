@@ -27,7 +27,7 @@ values converted as described under \emph{details} and a revised \code{"fmt"} at
 reflecting the new format.
 }
 \description{
-Converts the format of objects of class \code{"coords"} or \code{"waypoints"} between (i)
+Convert the format of objects of class \code{"coords"} or \code{"waypoints"} between (i)
 decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
 }
 \details{

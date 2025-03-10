@@ -25,7 +25,7 @@ or attributes \code{"validlat"} and \code{"validlon"} updated as appropriate for
 \code{"coords"} and' \code{"waypoints"} objects respectively.
 }
 \description{
-Validates objects of class \code{"coords"} or \code{"waypoints"} as geographic locations.
+Validate objects of class \code{"coords"} or \code{"waypoints"} as geographic locations.
 }
 \details{
 Individual coordinate values within \code{"\link{coords}"} or \code{"\link{waypoints}"} objects
