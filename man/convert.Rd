@@ -63,6 +63,9 @@ convert(dm, 3)
 ## Convert to decimal degrees (fmt = 1)
 convert(dm, 1)
 
+## Show converted values as an ordinary R numeric vector
+as.numeric(dm)
+
 ###
 ## Continuing example from `waypoints()`...
 ## "waypoints" object in degrees, minutes and seconds
@@ -82,6 +85,9 @@ convert(wp, 2)
 
 ## Convert to decimal degrees (fmt = 1)
 convert(wp, 1)
+
+## Show converted values as an ordinary R data frame
+as.data.frame(wp)
 
 rm(dm, wp)
 
