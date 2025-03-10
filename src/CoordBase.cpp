@@ -295,7 +295,8 @@ int nameinobj(const T t, const char* name)
 	vector<string> names { get_vec_attr<T, string>(t, "names") };
 	if (!names.size())
 		return -1;
-	int i = 0;
+	typedef decltype(names.size()) Tmp;
+	Tmp i = 0;
 	for (auto str : names ) {
 //		cout << "@nameinobj<T>(const T, const char*) testing " << str << endl;
 		if (!str_tolower(str).compare(name)) {
