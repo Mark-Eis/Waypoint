@@ -546,7 +546,7 @@ validate <- function(x, ...)
 #' Review Coordinates and Waypoints Validity
 #'
 #' @description
-#' \code{review()} review validity of elements of \code{"coords"} and \code{"waypoints"} objects.
+#' Review validity of elements of \code{"coords"} and \code{"waypoints"} objects.
 #'
 #' @details
 #' \code{review()} reveals elements of \code{"coords"} and  \code{"waypoints"} objects that do not
