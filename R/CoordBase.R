@@ -236,7 +236,7 @@ as_waypoints <- function(object, ...)
 #' @name convert
 #' 
 #' @description
-#' Converts the format of objects of class \code{"coords"} or \code{"waypoints"} between (i)
+#' Convert the format of objects of class \code{"coords"} or \code{"waypoints"} between (i)
 #' decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
 #'
 #' @details
@@ -451,7 +451,7 @@ print.waypoints <- function (x, ...) {
 #' @name validate
 #' 
 #' @description
-#' Validates objects of class \code{"coords"} or \code{"waypoints"} as geographic locations.
+#' Validate objects of class \code{"coords"} or \code{"waypoints"} as geographic locations.
 #'
 #' @details
 #' Individual coordinate values within \code{"\link{coords}"} or \code{"\link{waypoints}"} objects
