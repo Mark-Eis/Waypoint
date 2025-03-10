@@ -451,7 +451,7 @@ print.waypoints <- function (x, ...) {
 #' @name validate
 #' 
 #' @description
-#' \code{validate()} validates objects of class \code{"coords"} or \code{"waypoints"}.
+#' Validates objects of class \code{"coords"} or \code{"waypoints"} as geographic locations.
 #'
 #' @details
 #' Individual coordinate values within \code{"\link{coords}"} or \code{"\link{waypoints}"} objects
