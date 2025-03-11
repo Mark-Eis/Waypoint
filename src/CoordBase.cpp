@@ -326,6 +326,8 @@ RObject getnames(const DataFrame df)
 			stop("Invalid \"namescol\" attribute! (item not in object)");
 	} else if (df.hasAttribute("row.names"))
 		return df.attr("row.names");
+	else
+		stop(Missing row.names!);
 }
 
 
