@@ -434,7 +434,7 @@ print.coords <- function (x, ..., max = NULL) {
     omit <- (n0 <- max %/% (if (is.null(names(x))) 1L else 2L)) < n
     fmtx <- format(
         if (omit) 
-            x[seq_len(n0), , drop = FALSE]
+            x[seq_len(n0)]
         else
             x,
         ...
