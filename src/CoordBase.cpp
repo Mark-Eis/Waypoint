@@ -34,6 +34,7 @@ inline bool prefixwithnames(vector<string>&, RObject&);
 inline string str_tolower(string);
 template<class T>
 int nameinobj(const T, const char*);
+RObject getnames(const DataFrame);
 
 //CoordType
 enum class CoordType : char { decdeg, degmin, degminsec };
@@ -308,6 +309,23 @@ int nameinobj(const T t, const char* name)
 	if (i == names.size())
 		i = -1;
 	return i;
+}
+
+
+/// __________________________________________________
+/// Retrieve names column or row.names from DataFrame as Robject
+RObject getnames(const DataFrame df)
+{
+	cout << "@getnames(const DataFrame)\n";
+	vector<int> namescolvec { get_vec_attr<DataFrame, int>(df, "namescol") };
+	if (1 == namescolvec.size()) {
+		int namescol = namescolvec[0] - 1;
+		if (is_item_in_obj(df, namescol))
+			return df[namescol];
+		else
+			stop("Invalid \"namescol\" attribute! (item not in object)");
+	} else if (df.hasAttribute("row.names"))
+		return df.attr("row.names");
 }
 
 
@@ -1235,6 +1253,7 @@ NumericVector as_coordswaypoints(DataFrame object, bool which)
 	nv.attr("fmt") = object.attr("fmt");
 	nv.attr("which") = which ? vector<bool>{ TRUE } : vector<bool>{ FALSE };
 	nv.attr("valid") = object.attr(which ? "validlat" : "validlon");
+	nv.attr("names") = getnames(object);
 	return nv;
 }
 
