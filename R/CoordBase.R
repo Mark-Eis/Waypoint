@@ -442,7 +442,7 @@ print.waypoints <- function (x, ..., max = NULL) {
         max <- getOption("max.print", 99999L)
     if (!is.finite(max)) 
         stop("invalid 'max' / getOption(\"max.print\"): ", max)
-    omit <- (n0 <- max %/% length(x)) < length(row.names(x))
+    omit <- (n0 <- max %/% 3) < length(row.names(x))
     fmtx <- format(
         if (omit) 
             x[seq_len(n0), , drop = FALSE]
