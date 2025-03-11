@@ -426,22 +426,22 @@ convert <- function(x, ...)
 #' @export
 
 print.coords <- function (x, ..., max = NULL) {
-    n <- length(row.names(x))
+    n <- length(x)
     if (is.null(max))
         max <- getOption("max.print", 99999L)
     if (!is.finite(max)) 
         stop("invalid 'max' / getOption(\"max.print\"): ", max)
-    omit <- (n0 <- max %/% 3) < n
+    omit <- (n0 <- max %/% if (is.null(names(dm))) 1L else 2L) < n
     fmtx <- format(
         if (omit) 
             x[seq_len(n0), , drop = FALSE]
         else
-            x[],
+            x,
         ...
     )
     writeLines(fmtx)
     if (omit) 
-        cat(" [ reached 'max' / getOption(\"max.print\") -- omitted", n - n0, "rows ]\n")
+        cat(" [ reached 'max' / getOption(\"max.print\") -- omitted", n - n0, "entries ]\n")
     invisible(x)
 }
 
@@ -458,12 +458,12 @@ print.waypoints <- function (x, ..., max = NULL) {
         max <- getOption("max.print", 99999L)
     if (!is.finite(max)) 
         stop("invalid 'max' / getOption(\"max.print\"): ", max)
-    omit <- (n0 <- max %/% 3) < n
+    omit <- (n0 <- max %/% 3L) < n
     fmtx <- format(
         if (omit) 
             x[seq_len(n0), , drop = FALSE]
         else
-            x[],
+            x,
         ...
     )
     writeLines(ll_headers(fmtx, attr(x, "fmt")))
