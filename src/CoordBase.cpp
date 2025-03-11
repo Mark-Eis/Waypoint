@@ -1107,6 +1107,8 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true)
 {
 //	cout << "——Rcpp::export——formatcoords(NumericVector)\n";
 	checkinherits(x, "coords");
+	if(!x.size())
+		stop("x has 0 length!");
 	if (!check_valid(x))
 		warning("Formatting invalid coords!");
 	return wrap(Coord(get_coordtype(x), x).format(usenames));
