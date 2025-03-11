@@ -432,17 +432,12 @@ print.coords <- function (x, ..., max = NULL) {
     if (!is.finite(max)) 
         stop("invalid 'max' / getOption(\"max.print\"): ", max)
     omit <- (n0 <- max %/% (if (is.null(names(x))) 1L else 2L)) < n
-    fmtx <- format(
-        if (omit) {
-            tmp <- lapply(attributes(x), \(x) x[seq_len(min(length(x), n0))])
-            x <- x[seq_len(n0)]
-            attributes(x) <- tmp
-            x
-        } else
-            x,
-        ...
-    )
-    writeLines(fmtx)
+    if (omit) {
+        tmp <- lapply(attributes(x), \(x) x[seq_len(min(length(x), n0))])
+        x <- x[seq_len(n0)]
+        attributes(x) <- tmp
+    }
+    writeLines(format(x, ...))
     if (omit) 
         cat(" [ reached 'max' / getOption(\"max.print\") -- omitted", n - n0, "entries ]\n")
     invisible(x)
@@ -462,13 +457,9 @@ print.waypoints <- function (x, ..., max = NULL) {
     if (!is.finite(max)) 
         stop("invalid 'max' / getOption(\"max.print\"): ", max)
     omit <- (n0 <- max %/% 3L) < n
-    fmtx <- format(
-        if (omit) 
-            x[seq_len(n0), , drop = FALSE]
-        else
-            x,
-        ...
-    )
+    if (omit) 
+        x <- x[seq_len(n0), , drop = FALSE]
+    fmtx <- format(x, ...)
     writeLines(ll_headers(fmtx, attr(x, "fmt")))
     writeLines(fmtx)
     if (omit) 
