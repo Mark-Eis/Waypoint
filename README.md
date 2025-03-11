@@ -24,32 +24,36 @@ devtools::install_github("Mark-Eis/Waypoint")
 
 ### Waypoint Package Overview: –
 
-* Creates "`coords`" objects in each format with `as_coords()`.
+* Create "[`coords`](https://mark-eis.github.io/Waypoint/reference/coords.html)"
+  objects in each format with `as_coords()`.
 
-* Creates "`waypoints`" objects in each format with `as_waypoints()`.
+* Create
+ "[`waypoints`](https://mark-eis.github.io/Waypoint/reference/waypoints.html)"
+ objects in each format with `as_waypoints()`.
 
-* Converts "`coords`" and "`waypoints`" objects between decimal degrees, degrees
+* Convert "`coords`" and "`waypoints`" objects between decimal degrees, degrees
   and minutes, and degrees, minutes and seconds formats with `convert()`.
 
-* Assigns latitude and longitude attributes to individual coordinate values
+* Assign latitude and longitude attributes to individual coordinate values
   within "`coords`" objects with
  [`latlon<-`](https://mark-eis.github.io/Waypoint/reference/latlon.html)().
 
-* Ensures values within "`coords`" and "`waypoints`" objects are valid
+* Ensure values within "`coords`" and "`waypoints`" objects are valid
   geographic locations with `validate()` and identifies individual invalid
   values with `review()`.
 
-* Provides `format()` and `print()` S3 methods for neat formatting and printing
+* Use `format()` and `print()` S3 methods for neat formatting and printing
   of objects of classes "`coords`" and "`waypoints`".
   
 #### Methodology  
 
 *Waypoint* uses high performance C++ code seamlessly integrated into R using
-[`Rcpp`](https://www.rcpp.org) to enable rapid conversion and formatting of large coordinate and
-waypoint datasets.
+[`Rcpp`](https://www.rcpp.org) to enable rapid conversion and formatting of
+large coordinate and waypoint datasets.
 
 #### Disclaimer
 
-While every effort is made to ensure this package functions as expected, the author accepts no
-responsibility for the consequences of errors even if your map shows your city in the middle of the
-ocean, your boat runs aground, or your aeroplane crashes into the mountain.
+While every effort is made to ensure this package functions as expected, the
+author accepts no responsibility for the consequences of errors if your map
+shows a city in the middle of the ocean, if your boat runs aground, or even
+if your aeroplane crashes into the mountain.
