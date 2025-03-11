@@ -363,6 +363,7 @@ convert <- function(x, ...)
 #'
 #' @inheritParams coords
 #' @inheritParams convert
+#' @inheritParams base::print.data.frame
 #'
 #' @return
 #' The \code{format()} methods for both classes \code{"coords"} and \code{"waypoints"} return a
@@ -424,7 +425,7 @@ convert <- function(x, ...)
 #' @rdname format
 #' @export
 
-print.coords <- function (x, ...) {
+print.coords <- function (x, ..., max = NULL) {
     writeLines(format(x, ...))
     invisible(x)
 }
@@ -436,8 +437,19 @@ print.coords <- function (x, ...) {
 #' @rdname format
 #' @export
 
-print.waypoints <- function (x, ...) {
-    fmtx <- format(x, ...)
+print.waypoints <- function (x, ..., max = NULL) {
+    if (is.null(max))
+        max <- getOption("max.print", 99999L)
+    if (!is.finite(max)) 
+        stop("invalid 'max' / getOption(\"max.print\"): ", max)
+    omit <- (n0 <- max %/% length(x)) < length(x)
+    fmtx <- format(
+        if (omit) 
+            x[seq_len(n0), , drop = FALSE]
+        else
+            x[],
+        ...
+    )
     writeLines(ll_headers(fmtx, attr(x, "fmt")))
     writeLines(fmtx)
     invisible(x)
