@@ -9,9 +9,9 @@
 \alias{ll_headers}
 \title{Format Coords or Waypoints}
 \usage{
-\method{print}{coords}(x, ...)
+\method{print}{coords}(x, ..., max = NULL)
 
-\method{print}{waypoints}(x, ...)
+\method{print}{waypoints}(x, ..., max = NULL)
 
 \method{format}{coords}(x, ..., usenames = TRUE)
 
@@ -24,6 +24,10 @@ ll_headers(aswidth, fmt)
 class \code{"\link{waypoints}"} created by function \code{\link{as_waypoints}()}.}
 
 \item{...}{further arguments passed to or from other methods.}
+
+\item{max}{numeric or \code{NULL}, specifying the maximal number of
+    entries to be printed.  By default, when \code{NULL},
+    \code{\link[base]{getOption}("max.print")} used.}
 
 \item{usenames}{\code{logical}, whether or not to include names in formatted output; default
 \code{TRUE}.}

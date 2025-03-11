@@ -148,7 +148,7 @@ as_coords <- function(object, ...)
 #' \code{integer} \code{\link[base:attributes]{attribute}} named "namescol" indicating its position
 #' in \code{object}, while setting this attribute to \code{NA} supresses printing of waypoint names.
 #' If neither a "Name" column nor a \code{"namescol"} attribute is present in \code{object},
-#' \code{\link[base:row.names]{row.names}} are used for waypoint names if present.
+#' \code{\link[base:row.names]{row.names}} are used for waypoint names.
 #'
 #' The latitude and longitude values of a newly created \code{"waypoints"} object are checked to
 #' ensure they are valid geographic locations as described under \code{\link{validate}()}.
@@ -442,7 +442,7 @@ print.waypoints <- function (x, ..., max = NULL) {
         max <- getOption("max.print", 99999L)
     if (!is.finite(max)) 
         stop("invalid 'max' / getOption(\"max.print\"): ", max)
-    omit <- (n0 <- max %/% length(x)) < length(x)
+    omit <- (n0 <- max %/% length(x)) < length(row.names(x))
     fmtx <- format(
         if (omit) 
             x[seq_len(n0), , drop = FALSE]
