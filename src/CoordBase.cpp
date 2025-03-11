@@ -316,7 +316,7 @@ int nameinobj(const T t, const char* name)
 /// Retrieve names column or row.names from DataFrame as Robject
 RObject getnames(const DataFrame df)
 {
-	cout << "@getnames(const DataFrame)\n";
+//	cout << "@getnames(const DataFrame)\n";
 	vector<int> namescolvec { get_vec_attr<DataFrame, int>(df, "namescol") };
 	if (1 == namescolvec.size()) {
 		int namescol = namescolvec[0] - 1;
