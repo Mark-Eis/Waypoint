@@ -1186,6 +1186,8 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true)
 {
 //	cout << "——Rcpp::export——formatwaypoints(DataFrame)\n";
 	checkinherits(x, "waypoints");
+	if(!x.nrows(x))
+		stop("x has 0 rows!");
 	if(!valid_ll(x))
 		stop("Invalid llcols attribute!");
 	if (!check_valid(x))
