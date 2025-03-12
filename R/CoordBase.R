@@ -672,8 +672,8 @@ review.coords <- function(x, ..., show_n = 20L)
     if (!inherits(x, "coords"))
         stop("Argument `coords` must have class `\"coords\"`\n", call. = FALSE)
     invalid <- !attr(x, "valid")
-    n_invalid = sum(invalid, na.rm = TRUE)
-    last_invalid = which(invalid)[show_n]
+    n_invalid <- sum(invalid, na.rm = TRUE)
+    last_invalid <- which(invalid)[show_n]
     if (n_invalid > show_n) {
         warning(
             n_invalid, " invalid coords, showing first ", show_n,
@@ -683,7 +683,7 @@ review.coords <- function(x, ..., show_n = 20L)
         tmp <- lapply(attributes(x), \(x) x[seq_len(min(length(x), last_invalid))])
         x <- x[seq_len(last_invalid)]
         attributes(x) <- tmp
-        return(review(x, show_n))
+        return(review(x, show_n = show_n))
     }
     fmt <- attr(x, "fmt");
     if (n_invalid) {
