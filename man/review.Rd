@@ -47,6 +47,7 @@ conform to the criteria checked by \code{\link{validate}()}, i.e. are not valid 
 locations.
 }
 \examples{
+## Continuing example from `validate()`...
 \dontshow{
    oldopt <- options(warn = -1)
    dm <-
@@ -59,12 +60,12 @@ locations.
    latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 }
 
-## Continuing example from `validate()`...
 ## Review "coords" object in degrees and minutes, having
 ## an erroneous first value of more than 60 minutes
 review(dm)
 
 ###
+## Continuing example from `validate()`...
 \dontshow{
    wp <- data.frame(
        name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
@@ -75,7 +76,6 @@ review(dm)
    invisible(as_waypoints(wp, fmt = 1))
 }
 
-## Continuing example from `validate()`...
 ## Review "waypoints" object in  decimal degrees, having an erroneous
 ## penultimate latitude absolute value greater than 90 degrees
 review(wp)

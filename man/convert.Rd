@@ -43,6 +43,7 @@ to ensure its values represent valid geographic locations as described under
 \code{\link{validate}()}.
 }
 \examples{
+## Continuing example from `as_coords()`...
 \dontshow{
    dm <-
        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
@@ -54,7 +55,6 @@ to ensure its values represent valid geographic locations as described under
    latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 }
 
-## Continuing example from `as_coords()`...
 ## Named "coords" object in degrees and minutes with
 ## eight values each of latitude and longitude
 dm
@@ -69,6 +69,7 @@ convert(dm, 1)
 as.numeric(dm)
 
 ###
+## Continuing example from `as_waypoints()`...
 \dontshow{
    wp <- data.frame(
        name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
@@ -79,7 +80,6 @@ as.numeric(dm)
    invisible(as_waypoints(wp, fmt = 3))
 }
 
-## Continuing example from `as_waypoints()`...
 ## "waypoints" object in degrees, minutes and seconds
 wp
 

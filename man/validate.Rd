@@ -39,6 +39,7 @@ attributes in the case of a \code{"waypoints"} object will be set to \code{FALSE
 non-compliant coordinate values.
 }
 \examples{
+## Continuing example from `as_coords()`...
 \dontshow{
    dm <-
        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
@@ -50,7 +51,6 @@ non-compliant coordinate values.
    latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 }
 
-## Continuing example from `as_coords()`...
 ## Validate "coords" object in degrees and minutes
 validate(dm)
 
@@ -64,6 +64,7 @@ validate(dm)
 attr(dm, "valid")
 
 ###
+## Continuing second example from `as_waypoints()`...
 \dontshow{
    wp <- data.frame(
        lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -53.104781, -25.240156),
@@ -75,7 +76,6 @@ attr(dm, "valid")
    invisible(as_waypoints(wp))
 }
 
-## Continuing second example from `as_waypoints()`...
 ## Validate "waypoints" object in decimal degrees
 
 validate(wp)

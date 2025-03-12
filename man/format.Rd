@@ -64,6 +64,7 @@ same width as argument \code{aswidth}, adjusted for format \code{fmt} and is pri
 for use by the \code{print()} method for class \code{"waypoints"}.
 }
 \examples{
+## Continuing example from `as_coords()`...
 \dontshow{
    dm <-
        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
@@ -75,7 +76,6 @@ for use by the \code{print()} method for class \code{"waypoints"}.
    latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 }
 
-## Continuing example from `as_coords()`...
 ## Print named "coords" object in degrees and minutes,
 ## 'silently' using S3 print() method
 dm
@@ -88,6 +88,7 @@ format(dm)
 format(dm, usenames = FALSE)
 
 ###
+## Continuing example from `as_waypoints()`...
 \dontshow{
    wp <- data.frame(
        name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
@@ -98,7 +99,6 @@ format(dm, usenames = FALSE)
    invisible(as_waypoints(wp, fmt = 3))
 }
 
-## Continuing example from `as_waypoints()`...
 ## Print named "waypoints" object in degrees and minutes,
 ## 'silently' using S3 print() method
 wp
