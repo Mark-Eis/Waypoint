@@ -533,29 +533,31 @@ print.waypoints <- function (x, ..., max = NULL) {
 #'
 #' ###
 #' \dontshow{
-#' wp1 <- data.frame(
-#'     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
-#'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
-#'     lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -53.104781, -25.240156),
-#'     lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -57.519227)
-#' )
+#'    wp <- data.frame(
+#'        lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -53.104781, -25.240156),
+#'        lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -57.519227)
+#'    )
+#'    row.names(wp) <-
+#'        c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+#'          "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport")
 #'    invisible(as_waypoints(wp, fmt = 3))
 #' }
+#'
 #' ## Continuing example from `waypoints()`...
 #' ## "waypoints" object in decimal degrees
 #'
-#' validate(wp1)
+#' validate(wp)
 #'
 #' ## Deliberately change the penultimate latitude to an
 #' ## invalid absolute value of greater than 90 degrees
 #' wp1$lat[7] <- -93.104781
 #'
-#' validate(wp1)
+#' validate(wp)
 #'
 #' ## Examine "validlat" attribute of wp1
 #' attr(wp1, "validlat")
 #'
-#' rm(dm, wp1)
+#' rm(dm, wp)
 #'
 
 ## ========================================

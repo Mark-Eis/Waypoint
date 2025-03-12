@@ -7,7 +7,7 @@
 \alias{format.coords}
 \alias{format.waypoints}
 \alias{ll_headers}
-\title{Format Coords or Waypoints}
+\title{Format and Print Coords or Waypoints}
 \usage{
 \method{print}{coords}(x, ..., max = NULL)
 
