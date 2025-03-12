@@ -80,7 +80,8 @@ for use by the \code{print()} method for class \code{"waypoints"}.
 ## 'silently' using S3 print() method
 dm
 
-## Format as a fixed-width character vector with names...
+## Format as a fixed-width character vector,
+## with names...
 format(dm)
 
 ## ...or without them
@@ -102,7 +103,8 @@ format(dm, usenames = FALSE)
 ## 'silently' using S3 print() method
 wp
 
-## Format as a fixed-width character vector with names...
+## Format as a fixed-width character vector,
+## with names...
 format(wp)
 
 ## ...or without them

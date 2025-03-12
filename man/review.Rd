@@ -47,40 +47,37 @@ conform to the criteria checked by \code{\link{validate}()}, i.e. are not valid 
 locations.
 }
 \examples{
-## Continuing example from `validate()`, named numeric vector representing
-## degrees and minutes, the erroneous first value having more than 60 minutes
 \dontshow{
    oldopt <- options(warn = -1)
    dm <-
        c(5160.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
 	   -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
-
    names(dm) <- 
        rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
+   invisible(as_coords(dm, fmt = 2))
+   latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 }
 
-## "coords" object in degrees and minutes
-as_coords(dm, fmt = 2)
-
+## Continuing example from `validate()`...
+## Review "coords" object in degrees and minutes, having
+## an erroneous first value of more than 60 minutes
 review(dm)
 
 ###
-## Continuing example from `validate()`, data frame representing waypoint
-## names and latitude and longitude values in decimal degrees, the erroneous
-## penultimate latitude having more than 90 degrees absolute value
 \dontshow{
-wp <- data.frame(
-    name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
-             "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
-    lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -93.104781, -25.240156),
-    lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -57.519227)
-)
+   wp <- data.frame(
+       name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+                "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
+       lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -93.104781, -25.240156),
+       lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -57.519227)
+   )
+   invisible(as_waypoints(wp, fmt = 1))
 }
 
-## "waypoints" object in decimal degrees (fmt = 1)
-as_waypoints(wp, fmt = 1)
-
+## Continuing example from `validate()`...
+## Review "waypoints" object in  decimal degrees, having an erroneous
+## penultimate latitude absolute value greater than 90 degrees
 review(wp)
 
 rm(dm, wp)
