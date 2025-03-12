@@ -76,8 +76,8 @@ for use by the \code{print()} method for class \code{"waypoints"}.
 }
 
 ## Continuing example from `as_coords()`...
-## Named "coords" object in degrees and minutes
-## silently using print() method for class "coords"
+## Print named "coords" object in degrees and minutes,
+## 'silently' using S3 print() method
 dm
 
 ## Format as a fixed-width character vector with names...
@@ -97,9 +97,9 @@ format(dm, usenames = FALSE)
    invisible(as_waypoints(wp, fmt = 3))
 }
 
-## Continuing example from `as_ waypoints()`...
-## "waypoints" object in degrees, minutes and seconds
-## silently using print() method for class "waypoints"
+## Continuing example from `as_waypoints()`...
+## Print named "waypoints" object in degrees and minutes,
+## 'silently' using S3 print() method
 wp
 
 ## Format as a fixed-width character vector with names...

@@ -281,8 +281,8 @@ as_waypoints <- function(object, ...)
 #' }
 #'
 #' ## Continuing example from `as_coords()`...
-#' ## Named "coords" object in degrees and minutes
-#' ## Eight values each of latitude and longitude
+#' ## Named "coords" object in degrees and minutes with
+#' ## eight values each of latitude and longitude
 #' dm
 #'
 #' ## Convert to degrees, minutes and seconds (fmt = 3)
@@ -390,11 +390,12 @@ convert <- function(x, ...)
 #' }
 #'
 #' ## Continuing example from `as_coords()`...
-#' ## Named "coords" object in degrees and minutes
-#' ## silently using print() method for class "coords"
+#' ## Print named "coords" object in degrees and minutes,
+#' ## 'silently' using S3 print() method
 #' dm
 #'
-#' ## Format as a fixed-width character vector with names...
+#' ## Format as a fixed-width character vector,
+#' ## with names...
 #' format(dm)
 #'
 #' ## ...or without them
@@ -412,11 +413,12 @@ convert <- function(x, ...)
 #' }
 #'
 #' ## Continuing example from `as_waypoints()`...
-#' ## "waypoints" object in degrees, minutes and seconds
-#' ## silently using print() method for class "waypoints"
+#' ## Print named "waypoints" object in degrees and minutes,
+#' ## 'silently' using S3 print() method
 #' wp
 #'
-#' ## Format as a fixed-width character vector with names...
+#' ## Format as a fixed-width character vector,
+#' ## with names...
 #' format(wp)
 #'
 #' ## ...or without them

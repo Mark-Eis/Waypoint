@@ -55,8 +55,8 @@ to ensure its values represent valid geographic locations as described under
 }
 
 ## Continuing example from `as_coords()`...
-## Named "coords" object in degrees and minutes
-## Eight values each of latitude and longitude
+## Named "coords" object in degrees and minutes with
+## eight values each of latitude and longitude
 dm
 
 ## Convert to degrees, minutes and seconds (fmt = 3)
@@ -79,7 +79,7 @@ as.numeric(dm)
    invisible(as_waypoints(wp, fmt = 3))
 }
 
-## Continuing example from `as_ waypoints()`...
+## Continuing example from `as_waypoints()`...
 ## "waypoints" object in degrees, minutes and seconds
 wp
 

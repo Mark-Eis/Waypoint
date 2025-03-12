@@ -75,7 +75,7 @@ attr(dm, "valid")
    invisible(as_waypoints(wp))
 }
 
-## Continuing second example from `as_ waypoints()`...
+## Continuing second example from `as_waypoints()`...
 ## Validate "waypoints" object in decimal degrees
 
 validate(wp)
