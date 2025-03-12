@@ -269,6 +269,7 @@ as_waypoints <- function(object, ...)
 #' @keywords programming
 #'
 #' @examples
+#' ## Continuing example from `as_coords()`...
 #' \dontshow{
 #'    dm <-
 #'        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
@@ -280,7 +281,6 @@ as_waypoints <- function(object, ...)
 #'    latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 #' }
 #'
-#' ## Continuing example from `as_coords()`...
 #' ## Named "coords" object in degrees and minutes with
 #' ## eight values each of latitude and longitude
 #' dm
@@ -295,6 +295,7 @@ as_waypoints <- function(object, ...)
 #' as.numeric(dm)
 #'
 #' ###
+#' ## Continuing example from `as_waypoints()`...
 #' \dontshow{
 #'    wp <- data.frame(
 #'        name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
@@ -305,7 +306,6 @@ as_waypoints <- function(object, ...)
 #'    invisible(as_waypoints(wp, fmt = 3))
 #' }
 #' 
-#' ## Continuing example from `as_waypoints()`...
 #' ## "waypoints" object in degrees, minutes and seconds
 #' wp
 #'
@@ -378,6 +378,7 @@ convert <- function(x, ...)
 #' @keywords character print
 #'
 #' @examples
+#' ## Continuing example from `as_coords()`...
 #' \dontshow{
 #'    dm <-
 #'        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
@@ -389,7 +390,6 @@ convert <- function(x, ...)
 #'    latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 #' }
 #'
-#' ## Continuing example from `as_coords()`...
 #' ## Print named "coords" object in degrees and minutes,
 #' ## 'silently' using S3 print() method
 #' dm
@@ -402,6 +402,7 @@ convert <- function(x, ...)
 #' format(dm, usenames = FALSE)
 #'
 #' ###
+#' ## Continuing example from `as_waypoints()`...
 #' \dontshow{
 #'    wp <- data.frame(
 #'        name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
@@ -412,7 +413,6 @@ convert <- function(x, ...)
 #'    invisible(as_waypoints(wp, fmt = 3))
 #' }
 #'
-#' ## Continuing example from `as_waypoints()`...
 #' ## Print named "waypoints" object in degrees and minutes,
 #' ## 'silently' using S3 print() method
 #' wp
@@ -509,6 +509,7 @@ print.waypoints <- function (x, ..., max = NULL) {
 #' \code{"coords"} and' \code{"waypoints"} objects respectively.
 #'
 #' @examples
+#' ## Continuing example from `as_coords()`...
 #' \dontshow{
 #'    dm <-
 #'        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
@@ -520,7 +521,6 @@ print.waypoints <- function (x, ..., max = NULL) {
 #'    latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 #' }
 #'
-#' ## Continuing example from `as_coords()`...
 #' ## Validate "coords" object in degrees and minutes
 #' validate(dm)
 #'
@@ -534,6 +534,7 @@ print.waypoints <- function (x, ..., max = NULL) {
 #' attr(dm, "valid")
 #'
 #' ###
+#' ## Continuing second example from `as_waypoints()`...
 #' \dontshow{
 #'    wp <- data.frame(
 #'        lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -53.104781, -25.240156),
@@ -545,7 +546,6 @@ print.waypoints <- function (x, ..., max = NULL) {
 #'    invisible(as_waypoints(wp))
 #' }
 #'
-#' ## Continuing second example from `as_waypoints()`...
 #' ## Validate "waypoints" object in decimal degrees
 #'
 #' validate(wp)
@@ -615,6 +615,7 @@ validate <- function(x, ...)
 #' @export
 #'
 #' @examples
+#' ## Continuing example from `validate()`...
 #' \dontshow{
 #'    oldopt <- options(warn = -1)
 #'    dm <-
@@ -627,12 +628,12 @@ validate <- function(x, ...)
 #'    latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 #' }
 #'
-#' ## Continuing example from `validate()`...
 #' ## Review "coords" object in degrees and minutes, having
 #' ## an erroneous first value of more than 60 minutes
 #' review(dm)
 #'
 #' ###
+#' ## Continuing example from `validate()`...
 #' \dontshow{
 #'    wp <- data.frame(
 #'        name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
@@ -643,7 +644,6 @@ validate <- function(x, ...)
 #'    invisible(as_waypoints(wp, fmt = 1))
 #' }
 #'
-#' ## Continuing example from `validate()`...
 #' ## Review "waypoints" object in  decimal degrees, having an erroneous
 #' ## penultimate latitude absolute value greater than 90 degrees
 #' review(wp)

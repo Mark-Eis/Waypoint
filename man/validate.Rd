@@ -86,7 +86,7 @@ wp$lat[7] <- -93.104781
 
 validate(wp)
 
-## Examine "validlat" attribute of wp1
+## Examine "validlat" attribute of wp
 attr(wp, "validlat")
 
 rm(dm, wp)
