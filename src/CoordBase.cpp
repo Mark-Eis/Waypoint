@@ -57,6 +57,14 @@ struct FF_degminsec;
 template<CoordType type>
 class Convertor;
 
+template<CoordType type>
+class Format;
+
+template<class T, CoordType type>
+class FormatLL;
+
+class Validator;
+
 //CoordType switches
 template<class T, class U>
 void convert_switch(T, CoordType);
@@ -65,14 +73,6 @@ vector<string> format_switch(const T&, CoordType);
 
 //Coord
 class Coord;
-
-class Validator;
-
-template<CoordType type>
-class Format;
-
-template<class T, CoordType type>
-class FormatLL;
 
 // WayPoint
 class WayPoint;
@@ -688,6 +688,7 @@ template<class T>
 vector<string> format_switch(const T& t, CoordType ct)
 {
 //	cout << "@format_switch<T>(const T&, CoordType) " << Demangler(typeid(t)) << " ct " << coordtype_to_int(ct) << endl;
+	static_assert(std::is_same<Coord, T>::value || std::is_same<WayPoint, T>::value, "T must be Coord or WayPoint");
 	vector<string> sv; 
 	switch (ct)
 	{
