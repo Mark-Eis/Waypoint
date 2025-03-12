@@ -280,7 +280,7 @@ as_waypoints <- function(object, ...)
 #'        rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
 #'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
 #'
-#'    as_coords(dm, fmt = 2)
+#'    invisible(as_coords(dm, fmt = 2))
 #'    latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 #' }
 #'
