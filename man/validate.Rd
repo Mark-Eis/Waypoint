@@ -50,12 +50,12 @@ non-compliant coordinate values.
    latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 }
 
-## Continuing example from `coords()`...
-## "coords" object in degrees and minutes
+## Continuing example from `as_coords()`...
+## Validate "coords" object in degrees and minutes
 validate(dm)
 
-## Deliberately change the first coordinate to have
-## an invalid value with more than 60 minutes
+## Deliberately change the first coordinate
+## a value greater than 60 minutes
 dm[1] <- 5160.4659
 
 validate(dm)
@@ -68,25 +68,26 @@ attr(dm, "valid")
    wp <- data.frame(
        lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -53.104781, -25.240156),
        lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -57.519227)
-       row.names =
-             c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
-               "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport")
    )
-   invisible(as_waypoints(wp2, fmt = 3))
+   row.names(wp) <-
+       c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+         "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport")
+   invisible(as_waypoints(wp))
 }
-## Continuing example from `waypoints()`...
-## "waypoints" object in decimal degrees
+
+## Continuing second example from `as_ waypoints()`...
+## Validate "waypoints" object in decimal degrees
 
 validate(wp)
 
-## Deliberately change the penultimate latitude to an
-## invalid absolute value of greater than 90 degrees
-wp1$lat[7] <- -93.104781
+## Deliberately change the penultimate latitude
+## to an absolute value greater than 90 degrees
+wp$lat[7] <- -93.104781
 
 validate(wp)
 
 ## Examine "validlat" attribute of wp1
-attr(wp1, "validlat")
+attr(wp, "validlat")
 
 rm(dm, wp)
 

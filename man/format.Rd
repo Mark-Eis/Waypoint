@@ -75,7 +75,7 @@ for use by the \code{print()} method for class \code{"waypoints"}.
    latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 }
 
-## Continuing example from `coords()`...
+## Continuing example from `as_coords()`...
 ## Named "coords" object in degrees and minutes
 ## silently using print() method for class "coords"
 dm
@@ -97,7 +97,7 @@ format(dm, usenames = FALSE)
    invisible(as_waypoints(wp, fmt = 3))
 }
 
-## Continuing example from `waypoints()`...
+## Continuing example from `as_ waypoints()`...
 ## "waypoints" object in degrees, minutes and seconds
 ## silently using print() method for class "waypoints"
 wp
