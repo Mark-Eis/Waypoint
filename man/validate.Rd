@@ -55,7 +55,7 @@ non-compliant coordinate values.
 validate(dm)
 
 ## Deliberately change the first coordinate
-## a value greater than 60 minutes
+## to a value greater than 60 minutes
 dm[1] <- 5160.4659
 
 validate(dm)

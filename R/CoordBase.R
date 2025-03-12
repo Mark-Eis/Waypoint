@@ -556,7 +556,7 @@ print.waypoints <- function (x, ..., max = NULL) {
 #'
 #' validate(wp)
 #'
-#' ## Examine "validlat" attribute of wp1
+#' ## Examine "validlat" attribute of wp
 #' attr(wp, "validlat")
 #'
 #' rm(dm, wp)
