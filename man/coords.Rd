@@ -10,11 +10,11 @@
 \usage{
 as_coords(object, ...)
 
-\method{as_coords}{default}(object, ..., fmt = 1L)
+\method{as_coords}{default}(object, fmt = 1L)
 
 latlon(cd) <- value
 
-\method{as_coords}{waypoints}(object, which, ...)
+\method{as_coords}{waypoints}(object, which)
 }
 \arguments{
 \item{object}{a \code{numeric} vector of coordinate values, optionally named, or an object of

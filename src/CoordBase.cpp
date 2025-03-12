@@ -936,7 +936,7 @@ vector<string> WayPoint::format_ct() const
 /// Format waypoints vector<string> with names
 vector<string> WayPoint::format(bool usenames) const
 {
-	cout << "@WayPoint::format(bool) " << Demangler(typeid(*this)) << endl;
+//	cout << "@WayPoint::format(bool) " << Demangler(typeid(*this)) << endl;
 	vector<string>&& sv = format_switch(*this, ct);
 	RObject names = getnames(df);
 	if (!prefixwithnames(sv, names))
