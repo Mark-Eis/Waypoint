@@ -85,6 +85,7 @@ as_waypoints(wp1, fmt = 3)
 as.data.frame(wp1)
 
 ###
+
 ## Dataframe representing unnamed latitude and longitude
 ## values in decimal degrees
 wp2 <- data.frame(

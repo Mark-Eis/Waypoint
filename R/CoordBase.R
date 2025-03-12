@@ -332,7 +332,7 @@ convert <- function(x, ...)
 
 
 ## __________________________________________________
-#' @title Format Coords or Waypoints
+#' @title Format and Print Coords or Waypoints
 #' 
 #' @name format
 #' 
@@ -385,12 +385,14 @@ convert <- function(x, ...)
 #'    names(dm) <- 
 #'        rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
 #'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
+#'    invisible(as_coords(dm, fmt = 2))
+#'    latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 #' }
 #'
 #' ## Continuing example from `coords()`...
 #' ## Named "coords" object in degrees and minutes
 #' ## silently using print() method for class "coords"
-#' as_coords(dm, fmt = 2)
+#' dm
 #'
 #' ## Format as a fixed-width character vector with names...
 #' format(dm)
@@ -406,12 +408,13 @@ convert <- function(x, ...)
 #'        lat = c(513027.95, 493246.36, 480626.04, 385322.18, 0, -370642.26, -530617.21, -251424.56),
 #'        lon = c(-00740.53, 182354.82, -1224643.22, -770206.87, 0, -121719.07, 733102.22, -573109.21)
 #'    )
+#'    invisible(as_waypoints(wp, fmt = 3))
 #' }
 #'
 #' ## Continuing example from `waypoints()`...
 #' ## "waypoints" object in degrees, minutes and seconds
 #' ## silently using print() method for class "waypoints"
-#' as_waypoints(wp, fmt = 3)
+#' wp
 #'
 #' ## Format as a fixed-width character vector with names...
 #' format(wp)
@@ -504,20 +507,19 @@ print.waypoints <- function (x, ..., max = NULL) {
 #' \code{"coords"} and' \code{"waypoints"} objects respectively.
 #'
 #' @examples
-#' ## Continuing example from `coords()`...
-#' ## "coords" object in degrees and minutes
 #' \dontshow{
 #'    dm <-
 #'        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
 #'		   -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
-#'
 #'    names(dm) <- 
 #'        rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
 #'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
-#'
-#' as_coords(dm, fmt = 2)
+#'    invisible(as_coords(dm, fmt = 2))
+#'    latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 #' }
 #'
+#' ## Continuing example from `coords()`...
+#' ## "coords" object in degrees and minutes
 #' validate(dm)
 #'
 #' ## Deliberately change the first coordinate to have
@@ -530,8 +532,6 @@ print.waypoints <- function (x, ..., max = NULL) {
 #' attr(dm, "valid")
 #'
 #' ###
-#' ## Continuing example from `waypoints()`...
-#' ## "waypoints" object in decimal degrees
 #' \dontshow{
 #' wp1 <- data.frame(
 #'     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
@@ -539,9 +539,10 @@ print.waypoints <- function (x, ..., max = NULL) {
 #'     lat = c(51.507765, 49.54621, 48.107232, 38.889494, 0, -37.11174, -53.104781, -25.240156),
 #'     lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -57.519227)
 #' )
-#'
-#' as_waypoints(wp1, fmt = 1)
+#'    invisible(as_waypoints(wp, fmt = 3))
 #' }
+#' ## Continuing example from `waypoints()`...
+#' ## "waypoints" object in decimal degrees
 #'
 #' validate(wp1)
 #'

@@ -93,12 +93,12 @@ names(dm) <- rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monum
                    "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
 dm
 
-## All values to represent longitude
+## Set all values to represent longitude
 ## ("latlon" attribute set to FALSE, length 1)
 latlon(dm) <- FALSE
 dm
 
-## Eight values each of latitude and longitude
+## Set eight values each of latitude and longitude
 ## ("latlon" attribute set to TRUE, n=8, and FALSE, n=8)
 latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 dm
