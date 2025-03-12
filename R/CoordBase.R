@@ -208,7 +208,7 @@ as_coords <- function(object, ...)
 #' ## Create unnamed "waypoints" object of decimal degrees (default fmt = 1)
 #' as_waypoints(wp2)
 #'
-#' ## Add row.names
+#' ## Add waypoint names as row.names
 #' row.names(wp2) <-
 #'     c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
 #'       "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport")
