@@ -270,6 +270,7 @@ as_waypoints <- function(object, ...)
 #' @examples
 #' ## Continuing example from `coords()`...
 #' ## Named "coords" object in degrees and minutes
+#' ## Eight values each of latitude and longitude
 #' \dontshow{
 #'    dm <-
 #'        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
@@ -278,9 +279,12 @@ as_waypoints <- function(object, ...)
 #'    names(dm) <- 
 #'        rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
 #'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
+#'
+#'    as_coords(dm, fmt = 2)
+#'    latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 #' }
 #'
-#' as_coords(dm, fmt = 2)
+#' dm
 #'
 #' ## Convert to degrees, minutes and seconds (fmt = 3)
 #' convert(dm, 3)
