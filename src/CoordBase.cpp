@@ -936,23 +936,11 @@ vector<string> WayPoint::format_ct() const
 /// Format waypoints vector<string> with names
 vector<string> WayPoint::format(bool usenames) const
 {
-//	cout << "@WayPoint::format(bool) " << Demangler(typeid(*this)) << endl;
+	cout << "@WayPoint::format(bool) " << Demangler(typeid(*this)) << endl;
 	vector<string>&& sv = format_switch(*this, ct);
-
-	vector<int> namescolvec { get_vec_attr<DataFrame, int>(df, "namescol") };
-	if (1 == namescolvec.size() && usenames) {
-		int namescol = namescolvec[0] - 1;
-		if (is_item_in_obj(df, namescol)) {
-			RObject names = df[namescol];
-			if (!prefixwithnames(sv, names))
-				stop("Invalid \"namescol\" attribute! (df[namescol] neither a CharacterVector nor IntegerVector)");
-		} else
-			stop("Invalid \"namescol\" attribute! (item not in object)");
-	} else if (df.hasAttribute("row.names") && usenames) {
-		RObject rownames = df.attr("row.names");
-		if (!prefixwithnames(sv, rownames))
-			stop("Invalid \"row.names\" attribute! (neither a CharacterVector nor IntegerVector)");
-	}
+	RObject names = getnames(df);
+	if (!prefixwithnames(sv, names))
+		stop("Invalid \"namescol\" attribute!");
 	return sv;
 }
 
