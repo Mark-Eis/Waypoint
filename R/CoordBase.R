@@ -715,8 +715,8 @@ review.coords <- function(x, ..., show_n = 20L)
 
 review.waypoints <- function(x, ..., show_n = 20L)
     list(
-        Lat = review(as_coords(x, TRUE), show_n),
-        Lon = review(as_coords(x, FALSE), show_n)
+        Lat = review(as_coords(x, TRUE), show_n = show_n),
+        Lon = review(as_coords(x, FALSE), show_n = show_n)
     )
 
 
