@@ -69,7 +69,6 @@ convert(dm, 1)
 as.numeric(dm)
 
 ###
-
 \dontshow{
    wp <- data.frame(
        name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",

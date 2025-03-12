@@ -92,12 +92,12 @@
 #'                    "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
 #' dm
 #'
-#' ## All values to represent longitude
+#' ## Set all values to represent longitude
 #' ## ("latlon" attribute set to FALSE, length 1)
 #' latlon(dm) <- FALSE
 #' dm
 #'
-#' ## Eight values each of latitude and longitude
+#' ## Set eight values each of latitude and longitude
 #' ## ("latlon" attribute set to TRUE, n=8, and FALSE, n=8)
 #' latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 #' dm
@@ -198,6 +198,7 @@ as_coords <- function(object, ...)
 #' as.data.frame(wp1)
 #'
 #' ###
+#'
 #' ## Dataframe representing unnamed latitude and longitude
 #' ## values in decimal degrees
 #' wp2 <- data.frame(
@@ -294,7 +295,6 @@ as_waypoints <- function(object, ...)
 #' as.numeric(dm)
 #'
 #' ###
-#'
 #' \dontshow{
 #'    wp <- data.frame(
 #'        name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
@@ -378,19 +378,18 @@ convert <- function(x, ...)
 #' @keywords character print
 #'
 #' @examples
-#' ## Continuing example from `coords()`...
-#' ## Named "coords" object in degrees and minutes
 #' \dontshow{
 #'    dm <-
 #'        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
 #'		   -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
-#'
 #'    names(dm) <- 
 #'        rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
 #'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
 #' }
 #'
-#' ## Silently using print() method for class "coords"
+#' ## Continuing example from `coords()`...
+#' ## Named "coords" object in degrees and minutes
+#' ## silently using print() method for class "coords"
 #' as_coords(dm, fmt = 2)
 #'
 #' ## Format as a fixed-width character vector with names...
@@ -400,18 +399,18 @@ convert <- function(x, ...)
 #' format(dm, usenames = FALSE)
 #'
 #' ###
-#' ## Continuing example from `waypoints()`...
-#' ## "waypoints" object in degrees, minutes and seconds
 #' \dontshow{
-#' wp <- data.frame(
-#'     name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
-#'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
-#'     lat = c(513027.95, 493246.36, 480626.04, 385322.18, 0, -370642.26, -530617.21, -251424.56),
-#'     lon = c(-00740.53, 182354.82, -1224643.22, -770206.87, 0, -121719.07, 733102.22, -573109.21)
-#' )
+#'    wp <- data.frame(
+#'        name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+#'                 "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
+#'        lat = c(513027.95, 493246.36, 480626.04, 385322.18, 0, -370642.26, -530617.21, -251424.56),
+#'        lon = c(-00740.53, 182354.82, -1224643.22, -770206.87, 0, -121719.07, 733102.22, -573109.21)
+#'    )
 #' }
 #'
-#' ## Silently using print() method for class "waypoints"
+#' ## Continuing example from `waypoints()`...
+#' ## "waypoints" object in degrees, minutes and seconds
+#' ## silently using print() method for class "waypoints"
 #' as_waypoints(wp, fmt = 3)
 #'
 #' ## Format as a fixed-width character vector with names...
