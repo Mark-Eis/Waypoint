@@ -47,11 +47,9 @@ to ensure its values represent valid geographic locations as described under
    dm <-
        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
        -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
-
    names(dm) <- 
        rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
-
    invisible(as_coords(dm, fmt = 2))
    latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
 }
@@ -78,7 +76,6 @@ as.numeric(dm)
        lat = c(513027.95, 493246.36, 480626.04, 385322.18, 0, -370642.26, -530617.21, -251424.56),
        lon = c(-00740.53, 182354.82, -1224643.22, -770206.87, 0, -121719.07, 733102.22, -573109.21)
    )
-
    invisible(as_waypoints(wp, fmt = 3))
 }
 

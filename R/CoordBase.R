@@ -293,7 +293,8 @@ as_waypoints <- function(object, ...)
 #' ## Show converted values as an ordinary R numeric vector
 #' as.numeric(dm)
 #'
-#' ###
+#' ### **
+#'
 #' \dontshow{
 #'    wp <- data.frame(
 #'        name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
