@@ -1067,6 +1067,7 @@ NumericVector as_coords(NumericVector object, const int fmt = 1)
 NumericVector convertcoords(NumericVector x, const int fmt)
 {
 //	cout << "——Rcpp::export——convertcoords(NumericVector, const int) from " << get_fmt_attribute(x) << " to " << fmt << endl;
+	cout << std::format("——Rcpp::export——convertcoords(NumericVector, const int) from {} to ", get_fmt_attribute(x)) << fmt << endl;
 	checkinherits(x, "coords");
 	CoordType type = get_coordtype(x);
 	CoordType newtype = get_coordtype(fmt);
