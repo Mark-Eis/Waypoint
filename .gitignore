@@ -17,6 +17,8 @@
 /Help pdf
 
 docs
+
+### Rcpp ###
 src/*.o
 src/*.so
 src/*.dll
