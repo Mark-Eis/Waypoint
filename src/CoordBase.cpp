@@ -71,7 +71,10 @@ void convert_switch(T, CoordType);
 template<class T>
 vector<string> format_switch(const T&, CoordType);
 
-//Coord
+// Coordbase
+class Coordbase;
+
+// Coord
 class Coord;
 
 // WayPoint
@@ -713,7 +716,7 @@ vector<string> format_switch(const T& t, CoordType ct)
 
 /// __________________________________________________
 /// __________________________________________________
-/// Coord base class
+/// Coordbase class
 class Coordbase {
 	protected:
 		CoordType ct;
