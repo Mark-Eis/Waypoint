@@ -460,14 +460,14 @@ print.coords <- function (x, ..., max = NULL) {
 
 print.waypoints <- function (x, ..., max = NULL) {
     n <- length(row.names(x))
+    fmtx <- format(x, ...)
     if (is.null(max))
         max <- getOption("max.print", 99999L)
     if (!is.finite(max)) 
         stop("invalid 'max' / getOption(\"max.print\"): ", max)
     omit <- (n0 <- max %/% 3L) < n
     if (omit) 
-        x <- x[seq_len(n0), , drop = FALSE]
-    fmtx <- format(x, ...)
+        fmtx <- fmtx[seq_len(n0)]
     writeLines(ll_headers(fmtx, attr(x, "fmt")))
     writeLines(fmtx)
     if (omit) 
