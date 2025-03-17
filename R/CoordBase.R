@@ -435,17 +435,15 @@ convert <- function(x, ...)
 
 print.coords <- function (x, ..., max = NULL) {
     n <- length(x)
+    fmtx <- format(x, ...)
     if (is.null(max))
         max <- getOption("max.print", 99999L)
     if (!is.finite(max)) 
         stop("invalid 'max' / getOption(\"max.print\"): ", max)
     omit <- (n0 <- max %/% (if (is.null(names(x))) 1L else 2L)) < n
-    if (omit) {
-        tmp <- lapply(attributes(x), \(x) x[seq_len(min(length(x), n0))])
-        x <- x[seq_len(n0)]
-        attributes(x) <- tmp
-    }
-    writeLines(format(x, ...))
+    if (omit) 
+        fmtx <- fmtx[seq_len(n0)]
+    writeLines(fmtx)
     if (omit) 
         cat(" [ reached 'max' / getOption(\"max.print\") -- omitted", n - n0, "entries ]\n")
     invisible(x)
