@@ -1246,7 +1246,6 @@ NumericVector as_coordswaypoints(DataFrame object, bool which)
 	nv = clone(nv);
 	nv.attr("class") = "coords";
 	nv.attr("fmt") = object.attr("fmt");
-	nv.attr("which") = which ? vector<bool>{ TRUE } : vector<bool>{ FALSE };
 	nv.attr("valid") = object.attr(which ? "validlat" : "validlon");
 	nv.attr("latlon") = which;
 	nv.attr("names") = getnames(object);
