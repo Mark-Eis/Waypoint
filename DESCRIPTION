@@ -5,10 +5,10 @@ Version: 1.1.0
 Authors@R: 
     person("Mark", "Eisler", email = "mark.eisler@bristol.ac.uk", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0001-6843-3345"))
-Date: 2025-03-13
+Date: 2025-03-17
 Description: Convert, validate, format and elegantly print geographic coordinates and waypoints
    (paired latitude and longitude values) in decimal degrees, degrees and minutes, and degrees,
-   minutes and seconds using high performance C++ code to enable rapid conversion and formatting
+   minutes and seconds using high performance 'C++' code to enable rapid conversion and formatting
    of large coordinate and waypoint datasets.
 License: MIT + file LICENSE
 Imports: methods, Rcpp (>= 1.0.13)
