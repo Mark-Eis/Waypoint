@@ -102,7 +102,7 @@ bool valid_ll(const DataFrame);
 NumericVector as_coords(NumericVector, const int);
 NumericVector convertcoords(NumericVector, const int);
 NumericVector latlon(NumericVector, LogicalVector);
-NumericVector validatecoords(NumericVector);
+NumericVector validatecoords(NumericVector, const bool);
 CharacterVector formatcoords(NumericVector, bool);
 DataFrame as_waypointsdefault(DataFrame, const int);
 DataFrame convertwaypoints(DataFrame, const int);
@@ -1104,11 +1104,17 @@ NumericVector latlon(NumericVector cd, LogicalVector value)
 /// Validate coords vector
 //' @rdname validate
 // [[Rcpp::export(name = "validate.coords")]]
-NumericVector validatecoords(NumericVector x)
+NumericVector validatecoords(NumericVector x, const bool force = true)
 {
-//	cout << "——Rcpp::export——validatecoords(NumericVector) format " << get_fmt_attribute(x) << endl;
+//	cout << "——Rcpp::export——validatecoords(NumericVector, const bool) format " << get_fmt_attribute(x) << endl;
 	checkinherits(x, "coords");
-	return validate<NumericVector, Coord>(x);
+	if (force)
+		return validate<NumericVector, Coord>(x);
+	else {
+		if (!check_valid(x))
+			warning("Invalid coords!");
+		return x;
+	}
 }
 
 
