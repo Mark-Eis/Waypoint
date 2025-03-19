@@ -8,7 +8,15 @@ degrees and minutes, and (iii) degrees, minutes and seconds formats.
 
 ## Installation
 
-You can install the development version of Waypoint from [GitHub](https://github.com/) with:
+You can install the currently-released version from CRAN with this R
+command:
+
+``` r
+install.packages("Waypoint")
+```
+
+Alternatively, you can install the latest development version of Waypoint
+from [GitHub](https://github.com/) with:
       
 ``` r
 # install.packages("devtools")
