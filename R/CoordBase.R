@@ -498,6 +498,12 @@ print.waypoints <- function (x, ..., max = NULL) {
 #' @seealso
 #' \code{"\link{coords}"} and \code{"\link{waypoints}"}.
 #'
+#' @param force \code{logical} signifying whether, if \code{TRUE}, to perform full \emph{de novo}
+#'   revalidation or, if \code{FALSE}, simply report existing \code{"valid"} attribute in the case
+#'   of a \code{"coords"} object, or \code{"validlat"} and \code{"validlon"} attributes in the case
+#'   of a \code{"waypoints"} object and only revalidate if any of these are missing; default
+#'   \code{TRUE}.
+#'
 #' @inheritParams coords
 #' @inheritParams convert
 #'
