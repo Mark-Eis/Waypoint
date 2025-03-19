@@ -106,7 +106,7 @@ NumericVector validatecoords(NumericVector, const bool);
 CharacterVector formatcoords(NumericVector, bool);
 DataFrame as_waypointsdefault(DataFrame, const int);
 DataFrame convertwaypoints(DataFrame, const int);
-DataFrame validatewaypoints(DataFrame);
+DataFrame validatewaypoints(DataFrame, const bool);
 CharacterVector formatwaypoints(DataFrame, bool);
 CharacterVector ll_headers(int, const int);
 NumericVector as_coordswaypoints(DataFrame, bool);
@@ -1189,13 +1189,19 @@ DataFrame convertwaypoints(DataFrame x, const int fmt)
 /// Validate waypoints vector
 //' @rdname validate
 // [[Rcpp::export(name = "validate.waypoints")]]
-DataFrame validatewaypoints(DataFrame x)
+DataFrame validatewaypoints(DataFrame x, const bool force = true)
 {
-//	cout << "——Rcpp::export——validatewaypoints(DataFrame) format " << get_fmt_attribute(x) << endl;
-	checkinherits(x, "waypoints");
-	if(!valid_ll(x))
-		stop("Invalid llcols attribute!");
-	return validate<DataFrame, WayPoint>(x);
+//      cout << "——Rcpp::export——validatewaypoints(DataFrame, const bool) format " << get_fmt_attribute(x) << endl;
+        checkinherits(x, "waypoints");
+        if(!valid_ll(x))
+                stop("Invalid llcols attribute!");
+	if (force)
+		return validate<DataFrame, WayPoint>(x);
+	else {
+		if (!check_valid(x))
+			warning("Invalid waypoints!");
+		return x;
+	}
 }
 
 
