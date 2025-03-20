@@ -9,15 +9,21 @@
 \usage{
 validate(x, ...)
 
-\method{validate}{coords}(x, ...)
+\method{validate}{coords}(x, force = TRUE)
 
-\method{validate}{waypoints}(x, ...)
+\method{validate}{waypoints}(x, force = TRUE)
 }
 \arguments{
 \item{x}{object of class \code{"\link{coords}"} created by function \code{\link{as_coords}()}, or
 class \code{"\link{waypoints}"} created by function \code{\link{as_waypoints}()}.}
 
 \item{...}{further arguments passed to or from other methods.}
+
+\item{force}{\code{logical} signifying whether, if \code{TRUE}, to perform full \emph{de novo}
+revalidation or, if \code{FALSE}, simply check existing \code{"valid"} attribute in the case
+of a \code{"coords"} object, or \code{"validlat"} and \code{"validlon"} attributes in the case
+of a \code{"waypoints"} object and only revalidate if any of these are missing; default
+\code{TRUE}.}
 }
 \value{
 \code{validate()} returns its argument with \code{logical} vector attribute \code{"valid"},
@@ -37,6 +43,10 @@ where given, must not exceed 60. Otherwise, a warning will be issued and the \co
 attribute in the case of a \code{"coords"} object, or \code{"validlat"} and \code{"validlon"}
 attributes in the case of a \code{"waypoints"} object will be set to \code{FALSE} for any
 non-compliant coordinate values.
+
+Argument \code{force} is primarily intended for use by the \code{print()} methods for classes
+  \code{"coords"} and \code{"waypoints"} and should otherwise left as the default value
+  \code{TRUE}.
 }
 \examples{
 ## Continuing example from `as_coords()`...

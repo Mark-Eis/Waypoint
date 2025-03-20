@@ -494,12 +494,16 @@ print.waypoints <- function (x, ..., max = NULL) {
 #' attributes in the case of a \code{"waypoints"} object will be set to \code{FALSE} for any
 #' non-compliant coordinate values.
 #'
+#' Argument \code{force} is primarily intended for use by the \code{print()} methods for classes
+#'   \code{"coords"} and \code{"waypoints"} and should otherwise left as the default value
+#'   \code{TRUE}.
+#'
 #' @family validate
 #' @seealso
 #' \code{"\link{coords}"} and \code{"\link{waypoints}"}.
 #'
 #' @param force \code{logical} signifying whether, if \code{TRUE}, to perform full \emph{de novo}
-#'   revalidation or, if \code{FALSE}, simply report existing \code{"valid"} attribute in the case
+#'   revalidation or, if \code{FALSE}, simply check existing \code{"valid"} attribute in the case
 #'   of a \code{"coords"} object, or \code{"validlat"} and \code{"validlon"} attributes in the case
 #'   of a \code{"waypoints"} object and only revalidate if any of these are missing; default
 #'   \code{TRUE}.

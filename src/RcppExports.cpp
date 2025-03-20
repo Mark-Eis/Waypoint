@@ -47,13 +47,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // validatecoords
-NumericVector validatecoords(NumericVector x);
-RcppExport SEXP _Waypoint_validatecoords(SEXP xSEXP) {
+NumericVector validatecoords(NumericVector x, const bool force);
+RcppExport SEXP _Waypoint_validatecoords(SEXP xSEXP, SEXP forceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(validatecoords(x));
+    Rcpp::traits::input_parameter< const bool >::type force(forceSEXP);
+    rcpp_result_gen = Rcpp::wrap(validatecoords(x, force));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -94,13 +95,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // validatewaypoints
-DataFrame validatewaypoints(DataFrame x);
-RcppExport SEXP _Waypoint_validatewaypoints(SEXP xSEXP) {
+DataFrame validatewaypoints(DataFrame x, const bool force);
+RcppExport SEXP _Waypoint_validatewaypoints(SEXP xSEXP, SEXP forceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< DataFrame >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(validatewaypoints(x));
+    Rcpp::traits::input_parameter< const bool >::type force(forceSEXP);
+    rcpp_result_gen = Rcpp::wrap(validatewaypoints(x, force));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -145,11 +147,11 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Waypoint_as_coords", (DL_FUNC) &_Waypoint_as_coords, 2},
     {"_Waypoint_convertcoords", (DL_FUNC) &_Waypoint_convertcoords, 2},
     {"_Waypoint_latlon", (DL_FUNC) &_Waypoint_latlon, 2},
-    {"_Waypoint_validatecoords", (DL_FUNC) &_Waypoint_validatecoords, 1},
+    {"_Waypoint_validatecoords", (DL_FUNC) &_Waypoint_validatecoords, 2},
     {"_Waypoint_formatcoords", (DL_FUNC) &_Waypoint_formatcoords, 2},
     {"_Waypoint_as_waypoints", (DL_FUNC) &_Waypoint_as_waypoints, 2},
     {"_Waypoint_convertwaypoints", (DL_FUNC) &_Waypoint_convertwaypoints, 2},
-    {"_Waypoint_validatewaypoints", (DL_FUNC) &_Waypoint_validatewaypoints, 1},
+    {"_Waypoint_validatewaypoints", (DL_FUNC) &_Waypoint_validatewaypoints, 2},
     {"_Waypoint_formatwaypoints", (DL_FUNC) &_Waypoint_formatwaypoints, 2},
     {"_Waypoint_ll_headers", (DL_FUNC) &_Waypoint_ll_headers, 2},
     {"_Waypoint_as_coordswaypoints", (DL_FUNC) &_Waypoint_as_coordswaypoints, 2},
