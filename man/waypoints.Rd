@@ -78,7 +78,7 @@ wp1 <- data.frame(
     lon = c(-00740.53, 182354.82, -1224643.22, -770206.87, 0, -121719.07, 733102.22, -573109.21)
 )
 
-## Create "waypoints" object of degrees, minutes and seconds (fmt = 3)
+## Create "waypoints" object in degrees, minutes and seconds (fmt = 3)
 as_waypoints(wp1, fmt = 3)
 
 ## Show as an ordinary R data frame
@@ -93,7 +93,7 @@ wp2 <- data.frame(
     lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -57.519227)
 )
 
-## Create unnamed "waypoints" object of decimal degrees (default fmt = 1)
+## Create unnamed "waypoints" object in decimal degrees (default fmt = 1)
 as_waypoints(wp2)
 
 ## Add waypoint names as row.names

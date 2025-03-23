@@ -84,7 +84,7 @@ whether individual values are latitude or longitude.
 dm <- c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
         -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
 
-## Create an unnamed "coords" object of degrees and minutes (fmt = 2)
+## Create an unnamed "coords" object in degrees and minutes (fmt = 2)
 ## (Latitude and longitude unspecified)
 as_coords(dm, fmt = 2)
 

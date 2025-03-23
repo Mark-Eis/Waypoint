@@ -444,7 +444,8 @@ print.coords <- function (x, ..., max = NULL) {
     if (omit) {
         x0 <- x[seq_len(n0)]
         attributes(x0) <- lapply(attributes(x), \(x) x[seq_len(min(length(x), n0))])
-    }
+    } else
+        x0 <- x
     writeLines(format(x0, ...))
     if (omit) 
         cat(" [ reached 'max' / getOption(\"max.print\") -- omitted", n - n0, "entries ]\n")
