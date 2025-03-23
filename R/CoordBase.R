@@ -83,7 +83,7 @@
 #' dm <- c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
 #'         -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
 #'
-#' ## Create an unnamed "coords" object of degrees and minutes (fmt = 2)
+#' ## Create an unnamed "coords" object in degrees and minutes (fmt = 2)
 #' ## (Latitude and longitude unspecified)
 #' as_coords(dm, fmt = 2)
 #'
@@ -191,7 +191,7 @@ as_coords <- function(object, ...)
 #'     lon = c(-00740.53, 182354.82, -1224643.22, -770206.87, 0, -121719.07, 733102.22, -573109.21)
 #' )
 #'
-#' ## Create "waypoints" object of degrees, minutes and seconds (fmt = 3)
+#' ## Create "waypoints" object in degrees, minutes and seconds (fmt = 3)
 #' as_waypoints(wp1, fmt = 3)
 #'
 #' ## Show as an ordinary R data frame
@@ -206,7 +206,7 @@ as_coords <- function(object, ...)
 #'     lon = c(-0.127924, 18.398562, -122.778671, -77.035242, 0, -12.28863, 73.517283, -57.519227)
 #' )
 #'
-#' ## Create unnamed "waypoints" object of decimal degrees (default fmt = 1)
+#' ## Create unnamed "waypoints" object in decimal degrees (default fmt = 1)
 #' as_waypoints(wp2)
 #'
 #' ## Add waypoint names as row.names
