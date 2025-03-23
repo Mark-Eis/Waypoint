@@ -442,11 +442,10 @@ print.coords <- function (x, ..., max = NULL) {
         stop("invalid 'max' / getOption(\"max.print\"): ", max)
     omit <- (n0 <- max %/% (if (is.null(names(x))) 1L else 2L)) < n
     if (omit) {
-        tmp <- lapply(attributes(x), \(x) x[seq_len(min(length(x), n0))])
-        x <- x[seq_len(n0)]
-        attributes(x) <- tmp
+        x0 <- x[seq_len(n0)]
+        attributes(x0) <- lapply(attributes(x), \(x) x[seq_len(min(length(x), n0))])
     }
-    writeLines(format(x, ...))
+    writeLines(format(x0, ...))
     if (omit) 
         cat(" [ reached 'max' / getOption(\"max.print\") -- omitted", n - n0, "entries ]\n")
     invisible(x)
