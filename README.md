@@ -50,8 +50,10 @@ devtools::install_github("Mark-Eis/Waypoint")
   geographic locations with `validate()` and identifies individual invalid
   values with `review()`.
 
-* Use `format()` and `print()` S3 methods for neat formatting and printing
-  of objects of classes "`coords`" and "`waypoints`".
+* Use `format()` and
+  [`print()`](https://mark-eis.github.io/Waypoint/reference/format.html) S3
+  methods for neat formatting and printing of objects of classes "`coords`" and
+  "`waypoints`".
   
 #### Methodology  
 
