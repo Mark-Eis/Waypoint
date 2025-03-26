@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">Waypoint</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,11 +56,8 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the currently-released version from CRAN with this R command:</p>
+<p>You can install the development version of Waypoint from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"Waypoint"</span><span class="op">)</span></span></code></pre></div>
-<p>Alternatively, you can install the latest development version of Waypoint from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"Mark-Eis/Waypoint"</span><span class="op">)</span></span></code></pre></div>
 <hr>
@@ -76,7 +73,7 @@
 <li><p>Convert “<code>coords</code>” and “<code>waypoints</code>” objects between decimal degrees, degrees and minutes, and degrees, minutes and seconds formats with <code><a href="reference/convert.html">convert()</a></code>.</p></li>
 <li><p>Assign latitude and longitude attributes to individual coordinate values within “<code>coords</code>” objects with <a href="https://mark-eis.github.io/Waypoint/reference/latlon.html"><code>latlon&lt;-</code></a>().</p></li>
 <li><p>Ensure values within “<code>coords</code>” and “<code>waypoints</code>” objects are valid geographic locations with <code><a href="reference/validate.html">validate()</a></code> and identifies individual invalid values with <code><a href="reference/review.html">review()</a></code>.</p></li>
-<li><p>Use <code><a href="reference/format.html">format()</a></code> and <a href="https://mark-eis.github.io/Waypoint/reference/format.html"><code>print()</code></a> S3 methods for neat formatting and printing of objects of classes “<code>coords</code>” and “<code>waypoints</code>”.</p></li>
+<li><p>Use <code><a href="reference/format.html">format()</a></code> and <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> S3 methods for neat formatting and printing of objects of classes “<code>coords</code>” and “<code>waypoints</code>”.</p></li>
 </ul>
 <div class="section level4">
 <h4 id="methodology">Methodology<a class="anchor" aria-label="anchor" href="#methodology"></a>

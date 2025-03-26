@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Waypoint</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,10 +41,10 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">validate</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'coords'</span></span>
-<span><span class="fu">validate</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, force <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">validate</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'waypoints'</span></span>
-<span><span class="fu">validate</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, force <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">validate</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -58,14 +58,6 @@ class <code>"<a href="waypoints.html">waypoints</a>"</code> created by function 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>further arguments passed to or from other methods.</p></dd>
-
-
-<dt id="arg-force">force<a class="anchor" aria-label="anchor" href="#arg-force"></a></dt>
-<dd><p><code>logical</code> signifying whether, if <code>TRUE</code>, to perform full <em>de novo</em>
-revalidation or, if <code>FALSE</code>, simply check existing <code>"valid"</code> attribute in the case
-of a <code>"coords"</code> object, or <code>"validlat"</code> and <code>"validlon"</code> attributes in the case
-of a <code>"waypoints"</code> object and only revalidate if any of these are missing; default
-<code>TRUE</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -84,9 +76,6 @@ where given, must not exceed 60. Otherwise, a warning will be issued and the <co
 attribute in the case of a <code>"coords"</code> object, or <code>"validlat"</code> and <code>"validlon"</code>
 attributes in the case of a <code>"waypoints"</code> object will be set to <code>FALSE</code> for any
 non-compliant coordinate values.</p>
-<p>Argument <code>force</code> is primarily intended for use by the <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> methods for classes
-  <code>"coords"</code> and <code>"waypoints"</code> and should otherwise left as the default value
-  <code>TRUE</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -124,7 +113,6 @@ non-compliant coordinate values.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">validate</span><span class="op">(</span><span class="va">dm</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Validation failed!</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Invalid coords!</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Formatting invalid coords!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Nelson's Column                           51°60.4659′ N</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Ostravice                                 49°32.7726′ N</span>
@@ -171,7 +159,6 @@ non-compliant coordinate values.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">validate</span><span class="op">(</span><span class="va">wp</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Validation of latitude failed!</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Invalid latitude!</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Invalid latitude!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                             Latitude     Longitude </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                           ___________  ____________</span>
