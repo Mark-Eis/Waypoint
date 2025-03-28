@@ -82,7 +82,7 @@ dm
 
 ## Print explicitly using S3 print() method, specifying
 ## the maximal number of entries to be printed
-print(dm, max = 7)
+print(dm, max = 14)
 
 ## Format as a fixed-width character vector,
 ## with names...
@@ -109,7 +109,7 @@ wp
 
 ## Print explicitly using S3 print() method, specifying
 ## the maximal number of entries to be printed
-print(wp, max = 7)
+print(wp, max = 21)
 
 ## Format as a fixed-width character vector,
 ## with names...
