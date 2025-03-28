@@ -831,7 +831,6 @@ vector<string> Coord::format_ct() const
 vector<string> Coord::format(bool usenames) const
 {
 //	cout << "@Coord::format(bool) " << Demangler(typeid(*this)) << endl;
-	ostringstream ostrstr;
 	vector<string>&& sv = format_switch(*this, ct);
 	vector<string> names { get_vec_attr<NumericVector, string>(nv, "names") };
 	if (names.size() && usenames) {
