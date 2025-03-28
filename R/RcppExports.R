@@ -2,12 +2,12 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 #' @rdname coords 
-as_coords.default <- function(object, fmt = 1L) {
+as_coords.default <- function(object, ..., fmt = 1L) {
     .Call(`_Waypoint_as_coords`, object, fmt)
 }
 
 #' @rdname convert
-convert.coords <- function(x, fmt) {
+convert.coords <- function(x, fmt, ...) {
     .Call(`_Waypoint_convertcoords`, x, fmt)
 }
 
@@ -17,32 +17,32 @@ convert.coords <- function(x, fmt) {
 }
 
 #' @rdname validate
-validate.coords <- function(x, force = TRUE) {
+validate.coords <- function(x, ..., force = TRUE) {
     .Call(`_Waypoint_validatecoords`, x, force)
 }
 
 #' @rdname format
-format.coords <- function(x, usenames = TRUE) {
+format.coords <- function(x, ..., usenames = TRUE) {
     .Call(`_Waypoint_formatcoords`, x, usenames)
 }
 
 #' @rdname waypoints
-as_waypoints.default <- function(object, fmt = 1L) {
+as_waypoints.default <- function(object, ..., fmt = 1L) {
     .Call(`_Waypoint_as_waypoints`, object, fmt)
 }
 
 #' @rdname convert
-convert.waypoints <- function(x, fmt) {
+convert.waypoints <- function(x, fmt, ...) {
     .Call(`_Waypoint_convertwaypoints`, x, fmt)
 }
 
 #' @rdname validate
-validate.waypoints <- function(x, force = TRUE) {
+validate.waypoints <- function(x, ..., force = TRUE) {
     .Call(`_Waypoint_validatewaypoints`, x, force)
 }
 
 #' @rdname format
-format.waypoints <- function(x, usenames = TRUE) {
+format.waypoints <- function(x, ..., usenames = TRUE) {
     .Call(`_Waypoint_formatwaypoints`, x, usenames)
 }
 
@@ -52,7 +52,7 @@ ll_headers <- function(aswidth, fmt) {
 }
 
 #' @rdname coords
-as_coords.waypoints <- function(object, which) {
+as_coords.waypoints <- function(object, which, ...) {
     .Call(`_Waypoint_as_coordswaypoints`, object, which)
 }
 

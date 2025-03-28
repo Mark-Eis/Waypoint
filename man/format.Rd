@@ -13,9 +13,9 @@
 
 \method{print}{waypoints}(x, ..., max = NULL)
 
-\method{format}{coords}(x, usenames = TRUE)
+\method{format}{coords}(x, ..., usenames = TRUE)
 
-\method{format}{waypoints}(x, usenames = TRUE)
+\method{format}{waypoints}(x, ..., usenames = TRUE)
 
 ll_headers(aswidth, fmt)
 }

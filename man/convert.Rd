@@ -8,9 +8,9 @@
 \usage{
 convert(x, ...)
 
-\method{convert}{coords}(x, fmt)
+\method{convert}{coords}(x, fmt, ...)
 
-\method{convert}{waypoints}(x, fmt)
+\method{convert}{waypoints}(x, fmt, ...)
 }
 \arguments{
 \item{x}{object of class \code{"\link{coords}"} created by function \code{\link{as_coords}()}, or
