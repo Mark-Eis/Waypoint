@@ -394,6 +394,10 @@ convert <- function(x, ...)
 #' ## 'silently' using S3 print() method
 #' dm
 #'
+#' ## Print explicitly using S3 print() method, specifying
+#' ## the maximal number of entries to be printed
+#' print(dm, max = 7)
+#'
 #' ## Format as a fixed-width character vector,
 #' ## with names...
 #' format(dm)
@@ -416,6 +420,10 @@ convert <- function(x, ...)
 #' ## Print named "waypoints" object in degrees and minutes,
 #' ## 'silently' using S3 print() method
 #' wp
+#'
+#' ## Print explicitly using S3 print() method, specifying
+#' ## the maximal number of entries to be printed
+#' print(wp, max = 7)
 #'
 #' ## Format as a fixed-width character vector,
 #' ## with names...
