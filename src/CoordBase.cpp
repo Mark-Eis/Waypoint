@@ -941,9 +941,11 @@ vector<string> WayPoint::format(bool usenames) const
 {
 //	cout << "@WayPoint::format(bool) " << Demangler(typeid(*this)) << endl;
 	vector<string>&& sv = format_switch(*this, ct);
-	RObject names = getnames(df);
-	if (!prefixwithnames(sv, names))
-		stop("Invalid \"namescol\" attribute!");
+	if (usenames) {
+		RObject names = getnames(df);
+		if (!prefixwithnames(sv, names))
+			stop("Invalid \"namescol\" attribute!");
+	}
 	return sv;
 }
 
