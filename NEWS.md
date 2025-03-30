@@ -1,10 +1,10 @@
 # Waypoint (development version)
 
-* Format S3 method for `"waypoints"` objects `usenames` argument now works    
+* Format S3 method for `"waypoints"` objects `usenames` argument now works.
 
-* Print S3 methods for `"coords"` and `"waypoints"` objects improved when exceed 'max' / getOption("max.print")
+* Print S3 methods for `"coords"` and `"waypoints"` objects improved when 'max' / getOption("max.print") is exceeded.
 
-* Validate S3 methods now have `force` argument signifying whether to perform full de novo revalidation or simply check existing "valid" attributes 
+* Validate S3 methods for `"coords"` and `"waypoints"` objects now have `force` argument signifying whether to perform full de novo revalidation or simply check existing "valid" attributes.
 
 # Waypoint 1.1.0
 
