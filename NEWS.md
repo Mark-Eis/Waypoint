@@ -1,4 +1,4 @@
-# Waypoint (development version)
+# Waypoint 1.1.0.9003 (development version)
 
 * Format S3 method for `"waypoints"` objects `usenames` argument now works.
 
