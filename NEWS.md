@@ -1,7 +1,5 @@
 # Waypoint 1.1.1
 
-# Waypoint 1.1.0.9003 (development version)
-
 * S3 `format()` method for `"waypoints"` objects `usenames` argument fixed.
 
 * S3 `print()` methods for `"coords"` and `"waypoints"` objects print widths correctly when `max` argument / `getOption("max.print")` is exceeded.
