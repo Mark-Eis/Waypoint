@@ -344,15 +344,16 @@ convert <- function(x, ...)
 #' output elegantly formatted \code{character} vector representations of their arguments, which are
 #' used by their respective \code{print()} methods.
 #'
-#' Coordinate values of objects of class \code{"coords"} or \code{"waypoints"} formatted in degrees
-#' and minutes or in degrees, minutes and seconds are followed by a capital letter representing the
-#' relevant \emph{cardinal direction} i.e., \samp{N, E, S, W}, where specified. Where cardinal
-#' direction is unspecified i.e., \code{"coords"} objects lacking a \code{"latlon"} attribute,
-#' possible cardinal directions are shown in parentheses as \verb{(N/E)} for positive values and
-#' \verb{(S/W)} for negative values. Values of \code{"coords"} or \code{"waypoints"} in decimal
-#' degrees are formatted with the sign and cardinal direction is not shown. In the case of
-#' \code{"coords"} in decimal degrees with a \code{"latlon"} attribute specified, the formatted
-#' value is followed by either \verb{lat} or \verb{lon}.
+#' Objects of class \code{"coords"} specified in \emph{degrees and minutes} or in \emph{degrees,
+#' minutes and seconds} and with a \code{"latlon"} attribute, and similarly specified
+#' \code{"waypoints"} objects are formatted with individual coordinate values followed by a capital
+#' letter representing the \emph{cardinal direction} i.e., \samp{N}, \samp{E}, \samp{S} or \samp{W}.
+#' \code{"coords"} objects lacking a \code{"latlon"} attribute have formatted values followed by two
+#' possible cardinal directions in parentheses i.e., \samp{(N/E)} for positive values and
+#' \samp{(S/W)} for negative values. Values of \code{"coords"} or \code{"waypoints"} objects in
+#' \emph{decimal degrees} are formatted prefixed with their sign, if negative; cardinal direction is
+#' not shown, but for \code{"coords"} objects with a \code{"latlon"} attribute, the formatted values
+#' are suffixed by either \samp{lat} or \samp{lon}.
 #'
 #' Prior to formatting and printing, \code{"coords"} or \code{"waypoints"} objects are checked to
 #' ensure that their \code{"valid"} attribute (in the case of a \code{"coords"} object), or
