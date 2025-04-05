@@ -344,6 +344,15 @@ convert <- function(x, ...)
 #' output elegantly formatted \code{character} vector representations of their arguments, which are
 #' used by their respective \code{print()} methods.
 #'
+#' Coordinate values of objects of class "coords" or "waypoints" formatted in degrees and minutes or
+#' in degrees, minutes and seconds are followed by a capital letter representing the relevant
+#' cardinal direction, where specified. Where cardinal direction is unspecified i.e., "coords"
+#' objects lacking a "latlon" attribute, possible cardinal directions are shown in parentheses as
+#' \verb{(N/E)} for positive values and \verb{(S/W)} for negative values. Values of "coords" or
+#' "waypoints" in decimal degrees are formatted with the sign and cardinal direction is not shown.
+#' In the case of "coords" in decimal degrees with a "latlon" attribute specified, the formatted
+#' value is followed by either lat or lon.
+#'
 #' Prior to formatting and printing, \code{"coords"} or \code{"waypoints"} objects are checked to
 #' ensure that their \code{"valid"} attribute (in the case of a \code{"coords"} object), or
 #' \code{"validlat"} and \code{"validlon"} attributes (in the case of a \code{"waypoints"} object)
