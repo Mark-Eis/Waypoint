@@ -1,7 +1,5 @@
 # Waypoint (development version)
 
-# Waypoint 1.1.2
-
 # Waypoint 1.1.1
 
 * S3 `format()` method for `"waypoints"` objects `usenames` argument fixed.
