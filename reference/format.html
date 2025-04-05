@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Waypoint</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -98,6 +98,16 @@ seconds as appropriate.</p>
     <p>The <code>format()</code> methods for <code>"<a href="coords.html">coords</a>"</code> and <code>"<a href="waypoints.html">waypoints</a>"</code> objects
 output elegantly formatted <code>character</code> vector representations of their arguments, which are
 used by their respective <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> methods.</p>
+<p>Objects of class <code>"coords"</code> specified in <em>degrees and minutes</em> or in <em>degrees,
+minutes and seconds</em> and with a <code>"latlon"</code> attribute, and similarly specified
+<code>"waypoints"</code> objects are formatted with individual coordinate values followed by a capital
+letter representing the <em>cardinal direction</em> i.e., <samp>N</samp>, <samp>E</samp>, <samp>S</samp> or <samp>W</samp>.
+<code>"coords"</code> objects lacking a <code>"latlon"</code> attribute have formatted values followed by two
+possible cardinal directions in parentheses i.e., <samp>(N/E)</samp> for positive values and
+<samp>(S/W)</samp> for negative values. Values of <code>"coords"</code> or <code>"waypoints"</code> objects in
+<em>decimal degrees</em> are formatted prefixed with their sign, if negative; cardinal direction is
+not shown, but for <code>"coords"</code> objects with a <code>"latlon"</code> attribute, the formatted values
+are suffixed by either <samp>lat</samp> or <samp>lon</samp>.</p>
 <p>Prior to formatting and printing, <code>"coords"</code> or <code>"waypoints"</code> objects are checked to
 ensure that their <code>"valid"</code> attribute (in the case of a <code>"coords"</code> object), or
 <code>"validlat"</code> and <code>"validlon"</code> attributes (in the case of a <code>"waypoints"</code> object)
