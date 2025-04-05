@@ -346,13 +346,13 @@ convert <- function(x, ...)
 #'
 #' Coordinate values of objects of class \code{"coords"} or \code{"waypoints"} formatted in degrees
 #' and minutes or in degrees, minutes and seconds are followed by a capital letter representing the
-#' relevant cardinal direction, where specified. Where cardinal direction is unspecified i.e.,
-#' \code{"coords"} objects lacking a \code{"latlon"} attribute, possible cardinal directions are
-#' shown in parentheses as \verb{(N/E)} for positive values and \verb{(S/W)} for negative values.
-#' Values of \code{"coords"} or \code{"waypoints"} in decimal degrees are formatted with the sign
-#' and cardinal direction is not shown. In the case of \code{"coords"} in decimal degrees with a
-#' \code{"latlon"} attribute specified, the formatted value is followed by either \verb{lat} or
-#' \verb{lon}.
+#' relevant \emph{cardinal direction} i.e., \samp{N, E, S, W}, where specified. Where cardinal
+#' direction is unspecified i.e., \code{"coords"} objects lacking a \code{"latlon"} attribute,
+#' possible cardinal directions are shown in parentheses as \verb{(N/E)} for positive values and
+#' \verb{(S/W)} for negative values. Values of \code{"coords"} or \code{"waypoints"} in decimal
+#' degrees are formatted with the sign and cardinal direction is not shown. In the case of
+#' \code{"coords"} in decimal degrees with a \code{"latlon"} attribute specified, the formatted
+#' value is followed by either \verb{lat} or \verb{lon}.
 #'
 #' Prior to formatting and printing, \code{"coords"} or \code{"waypoints"} objects are checked to
 #' ensure that their \code{"valid"} attribute (in the case of a \code{"coords"} object), or
