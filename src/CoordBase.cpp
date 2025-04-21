@@ -690,27 +690,22 @@ void convert_switch(T t, CoordType newtype)
 template<class T>
 vector<string> format_switch(const T& t, CoordType ct)
 {
-//	cout << "@format_switch<T>(const T&, CoordType) " << Demangler(typeid(t)) << " ct " << coordtype_to_int(ct) << endl;
+	cout << "@format_switch<T>(const T&, CoordType) " << Demangler(typeid(t)) << " ct " << coordtype_to_int(ct) << endl;
 	static_assert(std::is_same<Coord, T>::value || std::is_same<WayPoint, T>::value, "T must be Coord or WayPoint");
-	vector<string> sv; 
 	switch (ct)
 	{
 		case CoordType::decdeg:
-			sv = t.template format_ct<CoordType::decdeg>();
-			break;
+			return t.template format_ct<CoordType::decdeg>();
 
 		case CoordType::degmin:
-			sv = t.template format_ct<CoordType::degmin>();
-			break;
+			return t.template format_ct<CoordType::degmin>();
 
 		case CoordType::degminsec:
-			sv = t.template format_ct<CoordType::degminsec>();
-			break;
+			return t.template format_ct<CoordType::degminsec>();
 
 		default:
 			stop("format_switch(const T&, CoordType) my bad");
 	}
-	return sv;
 }
 
 
