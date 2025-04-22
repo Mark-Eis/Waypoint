@@ -345,7 +345,7 @@ inline const CoordType get_coordtype(const int i)
 {
 //	cout << "@get_coordtype(int) " << i << endl;
 	if (i < 1 || i > 3)
-		stop("\"newfmt\" must be between 1 and 3");
+		stop("\"fmt\" must be between 1 and 3");
 	return vector<CoordType>{ CoordType::decdeg, CoordType::degmin, CoordType::degminsec }[i - 1];
 }
 
