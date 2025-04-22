@@ -2,6 +2,8 @@
 
 * S3 `format()` methods documented more comprehensively (#108)
 
+* Correct error message in `get_coordtype(const int)` (#111)
+
 * Code improved in `format_switch(const T& t, CoordType ct)` (#112)
 
 # Waypoint 1.1.1
