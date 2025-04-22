@@ -1,7 +1,7 @@
 Package: Waypoint
 Type: Package
 Title: Convert, Validate, Format and Print Geographic Coordinates and Waypoints
-Version: 1.1.1.9000
+Version: 1.1.1.9001
 Authors@R: 
     person("Mark", "Eisler", email = "mark.eisler@bristol.ac.uk", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0001-6843-3345"))
@@ -13,6 +13,6 @@ Description: Convert, validate, format and elegantly print geographic coordinate
 License: MIT + file LICENSE
 Imports: methods, Rcpp (>= 1.0.13)
 LinkingTo: Rcpp
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Encoding: UTF-8
 URL: https://mark-eis.github.io/Waypoint/
