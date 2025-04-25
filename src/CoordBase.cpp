@@ -724,8 +724,6 @@ class Coordbase {
 		Coordbase(Coordbase&&) = delete;							// Disallow transfer ownership
 		Coordbase& operator=(Coordbase&&) = delete;					// Disallow moving
 		virtual ~Coordbase() = 0;
-
-		const FamousFive& get_ff() const;
 };
 
 
@@ -739,15 +737,6 @@ Coordbase::Coordbase(CoordType _ct) :
 Coordbase::~Coordbase()
 {
 //	cout << "§Coordbase::~Coordbase() "; _ctrsgn(typeid(*this), true);
-}
-
-
-/// __________________________________________________
-/// Get const reference to ff
-inline const FamousFive& Coordbase::get_ff() const
-{
-//	cout << "@Coordbase::get_ff()\n";
-	return ff;
 }
 
 
