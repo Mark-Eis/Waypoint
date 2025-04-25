@@ -6,6 +6,8 @@
 
 * Code improved in `format_switch(const T& t, CoordType ct)` (#112)
 
+* Remove redundant `Coordbase::get_ff()` (#110)
+
 # Waypoint 1.1.1
 
 * S3 `format()` method for `"waypoints"` objects `usenames` argument fixed.
