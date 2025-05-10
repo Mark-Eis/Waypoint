@@ -11,7 +11,7 @@
 // Development and debugging
 void _ctrsgn(const std::type_info&, bool);
 class Demangler;
-ostream& operator<< (std::ostream&, const Demangler&);
+ostream& operator<< (ostream&, const Demangler&);
 
 // Formula simplification
 inline double mod1by60(double);
