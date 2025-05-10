@@ -1,7 +1,11 @@
 #include <Rcpp.h>
 #include <cxxabi.h>
 using namespace Rcpp;
-using namespace std;
+
+using std::vector; 
+using std::string;
+using std::transform;
+using std::ostream;
 
 #include </Users/frzmce/Library/CloudStorage/OneDrive-UniversityofBristol/Documents/R/Packages/Waypoint/include/CoordBase.h>
 
@@ -10,7 +14,7 @@ using namespace std;
 /// Development and Debugging functions
 
 /// Report object construction and destruction
-//void _ctrsgn(const type_info& obj, bool destruct = false)
+//void _ctrsgn(const std::type_info& obj, bool destruct = false)
 //{
 ////	cout << (destruct ? "Destroying " : "Constructing ") << flush;
 //	string s = obj.name();
@@ -22,9 +26,9 @@ class Demangler {
 	char* p;
 	int status = 0;
 public:
-	Demangler(const type_info& obj) : p(abi::__cxa_demangle(obj.name(), NULL, NULL, &status)) {}
+	Demangler(const std::type_info& obj) : p(abi::__cxa_demangle(obj.name(), NULL, NULL, &status)) {}
 	~Demangler() { std::free(p); }
-	operator string() const { return string("\"") + p + "\" (status " + to_string(status) + ")"; }
+	operator string() const { return string("\"") + p + "\" (status " + std::to_string(status) + ")"; }
 };
 
 ostream& operator<< (ostream& stream, const Demangler& d)
@@ -127,10 +131,10 @@ inline void stdlenstr(vector<string>& sv)
 {
 //	cout << "@stdlenstr(vector<string>&)\n";
 	int maxwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
-	ostringstream ostrstr;
+	std::ostringstream ostrstr;
 	transform(sv.begin(), sv.end(), sv.begin(), [&ostrstr, maxwdth](const string& s) {
 		ostrstr.str("");
-		ostrstr << left << setw(maxwdth) << s;
+		ostrstr << std::left << std::setw(maxwdth) << s;
 		return ostrstr.str(); 
     });	
 }
@@ -152,7 +156,7 @@ template<>
 inline void prefixvecstr(vector<string>& sv, const vector<int>& prefix)
 {
 //	cout << "@prefixvecstr<>(vector<string>&, const vector<int>&)\n";
-	transform(sv.begin(), sv.end(), prefix.begin(), sv.begin(), [](string& lls, const int name) { return to_string(name) + "  " + lls; });	
+	transform(sv.begin(), sv.end(), prefix.begin(), sv.begin(), [](string& lls, const int name) { return std::to_string(name) + "  " + lls; });	
 }
 
 
@@ -398,7 +402,7 @@ template<CoordType type>
 class Format {
 	protected:
 		const FamousFive& ff;
-		ostringstream ostrstr;
+		std::ostringstream ostrstr;
 	public:
 		Format(const FamousFive& _ff) : ff(_ff)
 		{
@@ -416,7 +420,7 @@ inline string Format<type>::operator()(double n)
 {
 //	cout << "@Format<CoordType>::operator() [default for CoordType::decdeg]\n";
 	ostrstr.str("");
-	ostrstr << setw(11) << setfill(' ')  << fixed << setprecision(6) << ff.get_decdeg(n) << "\u00B0";
+	ostrstr << std::setw(11) << std::setfill(' ')  << std::fixed << std::setprecision(6) << ff.get_decdeg(n) << "\u00B0";
 	return ostrstr.str();
 }
 
@@ -427,8 +431,8 @@ inline string Format<CoordType::degmin>::operator()(double n)
 {
 //	cout << "@Format<CoordType::degmin>::operator()\n";
 	ostrstr.str("");
-	ostrstr << setw(3) << setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
-					  << setw(7) << setfill('0') << fixed << setprecision(4) << abs(ff.get_decmin(n)) << "\u2032";
+	ostrstr << std::setw(3) << std::setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
+					  << std::setw(7) << std::setfill('0') << std::fixed << std::setprecision(4) << abs(ff.get_decmin(n)) << "\u2032";
 	return ostrstr.str();
 }
 
@@ -439,9 +443,9 @@ inline string Format<CoordType::degminsec>::operator()(double n)
 {
 //	cout << "@Format<CoordType::degminsec>::operator()\n";
 	ostrstr.str("");
-	ostrstr << setw(3) << setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
-					  << setw(2) << setfill('0') << abs(ff.get_min(n)) << "\u2032"
-					  << setw(5) << fixed << setprecision(2) << abs(ff.get_sec(n)) << "\u2033";
+	ostrstr << std::setw(3) << std::setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
+					  << std::setw(2) << std::setfill('0') << abs(ff.get_min(n)) << "\u2032"
+					  << std::setw(5) << std::fixed << std::setprecision(2) << abs(ff.get_sec(n)) << "\u2033";
 	return ostrstr.str();
 }
 
@@ -532,7 +536,7 @@ class Validator {
 //		~Validator() { cout << "§Validator::~Validator() "; _ctrsgn(typeid(*this), true); }
 		bool operator()(double n)
 		{
-//			cout << "@Validator() " << " validating: " << setw(9) << setfill(' ') << n << endl;
+//			cout << "@Validator() " << " validating: " << std::setw(9) << std::setfill(' ') << n << endl;
 			return !((abs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
 				(abs(ff.get_decmin(n)) >= 60) ||
 				(abs(ff.get_sec(n)) >= 60));
@@ -1117,9 +1121,9 @@ CharacterVector ll_headers(const CharacterVector aswidth, const int fmt)
 
 	constexpr int adjust[] = { 2, 6, 10 };
 	const int width = (as<vector<string>>(aswidth)[0]).size() - adjust[fmt - 1];
-	ostringstream ostrstr;
+	std::ostringstream ostrstr;
 	transform(sv.begin(), sv.end(), sv.begin(), [&ostrstr, width](const string& s)
-		{ ostrstr.str(""); ostrstr << setw(width) << s; return ostrstr.str(); });
+		{ ostrstr.str(""); ostrstr << std::setw(width) << s; return ostrstr.str(); });
 	return wrap(sv);
 }
 
