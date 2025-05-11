@@ -587,7 +587,6 @@ void convert_switch(T t, CoordType newtype)
 /// __________________________________________________
 /// Format coords or waypoints vector<string> CoordType switch 
 template<class T>
-// vector<string> format_switch(const T& t, CoordType ct)
 vector<string> format_switch(const T& t)
 {
 //	cout << "@format_switch<T>(const T&, CoordType) " << Demangler(typeid(t)) << " ct " << coordtype_to_int(ct) << endl;
@@ -646,7 +645,6 @@ CoordType Coordbase::get_coordtype() const
 //	cout << "@Coordbase::get_coordtype() ct " << coordtype_to_int(ct) << endl;
 	return ct;
 }
-
 
 
 /// __________________________________________________
