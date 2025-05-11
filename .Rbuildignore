@@ -3,6 +3,7 @@
 ^\.github$
 ^_pkgdown\.yml$
 ^docs$
+^include$
 ^pkgdown$
 ^vignettes/articles$
 cran-comments.md
