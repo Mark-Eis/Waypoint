@@ -1,10 +1,12 @@
 # Waypoint (development version)
 
+* Class and function forward declarations moved to header file CoordBase.h (#113)
+
 * S3 `format()` methods documented more comprehensively (#108)
 
 * Correct error message in `get_coordtype(const int)` (#111)
 
-* Code improved in `format_switch(const T& t, CoordType ct)` (#112)
+* Code improved in `format_switch(const T& t)` (#112, #116)
 
 * Remove redundant `Coordbase::get_ff()` (#110)
 
