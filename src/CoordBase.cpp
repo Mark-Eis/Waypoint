@@ -6,6 +6,8 @@ using std::vector;
 using std::string;
 using std::transform;
 using std::ostream;
+using std::cout;	// Deprecate ?
+using std::endl;	// Deprecate ?
 
 #include </Users/frzmce/Library/CloudStorage/OneDrive-UniversityofBristol/Documents/R/Packages/Waypoint/include/CoordBase.h>
 
@@ -585,11 +587,12 @@ void convert_switch(T t, CoordType newtype)
 /// __________________________________________________
 /// Format coords or waypoints vector<string> CoordType switch 
 template<class T>
-vector<string> format_switch(const T& t, CoordType ct)
+// vector<string> format_switch(const T& t, CoordType ct)
+vector<string> format_switch(const T& t)
 {
 //	cout << "@format_switch<T>(const T&, CoordType) " << Demangler(typeid(t)) << " ct " << coordtype_to_int(ct) << endl;
 	static_assert(std::is_same<Coord, T>::value || std::is_same<WayPoint, T>::value, "T must be Coord or WayPoint");
-	switch (ct)
+	switch (t.get_coordtype())
 	{
 		case CoordType::decdeg:
 			return t.template format_ct<CoordType::decdeg>();
@@ -621,6 +624,7 @@ class Coordbase {
 		Coordbase(Coordbase&&) = delete;							// Disallow transfer ownership
 		Coordbase& operator=(Coordbase&&) = delete;					// Disallow moving
 		virtual ~Coordbase() = 0;
+		CoordType get_coordtype() const;
 };
 
 
@@ -635,6 +639,14 @@ Coordbase::~Coordbase()
 {
 //	cout << "§Coordbase::~Coordbase() "; _ctrsgn(typeid(*this), true);
 }
+
+
+CoordType Coordbase::get_coordtype() const
+{
+//	cout << "@Coordbase::get_coordtype() ct " << coordtype_to_int(ct) << endl;
+	return ct;
+}
+
 
 
 /// __________________________________________________
@@ -712,7 +724,7 @@ vector<string> Coord::format_ct() const
 vector<string> Coord::format(bool usenames) const
 {
 //	cout << "@Coord::format(bool) " << Demangler(typeid(*this)) << endl;
-	vector<string>&& sv = format_switch(*this, ct);
+	vector<string>&& sv = format_switch(*this);
 	vector<string> names { get_vec_attr<NumericVector, string>(nv, "names") };
 	if (names.size() && usenames) {
 		stdlenstr(names);
@@ -821,7 +833,7 @@ vector<string> WayPoint::format_ct() const
 vector<string> WayPoint::format(bool usenames) const
 {
 //	cout << "@WayPoint::format(bool) " << Demangler(typeid(*this)) << endl;
-	vector<string>&& sv = format_switch(*this, ct);
+	vector<string>&& sv = format_switch(*this);
 	if (usenames) {
 		RObject names = getnames(df);
 		if (!prefixwithnames(sv, names))

@@ -70,7 +70,7 @@ class Validator;
 template<class T, class U>
 void convert_switch(T, CoordType);
 template<class T>
-vector<string> format_switch(const T&, CoordType);
+vector<string> format_switch(const T&);
 
 // Coordbase
 class Coordbase;
