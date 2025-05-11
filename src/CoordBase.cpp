@@ -611,21 +611,6 @@ vector<string> format_switch(const T& t)
 /// __________________________________________________
 /// __________________________________________________
 /// Coordbase class
-class Coordbase {
-	protected:
-		CoordType ct;
-		const FamousFive& ff;
-
-	public:
-		Coordbase(CoordType _ct);
-		Coordbase(const Coordbase&) = delete;						// Disallow copying
-		Coordbase& operator=(const Coordbase&) = delete;			//  ——— ditto ———
-		Coordbase(Coordbase&&) = delete;							// Disallow transfer ownership
-		Coordbase& operator=(Coordbase&&) = delete;					// Disallow moving
-		virtual ~Coordbase() = 0;
-		CoordType get_coordtype() const;
-};
-
 
 Coordbase::Coordbase(CoordType _ct) :
 	ct(_ct), ff(*vff[coordtype_to_int(ct)])
@@ -649,25 +634,6 @@ CoordType Coordbase::get_coordtype() const
 
 /// __________________________________________________
 /// Coordinate derived class
-class Coord : public Coordbase {
-	protected:
-		const NumericVector nv;
-		const vector<bool> valid { false };
-		const vector<bool> latlon;
-
-	public:
-		Coord(CoordType, const NumericVector);
-		~Coord() = default;
-//		~Coord() { cout << "§Coord::~Coord() "; _ctrsgn(typeid(*this), true); }
-
-		template<CoordType type>
-		void convert() const;
-		void validate(bool warn = true) const;
-		template<CoordType type>
-		vector<string> format_ct() const;
-		vector<string> format(bool usenames) const;
-};
-
 
 Coord::Coord(CoordType ct, const NumericVector nv) :
 	Coordbase(ct), nv(nv),
@@ -735,27 +701,6 @@ vector<string> Coord::format(bool usenames) const
 /// __________________________________________________
 /// __________________________________________________
 /// Waypoint class
-
-class WayPoint : public Coordbase {
-	protected:
-		const DataFrame df;
-		const NumericVector nvlat;
-		const NumericVector nvlon;
-		const vector<bool> validlat { false };
-		const vector<bool> validlon { false };
-	public:
-		explicit WayPoint(CoordType, const DataFrame);
-		~WayPoint() = default;
-//		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
-
-		template<CoordType type>
-		void convert() const;
-		void validate(bool = true) const;
-		template<CoordType type>
-		vector<string> format_ct() const;
-		vector<string> format(bool usenames) const;
-};
-
 
 WayPoint::WayPoint(CoordType ct, const DataFrame df) :
 	Coordbase(ct), df(df),

@@ -72,14 +72,65 @@ void convert_switch(T, CoordType);
 template<class T>
 vector<string> format_switch(const T&);
 
-// Coordbase
-class Coordbase;
+// Coordbase class
+class Coordbase {
+	protected:
+		CoordType ct;
+		const FamousFive& ff;
 
-// Coord
-class Coord;
+	public:
+		Coordbase(CoordType _ct);
+		Coordbase(const Coordbase&) = delete;						// Disallow copying
+		Coordbase& operator=(const Coordbase&) = delete;			//  ——— ditto ———
+		Coordbase(Coordbase&&) = delete;							// Disallow transfer ownership
+		Coordbase& operator=(Coordbase&&) = delete;					// Disallow moving
+		virtual ~Coordbase() = 0;
+		CoordType get_coordtype() const;
+};
 
-// WayPoint
-class WayPoint;
+
+// Coordinate derived class
+class Coord : public Coordbase {
+	protected:
+		const NumericVector nv;
+		const vector<bool> valid { false };
+		const vector<bool> latlon;
+
+	public:
+		Coord(CoordType, const NumericVector);
+		~Coord() = default;
+//		~Coord() { cout << "§Coord::~Coord() "; _ctrsgn(typeid(*this), true); }
+
+		template<CoordType type>
+		void convert() const;
+		void validate(bool warn = true) const;
+		template<CoordType type>
+		vector<string> format_ct() const;
+		vector<string> format(bool usenames) const;
+};
+
+
+// Waypoint derived class
+class WayPoint : public Coordbase {
+	protected:
+		const DataFrame df;
+		const NumericVector nvlat;
+		const NumericVector nvlon;
+		const vector<bool> validlat { false };
+		const vector<bool> validlon { false };
+	public:
+		explicit WayPoint(CoordType, const DataFrame);
+		~WayPoint() = default;
+//		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
+
+		template<CoordType type>
+		void convert() const;
+		void validate(bool = true) const;
+		template<CoordType type>
+		vector<string> format_ct() const;
+		vector<string> format(bool usenames) const;
+};
+
 
 // Validation
 bool check_valid(const NumericVector);
