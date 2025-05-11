@@ -9,7 +9,7 @@ using std::ostream;
 using std::cout;	// Deprecate ?
 using std::endl;	// Deprecate ?
 
-#include </Users/frzmce/Library/CloudStorage/OneDrive-UniversityofBristol/Documents/R/Packages/Waypoint/include/CoordBase.h>
+#include <CoordBase.h>
 
 /// __________________________________________________
 /// __________________________________________________
