@@ -20,12 +20,13 @@ using std::endl;	// Deprecate ?
 /// Development and Debugging functions
 
 /// Report object construction and destruction
-//void _ctrsgn(const std::type_info& obj, bool destruct = false)
-//{
-////	cout << (destruct ? "Destroying " : "Constructing ") << flush;
-//	string s = obj.name();
-//	system(("c++filt -t " + s).data());
-//}
+void _ctrsgn(const std::type_info& obj, bool destruct = false)
+{
+	fmt::print("{}ing ", destruct ? "Destroy" : "Construct");
+	std::fflush(nullptr);
+	string s = obj.name();
+	system(("c++filt -t " + s).data());
+}
 
 /// Demangle object names functor
 class Demangler {
@@ -101,7 +102,7 @@ inline vector<U> get_vec_attr(const T& t, const char* attrname)
 template<class T>
 inline int get_fmt_attribute(const T& t)
 {
-//	cout << "@get_fmt_attribute<T>(const T&) " << as<int>(t.attr("fmt")) << endl;
+	fmt::print("@{} fmt={}\n", "get_fmt_attribute<T>(const T&)", as<int>(t.attr("fmt")));
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	return as<int>(t.attr("fmt"));
 }
@@ -135,14 +136,9 @@ inline bool is_item_in_obj(const T t, const int item)
 /// Standarise width of strings in vector to that of the longest
 inline void stdlenstr(vector<string>& sv)
 {
-//	cout << "@stdlenstr(vector<string>&)\n";
+	fmt::print("@{}\n", "stdlenstr(vector<string>&)");
 	int maxwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
-	std::ostringstream ostrstr;
-	transform(sv.begin(), sv.end(), sv.begin(), [&ostrstr, maxwdth](const string& s) {
-		ostrstr.str("");
-		ostrstr << std::left << std::setw(maxwdth) << s;
-		return ostrstr.str(); 
-    });	
+	transform(sv.begin(), sv.end(), sv.begin(), [maxwdth](const string& s) { return fmt::format("{:<{}}", s, maxwdth); });
 }
 
 
@@ -151,7 +147,7 @@ inline void stdlenstr(vector<string>& sv)
 template<class T>
 inline void prefixvecstr(vector<string>& sv, const vector<T>& prefix)
 {
-//	cout << "@prefixvecstr<T>(vector<string>&, const vector<T>&)\n";
+	fmt::print("@{}\n", "prefixvecstr<T>(vector<string>&, const vector<T>&)");
 	transform(sv.begin(), sv.end(), prefix.begin(), sv.begin(), [](string& lls, const string& name) { return name + "  " + lls; });	
 }
 
@@ -243,10 +239,42 @@ RObject getnames(const DataFrame df)
 /// CoordType enum class
 
 /// __________________________________________________
+/// Formatter struct template specialisation
+ 
+// auto fmt::formatter<CoordType_enum::CoordType>::format(CoordType_enum::CoordType ct, format_context& ctx) const
+auto fmt::formatter<CoordType>::format(CoordType ct, format_context& ctx) const
+	-> format_context::iterator
+{
+//	using enum CoordType_enum::CoordType;  // see: using enum (https://en.cppreference.com/w/cpp/language/enum#Using-enum-declaration)
+	using enum CoordType;
+	string_view name = "unknown";
+	switch (ct) {
+		case decdeg:
+			name = "DecDeg";
+			break;
+
+		case degmin:
+			name = "DegMin";
+			break;
+
+		case degminsec:
+			name = "DegMinSec";
+			break;
+
+			default:
+//				stop("fmt::formatter<CoordType_enum::CoordType>::format(CoordType_enum::CoordType, format_context&) my bad");
+				stop("fmt::formatter<CoordType>::format(CoordType, format_context&) my bad");
+	}
+	return formatter<string_view>::format(name, ctx);
+}
+
+
+/// __________________________________________________
 /// Convert int to CoordType enum
 inline const CoordType get_coordtype(const int i)
 {
 //	cout << "@get_coordtype(int) " << i << endl;
+	fmt::print("@{} {}\n", "get_coordtype(int)" , i);
 	if (i < 1 || i > 3)
 		stop("\"fmt\" must be between 1 and 3");
 	return vector<CoordType>{ CoordType::decdeg, CoordType::degmin, CoordType::degminsec }[i - 1];
@@ -259,6 +287,7 @@ template<class T>
 inline const CoordType get_coordtype(const T& t)
 {
 //	cout << "@get_coordtype<T>(const T&) " << get_fmt_attribute(t) << endl;
+	fmt::print("@{} fmt={}\n", "get_coordtype<T>(const T&)", get_fmt_attribute(t));
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	return get_coordtype(get_fmt_attribute(t));
 }
@@ -269,6 +298,7 @@ inline const CoordType get_coordtype(const T& t)
 inline const int coordtype_to_int(CoordType ct)
 {
 //	cout << "@coordtype_to_int(CoordType ct) " << static_cast<char>(ct) + 1 << endl;
+	fmt::print("@{} ct={}\n", "coordtype_to_int(CoordType)", ct);
 	return static_cast<char>(ct);
 }
 
@@ -295,7 +325,7 @@ inline string cardi_b(bool negative)
 /// FamousFive Class and Derived Classes
 
 struct FamousFive {
-//	FamousFive() { cout << "§FamousFive() "; _ctrsgn(typeid(*this)); }
+	FamousFive() { fmt::print("§{} ", "FamousFive()"); _ctrsgn(typeid(*this)); }
 	virtual ~FamousFive() = 0;	
 	virtual int get_deg(double x) const = 0;
 	virtual double get_decdeg(double x) const = 0;
@@ -304,17 +334,18 @@ struct FamousFive {
 	virtual double get_sec(double x) const = 0;
 };
 
-FamousFive::~FamousFive()
+inline FamousFive::~FamousFive()
 {
-//	cout << "§~FamousFive(CoordType) "; _ctrsgn(typeid(*this), true); 
+	fmt::print("§{} ", "~FamousFive()"); _ctrsgn(typeid(*this), true);
+	std::fflush(nullptr);
 }	
 
 /// __________________________________________________
 /// Derived class for decimal degrees	
 struct FF_decdeg : public FamousFive {
-//	FF_decdeg() { cout << "§FF_decdeg() "; _ctrsgn(typeid(*this)); }	
-	~FF_decdeg() = default;
-//	~FF_decdeg() { cout << "§~FF_decdeg::FF_decdeg() "; _ctrsgn(typeid(*this), true); }
+	FF_decdeg() { fmt::print("§{} ", "FF_decdeg()"); _ctrsgn(typeid(*this)); }
+//	~FF_decdeg() = default;
+	~FF_decdeg() { fmt::print("§{} ", "~FF_decdeg()"); _ctrsgn(typeid(*this), true); }
 	int get_deg(double x) const { return int(x); }
 	double get_decdeg(double x) const { return x; }
 	int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
@@ -325,9 +356,9 @@ struct FF_decdeg : public FamousFive {
 /// __________________________________________________
 /// Derived class for degrees and minutes
 struct FF_degmin : public FamousFive {
-//	FF_degmin() { cout << "§FF_degmin() "; _ctrsgn(typeid(*this)); }	
-	~FF_degmin() = default;
-//	~FF_degmin() { cout << "§~FF_degmin::FF_degmin() "; _ctrsgn(typeid(*this), true); }
+	FF_degmin() { fmt::print("§{} ", "FF_degmin()"); _ctrsgn(typeid(*this)); }
+//	~FF_degmin() = default;
+	~FF_degmin() { fmt::print("§{} ", "~FF_degmin()"); _ctrsgn(typeid(*this), true); }
 	int get_deg(double x) const { return int(x / 1e2); }
 	double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
 	int get_min(double x) const { return int(x) % int(1e2); }
@@ -338,9 +369,9 @@ struct FF_degmin : public FamousFive {
 /// __________________________________________________
 /// Derived class for degrees, minutes and seconds
 struct FF_degminsec : public FamousFive {
-//	FF_degminsec() { cout << "§FF_degminsec() "; _ctrsgn(typeid(*this)); }	
-	~FF_degminsec() = default;
-//	~FF_degminsec() { cout << "§~FF_degminsec::FF_degminsec() "; _ctrsgn(typeid(*this), true); }
+	FF_degminsec() { fmt::print("§{} ", "FF_degminsec()"); _ctrsgn(typeid(*this)); }
+//	~FF_degminsec() = default;
+	~FF_degminsec() { fmt::print("§{} ", "~FF_degminsec()"); _ctrsgn(typeid(*this), true); }
 	int get_deg(double x) const { return int(x / 1e4); }
 	double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
 	int get_min(double x) const { return (int(x) % int(1e4)) / 1e2; }
@@ -408,53 +439,47 @@ template<CoordType type>
 class Format {
 	protected:
 		const FamousFive& ff;
-		std::ostringstream ostrstr;
 	public:
 		Format(const FamousFive& _ff) : ff(_ff)
 		{
-//			cout << "§Format<CoordType>::Format(const FamousFive&) "; _ctrsgn(typeid(*this));
+			fmt::print("§Format<CoordType::{}>::Format()(const FamousFive&) ", type); _ctrsgn(typeid(*this));
+			std::fflush(nullptr);
 		}
-		~Format() = default;
-//		~Format() { cout << "§Format<CoordType>::~Format() "; _ctrsgn(typeid(*this), true); }
-		string operator()(double n);
+//		~Format() = default;
+		~Format() { fmt::print("§Format<CoordType::{}>::~Format() ", type); _ctrsgn(typeid(*this), true); }
+		string operator()(double n) const;
 };
+
 
 /// __________________________________________________
 /// Default operator(), for decimal degrees
 template<CoordType type>
-inline string Format<type>::operator()(double n)
+inline string Format<type>::operator()(double n) const
 {
-//	cout << "@Format<CoordType>::operator() [default for CoordType::decdeg]\n";
-	ostrstr.str("");
-	ostrstr << std::setw(11) << std::setfill(' ')  << std::fixed << std::setprecision(6) << ff.get_decdeg(n) << "\u00B0";
-	return ostrstr.str();
+	fmt::print("@Format<CoordType::{}>::operator() [default]\n", type);
+	return fmt::format("{:>{}.{}f}\u00B0", ff.get_decdeg(n), 11, 6);
 }
 
 /// __________________________________________________
 /// Specialised operator() for degrees and minutes
 template<>
-inline string Format<CoordType::degmin>::operator()(double n)
+inline string Format<CoordType::degmin>::operator()(double n) const
 {
-//	cout << "@Format<CoordType::degmin>::operator()\n";
-	ostrstr.str("");
-	ostrstr << std::setw(3) << std::setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
-					  << std::setw(7) << std::setfill('0') << std::fixed << std::setprecision(4) << abs(ff.get_decmin(n)) << "\u2032";
-	return ostrstr.str();
+	fmt::print("@Format<CoordType::{}>::operator()\n", CoordType::degmin);
+	return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
+		   fmt::format("{:0>{}.{}f}\u2032", abs(ff.get_decmin(n)), 7, 4);
 }
 
 /// __________________________________________________
 /// Specialised operator() for degrees, minutes and seconds
 template<>
-inline string Format<CoordType::degminsec>::operator()(double n)
+inline string Format<CoordType::degminsec>::operator()(double n) const
 {
-//	cout << "@Format<CoordType::degminsec>::operator()\n";
-	ostrstr.str("");
-	ostrstr << std::setw(3) << std::setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
-					  << std::setw(2) << std::setfill('0') << abs(ff.get_min(n)) << "\u2032"
-					  << std::setw(5) << std::fixed << std::setprecision(2) << abs(ff.get_sec(n)) << "\u2033";
-	return ostrstr.str();
+	fmt::print("@Format<CoordType::{}>::operator()\n", CoordType::degminsec);
+	return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
+		   fmt::format("{:0>{}}\u2032", abs(ff.get_min(n)), 2) +
+		   fmt::format("{:0>{}.{}f}\u2033", abs(ff.get_sec(n)), 5, 2);
 }
-
 
 /// __________________________________________________
 /// __________________________________________________
@@ -465,38 +490,40 @@ template<class T, CoordType type>
 class FormatLL {
 		const FamousFive& ff; 
 		vector<bool>::const_iterator ll_it;
-		const int ll_size;
+		int ll_size;
 	public:
 		FormatLL(const FamousFive& _ff, const vector<bool>& ll) : ff(_ff), ll_it(ll.begin()), ll_size(ll.size())
 		{
-//			cout << "§FormatLL<T, CoordType>::FormatLL(const FamousFive&, vector<bool>&) "; _ctrsgn(typeid(*this));
 			static_assert(std::is_same<Coord, T>::value || std::is_same<WayPoint, T>::value, "T must be Coord or WayPoint");
+			fmt::print("§FormatLL<{}, CoordType::{}>::FormatLL(const FamousFive&, vector<bool>&) ", "Coord or WayPoint", type); _ctrsgn(typeid(*this));
+			std::fflush(nullptr);
 		}
-		~FormatLL() = default;
-//		~FormatLL() { cout << "§FormatLL<T, CoordType>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
+		~FormatLL() { fmt::print("§FormatLL<{}, CoordType::{}>::~FormatLL() ", "Coord or WayPoint", type); _ctrsgn(typeid(*this), true); }
 		string operator()(string ostr, double n)
 		{
-//			cout << "@FormatLL<T, CoordType>::operator(string, double) [default for CoordType::degmin and CoordType::degminsec]\n";
+			fmt::print("@FormatLL<{}, CoordType::{}>::operator(string, double) [default]\n", "Coord or WayPoint", type);
 			return ostr += ll_size ? cardpoint(ff.get_decmin(n) < 0, ll_size > 1 ? *ll_it++ : *ll_it) : cardi_b(ff.get_decmin(n) < 0);
 		}
 };
+
 
 /// __________________________________________________
 /// Specialised functor for decimal degrees Coord
 template<>
 class FormatLL<Coord, CoordType::decdeg> {
 		vector<bool>::const_iterator ll_it;
-		const int ll_size;
+		int ll_size;
 	public:
 		FormatLL(const FamousFive& _ff, const vector<bool>& ll) : ll_it(ll.begin()), ll_size(ll.size())
 		{
-//			cout << "§FormatLL<Coord, CoordType::decdeg>::FormatLL(const FamousFive&, vector<bool>&) "; _ctrsgn(typeid(*this));
+			fmt::print("§FormatLL<{}, CoordType::{}>::FormatLL(const FamousFive&, vector<bool>&) ", "Coord", CoordType::decdeg ); _ctrsgn(typeid(*this));
+			std::fflush(nullptr);
 		}
-		~FormatLL() = default;
-//		~FormatLL() { cout << "§FormatLL<Coord, CoordType::decdeg>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
+//		~FormatLL() = default;
+		~FormatLL() { fmt::print("§FormatLL<{}, CoordType::{}>::~FormatLL() ", "Coord", CoordType::decdeg); _ctrsgn(typeid(*this), true); }
 		string operator()(string ostr, double n)
 		{
-//			cout << "@FormatLL<Coord, CoordType::decdeg>::operator(string, double)\n";
+			fmt::print("@FormatLL<{}, CoordType::{}>::operator(string, double)\n", "Coord", CoordType::decdeg);
 			if (ll_size)
 				return ostr += ((ll_size > 1 ? *ll_it++ : *ll_it) ? " lat" : " lon");
 			else
@@ -504,22 +531,24 @@ class FormatLL<Coord, CoordType::decdeg> {
 		}
 };
 
+
 /// __________________________________________________
-/// Specialised functor for decimal degrees WayPoint
+/// Specialised functor for decimal degrees WayPoint—simply returns its argument
 template<>
 class FormatLL<WayPoint, CoordType::decdeg> {
 		vector<bool>::const_iterator ll_it;
-		const int ll_size;
+		int ll_size;
 	public:
 		FormatLL(const FamousFive& _ff, const vector<bool>& ll) : ll_it(ll.begin()), ll_size(ll.size())
 		{
-//			cout << "§FormatLL<WayPoint, CoordType::decdeg>::FormatLL(const FamousFive&, vector<bool>&) "; _ctrsgn(typeid(*this));
+			fmt::print("§FormatLL<{}, CoordType::{}>::FormatLL(const FamousFive&, vector<bool>&) ", "WayPoint", CoordType::decdeg); _ctrsgn(typeid(*this));
+			std::fflush(nullptr);
 		}
-		~FormatLL() = default;
-//		~FormatLL() { cout << "§FormatLL<WayPoint, CoordType::decdeg>::~FormatLL() "; _ctrsgn(typeid(*this), true); }
+//		~FormatLL() = default;
+		~FormatLL() { fmt::print("§FormatLL<{}, CoordType::{}>::~FormatLL() ", "WayPoint", CoordType::decdeg); _ctrsgn(typeid(*this), true); }
 		string operator()(string ostr, double n)
 		{
-//			cout << "@FormatLL<WayPoint, CoordType::decdeg>::operator(string, double)\n";
+			fmt::print("@FormatLL<{}, CoordType::{}>::operator(string, double)\n", "WayPoint", CoordType::decdeg);
 			return ostr;
 		}
 };

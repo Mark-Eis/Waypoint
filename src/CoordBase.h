@@ -5,6 +5,9 @@
 #ifndef COORDBASE_H_
 #define COORDBASE_H_
 
+#define FMT_HEADER_ONLY
+#include </opt/homebrew/Cellar/fmt/11.1.4/include/fmt/base.h>		// verbose path needs sorting!
+
 /// __________________________________________________
 /// Class and Function declarations
 
@@ -39,6 +42,14 @@ RObject getnames(const DataFrame);
 
 //CoordType
 enum class CoordType : char { decdeg, degmin, degminsec };
+template <>
+//struct fmt::formatter<CoordType_enum::CoordType>: formatter<string_view>
+struct fmt::formatter<CoordType>: formatter<string_view>
+{
+//	auto format(CoordType_enum::CoordType, format_context&) const
+	auto format(CoordType, format_context&) const
+		-> format_context::iterator;
+};
 
 inline const CoordType get_coordtype(const int);
 template<class T>
