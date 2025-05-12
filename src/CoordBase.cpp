@@ -91,7 +91,7 @@ inline double polish(double x)
 template<class T, class U> 
 inline vector<U> get_vec_attr(const T& t, const char* attrname)
 {
-//	cout << "@get_vec_attr<T, U>(const T&, const char*) attr \"" << attrname << "\" " << boolalpha << t.hasAttribute(attrname) << endl;
+	fmt::print("@{} attr=\"{}\" {}\n", "get_vec_attr<T, U>(const T&, const char*)", attrname, t.hasAttribute(attrname) ? true : false);
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	return t.hasAttribute(attrname) ? as<vector<U>>(t.attr(attrname)) : vector<U>();
 }
@@ -113,7 +113,7 @@ inline int get_fmt_attribute(const T& t)
 template<class T>
 inline void checkinherits(T& t, const char* classname)
 {
-//	cout << "@checkinherits<T>(T& t, const char* classname) t " << Demangler(typeid(t))  << " classname \"" << classname << "\"" << endl;
+	fmt::print("@{} T {} classname \"{}\"\n", "checkinherits<T>(T&, const char*)", static_cast<string>(Demangler(typeid(t))), classname);
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	if (!t.inherits(classname)) stop("Argument must be a \"%s\" object", classname);
 }
@@ -124,7 +124,7 @@ inline void checkinherits(T& t, const char* classname)
 template<class T>
 inline bool is_item_in_obj(const T t, const int item)
 {
-//	cout << "@is_item_in_obj(T, int)\n";
+	fmt::print("@{} T {} item={}\n", "is_item_in_obj<T>(T, int)", static_cast<string>(Demangler(typeid(t))), item);
 	if (NA_INTEGER == item)
 		return false;
 	else
@@ -157,7 +157,7 @@ inline void prefixvecstr(vector<string>& sv, const vector<T>& prefix)
 template<>
 inline void prefixvecstr(vector<string>& sv, const vector<int>& prefix)
 {
-//	cout << "@prefixvecstr<>(vector<string>&, const vector<int>&)\n";
+	fmt::print("@{}\n", "prefixvecstr<>(vector<string>&, const vector<int>&)");
 	transform(sv.begin(), sv.end(), prefix.begin(), sv.begin(), [](string& lls, const int name) { return std::to_string(name) + "  " + lls; });	
 }
 
@@ -166,7 +166,7 @@ inline void prefixvecstr(vector<string>& sv, const vector<int>& prefix)
 /// Prefix vector<string> elements with elements of RObject 
 inline bool prefixwithnames(vector<string>& sv, RObject& namesobj)
 {
-//	cout << "@prefixwithnames(vector<string>&, RObject&)\n";
+	fmt::print("@{}\n", "prefixwithnames(vector<string>&, RObject&)");
 	if (is<CharacterVector>(namesobj)) {
 		vector<string>&& names = as<vector<string>>(namesobj);
 		stdlenstr(names);
@@ -183,6 +183,7 @@ inline bool prefixwithnames(vector<string>& sv, RObject& namesobj)
 /// string to lower case (see cppreference.com std::tolower)
 inline string str_tolower(string s)
 {
+	fmt::print("@{}\n", "str_tolower(string)");
     transform(s.begin(), s.end(), s.begin(), [](unsigned char c){ return tolower(c); });
     return s;
 }
@@ -193,7 +194,7 @@ inline string str_tolower(string s)
 template<class T>
 int nameinobj(const T t, const char* name)
 {
-//	cout << "@nameinobj<T>(const T, const char*) name is " << name << endl;
+	fmt::print("@{} name={}\n", "nameinobj<T>(const T, const char*)", name);
 	static_assert(std::is_same<List, T>::value || std::is_same<DataFrame, T>::value, "T must be List or DataFrame");
 	vector<string> names { get_vec_attr<T, string>(t, "names") };
 	if (!names.size())
@@ -201,9 +202,9 @@ int nameinobj(const T t, const char* name)
 	typedef decltype(names.size()) Tmp;
 	Tmp i = 0;
 	for (auto str : names ) {
-//		cout << "@nameinobj<T>(const T, const char*) testing " << str << endl;
+		fmt::print("@{} testing {}\n", "nameinobj<T>(const T, const char*)", str);
 		if (!str_tolower(str).compare(name)) {
-//			cout << "@nameinobj<T>(const T, const char*) found " << str << endl;
+			fmt::print("@{} found {}\n", "nameinobj<T>(const T, const char*)", str);
 			break;
 		}
 		i++;
@@ -218,7 +219,7 @@ int nameinobj(const T t, const char* name)
 /// Retrieve names column or row.names from DataFrame as Robject
 RObject getnames(const DataFrame df)
 {
-//	cout << "@getnames(const DataFrame)\n";
+	fmt::print("@{}\n", "getnames(const DataFrame)");
 	vector<int> namescolvec { get_vec_attr<DataFrame, int>(df, "namescol") };
 	if (1 == namescolvec.size()) {
 		int namescol = namescolvec[0] - 1;
