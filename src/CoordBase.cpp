@@ -11,6 +11,10 @@ using std::endl;	// Deprecate ?
 
 #include "CoordBase.h"
 
+#define FMT_HEADER_ONLY
+#include </opt/homebrew/Cellar/fmt/11.1.4/include/fmt/format.h>		// verbose path needs sorting!
+// #include <fmt/format.h>		// verbose path needs sorting!
+
 /// __________________________________________________
 /// __________________________________________________
 /// Development and Debugging functions
@@ -628,6 +632,7 @@ Coordbase::~Coordbase()
 CoordType Coordbase::get_coordtype() const
 {
 //	cout << "@Coordbase::get_coordtype() ct " << coordtype_to_int(ct) << endl;
+	fmt::print("@{} ct={}\n", "Coordbase::get_coordtype()", coordtype_to_int(ct));
 	return ct;
 }
 
