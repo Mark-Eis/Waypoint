@@ -39,6 +39,7 @@ const string demangle(const std::type_info& obj)
 	return str;
 }
 
+const auto& exportstr { "——Rcpp::export——" };
 
 /// __________________________________________________
 /// __________________________________________________
@@ -571,6 +572,7 @@ vector<string> WayPoint::format(bool usenames) const
 bool check_valid(const NumericVector nv)
 {
 //	cout << "@check_valid(const NumericVector)" << endl;
+	fmt::print("@{}\n", "check_valid(const NumericVector)");
 	bool unvalidated = false;
 	bool valid = validated(nv, "valid", unvalidated);
 	if (unvalidated)
@@ -584,6 +586,7 @@ bool check_valid(const NumericVector nv)
 bool check_valid(const DataFrame df)
 {
 //	cout << "@check_valid(const DataFrame)\n";
+	fmt::print("@{}\n", "check_valid(const DataFrame)");
 	bool unvalidated = false;
 
 	bool latvalid = validated(df, "validlat", unvalidated);
@@ -607,6 +610,7 @@ template<class T>
 bool validated(T t, const char* attrname, bool& unvalidated)
 {
 //	cout << "@validated<T>(T, const char*, bool&)" << endl;
+	fmt::print("@{} T: {} attrname: {} \n", "validated<T>(T, const char*, bool&)", demangle(typeid(t)), attrname);
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	const vector<bool>&& validvec = get_vec_attr<T, bool>(t, attrname);
 	bool valid = all_of(validvec.begin(), validvec.end(), [](bool v) { return v;});
@@ -622,6 +626,7 @@ const T revalidate(const T t)
 {
 	fmt::print("@{} T: {}\n", "revalidate<T, U>(const T)", demangle(typeid(t)));
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
+	static_assert(std::is_same<Coord, U>::value || std::is_same<WayPoint, U>::value, "T must be Coord or WayPoint");
 	warning("Revalidating %s…!", demangle(typeid(t)));
 	validate<T, U>(t);	
 	return check_valid(t);
@@ -634,7 +639,9 @@ template<class T, class U>
 inline const T validate(const T t)
 {
 //	cout << "@validate<T, U>(const T)\n";
+	fmt::print("@{} T: {}\n", "validate<T, U>(const T)", demangle(typeid(t)));
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
+	static_assert(std::is_same<Coord, U>::value || std::is_same<WayPoint, U>::value, "T must be Coord or WayPoint");
 	U(get_coordtype(t), t).validate();
 	return t;	
 }
@@ -645,6 +652,7 @@ inline const T validate(const T t)
 bool valid_ll(const DataFrame df)
 {
 //	cout << "@valid_ll(const DataFrame)\n";
+	fmt::print("@{}\n", "valid_ll(const DataFrame)");
 	bool valid = false;
 	vector<int> llcols { get_vec_attr<DataFrame, int>(df, "llcols") };
 	if (2 == llcols.size()) {
@@ -668,6 +676,7 @@ bool valid_ll(const DataFrame df)
 NumericVector as_coords(NumericVector object, const int fmt = 1)
 {
 //	cout << "——Rcpp::export——coords(NumericVector)\n";
+	fmt::print("{1}@{0} fmt={2}\n", "coords(NumericVector, int)", exportstr, fmt);
 	object.attr("fmt") = fmt;
 	convert_switch<NumericVector, Coord>(object, get_coordtype(fmt));
 	object.attr("class") = "coords";
@@ -682,6 +691,7 @@ NumericVector as_coords(NumericVector object, const int fmt = 1)
 NumericVector convertcoords(NumericVector x, const int fmt)
 {
 //	cout << "——Rcpp::export——convertcoords(NumericVector, const int) from " << get_fmt_attribute(x) << " to " << fmt << endl;
+	fmt::print("{1}@{0} fmt={2}\n", "convertcoords(NumericVector, int)", exportstr, fmt);
 	checkinherits(x, "coords");
 	CoordType type = get_coordtype(x);
 	CoordType newtype = get_coordtype(fmt);
@@ -702,6 +712,7 @@ NumericVector convertcoords(NumericVector x, const int fmt)
 NumericVector latlon(NumericVector cd, LogicalVector value)
 {
 //	cout << "——Rcpp::export——latlon(NumericVector, LogicalVector)\n";
+	fmt::print("{1}@{0}\n", "latlon(NumericVector, LogicalVector)", exportstr);
 	checkinherits(cd, "coords");
 	if (value.size() != cd.size() && value.size() != 1)
 		stop("value must be either length 1 or length(cd)");
@@ -719,6 +730,7 @@ NumericVector latlon(NumericVector cd, LogicalVector value)
 NumericVector validatecoords(NumericVector x, const bool force = true)
 {
 //	cout << "——Rcpp::export——validatecoords(NumericVector, const bool) format " << get_fmt_attribute(x) << endl;
+	fmt::print("{1}@{0} force: {2}\n", "validatecoords(NumericVector, bool)", exportstr, force);
 	checkinherits(x, "coords");
 	if (force)
 		return validate<NumericVector, Coord>(x);
@@ -737,6 +749,7 @@ NumericVector validatecoords(NumericVector x, const bool force = true)
 CharacterVector formatcoords(NumericVector x, bool usenames = true)
 {
 //	cout << "——Rcpp::export——formatcoords(NumericVector)\n";
+	fmt::print("{1}@{0} usenames: {2}\n", "formatcoords(NumericVector, bool)", exportstr, usenames);
 	checkinherits(x, "coords");
 	if(!x.size())
 		stop("x has 0 length!");
