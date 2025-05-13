@@ -11,18 +11,24 @@
 /// __________________________________________________
 /// Class and Function declarations
 
-// Development and debugging
+/// __________________________________________________
+/// __________________________________________________
+/// Development and debugging
 void _ctrsgn(const std::type_info&, bool = false);
 class Demangler;
 ostream& operator<< (ostream&, const Demangler&);
 
-// Formula simplification
+/// __________________________________________________
+/// __________________________________________________
+/// Formula simplification
 inline double mod1by60(double);
 inline double mod1e2(double);
 inline double round2(double, int);
 inline double polish(double);
 
-// Utility
+/// __________________________________________________
+/// __________________________________________________
+/// Utility
 template<class T, class U> 
 inline vector<U> get_vec_attr(const T&, const char*);
 template<class T>
@@ -40,7 +46,9 @@ template<class T>
 int nameinobj(const T, const char*);
 RObject getnames(const DataFrame);
 
-//CoordType
+/// __________________________________________________
+/// __________________________________________________
+/// CoordType enum
 enum class CoordType : char { decdeg, degmin, degminsec };
 template <>
 //struct fmt::formatter<CoordType_enum::CoordType>: formatter<string_view>
@@ -118,15 +126,12 @@ struct FF_degminsec : public FamousFive {
 } ff_degminsec;
 
 
-// Forward class declarations
+/// __________________________________________________
+/// __________________________________________________
+/// Class forward declarations
 class Coordbase;
 class Coord;
 class WayPoint;
-
-
-//Convertor
-template<CoordType type>
-class Convertor;
 
 
 /// __________________________________________________
@@ -253,7 +258,6 @@ class FormatLL {
 		}
 };
 
-
 /// __________________________________________________
 /// Specialised functor for decimal degrees Coord
 template<>
@@ -277,7 +281,6 @@ class FormatLL<Coord, CoordType::decdeg> {
 				return ostr;
 		}
 };
-
 
 /// __________________________________________________
 /// Specialised functor for decimal degrees WayPoint—simply returns its argument
@@ -308,7 +311,10 @@ void convert_switch(T, CoordType);
 template<class T>
 vector<string> format_switch(const T&);
 
-// Coordbase class
+
+/// __________________________________________________
+/// __________________________________________________
+/// Coordbase class
 class Coordbase {
 	protected:
 		CoordType ct;
@@ -324,8 +330,8 @@ class Coordbase {
 		CoordType get_coordtype() const;
 };
 
-
-// Coordinate derived class
+/// __________________________________________________
+/// Coordinate derived class
 class Coord : public Coordbase {
 	protected:
 		const NumericVector nv;
@@ -345,8 +351,8 @@ class Coord : public Coordbase {
 		vector<string> format(bool usenames) const;
 };
 
-
-// Waypoint derived class
+/// __________________________________________________
+/// Waypoint derived class
 class WayPoint : public Coordbase {
 	protected:
 		const DataFrame df;
@@ -368,7 +374,9 @@ class WayPoint : public Coordbase {
 };
 
 
-// Validation
+/// __________________________________________________
+/// __________________________________________________
+/// Validation
 bool check_valid(const NumericVector);
 bool check_valid(const DataFrame);
 
@@ -386,7 +394,9 @@ inline const T validate(const T);
 
 bool valid_ll(const DataFrame);
 
-// Exported
+/// __________________________________________________
+/// __________________________________________________
+/// Exported functions
 NumericVector as_coords(NumericVector, const int);
 NumericVector convertcoords(NumericVector, const int);
 NumericVector latlon(NumericVector, LogicalVector);
@@ -399,47 +409,5 @@ CharacterVector formatwaypoints(DataFrame, bool);
 CharacterVector ll_headers(int, const int);
 NumericVector as_coordswaypoints(DataFrame, bool);
 
-
-
-/*
-#define FMT_HEADER_ONLY
-#include </opt/homebrew/Cellar/fmt/11.1.4/include/fmt/base.h>		// verbose path needs sorting!
-
-/// Either use format_as() function or specialise the formatter struct template.
-// #define USE_FORMAT_AS
-
-int fmtdemo();
-int fmtdemo2(int);
-std::string fmtdemo3(int);
-
-/// __________________________________________________
-/// CoordType enum class
-
-namespace CoordType_enum {
-
-	enum class CoordType : char { decdeg, degmin, degminsec };
-	
-	inline const CoordType get_coordtype(int i);
-
-
-#ifdef USE_FORMAT_AS
-// Use format_as()
-
-	auto format_as(CoordType ct) -> std::string;
-#endif  // ifdef USE_FORMAT_AS
-
-}
-
-#ifndef USE_FORMAT_AS
-// Use formatter struct template specialisation (can't be within namespace CoordType_enum)
-
-template <> struct fmt::formatter<CoordType_enum::CoordType>: formatter<string_view> {
-	// parse is inherited from formatter<string_view>.
-
-	auto format(CoordType_enum::CoordType, format_context&) const
-		-> format_context::iterator;
-};
-#endif  // ifndef USE_FORMAT_AS
-*/
 
 #endif  // COORDBASE_H_
