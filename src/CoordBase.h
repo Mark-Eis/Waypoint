@@ -303,9 +303,35 @@ class FormatLL<WayPoint, CoordType::decdeg> {
 		}
 };
 
-class Validator;
 
-//CoordType switches
+/// __________________________________________________
+/// __________________________________________________
+/// Validate functor
+
+class Validator {
+		const FamousFive& ff;
+		vector<bool>::const_iterator ll_it;
+		const int ll_size;
+	public:
+		Validator(const FamousFive& _ff, const vector<bool>& ll) : ff(_ff), ll_it(ll.begin()), ll_size(ll.size())
+		{
+			fmt::print("§{} ", "Validator::Validator(const FamousFive&, vector<bool>&)"); _ctrsgn(typeid(*this));
+		}
+//		~Validator() = default;
+		~Validator() { fmt::print("§{} ", "Validator::~Validator()"); _ctrsgn(typeid(*this), true); }
+		bool operator()(double n)
+		{
+			fmt::print("@{} validating: {: {}f}\n", "Validator()", n, 9);
+			return !((abs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
+				(abs(ff.get_decmin(n)) >= 60) ||
+				(abs(ff.get_sec(n)) >= 60));
+		}
+};
+
+
+/// __________________________________________________
+/// __________________________________________________
+///CoordType switches
 template<class T, class U>
 void convert_switch(T, CoordType);
 template<class T>
