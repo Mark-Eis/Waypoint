@@ -15,8 +15,7 @@
 /// __________________________________________________
 /// Development and debugging
 void _ctrsgn(const std::type_info&, bool = false);
-class Demangler;
-ostream& operator<< (ostream&, const Demangler&);
+const string demangle(const std::type_info&);
 
 /// __________________________________________________
 /// __________________________________________________

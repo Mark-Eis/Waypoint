@@ -29,24 +29,14 @@ void _ctrsgn(const std::type_info& obj, bool destruct)
 	system(("c++filt -t " + s).data());
 }
 
-/// Demangle object names functor
-class Demangler {
-	char* p;
-	int status = 0;
-public:
-	Demangler(const std::type_info& obj) : p(abi::__cxa_demangle(obj.name(), NULL, NULL, &status)) {}
-	~Demangler() { std::free(p); }
-	operator string() const
-	{
-		fmt::print("@{}\n", "Demangler::operator string()");
-		return string("\"") + p + "\" (status " + std::to_string(status) + ")";
-	}
-};
-
-ostream& operator<< (ostream& stream, const Demangler& d)
+/// Demangle object names
+const string demangle(const std::type_info& obj)
 {
-//  cout << "ostream& operator<< (ostream&, const Demangler&) ";
-  return stream << string(d);
+	int status = 0;
+	char* p { abi::__cxa_demangle(obj.name(), NULL, NULL, &status) };
+	string str { fmt::format("\"{}\" (status {})", p, std::to_string(status)) };
+	std::free(p);
+	return str;
 }
 
 
@@ -118,7 +108,7 @@ inline int get_fmt_attribute(const T& t)
 template<class T>
 inline void checkinherits(T& t, const char* classname)
 {
-	fmt::print("@{} T {} classname \"{}\"\n", "checkinherits<T>(T&, const char*)", static_cast<string>(Demangler(typeid(t))), classname);
+	fmt::print("@{} T {} classname \"{}\"\n", "checkinherits<T>(T&, const char*)", demangle(typeid(t)), classname);
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	if (!t.inherits(classname)) stop("Argument must be a \"%s\" object", classname);
 }
@@ -129,7 +119,7 @@ inline void checkinherits(T& t, const char* classname)
 template<class T>
 inline bool is_item_in_obj(const T t, const int item)
 {
-	fmt::print("@{} T {} item={}\n", "is_item_in_obj<T>(T, int)", static_cast<string>(Demangler(typeid(t))), item);
+	fmt::print("@{} T {} item={}\n", "is_item_in_obj<T>(T, int)", demangle(typeid(t)), item);
 	if (NA_INTEGER == item)
 		return false;
 	else
@@ -152,7 +142,7 @@ inline void stdlenstr(vector<string>& sv)
 template<class T>
 inline void prefixvecstr(vector<string>& sv, const vector<T>& prefix)
 {
-	fmt::print("@{}\n", "prefixvecstr<T>(vector<string>&, const vector<T>&)");
+	fmt::print("@{} T {}\n", "prefixvecstr<T>(vector<string>&, const vector<T>&) [default]", "vector<string>");
 	transform(sv.begin(), sv.end(), prefix.begin(), sv.begin(), [](string& lls, const string& name) { return name + "  " + lls; });	
 }
 
@@ -339,9 +329,10 @@ vector<FamousFive*> vff { &ff_decdeg, &ff_degmin, &ff_degminsec };
 template<class T, class U>
 void convert_switch(T t, CoordType newtype)
 {
-//	cout << "@convert_switch<T&, U>(T, CoordType) t " << Demangler(typeid(t)) << " newtype " << coordtype_to_int(newtype) << endl;
-	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	CoordType type = get_coordtype(t);
+	fmt::print("@{} T: {} oldtype: {} newtype: {}\n", "convert_switch<T&, U>(T, CoordType)", demangle(typeid(t)), type, newtype);
+	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
+	static_assert(std::is_same<Coord, U>::value || std::is_same<WayPoint, U>::value, "T must be Coord or WayPoint");
 	U u(type, t);
 	u.validate();
 
@@ -373,7 +364,7 @@ void convert_switch(T t, CoordType newtype)
 template<class T>
 vector<string> format_switch(const T& t)
 {
-//	cout << "@format_switch<T>(const T&, CoordType) " << Demangler(typeid(t)) << " ct " << coordtype_to_int(ct) << endl;
+	fmt::print("@{} T: {} CoordType::{}\n", "format_switch<T>(const T&)", demangle(typeid(t)), t.get_coordtype());
 	static_assert(std::is_same<Coord, T>::value || std::is_same<WayPoint, T>::value, "T must be Coord or WayPoint");
 	switch (t.get_coordtype())
 	{
@@ -629,9 +620,9 @@ bool validated(T t, const char* attrname, bool& unvalidated)
 template<class T, class U>
 const T revalidate(const T t)
 {
-//	cout << "@revalidate<T, U>(const T) t" << Demangler(typeid(t))  << endl;
+	fmt::print("@{} T: {}\n", "revalidate<T, U>(const T)", demangle(typeid(t)));
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
-	warning("Revalidating %s…!", Demangler(typeid(t)));
+	warning("Revalidating %s…!", demangle(typeid(t)));
 	validate<T, U>(t);	
 	return check_valid(t);
 }
