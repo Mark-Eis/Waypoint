@@ -35,7 +35,11 @@ class Demangler {
 public:
 	Demangler(const std::type_info& obj) : p(abi::__cxa_demangle(obj.name(), NULL, NULL, &status)) {}
 	~Demangler() { std::free(p); }
-	operator string() const { return string("\"") + p + "\" (status " + std::to_string(status) + ")"; }
+	operator string() const
+	{
+		fmt::print("@{}\n", "Demangler::operator string()");
+		return string("\"") + p + "\" (status " + std::to_string(status) + ")";
+	}
 };
 
 ostream& operator<< (ostream& stream, const Demangler& d)
@@ -274,7 +278,6 @@ auto fmt::formatter<CoordType>::format(CoordType ct, format_context& ctx) const
 /// Convert int to CoordType enum
 inline const CoordType get_coordtype(const int i)
 {
-//	cout << "@get_coordtype(int) " << i << endl;
 	fmt::print("@{} {}\n", "get_coordtype(int)" , i);
 	if (i < 1 || i > 3)
 		stop("\"fmt\" must be between 1 and 3");
@@ -287,7 +290,6 @@ inline const CoordType get_coordtype(const int i)
 template<class T>
 inline const CoordType get_coordtype(const T& t)
 {
-//	cout << "@get_coordtype<T>(const T&) " << get_fmt_attribute(t) << endl;
 	fmt::print("@{} fmt={}\n", "get_coordtype<T>(const T&)", get_fmt_attribute(t));
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	return get_coordtype(get_fmt_attribute(t));
@@ -298,7 +300,6 @@ inline const CoordType get_coordtype(const T& t)
 /// Convert CoordType enum to int
 inline const int coordtype_to_int(CoordType ct)
 {
-//	cout << "@coordtype_to_int(CoordType ct) " << static_cast<char>(ct) + 1 << endl;
 	fmt::print("@{} ct={}\n", "coordtype_to_int(CoordType)", ct);
 	return static_cast<char>(ct);
 }
@@ -338,10 +339,10 @@ class Convertor {
 	public:
 		Convertor(const FamousFive& _ff) : ff(_ff)
 		{
-//			cout << "§Convertor<CoordType>::Convertor(const FamousFive&) "; _ctrsgn(typeid(*this));
-		}
-		~Convertor() = default;
-//		~Convertor() { cout << "§Convertor<type>::~Convertor() "; _ctrsgn(typeid(*this), true); }
+			fmt::print("§Convertor<CoordType::{}>::Convertor()(const FamousFive&) ", type); _ctrsgn(typeid(*this));
+			std::fflush(nullptr);		}
+//		~Convertor() = default;
+		~Convertor() { fmt::print("§Convertor<CoordType::{}>::~Convertor() ", type); _ctrsgn(typeid(*this), true); }
 		double operator()(double n);
 };
 
@@ -351,7 +352,7 @@ class Convertor {
 template<CoordType type>
 inline double Convertor<type>::operator()(double n)
 {
-//	cout << "@Convertor<CoordType>::operator() [default for CoordType::decdeg]\n";
+	fmt::print("@Convertor<CoordType::{}>::operator() [default]\n", type);
 	return ff.get_decdeg(n);
 }
 
@@ -361,7 +362,7 @@ inline double Convertor<type>::operator()(double n)
 template<>
 inline double Convertor<CoordType::degmin>::operator()(double n)
 {
-//	cout << "@Convertor<CoordType::degmin>::operator()\n";
+	fmt::print("@{}\n", "Convertor<CoordType::degmin>::operator()");
 	return ff.get_deg(n) * 1e2 + ff.get_decmin(n);
 }
 
@@ -371,7 +372,7 @@ inline double Convertor<CoordType::degmin>::operator()(double n)
 template<>
 inline double Convertor<CoordType::degminsec>::operator()(double n)
 {
-//	cout << "@Convertor<CoordType::degminsec>::operator()\n";
+	fmt::print("@{}\n", "Convertor<CoordType::degminsec>::operator()");
 	return ff.get_deg(n) * 1e4 + ff.get_min(n) * 1e2 + ff.get_sec(n);
 }
 
