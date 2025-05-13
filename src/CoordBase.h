@@ -131,6 +131,55 @@ class Convertor;
 
 /// __________________________________________________
 /// __________________________________________________
+/// Templated coord type conversion functors
+
+template<CoordType type>
+class Convertor {
+	protected:
+		const FamousFive& ff; 
+	public:
+		Convertor(const FamousFive& _ff) : ff(_ff)
+		{
+			fmt::print("§Convertor<CoordType::{}>::Convertor()(const FamousFive&) ", type); _ctrsgn(typeid(*this));
+			std::fflush(nullptr);		}
+//		~Convertor() = default;
+		~Convertor() { fmt::print("§Convertor<CoordType::{}>::~Convertor() ", type); _ctrsgn(typeid(*this), true); }
+		double operator()(double n);
+};
+
+
+/// __________________________________________________
+/// Default operator(), for decimal degrees
+template<CoordType type>
+inline double Convertor<type>::operator()(double n)
+{
+	fmt::print("@Convertor<CoordType::{}>::operator() [default]\n", type);
+	return ff.get_decdeg(n);
+}
+
+
+/// __________________________________________________
+/// Specialised operator() for degrees and minutes
+template<>
+inline double Convertor<CoordType::degmin>::operator()(double n)
+{
+	fmt::print("@{}\n", "Convertor<CoordType::degmin>::operator()");
+	return ff.get_deg(n) * 1e2 + ff.get_decmin(n);
+}
+
+
+/// __________________________________________________
+/// Specialised operator() for degrees, minutes and seconds
+template<>
+inline double Convertor<CoordType::degminsec>::operator()(double n)
+{
+	fmt::print("@{}\n", "Convertor<CoordType::degminsec>::operator()");
+	return ff.get_deg(n) * 1e4 + ff.get_min(n) * 1e2 + ff.get_sec(n);
+}
+
+
+/// __________________________________________________
+/// __________________________________________________
 /// Templated coord formatting functors
 template<CoordType type>
 class Format {
