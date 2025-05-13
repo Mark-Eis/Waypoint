@@ -426,11 +426,11 @@ NumericVector as_coords(NumericVector, const int);
 NumericVector convertcoords(NumericVector, const int);
 NumericVector latlon(NumericVector, LogicalVector);
 NumericVector validatecoords(NumericVector, const bool);
-CharacterVector formatcoords(NumericVector, bool);
+CharacterVector formatcoords(NumericVector, bool, bool);
 DataFrame as_waypointsdefault(DataFrame, const int);
 DataFrame convertwaypoints(DataFrame, const int);
 DataFrame validatewaypoints(DataFrame, const bool);
-CharacterVector formatwaypoints(DataFrame, bool);
+CharacterVector formatwaypoints(DataFrame, bool, bool);
 CharacterVector ll_headers(int, const int);
 NumericVector as_coordswaypoints(DataFrame, bool);
 

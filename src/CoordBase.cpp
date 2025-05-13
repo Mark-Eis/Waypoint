@@ -746,15 +746,16 @@ NumericVector validatecoords(NumericVector x, const bool force = true)
 /// Format coords vector - S3 method format.coords()
 //' @rdname format
 // [[Rcpp::export(name = "format.coords")]]
-CharacterVector formatcoords(NumericVector x, bool usenames = true)
+CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validate = true)
 {
 //	cout << "——Rcpp::export——formatcoords(NumericVector)\n";
-	fmt::print("{1}@{0} usenames: {2}\n", "formatcoords(NumericVector, bool)", exportstr, usenames);
+	fmt::print("{1}@{0} usenames: {2}, validate: {3}\n", "formatcoords(NumericVector, bool, bool)", exportstr, usenames, validate);
 	checkinherits(x, "coords");
 	if(!x.size())
 		stop("x has 0 length!");
-	if (!check_valid(x))
-		warning("Formatting invalid coords!");
+	if (validate)
+		if (!check_valid(x))
+			warning("Formatting invalid coords!");
 	return wrap(Coord(get_coordtype(x), x).format(usenames));
 }
 
@@ -834,16 +835,18 @@ DataFrame validatewaypoints(DataFrame x, const bool force = true)
 /// Format waypoints vector - S3 method format.waypoints()
 //' @rdname format
 // [[Rcpp::export(name = "format.waypoints")]]
-CharacterVector formatwaypoints(DataFrame x, bool usenames = true)
+CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate = true)
 {
 //	cout << "——Rcpp::export——formatwaypoints(DataFrame)\n";
+	fmt::print("{1}@{0} usenames: {2}, validate: {3}\n", "formatwaypoints(DataFrame, bool, bool)", exportstr, usenames, validate);
 	checkinherits(x, "waypoints");
 	if(!x.nrows())
 		stop("x has 0 rows!");
 	if(!valid_ll(x))
 		stop("Invalid llcols attribute!");
-	if (!check_valid(x))
-		warning("Formatting invalid waypoints!");
+	if (validate)
+		if (!check_valid(x))
+			warning("Formatting invalid waypoints!");
 	return wrap(WayPoint(get_coordtype(x), x).format(usenames));
 }
 

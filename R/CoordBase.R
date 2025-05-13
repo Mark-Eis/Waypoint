@@ -465,7 +465,7 @@ print.coords <- function (x, ..., max = NULL) {
         attributes(x0) <- lapply(attributes(x), \(x) x[seq_len(min(length(x), n0))])
     } else
         x0 <- x
-    writeLines(format(x0, ...))
+    writeLines(format(x0, validate = FALSE, ...))
     if (omit) 
         cat(" [ reached 'max' / getOption(\"max.print\") -- omitted", n - n0, "entries ]\n")
     invisible(x)
@@ -488,7 +488,7 @@ print.waypoints <- function (x, ..., max = NULL) {
     omit <- (n0 <- max %/% 3L) < n
     if (omit) 
          x <- x[seq_len(n0), , drop = FALSE]
-    fmtx <- format(x, ...)
+    fmtx <- format(x, validate = FALSE, ...)
     writeLines(ll_headers(fmtx, attr(x, "fmt")))
     writeLines(fmtx)
     if (omit) 
