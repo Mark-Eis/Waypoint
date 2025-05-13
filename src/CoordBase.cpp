@@ -817,11 +817,11 @@ DataFrame convertwaypoints(DataFrame x, const int fmt)
 // [[Rcpp::export(name = "validate.waypoints")]]
 DataFrame validatewaypoints(DataFrame x, const bool force = true)
 {
-//      cout << "——Rcpp::export——validatewaypoints(DataFrame, const bool) format " << get_fmt_attribute(x) << endl;
+//	cout << "——Rcpp::export——validatewaypoints(DataFrame, const bool) format " << get_fmt_attribute(x) << endl;
 	fmt::print("{1}@{0} force: {2}\n", "validatewaypoints(DataFrame, bool)", exportstr, force);
-    checkinherits(x, "waypoints");
-    if(!valid_ll(x))
-    	stop("Invalid llcols attribute!");
+	checkinherits(x, "waypoints");
+	if(!valid_ll(x))
+		stop("Invalid llcols attribute!");
 	if (force)
 		return validate<DataFrame, WayPoint>(x);
 	else {
