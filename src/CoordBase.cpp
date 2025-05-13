@@ -339,13 +339,13 @@ class Validator {
 	public:
 		Validator(const FamousFive& _ff, const vector<bool>& ll) : ff(_ff), ll_it(ll.begin()), ll_size(ll.size())
 		{
-//			cout << "§Validator::Validator(const FamousFive&, vector<bool>&) "; _ctrsgn(typeid(*this));
+			fmt::print("§{} ", "Validator::Validator(const FamousFive&, vector<bool>&)"); _ctrsgn(typeid(*this));
 		}
-		~Validator() = default;
-//		~Validator() { cout << "§Validator::~Validator() "; _ctrsgn(typeid(*this), true); }
+//		~Validator() = default;
+		~Validator() { fmt::print("§{} ", "Validator::~Validator()"); _ctrsgn(typeid(*this), true); }
 		bool operator()(double n)
 		{
-//			cout << "@Validator() " << " validating: " << std::setw(9) << std::setfill(' ') << n << endl;
+			fmt::print("@{} validating: {: {}f}\n", "Validator()", n, 9);
 			return !((abs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
 				(abs(ff.get_decmin(n)) >= 60) ||
 				(abs(ff.get_sec(n)) >= 60));
