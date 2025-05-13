@@ -14,6 +14,7 @@ using std::endl;	// Deprecate ?
 #define FMT_HEADER_ONLY
 #include </opt/homebrew/Cellar/fmt/11.1.4/include/fmt/format.h>		// verbose path needs sorting!
 // #include <fmt/format.h>		// verbose path needs sorting!
+#include </opt/homebrew/Cellar/fmt/11.1.4/include/fmt/ranges.h>		// verbose path needs sorting!
 
 /// __________________________________________________
 /// __________________________________________________
@@ -398,19 +399,18 @@ vector<string> format_switch(const T& t)
 Coordbase::Coordbase(CoordType _ct) :
 	ct(_ct), ff(*vff[coordtype_to_int(ct)])
 {
-//	cout << "§Coordbase::Coordbase(CoordType) "; _ctrsgn(typeid(*this));
+	fmt::print("§{} {} ", "Coordbase::Coordbase(CoordType)", ct); _ctrsgn(typeid(*this));
 }
 
 
 Coordbase::~Coordbase()
 {
-//	cout << "§Coordbase::~Coordbase() "; _ctrsgn(typeid(*this), true);
+	fmt::print("§{} {} ", "Coordbase::~Coordbase()", ct); _ctrsgn(typeid(*this), true);
 }
 
 
 CoordType Coordbase::get_coordtype() const
 {
-//	cout << "@Coordbase::get_coordtype() ct " << coordtype_to_int(ct) << endl;
 	fmt::print("@{} ct={}\n", "Coordbase::get_coordtype()", coordtype_to_int(ct));
 	return ct;
 }
@@ -423,7 +423,7 @@ Coord::Coord(CoordType ct, const NumericVector nv) :
 	Coordbase(ct), nv(nv),
 	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") } //,
 {
-//	cout << "§Coord::Coord(CoordType, const NumericVector) "; _ctrsgn(typeid(*this));
+	fmt::print("§{} {} ", "Coord::Coord(CoordType, const NumericVector)", ct); _ctrsgn(typeid(*this));
 }
 
 
@@ -432,7 +432,7 @@ Coord::Coord(CoordType ct, const NumericVector nv) :
 template<CoordType newtype>
 inline void Coord::convert() const
 {
-//	cout << "@Coord::convert<CoordType>() newtype " << coordtype_to_int(newtype) + 1 << endl;
+	fmt::print("@Coord::convert<{}>() to {}\n", ct, newtype);
 	transform(nv.begin(), nv.end(), const_cast<NumericVector&>(nv).begin(), Convertor<newtype>(ff));
 }
 
@@ -441,7 +441,7 @@ inline void Coord::convert() const
 /// Validate coords vector
 void Coord::validate(bool warn) const
 {
-//	cout << "@Coord::validate() " << Demangler(typeid(*this)) << " latlon " << LogicalVector(wrap(latlon)) << endl;
+	fmt::print("@{} latlon: {}\n", "Coord::validate()", fmt::join(latlon, ", "));
 	vector<bool>& non_const_valid { const_cast<vector<bool>&>(valid) };
 	non_const_valid.assign(nv.size(), {false});
 	transform(nv.begin(), nv.end(), non_const_valid.begin(), Validator(ff, latlon));
@@ -459,7 +459,7 @@ void Coord::validate(bool warn) const
 template<CoordType type>
 vector<string> Coord::format_ct() const
 {
-//	cout << "@Coord::format_ct<CoordType>() " << Demangler(typeid(*this)) << endl;
+	fmt::print("@Coord::format_ct<CoordType::{}>()\n", type);
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), Format<type>(ff));
 	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<Coord, type>(ff, latlon));
@@ -471,7 +471,7 @@ vector<string> Coord::format_ct() const
 /// Format coords vector<string> with names
 vector<string> Coord::format(bool usenames) const
 {
-//	cout << "@Coord::format(bool) " << Demangler(typeid(*this)) << endl;
+	fmt::print("@{}\n", "Coord::format(bool)");
 	vector<string>&& sv = format_switch(*this);
 	vector<string> names { get_vec_attr<NumericVector, string>(nv, "names") };
 	if (names.size() && usenames) {
@@ -491,7 +491,7 @@ WayPoint::WayPoint(CoordType ct, const DataFrame df) :
 	nvlat(df[get_vec_attr<DataFrame, int>(df, "llcols")[0] - 1]), 
 	nvlon(df[get_vec_attr<DataFrame, int>(df, "llcols")[1] - 1])
 {
-//	cout << "§WayPoint::WayPoint(CoordType ct, const DataFrame) "; _ctrsgn(typeid(*this));
+	fmt::print("§{} {} ", "WayPoint::WayPoint(WayPointType, const DataFrame)", ct); _ctrsgn(typeid(*this));
 }
 
 
@@ -500,7 +500,7 @@ WayPoint::WayPoint(CoordType ct, const DataFrame df) :
 template<CoordType newtype>
 inline void WayPoint::convert() const
 {
-// 	cout << "@WayPoint::convert<CoordType>() newtype " << coordtype_to_int(newtype) + 1 << endl;
+	fmt::print("@WayPoint::convert<{}>() to {}\n", ct, newtype);
 	transform(nvlat.begin(), nvlat.end(), const_cast<NumericVector&>(nvlat).begin(), Convertor<newtype>(ff));
 	transform(nvlon.begin(), nvlon.end(), const_cast<NumericVector&>(nvlon).begin(), Convertor<newtype>(ff));
 }
@@ -510,7 +510,7 @@ inline void WayPoint::convert() const
 /// Validate WayPoint
 void WayPoint::validate(bool warn) const
 {
-//	cout << "@WayPoint::validate(bool) " << Demangler(typeid(*this)) << endl;
+	fmt::print("@{}\n", "WayPoint::validate(bool)");
 
 	vector<bool>& non_const_validlat { const_cast<vector<bool>&>(validlat) };
 	non_const_validlat.assign(nvlat.size(), {false});
@@ -541,7 +541,7 @@ void WayPoint::validate(bool warn) const
 template<CoordType type>
 vector<string> WayPoint::format_ct() const
 {
-//	cout << "@WayPoint::format_ct() " << Demangler(typeid(*this)) << endl;
+	fmt::print("@WayPoint::format_ct<CoordType::{}>()\n", type);
 	vector<string> sv_lat(nvlat.size());
 	transform(nvlat.begin(), nvlat.end(), sv_lat.begin(), Format<type>(ff));
 	transform(sv_lat.begin(), sv_lat.end(), nvlat.begin(), sv_lat.begin(), FormatLL<WayPoint, type>(ff, vector<bool>{ true }));
@@ -559,7 +559,7 @@ vector<string> WayPoint::format_ct() const
 /// Format waypoints vector<string> with names
 vector<string> WayPoint::format(bool usenames) const
 {
-//	cout << "@WayPoint::format(bool) " << Demangler(typeid(*this)) << endl;
+	fmt::print("@{}\n", "WayPoint::format(bool)");
 	vector<string>&& sv = format_switch(*this);
 	if (usenames) {
 		RObject names = getnames(df);

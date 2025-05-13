@@ -366,8 +366,8 @@ class Coord : public Coordbase {
 
 	public:
 		Coord(CoordType, const NumericVector);
-		~Coord() = default;
-//		~Coord() { cout << "§Coord::~Coord() "; _ctrsgn(typeid(*this), true); }
+//		~Coord() = default;
+		~Coord() { fmt::print("§{} {} ", "Coord::~Coord()", ct); _ctrsgn(typeid(*this), true); }
 
 		template<CoordType type>
 		void convert() const;
@@ -388,8 +388,8 @@ class WayPoint : public Coordbase {
 		const vector<bool> validlon { false };
 	public:
 		explicit WayPoint(CoordType, const DataFrame);
-		~WayPoint() = default;
-//		~WayPoint() { cout << "§WayPoint::~WayPoint() "; _ctrsgn(typeid(*this), true); }
+//		~WayPoint() = default;
+		~WayPoint() { fmt::print("§{} {} ", "WayPoint::~WayPoint()", ct); _ctrsgn(typeid(*this), true); }
 
 		template<CoordType type>
 		void convert() const;
