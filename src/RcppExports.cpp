@@ -11,25 +11,25 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // as_coords
-NumericVector as_coords(NumericVector object, const int fmt);
+NumericVector as_coords(NumericVector object, int fmt);
 RcppExport SEXP _Waypoint_as_coords(SEXP objectSEXP, SEXP fmtSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type object(objectSEXP);
-    Rcpp::traits::input_parameter< const int >::type fmt(fmtSEXP);
+    Rcpp::traits::input_parameter< int >::type fmt(fmtSEXP);
     rcpp_result_gen = Rcpp::wrap(as_coords(object, fmt));
     return rcpp_result_gen;
 END_RCPP
 }
 // convertcoords
-NumericVector convertcoords(NumericVector x, const int fmt);
+NumericVector convertcoords(NumericVector x, int fmt);
 RcppExport SEXP _Waypoint_convertcoords(SEXP xSEXP, SEXP fmtSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const int >::type fmt(fmtSEXP);
+    Rcpp::traits::input_parameter< int >::type fmt(fmtSEXP);
     rcpp_result_gen = Rcpp::wrap(convertcoords(x, fmt));
     return rcpp_result_gen;
 END_RCPP
@@ -47,13 +47,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // validatecoords
-NumericVector validatecoords(NumericVector x, const bool force);
+NumericVector validatecoords(NumericVector x, bool force);
 RcppExport SEXP _Waypoint_validatecoords(SEXP xSEXP, SEXP forceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const bool >::type force(forceSEXP);
+    Rcpp::traits::input_parameter< bool >::type force(forceSEXP);
     rcpp_result_gen = Rcpp::wrap(validatecoords(x, force));
     return rcpp_result_gen;
 END_RCPP
@@ -72,37 +72,37 @@ BEGIN_RCPP
 END_RCPP
 }
 // as_waypoints
-DataFrame as_waypoints(DataFrame object, const int fmt);
+DataFrame as_waypoints(DataFrame object, int fmt);
 RcppExport SEXP _Waypoint_as_waypoints(SEXP objectSEXP, SEXP fmtSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< DataFrame >::type object(objectSEXP);
-    Rcpp::traits::input_parameter< const int >::type fmt(fmtSEXP);
+    Rcpp::traits::input_parameter< int >::type fmt(fmtSEXP);
     rcpp_result_gen = Rcpp::wrap(as_waypoints(object, fmt));
     return rcpp_result_gen;
 END_RCPP
 }
 // convertwaypoints
-DataFrame convertwaypoints(DataFrame x, const int fmt);
+DataFrame convertwaypoints(DataFrame x, int fmt);
 RcppExport SEXP _Waypoint_convertwaypoints(SEXP xSEXP, SEXP fmtSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< DataFrame >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const int >::type fmt(fmtSEXP);
+    Rcpp::traits::input_parameter< int >::type fmt(fmtSEXP);
     rcpp_result_gen = Rcpp::wrap(convertwaypoints(x, fmt));
     return rcpp_result_gen;
 END_RCPP
 }
 // validatewaypoints
-DataFrame validatewaypoints(DataFrame x, const bool force);
+DataFrame validatewaypoints(DataFrame x, bool force);
 RcppExport SEXP _Waypoint_validatewaypoints(SEXP xSEXP, SEXP forceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< DataFrame >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const bool >::type force(forceSEXP);
+    Rcpp::traits::input_parameter< bool >::type force(forceSEXP);
     rcpp_result_gen = Rcpp::wrap(validatewaypoints(x, force));
     return rcpp_result_gen;
 END_RCPP
@@ -121,13 +121,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // ll_headers
-CharacterVector ll_headers(const CharacterVector aswidth, const int fmt);
+CharacterVector ll_headers(const CharacterVector aswidth, int fmt);
 RcppExport SEXP _Waypoint_ll_headers(SEXP aswidthSEXP, SEXP fmtSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const CharacterVector >::type aswidth(aswidthSEXP);
-    Rcpp::traits::input_parameter< const int >::type fmt(fmtSEXP);
+    Rcpp::traits::input_parameter< int >::type fmt(fmtSEXP);
     rcpp_result_gen = Rcpp::wrap(ll_headers(aswidth, fmt));
     return rcpp_result_gen;
 END_RCPP

@@ -13,9 +13,9 @@
 
 \method{print}{waypoints}(x, ..., max = NULL)
 
-\method{format}{coords}(x, ..., usenames = TRUE)
+\method{format}{coords}(x, ..., usenames = TRUE, validate = TRUE)
 
-\method{format}{waypoints}(x, ..., usenames = TRUE)
+\method{format}{waypoints}(x, ..., usenames = TRUE, validate = TRUE)
 
 ll_headers(aswidth, fmt)
 }
@@ -31,6 +31,9 @@ class \code{"\link{waypoints}"} created by function \code{\link{as_waypoints}()}
 
 \item{usenames}{\code{logical}, whether or not to include names in formatted output; default
 \code{TRUE}.}
+
+\item{validate}{\code{logical}, whether or not to \code{\link{validate}} \code{x} before
+formatting; default \code{TRUE}.}
 
 \item{aswidth}{\code{character} vector, used to match width of headers to formatted output.}
 
@@ -72,7 +75,10 @@ missing, a warning is issued and the objects are re-validated as described under
 
 \code{ll_headers()} outputs the headings \verb{"Latitude ... Longitude"} formatted to the
 same width as argument \code{aswidth}, adjusted for format \code{fmt} and is primarily intended
-for use by the \code{print()} method for class \code{"waypoints"}.
+for use by the \code{print()} method for class \code{"waypoints"}. Likewise argument
+\code{validate} is used by the \code{print()} methods for classes \code{"coords"} and
+\code{"waypoints"} to prevent unecessary replicate validation and may otherwise be left as the
+default.
 }
 \examples{
 ## Continuing example from `as_coords()`...

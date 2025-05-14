@@ -365,7 +365,10 @@ convert <- function(x, ...)
 #' 
 #' \code{ll_headers()} outputs the headings \verb{"Latitude ... Longitude"} formatted to the
 #' same width as argument \code{aswidth}, adjusted for format \code{fmt} and is primarily intended
-#' for use by the \code{print()} method for class \code{"waypoints"}.
+#' for use by the \code{print()} method for class \code{"waypoints"}. Likewise argument
+#' \code{validate} is used by the \code{print()} methods for classes \code{"coords"} and
+#' \code{"waypoints"} to prevent unecessary replicate validation and may otherwise be left as the
+#' default.
 #'
 #' @seealso
 #' \code{\link[base:format]{format}()}, \code{\link[base:print]{print}()},
@@ -373,6 +376,9 @@ convert <- function(x, ...)
 #'
 #' @param usenames \code{logical}, whether or not to include names in formatted output; default
 #' \code{TRUE}.
+#'
+#' @param validate \code{logical}, whether or not to \code{\link{validate}} \code{x} before
+#' formatting; default \code{TRUE}.
 #'
 #' @param aswidth \code{character} vector, used to match width of headers to formatted output.
 #'
