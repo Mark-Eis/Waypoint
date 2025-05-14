@@ -55,4 +55,3 @@ ll_headers <- function(aswidth, fmt) {
 as_coords.waypoints <- function(object, which, ...) {
     .Call(`_Waypoint_as_coordswaypoints`, object, which)
 }
-
