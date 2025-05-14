@@ -35,7 +35,7 @@ inline int get_fmt_attribute(const T&);
 template<class T>
 inline void checkinherits(T&, const char*);
 template<class T>
-inline bool is_item_in_obj(const T, const int);
+inline bool is_item_in_obj(const T, int);
 inline void stdlenstr(vector<string>&);
 template<class T>
 inline void prefixvecstr(vector<string>&, const vector<T>&);
@@ -56,10 +56,10 @@ struct fmt::formatter<CoordType>: formatter<string_view>
 		-> format_context::iterator;
 };
 
-inline const CoordType get_coordtype(const int);
+inline const CoordType get_coordtype(int);
 template<class T>
 inline const CoordType get_coordtype(const T&);
-inline const int coordtype_to_int(CoordType);
+inline int coordtype_to_int(CoordType);
 
 inline string cardpoint(bool, bool);
 inline string cardi_b(bool);
@@ -309,7 +309,7 @@ class FormatLL<WayPoint, CoordType::decdeg> {
 class Validator {
 		const FamousFive& ff;
 		vector<bool>::const_iterator ll_it;
-		const int ll_size;
+		int ll_size;
 	public:
 		Validator(const FamousFive& _ff, const vector<bool>& ll) : ff(_ff), ll_it(ll.begin()), ll_size(ll.size())
 		{
@@ -421,16 +421,16 @@ bool valid_ll(const DataFrame);
 /// __________________________________________________
 /// __________________________________________________
 /// Exported functions
-NumericVector as_coords(NumericVector, const int);
-NumericVector convertcoords(NumericVector, const int);
+NumericVector as_coords(NumericVector, int);
+NumericVector convertcoords(NumericVector, int);
 NumericVector latlon(NumericVector, LogicalVector);
-NumericVector validatecoords(NumericVector, const bool);
+NumericVector validatecoords(NumericVector, bool);
 CharacterVector formatcoords(NumericVector, bool, bool);
-DataFrame as_waypointsdefault(DataFrame, const int);
-DataFrame convertwaypoints(DataFrame, const int);
-DataFrame validatewaypoints(DataFrame, const bool);
+DataFrame as_waypointsdefault(DataFrame, int);
+DataFrame convertwaypoints(DataFrame, int);
+DataFrame validatewaypoints(DataFrame, bool);
 CharacterVector formatwaypoints(DataFrame, bool, bool);
-CharacterVector ll_headers(int, const int);
+CharacterVector ll_headers(int, int);
 NumericVector as_coordswaypoints(DataFrame, bool);
 
 

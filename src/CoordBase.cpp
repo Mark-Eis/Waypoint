@@ -117,7 +117,7 @@ inline void checkinherits(T& t, const char* classname)
 /// __________________________________________________
 /// Is item number present in object? (Using C++ numbering)
 template<class T>
-inline bool is_item_in_obj(const T t, const int item)
+inline bool is_item_in_obj(const T t, int item)
 {
 //	fmt::print("@{} T {} item={}\n", "is_item_in_obj<T>(T, int)", demangle(typeid(t)), item);
 	if (NA_INTEGER == item)
@@ -153,7 +153,7 @@ template<>
 inline void prefixvecstr(vector<string>& sv, const vector<int>& prefix)
 {
 //	fmt::print("@{}\n", "prefixvecstr<>(vector<string>&, const vector<int>&)");
-	transform(sv.begin(), sv.end(), prefix.begin(), sv.begin(), [](string& lls, const int name) { return std::to_string(name) + "  " + lls; });	
+	transform(sv.begin(), sv.end(), prefix.begin(), sv.begin(), [](string& lls, int name) { return std::to_string(name) + "  " + lls; });	
 }
 
 
@@ -263,7 +263,7 @@ auto fmt::formatter<CoordType>::format(CoordType ct, format_context& ctx) const
 
 /// __________________________________________________
 /// Convert int to CoordType enum
-inline const CoordType get_coordtype(const int i)
+inline const CoordType get_coordtype(int i)
 {
 //	fmt::print("@{} {}\n", "get_coordtype(int)" , i);
 	if (i < 1 || i > 3)
@@ -285,7 +285,7 @@ inline const CoordType get_coordtype(const T& t)
 
 /// __________________________________________________
 /// Convert CoordType enum to int
-inline const int coordtype_to_int(CoordType ct)
+inline int coordtype_to_int(CoordType ct)
 {
 //	fmt::print("@{} ct={}\n", "coordtype_to_int(CoordType)", ct);
 	return static_cast<char>(ct);
@@ -663,7 +663,7 @@ bool valid_ll(const DataFrame df)
 /// Create coords
 //' @rdname coords 
 // [[Rcpp::export(name = "as_coords.default")]]
-NumericVector as_coords(NumericVector object, const int fmt = 1)
+NumericVector as_coords(NumericVector object, int fmt = 1)
 {
 //	fmt::print("{1}@{0} fmt={2}\n", "as_coords(NumericVector, int)", exportstr, fmt);
 	object.attr("fmt") = fmt;
@@ -677,7 +677,7 @@ NumericVector as_coords(NumericVector object, const int fmt = 1)
 /// Convert coords format
 //' @rdname convert
 // [[Rcpp::export(name = "convert.coords")]]
-NumericVector convertcoords(NumericVector x, const int fmt)
+NumericVector convertcoords(NumericVector x, int fmt)
 {
 	checkinherits(x, "coords");
 	CoordType type = get_coordtype(x);
@@ -715,7 +715,7 @@ NumericVector latlon(NumericVector cd, LogicalVector value)
 /// Validate coords vector
 //' @rdname validate
 // [[Rcpp::export(name = "validate.coords")]]
-NumericVector validatecoords(NumericVector x, const bool force = true)
+NumericVector validatecoords(NumericVector x, bool force = true)
 {
 //	fmt::print("{1}@{0} force: {2}\n", "validatecoords(NumericVector, bool)", exportstr, force);
 	checkinherits(x, "coords");
@@ -750,7 +750,7 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validat
 /// Create waypoints
 //' @rdname waypoints
 // [[Rcpp::export(name = "as_waypoints.default")]]
-DataFrame as_waypoints(DataFrame object, const int fmt = 1)
+DataFrame as_waypoints(DataFrame object, int fmt = 1)
 {
 //	fmt::print("{1}@{0} fmt={2}\n", "as_waypoints(DataFrame, int)", exportstr, fmt);
 	checkinherits(object, "data.frame");
@@ -778,7 +778,7 @@ DataFrame as_waypoints(DataFrame object, const int fmt = 1)
 /// Convert waypoints format
 //' @rdname convert
 // [[Rcpp::export(name = "convert.waypoints")]]
-DataFrame convertwaypoints(DataFrame x, const int fmt)
+DataFrame convertwaypoints(DataFrame x, int fmt)
 {
 	checkinherits(x, "waypoints");
 	CoordType type = get_coordtype(x);
@@ -802,7 +802,7 @@ DataFrame convertwaypoints(DataFrame x, const int fmt)
 /// Validate waypoints vector
 //' @rdname validate
 // [[Rcpp::export(name = "validate.waypoints")]]
-DataFrame validatewaypoints(DataFrame x, const bool force = true)
+DataFrame validatewaypoints(DataFrame x, bool force = true)
 {
 //	fmt::print("{1}@{0} force: {2}\n", "validatewaypoints(DataFrame, bool)", exportstr, force);
 	checkinherits(x, "waypoints");
@@ -841,7 +841,7 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate
 /// Latitude and longitude headers for S3 print.waypoint()
 //' @rdname format
 // [[Rcpp::export]]
-CharacterVector ll_headers(const CharacterVector aswidth, const int fmt)
+CharacterVector ll_headers(const CharacterVector aswidth, int fmt)
 {
 //	fmt::print("{1}@{0} fmt={2}\n", "ll_headers(int, int)", exportstr, fmt);
 	constexpr int spacing[] { 5,  7,  8,
@@ -852,7 +852,7 @@ CharacterVector ll_headers(const CharacterVector aswidth, const int fmt)
 		};
 
 	constexpr int adjust[] = { 2, 6, 10 };
-	const int width = (as<vector<string>>(aswidth)[0]).size() - adjust[fmt - 1];
+	int width = (as<vector<string>>(aswidth)[0]).size() - adjust[fmt - 1];
 	std::ostringstream ostrstr;
 	transform(sv.begin(), sv.end(), sv.begin(), [&ostrstr, width](const string& s)
 		{ ostrstr.str(""); ostrstr << std::setw(width) << s; return ostrstr.str(); });
