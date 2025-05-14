@@ -6,7 +6,8 @@
 #define COORDBASE_H_
 
 #define FMT_HEADER_ONLY
-#include </opt/homebrew/Cellar/fmt/11.1.4/include/fmt/base.h>		// verbose path needs sorting!
+//#include </opt/homebrew/Cellar/fmt/11.1.4/include/fmt/base.h>		// verbose path not found!
+#include <fmt/base.h>		// …/fmt/11.1.4/include/fmt/ copied to /Library/R/arm64/4.5/library/Rcpp/include
 
 /// __________________________________________________
 /// Class and Function declarations
