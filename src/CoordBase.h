@@ -50,10 +50,8 @@ RObject getnames(const DataFrame);
 /// CoordType enum
 enum class CoordType : char { decdeg, degmin, degminsec };
 template <>
-//struct fmt::formatter<CoordType_enum::CoordType>: formatter<string_view>
 struct fmt::formatter<CoordType>: formatter<string_view>
 {
-//	auto format(CoordType_enum::CoordType, format_context&) const
 	auto format(CoordType, format_context&) const
 		-> format_context::iterator;
 };

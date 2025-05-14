@@ -237,28 +237,24 @@ RObject getnames(const DataFrame df)
 /// __________________________________________________
 /// Formatter struct template specialisation
  
-// auto fmt::formatter<CoordType_enum::CoordType>::format(CoordType_enum::CoordType ct, format_context& ctx) const
 auto fmt::formatter<CoordType>::format(CoordType ct, format_context& ctx) const
 	-> format_context::iterator
 {
-//	using enum CoordType_enum::CoordType;  // see: using enum (https://en.cppreference.com/w/cpp/language/enum#Using-enum-declaration)
-	using enum CoordType;
 	string_view name = "unknown";
 	switch (ct) {
-		case decdeg:
+		case CoordType::decdeg:
 			name = "DecDeg";
 			break;
 
-		case degmin:
+		case CoordType::degmin:
 			name = "DegMin";
 			break;
 
-		case degminsec:
+		case CoordType::degminsec:
 			name = "DegMinSec";
 			break;
 
 			default:
-//				stop("fmt::formatter<CoordType_enum::CoordType>::format(CoordType_enum::CoordType, format_context&) my bad");
 				stop("fmt::formatter<CoordType>::format(CoordType, format_context&) my bad");
 	}
 	return formatter<string_view>::format(name, ctx);
