@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Waypoint</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9010</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1.9009</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,7 +107,22 @@ non-compliant coordinate values.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Validate "coords" object in degrees and minutes</span></span></span>
 <span class="r-in"><span><span class="fu">validate</span><span class="op">(</span><span class="va">dm</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> invalid format specifier</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Nelson's Column                           51°0000030′ N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Ostravice                                 49°0000032′ N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tally Ho                                  48°0000006′ N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Washington Monument                       38°0000053′ N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Null Island                                0°0000000′ N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tristan da Cunha                          37°0000006′ S</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mawson Peak                               53°0000006′ S</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   25°0000014′ S</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Nelson's Column                            0°0000007′ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Ostravice                                 18°0000023′ E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tally Ho                                 122°0000046′ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Washington Monument                       77°0000002′ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Null Island                                0°0000000′ E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tristan da Cunha                          12°0000017′ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mawson Peak                               73°0000031′ E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   57°0000031′ W</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Deliberately change the first coordinate</span></span></span>
 <span class="r-in"><span><span class="co">## to a value greater than 60 minutes</span></span></span>
@@ -116,7 +131,23 @@ non-compliant coordinate values.</p>
 <span class="r-in"><span><span class="fu">validate</span><span class="op">(</span><span class="va">dm</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Validation failed!</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Invalid coords!</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> invalid format specifier</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Formatting invalid coords!</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Nelson's Column                           51°0000060′ N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Ostravice                                 49°0000032′ N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tally Ho                                  48°0000006′ N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Washington Monument                       38°0000053′ N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Null Island                                0°0000000′ N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tristan da Cunha                          37°0000006′ S</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mawson Peak                               53°0000006′ S</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   25°0000014′ S</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Nelson's Column                            0°0000007′ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Ostravice                                 18°0000023′ E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tally Ho                                 122°0000046′ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Washington Monument                       77°0000002′ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Null Island                                0°0000000′ E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tristan da Cunha                          12°0000017′ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mawson Peak                               73°0000031′ E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   57°0000031′ W</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Examine "valid" attribute of dm</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">dm</span>, <span class="st">"valid"</span><span class="op">)</span></span></span>
@@ -146,6 +177,7 @@ non-compliant coordinate values.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">validate</span><span class="op">(</span><span class="va">wp</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Validation of latitude failed!</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Invalid latitude!</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Invalid latitude!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                             Latitude     Longitude </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                           ___________  ____________</span>
