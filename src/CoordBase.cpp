@@ -1,11 +1,16 @@
+
+// [[Rcpp::plugins(cpp23)]]
+
 #include <Rcpp.h>
 #include <cxxabi.h>
 using namespace Rcpp;
 
 using std::vector; 
 using std::string;
+using std::string_view;
+using namespace std::string_view_literals;
 using std::transform;
-using std::ostream;
+// using std::ostream;
 
 #include "CoordBase.h"
 
@@ -42,7 +47,9 @@ const string demangle(const std::type_info& obj)
 }
 
 /// Format string for debugging code
-const auto& exportstr { "——Rcpp::export——" };
+//constexpr string_view exportstr { "——Rcpp::export——" };
+constexpr auto exportstr { "——Rcpp::export——"sv };
+
 
 /// __________________________________________________
 /// __________________________________________________
@@ -339,16 +346,17 @@ void convert_switch(T t, CoordType newtype)
 	if (type != newtype) {
 		switch (newtype)
 		{
-			case CoordType::decdeg:
-				u.template convert<CoordType::decdeg>();
+			using enum CoordType;
+			case decdeg:
+				u.template convert<decdeg>();
 				break;
 
-			case CoordType::degmin:
-				u.template convert<CoordType::degmin>();
+			case degmin:
+				u.template convert<degmin>();
 				break;
 
-			case CoordType::degminsec:
-				u.template convert<CoordType::degminsec>();
+			case degminsec:
+				u.template convert<degminsec>();
 				break;
 
 			default:
@@ -368,14 +376,15 @@ vector<string> format_switch(const T& t)
 	static_assert(std::is_same<Coord, T>::value || std::is_same<WayPoint, T>::value, "T must be Coord or WayPoint");
 	switch (t.get_coordtype())
 	{
-		case CoordType::decdeg:
-			return t.template format_ct<CoordType::decdeg>();
+		using enum CoordType;
+		case decdeg:
+			return t.template format_ct<decdeg>();
 
-		case CoordType::degmin:
-			return t.template format_ct<CoordType::degmin>();
+		case degmin:
+			return t.template format_ct<degmin>();
 
-		case CoordType::degminsec:
-			return t.template format_ct<CoordType::degminsec>();
+		case degminsec:
+			return t.template format_ct<degminsec>();
 
 		default:
 			stop("format_switch(const T&, CoordType) my bad");
@@ -739,7 +748,7 @@ NumericVector validatecoords(NumericVector x, bool force = true)
 // [[Rcpp::export(name = "format.coords")]]
 CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validate = true)
 {
-//	fmt::print("{1}@{0} usenames: {2}, validate: {3}\n", "formatcoords(NumericVector, bool, bool)", exportstr, usenames, validate);
+	fmt::print("{1}@{0} usenames: {2}, validate: {3}, exportstr: {4}\n", "formatcoords(NumericVector, bool, bool)", exportstr, usenames, validate, demangle(typeid(exportstr)));
 	checkinherits(x, "coords");
 	if(!x.size())
 		stop("x has 0 length!");
