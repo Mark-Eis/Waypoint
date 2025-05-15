@@ -12,8 +12,10 @@ using std::ostream;
 #define FMT_HEADER_ONLY
 // #include </opt/homebrew/Cellar/fmt/11.1.4/include/fmt/format.h>		// verbose path not found!
 // #include </opt/homebrew/Cellar/fmt/11.1.4/include/fmt/ranges.h>		// verbose path not found!
-#include <fmt/format.h>		// …/fmt/11.1.4/include/fmt/ copied to /Library/R/arm64/4.5/library/Rcpp/include
-#include <fmt/ranges.h>		// …/fmt/11.1.4/include/fmt/ copied to /Library/R/arm64/4.5/library/Rcpp/include
+// #include <fmt/format.h>		// …fmt/*.h copied to /Library/R/arm64/4.5/library/Rcpp/include. This works, but not in pkgdown
+// #include <fmt/ranges.h>		// …fmt/*.h copied to /Library/R/arm64/4.5/library/Rcpp/include. This works, but not in pkgdown
+#include "fmt/format.h"		// …fmt/*.h copied to /Library/R/arm64/4.5/library/Rcpp/include. ???
+#include "fmt/ranges.h"		// …fmt/*.h copied to /Library/R/arm64/4.5/library/Rcpp/include. ???
 
 
 /// __________________________________________________

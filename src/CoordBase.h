@@ -7,7 +7,8 @@
 
 #define FMT_HEADER_ONLY
 //#include </opt/homebrew/Cellar/fmt/11.1.4/include/fmt/base.h>		// verbose path not found!
-#include <fmt/base.h>		// …/fmt/11.1.4/include/fmt/ copied to /Library/R/arm64/4.5/library/Rcpp/include
+#include <fmt/base.h>		// …fmt/*.h copied to /Library/R/arm64/4.5/library/Rcpp/include. This works, but not in pkgdown
+#include "fmt/base.h"		// …fmt/*.h copied to …/R/Packages/Waypoint/src
 
 /// __________________________________________________
 /// Class and Function declarations
