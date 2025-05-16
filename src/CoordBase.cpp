@@ -21,7 +21,7 @@ using std::transform;
 #include "fmt/format.h"		// …fmt/*.h copied to /Library/R/arm64/4.5/library/Rcpp/include. Works, but not in pkgdown
 #include "fmt/ranges.h"		// …fmt/*.h copied to /Library/R/arm64/4.5/library/Rcpp/include. Works, but not in pkgdown
 
-#define DEBUG 1
+#define DEBUG 0
 
 
 /// __________________________________________________
