@@ -853,18 +853,14 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate
 /// Latitude and longitude headers for S3 print.waypoint()
 //' @rdname format
 // [[Rcpp::export]]
-CharacterVector ll_headers(const CharacterVector aswidth, int fmt)
+CharacterVector ll_headers(int width, int fmt)
 {
-	fmt::print("{1}@{0} fmt={2}\n", "ll_headers(int, int)", exportstr, fmt);
-	--fmt;	//	to C++ array numbering
-	constexpr int spacing[][3] { {5,  7,  8}, {11, 13, 14} };
-	constexpr int adjust[] = { 2, 6, 10 };
-	int width = (as<vector<string>>(aswidth)[0]).size() - adjust[fmt];
-	vector<string> sv {
-		fmt::format("{:>{}}", string("Latitude") + string(spacing[0][fmt], ' ') + "Longitude ", width),
-		fmt::format("{:>{}}", string(spacing[1][fmt], '_') + string(2, ' ') + string(spacing[1][fmt] + 1, '_'), width)
-	};
-	return wrap(sv);
+	fmt::print("{1}@{0} width={2}, fmt={3}\n", "ll_headers(int, int)", exportstr, width, fmt);
+	constexpr int spacing[][3] { {15,  17,  18}, {11, 13, 14} };
+	return wrap(vector<string> {
+		fmt::format("{:>{}}{:>{}}", "Latitude", width - spacing[0][--fmt], "Longitude", spacing[0][fmt] - 1), // --fmt —> C++ array numbering
+		fmt::format("{:>{}}", string(spacing[1][fmt], '_') + string(2, ' ') + string(spacing[1][fmt] + 1, '_'), width),
+	});
 }
 
 

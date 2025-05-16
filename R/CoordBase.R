@@ -495,7 +495,7 @@ print.waypoints <- function (x, ..., max = NULL) {
     if (omit) 
          x <- x[seq_len(n0), , drop = FALSE]
     fmtx <- format(x, validate = FALSE, ...)
-    writeLines(ll_headers(fmtx, attr(x, "fmt")))
+    writeLines(ll_headers((nchar(fmtx)[1]), attr(x, "fmt")))
     writeLines(fmtx)
     if (omit) 
         cat(" [ reached 'max' / getOption(\"max.print\") -- omitted", n - n0, "rows ]\n")
