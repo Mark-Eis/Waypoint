@@ -10,7 +10,6 @@ using std::string;
 using std::string_view;
 using namespace std::string_view_literals;
 using std::transform;
-// using std::ostream;
 
 #include "CoordBase.h"
 
@@ -856,19 +855,17 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate
 // [[Rcpp::export]]
 CharacterVector ll_headers(const CharacterVector aswidth, int fmt)
 {
-//	fmt::print("{1}@{0} fmt={2}\n", "ll_headers(int, int)", exportstr, fmt);
-	constexpr int spacing[] { 5,  7,  8,
-							 11, 13, 14 };
+	fmt::print("{1}@{0} fmt={2}\n", "ll_headers(int, int)", exportstr, fmt);
+	--fmt;	//	to C++ array numbering
+	constexpr int spacing[][3] { {5,  7,  8}, {11, 13, 14} };
 	vector<string> sv {
-			string("Latitude") + string(spacing[fmt - 1], ' ') + "Longitude ",
-			string(spacing[fmt + 2], '_') + string(2, ' ') + string(spacing[fmt + 2] + 1, '_')
-		};
-
+		string("Latitude") + string(spacing[0][fmt], ' ') + "Longitude ",
+		string(spacing[1][fmt], '_') + string(2, ' ') + string(spacing[1][fmt] + 1, '_')
+	};
 	constexpr int adjust[] = { 2, 6, 10 };
-	int width = (as<vector<string>>(aswidth)[0]).size() - adjust[fmt - 1];
-	std::ostringstream ostrstr;
-	transform(sv.begin(), sv.end(), sv.begin(), [&ostrstr, width](const string& s)
-		{ ostrstr.str(""); ostrstr << std::setw(width) << s; return ostrstr.str(); });
+	int width = (as<vector<string>>(aswidth)[0]).size() - adjust[fmt];
+	transform(sv.begin(), sv.end(), sv.begin(), [width](const string& s)
+		{ return fmt::format("{:>{}}", s, width); });
 	return wrap(sv);
 }
 
