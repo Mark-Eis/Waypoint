@@ -35,10 +35,10 @@ class \code{"\link{waypoints}"} created by function \code{\link{as_waypoints}()}
 \item{validate}{\code{logical}, whether or not to \code{\link{validate}} \code{x} before
 formatting; default \code{TRUE}.}
 
+\item{width}{\code{character} vector, used to match width of headers to formatted output.}
+
 \item{fmt}{\code{integer}, \code{1L}, \code{2L} or \code{3L}, specifying the required coordinate
 format.}
-
-\item{aswidth}{\code{character} vector, used to match width of headers to formatted output.}
 }
 \value{
 The \code{format()} methods for both classes \code{"coords"} and \code{"waypoints"} return a
@@ -73,12 +73,11 @@ are present and all \code{TRUE} i.e., valid. If these attributes are found to co
 missing, a warning is issued and the objects are re-validated as described under
 \code{\link{validate}()}.
 
-\code{ll_headers()} outputs the headings \verb{"Latitude ... Longitude"} formatted to the
-same width as argument \code{aswidth}, adjusted for format \code{fmt} and is primarily intended
-for use by the \code{print()} method for class \code{"waypoints"}. Likewise argument
-\code{validate} is used by the \code{print()} methods for classes \code{"coords"} and
-\code{"waypoints"} to prevent unecessary replicate validation and may otherwise be left as the
-default.
+\code{ll_headers()} outputs the headings \verb{"Latitude ... Longitude"} formatted to the width
+of argument \code{width}, adjusted for format \code{fmt} and is primarily intended for use by the
+\code{print()} method for class \code{"waypoints"}. Likewise argument \code{validate} is used by
+the \code{print()} methods for classes \code{"coords"} and \code{"waypoints"} to prevent
+unecessary replicate validation and may otherwise be left as the default.
 }
 \examples{
 ## Continuing example from `as_coords()`...
@@ -94,7 +93,7 @@ default.
 }
 
 ## Print named "coords" object in degrees and minutes,
-## 'silently' using S3 print() method
+## implicitly using S3 print() method
 dm
 
 ## Print explicitly using S3 print() method, specifying
@@ -121,7 +120,7 @@ format(dm, usenames = FALSE)
 }
 
 ## Print named "waypoints" object in degrees and minutes,
-## 'silently' using S3 print() method
+## implicitly using S3 print() method
 wp
 
 ## Print explicitly using S3 print() method, specifying
