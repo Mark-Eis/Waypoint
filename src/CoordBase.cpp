@@ -747,7 +747,7 @@ NumericVector validatecoords(NumericVector x, bool force = true)
 // [[Rcpp::export(name = "format.coords")]]
 CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validate = true)
 {
-	fmt::print("{1}@{0} usenames: {2}, validate: {3}, exportstr: {4}\n", "formatcoords(NumericVector, bool, bool)", exportstr, usenames, validate, demangle(typeid(exportstr)));
+//	fmt::print("{1}@{0} usenames: {2}, validate: {3}\n", "formatcoords(NumericVector, bool, bool)", exportstr, usenames, validate);
 	checkinherits(x, "coords");
 	if(!x.size())
 		stop("x has 0 length!");
@@ -855,7 +855,7 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate
 // [[Rcpp::export]]
 CharacterVector ll_headers(int width, int fmt)
 {
-	fmt::print("{1}@{0} width={2}, fmt={3}\n", "ll_headers(int, int)", exportstr, width, fmt);
+//	fmt::print("{1}@{0} width={2}, fmt={3}\n", "ll_headers(int, int)", exportstr, width, fmt);
 	constexpr int spacing[][3] { {15,  17,  18}, {11, 13, 14} };
 	return wrap(vector<string> {
 		fmt::format("{:>{}}{:>{}}", "Latitude", width - spacing[0][--fmt], "Longitude", spacing[0][fmt] - 1), // --fmt —> C++ array numbering
