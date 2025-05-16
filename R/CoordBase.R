@@ -653,7 +653,7 @@ validate <- function(x, ...)
 #'
 #' @examples
 #' ## Continuing example from `validate()`...
-#' \dontshow{suppressWarnings(dm <- (\(){
+#' \dontshow{suppressWarnings(dm <- (function(){
 #'     tmp <- as_coords(c(5160.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
 #'         -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536), fmt = 2)
 #'     names(tmp) <- rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
