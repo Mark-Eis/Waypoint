@@ -443,14 +443,13 @@ inline void Coord::convert() const
 
 /// __________________________________________________
 /// Validate coords vector
-void Coord::validate(bool warn) const
+void Coord::validate(bool warn)
 {
 //	fmt::print("@{} latlon: {}\n", "Coord::validate()", fmt::join(latlon, ", "));
-	vector<bool>& non_const_valid { const_cast<vector<bool>&>(valid) };
-	non_const_valid.assign(nv.size(), {false});
-	transform(nv.begin(), nv.end(), non_const_valid.begin(), Validator(ff, latlon));
+	valid.assign(nv.size(), {false});
+	transform(nv.begin(), nv.end(), valid.begin(), Validator(ff, latlon));
 	if (all_of(valid.begin(), valid.end(), [](bool v) { return v;}))
-		non_const_valid.assign({true});
+		valid.assign({true});
 	else
 		if (warn)
 			warning("Validation failed!");
@@ -512,27 +511,26 @@ inline void WayPoint::convert() const
 
 /// __________________________________________________
 /// Validate WayPoint
-void WayPoint::validate(bool warn) const
+//void WayPoint::validate(bool warn) const
+void WayPoint::validate(bool warn)
 {
-//	fmt::print("@{}\n", "WayPoint::validate(bool)");
+	fmt::print("@{}\n", "WayPoint::validate(bool)");
 
-	vector<bool>& non_const_validlat { const_cast<vector<bool>&>(validlat) };
-	non_const_validlat.assign(nvlat.size(), {false});
-	transform(nvlat.begin(), nvlat.end(), non_const_validlat.begin(), Validator(ff, vector<bool>{ true }));
+	validlat.assign(nvlat.size(), {false});
+	transform(nvlat.begin(), nvlat.end(), validlat.begin(), Validator(ff, vector<bool>{ true }));
 
-	vector<bool>& non_const_validlon { const_cast<vector<bool>&>(validlon) };
-	non_const_validlon.assign(nvlon.size(), {false});
-	transform(nvlon.begin(), nvlon.end(), non_const_validlon.begin(), Validator(ff, vector<bool>{ false }));
+	validlon.assign(nvlon.size(), {false});
+	transform(nvlon.begin(), nvlon.end(), validlon.begin(), Validator(ff, vector<bool>{ false }));
 
 	if (all_of(validlat.begin(), validlat.end(), [](bool v) { return v;}))
-		non_const_validlat.assign({true});
+		validlat.assign({true});
 	else
 		if (warn)
 			warning("Validation of latitude failed!");
 	const_cast<DataFrame&>(df).attr("validlat") = validlat;
 
 	if (all_of(validlon.begin(), validlon.end(), [](bool v) { return v;}))
-		non_const_validlon.assign({true});
+		validlon.assign({true});
 	else
 		if (warn)
 			warning("Validation of longitude failed!");

@@ -361,7 +361,7 @@ class Coordbase {
 class Coord : public Coordbase {
 	protected:
 		const NumericVector nv;
-		const vector<bool> valid { false };
+		vector<bool> valid { false };
 		const vector<bool> latlon;
 
 	public:
@@ -371,7 +371,7 @@ class Coord : public Coordbase {
 
 		template<CoordType type>
 		void convert() const;
-		void validate(bool warn = true) const;
+		void validate(bool warn = true);
 		template<CoordType type>
 		vector<string> format_ct() const;
 		vector<string> format(bool usenames) const;
@@ -384,8 +384,8 @@ class WayPoint : public Coordbase {
 		const DataFrame df;
 		const NumericVector nvlat;
 		const NumericVector nvlon;
-		const vector<bool> validlat { false };
-		const vector<bool> validlon { false };
+		vector<bool> validlat { false };
+		vector<bool> validlon { false };
 	public:
 		explicit WayPoint(CoordType, const DataFrame);
 		~WayPoint() = default;
@@ -393,7 +393,7 @@ class WayPoint : public Coordbase {
 
 		template<CoordType type>
 		void convert() const;
-		void validate(bool = true) const;
+		void validate(bool = true);
 		template<CoordType type>
 		vector<string> format_ct() const;
 		vector<string> format(bool usenames) const;
