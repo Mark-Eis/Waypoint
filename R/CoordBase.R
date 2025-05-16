@@ -363,12 +363,12 @@ convert <- function(x, ...)
 #' missing, a warning is issued and the objects are re-validated as described under
 #' \code{\link{validate}()}.
 #' 
-#' \code{ll_headers()} outputs the headings \verb{"Latitude ... Longitude"} formatted to the
-#' same width as argument \code{aswidth}, adjusted for format \code{fmt} and is primarily intended
-#' for use by the \code{print()} method for class \code{"waypoints"}. Likewise argument
-#' \code{validate} is used by the \code{print()} methods for classes \code{"coords"} and
-#' \code{"waypoints"} to prevent unecessary replicate validation and may otherwise be left as the
-#' default.
+#XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#' \code{ll_headers()} outputs the headings \verb{"Latitude ... Longitude"} formatted to the width
+#' of argument \code{width}, adjusted for format \code{fmt} and is primarily intended for use by the
+#' \code{print()} method for class \code{"waypoints"}. Likewise argument \code{validate} is used by
+#' the \code{print()} methods for classes \code{"coords"} and \code{"waypoints"} to prevent
+#' unecessary replicate validation and may otherwise be left as the default.
 #'
 #' @seealso
 #' \code{\link[base:format]{format}()}, \code{\link[base:print]{print}()},
@@ -380,7 +380,7 @@ convert <- function(x, ...)
 #' @param validate \code{logical}, whether or not to \code{\link{validate}} \code{x} before
 #' formatting; default \code{TRUE}.
 #'
-#' @param aswidth \code{character} vector, used to match width of headers to formatted output.
+#' @param width \code{character} vector, used to match width of headers to formatted output.
 #'
 #' @inheritParams coords
 #' @inheritParams convert
@@ -408,7 +408,7 @@ convert <- function(x, ...)
 #' }
 #'
 #' ## Print named "coords" object in degrees and minutes,
-#' ## 'silently' using S3 print() method
+#' ## implicitly using S3 print() method
 #' dm
 #'
 #' ## Print explicitly using S3 print() method, specifying
@@ -435,7 +435,7 @@ convert <- function(x, ...)
 #' }
 #'
 #' ## Print named "waypoints" object in degrees and minutes,
-#' ## 'silently' using S3 print() method
+#' ## implicitly using S3 print() method
 #' wp
 #'
 #' ## Print explicitly using S3 print() method, specifying
