@@ -350,17 +350,16 @@ void convert_switch(T t, CoordType newtype)
 	if (type != newtype) {
 		switch (newtype)
 		{
-			using enum CoordType;
-			case decdeg:
-				u.template convert<decdeg>();
+			case CoordType::decdeg:
+				u.template convert<CoordType::decdeg>();
 				break;
 
-			case degmin:
-				u.template convert<degmin>();
+			case CoordType::degmin:
+				u.template convert<CoordType::degmin>();
 				break;
 
-			case degminsec:
-				u.template convert<degminsec>();
+			case CoordType::degminsec:
+				u.template convert<CoordType::degminsec>();
 				break;
 
 			default:
@@ -380,15 +379,14 @@ vector<string> format_switch(const T& t)
 	static_assert(std::is_same<Coord, T>::value || std::is_same<WayPoint, T>::value, "T must be Coord or WayPoint");
 	switch (t.get_coordtype())
 	{
-		using enum CoordType;
-		case decdeg:
-			return t.template format_ct<decdeg>();
+		case CoordType::decdeg:
+			return t.template format_ct<CoordType::decdeg>();
 
-		case degmin:
-			return t.template format_ct<degmin>();
+		case CoordType::degmin:
+			return t.template format_ct<CoordType::degmin>();
 
-		case degminsec:
-			return t.template format_ct<degminsec>();
+		case CoordType::degminsec:
+			return t.template format_ct<CoordType::degminsec>();
 
 		default:
 			stop("format_switch(const T&, CoordType) my bad");
