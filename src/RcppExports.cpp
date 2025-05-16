@@ -121,14 +121,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // ll_headers
-CharacterVector ll_headers(const CharacterVector aswidth, int fmt);
-RcppExport SEXP _Waypoint_ll_headers(SEXP aswidthSEXP, SEXP fmtSEXP) {
+CharacterVector ll_headers(int width, int fmt);
+RcppExport SEXP _Waypoint_ll_headers(SEXP widthSEXP, SEXP fmtSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const CharacterVector >::type aswidth(aswidthSEXP);
+    Rcpp::traits::input_parameter< int >::type width(widthSEXP);
     Rcpp::traits::input_parameter< int >::type fmt(fmtSEXP);
-    rcpp_result_gen = Rcpp::wrap(ll_headers(aswidth, fmt));
+    rcpp_result_gen = Rcpp::wrap(ll_headers(width, fmt));
     return rcpp_result_gen;
 END_RCPP
 }

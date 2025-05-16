@@ -17,7 +17,7 @@
 
 \method{format}{waypoints}(x, ..., usenames = TRUE, validate = TRUE)
 
-ll_headers(aswidth, fmt)
+ll_headers(width, fmt)
 }
 \arguments{
 \item{x}{object of class \code{"\link{coords}"} created by function \code{\link{as_coords}()}, or
@@ -35,10 +35,10 @@ class \code{"\link{waypoints}"} created by function \code{\link{as_waypoints}()}
 \item{validate}{\code{logical}, whether or not to \code{\link{validate}} \code{x} before
 formatting; default \code{TRUE}.}
 
-\item{aswidth}{\code{character} vector, used to match width of headers to formatted output.}
-
 \item{fmt}{\code{integer}, \code{1L}, \code{2L} or \code{3L}, specifying the required coordinate
 format.}
+
+\item{aswidth}{\code{character} vector, used to match width of headers to formatted output.}
 }
 \value{
 The \code{format()} methods for both classes \code{"coords"} and \code{"waypoints"} return a

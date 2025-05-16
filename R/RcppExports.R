@@ -47,8 +47,8 @@ format.waypoints <- function(x, ..., usenames = TRUE, validate = TRUE) {
 }
 
 #' @rdname format
-ll_headers <- function(aswidth, fmt) {
-    .Call(`_Waypoint_ll_headers`, aswidth, fmt)
+ll_headers <- function(width, fmt) {
+    .Call(`_Waypoint_ll_headers`, width, fmt)
 }
 
 #' @rdname coords
