@@ -710,7 +710,7 @@ review.coords <- function(x, ..., show_n = 20L)
             "\n\t(use arg `show_n` to see more) ",
             call.= FALSE
         )
-        tmp <- lapply(attributes(x), \(x) x[seq_len(min(length(x), last_invalid))])
+        tmp <- lapply(attributes(x), function(x) x[seq_len(min(length(x), last_invalid))])
         x <- x[seq_len(last_invalid)]
         attributes(x) <- tmp
         return(review(x, show_n = show_n))
