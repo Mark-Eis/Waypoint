@@ -21,10 +21,14 @@ using std::transform;
 #include "fmt/format.h"		// …fmt/*.h copied to /Library/R/arm64/4.5/library/Rcpp/include. Works, but not in pkgdown
 #include "fmt/ranges.h"		// …fmt/*.h copied to /Library/R/arm64/4.5/library/Rcpp/include. Works, but not in pkgdown
 
+#define DEBUG 0
+
 
 /// __________________________________________________
 /// __________________________________________________
 /// Development and Debugging functions
+
+#if DEBUG > 0
 
 /// Report object construction and destruction
 void _ctrsgn(const std::type_info& obj, bool destruct)
@@ -35,6 +39,12 @@ void _ctrsgn(const std::type_info& obj, bool destruct)
 	system(("c++filt -t " + s).data());
 }
 
+/// Format string for debugging code
+//constexpr string_view exportstr { "——Rcpp::export——" };
+constexpr auto exportstr { "——Rcpp::export——"sv };
+
+#endif
+
 /// Demangle object names
 const string demangle(const std::type_info& obj)
 {
@@ -44,11 +54,6 @@ const string demangle(const std::type_info& obj)
 	std::free(p);
 	return str;
 }
-
-/// Format string for debugging code
-//constexpr string_view exportstr { "——Rcpp::export——" };
-constexpr auto exportstr { "——Rcpp::export——"sv };
-
 
 /// __________________________________________________
 /// __________________________________________________
@@ -856,9 +861,10 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate
 CharacterVector ll_headers(int width, int fmt)
 {
 //	fmt::print("{1}@{0} width={2}, fmt={3}\n", "ll_headers(int, int)", exportstr, width, fmt);
+	--fmt;  //      to C++ array numbering
 	constexpr int spacing[][3] { {15,  17,  18}, {11, 13, 14} };
 	return wrap(vector<string> {
-		fmt::format("{:>{}}{:>{}}", "Latitude", width - spacing[0][--fmt], "Longitude", spacing[0][fmt] - 1), // --fmt —> C++ array numbering
+		fmt::format("{:>{}}{:>{}}", "Latitude", width - spacing[0][fmt], "Longitude", spacing[0][fmt] - 1), // --fmt —> C++ array numbering
 		fmt::format("{:>{}}", string(spacing[1][fmt], '_') + string(2, ' ') + string(spacing[1][fmt] + 1, '_'), width),
 	});
 }
