@@ -363,7 +363,6 @@ convert <- function(x, ...)
 #' missing, a warning is issued and the objects are re-validated as described under
 #' \code{\link{validate}()}.
 #' 
-#XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 #' \code{ll_headers()} outputs the headings \verb{"Latitude ... Longitude"} formatted to the width
 #' of argument \code{width}, adjusted for format \code{fmt} and is primarily intended for use by the
 #' \code{print()} method for class \code{"waypoints"}. Likewise argument \code{validate} is used by
@@ -653,7 +652,7 @@ validate <- function(x, ...)
 #'
 #' @examples
 #' ## Continuing example from `validate()`...
-#' \dontshow{suppressWarnings(dm <- (function(){
+#' \dontshow{suppressWarnings(dm <- (\(){
 #'     tmp <- as_coords(c(5160.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
 #'         -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536), fmt = 2)
 #'     names(tmp) <- rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
@@ -710,7 +709,7 @@ review.coords <- function(x, ..., show_n = 20L)
             "\n\t(use arg `show_n` to see more) ",
             call.= FALSE
         )
-        tmp <- lapply(attributes(x), function(x) x[seq_len(min(length(x), last_invalid))])
+        tmp <- lapply(attributes(x), \(x) x[seq_len(min(length(x), last_invalid))])
         x <- x[seq_len(last_invalid)]
         attributes(x) <- tmp
         return(review(x, show_n = show_n))
