@@ -858,14 +858,12 @@ CharacterVector ll_headers(const CharacterVector aswidth, int fmt)
 	fmt::print("{1}@{0} fmt={2}\n", "ll_headers(int, int)", exportstr, fmt);
 	--fmt;	//	to C++ array numbering
 	constexpr int spacing[][3] { {5,  7,  8}, {11, 13, 14} };
-	vector<string> sv {
-		string("Latitude") + string(spacing[0][fmt], ' ') + "Longitude ",
-		string(spacing[1][fmt], '_') + string(2, ' ') + string(spacing[1][fmt] + 1, '_')
-	};
 	constexpr int adjust[] = { 2, 6, 10 };
 	int width = (as<vector<string>>(aswidth)[0]).size() - adjust[fmt];
-	transform(sv.begin(), sv.end(), sv.begin(), [width](const string& s)
-		{ return fmt::format("{:>{}}", s, width); });
+	vector<string> sv {
+		fmt::format("{:>{}}", string("Latitude") + string(spacing[0][fmt], ' ') + "Longitude ", width),
+		fmt::format("{:>{}}", string(spacing[1][fmt], '_') + string(2, ' ') + string(spacing[1][fmt] + 1, '_'), width)
+	};
 	return wrap(sv);
 }
 
