@@ -21,7 +21,7 @@ using std::transform;
 #include "fmt/format.h"		// …fmt/*.h copied to /Library/R/arm64/4.5/library/Rcpp/include. Works, but not in pkgdown
 #include "fmt/ranges.h"		// …fmt/*.h copied to /Library/R/arm64/4.5/library/Rcpp/include. Works, but not in pkgdown
 
-#define DEBUG 0
+#define DEBUG 1
 
 
 /// __________________________________________________
@@ -33,8 +33,8 @@ using std::transform;
 /// Report object construction and destruction
 void _ctrsgn(const std::type_info& obj, bool destruct)
 {
-//	fmt::print("{}ing ", destruct ? "Destroy" : "Construct");
-//	std::fflush(nullptr);
+	fmt::print("{}ing ", destruct ? "Destroy" : "Construct");
+	std::fflush(nullptr);
 	string s = obj.name();
 	system(("c++filt -t " + s).data());
 }
@@ -423,21 +423,21 @@ CoordType Coordbase::get_coordtype() const
 /// __________________________________________________
 /// Coordinate derived class
 
-Coord::Coord(CoordType ct, const NumericVector nv) :
+Coord::Coord(CoordType ct, NumericVector nv) :
 	Coordbase(ct), nv(nv),
 	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") } //,
 {
-//	fmt::print("§{} {} ", "Coord::Coord(CoordType, const NumericVector)", ct); _ctrsgn(typeid(*this));
+//	fmt::print("§{} {} ", "Coord::Coord(CoordType, NumericVector)", ct); _ctrsgn(typeid(*this));
 }
 
 
 /// __________________________________________________
 /// Convert NumericVector coordinate format
 template<CoordType newtype>
-inline void Coord::convert() const
+inline void Coord::convert()
 {
 //	fmt::print("@Coord::convert<{}>() to {}\n", ct, newtype);
-	transform(nv.begin(), nv.end(), const_cast<NumericVector&>(nv).begin(), Convertor<newtype>(ff));
+	transform(nv.begin(), nv.end(), nv.begin(), Convertor<newtype>(ff));
 }
 
 
@@ -453,7 +453,7 @@ void Coord::validate(bool warn)
 	else
 		if (warn)
 			warning("Validation failed!");
-	const_cast<NumericVector&>(nv).attr("valid") = valid;
+	nv.attr("valid") = valid;
 }
 
 
@@ -489,32 +489,31 @@ vector<string> Coord::format(bool usenames) const
 /// __________________________________________________
 /// Waypoint class
 
-WayPoint::WayPoint(CoordType ct, const DataFrame df) :
+WayPoint::WayPoint(CoordType ct, DataFrame df) :
 	Coordbase(ct), df(df),
 	nvlat(df[get_vec_attr<DataFrame, int>(df, "llcols")[0] - 1]), 
 	nvlon(df[get_vec_attr<DataFrame, int>(df, "llcols")[1] - 1])
 {
-//	fmt::print("§{} {} ", "WayPoint::WayPoint(WayPointType, const DataFrame)", ct); _ctrsgn(typeid(*this));
+//	fmt::print("§{} {} ", "WayPoint::WayPoint(WayPointType, DataFrame)", ct); _ctrsgn(typeid(*this));
 }
 
 
 /// __________________________________________________
 /// Convert DataFrame coordinate format
 template<CoordType newtype>
-inline void WayPoint::convert() const
+inline void WayPoint::convert()
 {
 //	fmt::print("@WayPoint::convert<{}>() to {}\n", ct, newtype);
-	transform(nvlat.begin(), nvlat.end(), const_cast<NumericVector&>(nvlat).begin(), Convertor<newtype>(ff));
-	transform(nvlon.begin(), nvlon.end(), const_cast<NumericVector&>(nvlon).begin(), Convertor<newtype>(ff));
+	transform(nvlat.begin(), nvlat.end(), nvlat.begin(), Convertor<newtype>(ff));
+	transform(nvlon.begin(), nvlon.end(), nvlon.begin(), Convertor<newtype>(ff));
 }
 
 
 /// __________________________________________________
 /// Validate WayPoint
-//void WayPoint::validate(bool warn) const
 void WayPoint::validate(bool warn)
 {
-	fmt::print("@{}\n", "WayPoint::validate(bool)");
+//	fmt::print("@{}\n", "WayPoint::validate(bool)");
 
 	validlat.assign(nvlat.size(), {false});
 	transform(nvlat.begin(), nvlat.end(), validlat.begin(), Validator(ff, vector<bool>{ true }));
@@ -527,14 +526,14 @@ void WayPoint::validate(bool warn)
 	else
 		if (warn)
 			warning("Validation of latitude failed!");
-	const_cast<DataFrame&>(df).attr("validlat") = validlat;
+	df.attr("validlat") = validlat;
 
 	if (all_of(validlon.begin(), validlon.end(), [](bool v) { return v;}))
 		validlon.assign({true});
 	else
 		if (warn)
 			warning("Validation of longitude failed!");
-	const_cast<DataFrame&>(df).attr("validlon") = validlon;
+	df.attr("validlon") = validlon;
 }
 
 

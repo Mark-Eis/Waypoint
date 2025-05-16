@@ -360,17 +360,17 @@ class Coordbase {
 /// Coordinate derived class
 class Coord : public Coordbase {
 	protected:
-		const NumericVector nv;
+		NumericVector nv;
 		vector<bool> valid { false };
 		const vector<bool> latlon;
 
 	public:
-		Coord(CoordType, const NumericVector);
+		explicit Coord(CoordType, NumericVector);
 		~Coord() = default;
 //		~Coord() { fmt::print("§{} {} ", "Coord::~Coord()", ct); _ctrsgn(typeid(*this), true); }
 
 		template<CoordType type>
-		void convert() const;
+		void convert();
 		void validate(bool warn = true);
 		template<CoordType type>
 		vector<string> format_ct() const;
@@ -381,18 +381,18 @@ class Coord : public Coordbase {
 /// Waypoint derived class
 class WayPoint : public Coordbase {
 	protected:
-		const DataFrame df;
-		const NumericVector nvlat;
-		const NumericVector nvlon;
+		DataFrame df;
+		NumericVector nvlat;
+		NumericVector nvlon;
 		vector<bool> validlat { false };
 		vector<bool> validlon { false };
 	public:
-		explicit WayPoint(CoordType, const DataFrame);
+		explicit WayPoint(CoordType, DataFrame);
 		~WayPoint() = default;
 //		~WayPoint() { fmt::print("§{} {} ", "WayPoint::~WayPoint()", ct); _ctrsgn(typeid(*this), true); }
 
 		template<CoordType type>
-		void convert() const;
+		void convert();
 		void validate(bool = true);
 		template<CoordType type>
 		vector<string> format_ct() const;
