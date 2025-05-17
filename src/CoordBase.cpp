@@ -829,7 +829,7 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate
 		if (!prefixwithnames(sv, names))
 			stop("Invalid \"namescol\" attribute!");
 	}
-	return wrap( sv );
+	return wrap(sv);
 }
 
 
