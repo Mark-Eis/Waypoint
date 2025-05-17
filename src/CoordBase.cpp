@@ -21,7 +21,7 @@ using std::transform;
 #include "fmt/format.h"		// …fmt/*.h copied to /Library/R/arm64/4.5/library/Rcpp/include. Works, but not in pkgdown
 #include "fmt/ranges.h"		// …fmt/*.h copied to /Library/R/arm64/4.5/library/Rcpp/include. Works, but not in pkgdown
 
-#define DEBUG 1
+#define DEBUG 0
 
 
 /// __________________________________________________
@@ -377,18 +377,18 @@ void convert_switch(T t, CoordType newtype)
 template<class T>
 vector<string> format_switch(const T& t)
 {
-	fmt::print("@{} T: {} CoordType::{}\n", "format_switch<T>(const T&)", demangle(typeid(t)), t.get_coordtype());
+//	fmt::print("@{} T: {} CoordType::{}\n", "format_switch<T>(const T&)", demangle(typeid(t)), t.get_coordtype());
 	static_assert(std::is_same<Coord, T>::value || std::is_same<WayPoint, T>::value, "T must be Coord or WayPoint");
 	switch (t.get_coordtype())
 	{
 		case CoordType::decdeg:
-			return t.template format_ct<CoordType::decdeg>();
+			return t.template format<CoordType::decdeg>();
 
 		case CoordType::degmin:
-			return t.template format_ct<CoordType::degmin>();
+			return t.template format<CoordType::degmin>();
 
 		case CoordType::degminsec:
-			return t.template format_ct<CoordType::degminsec>();
+			return t.template format<CoordType::degminsec>();
 
 		default:
 			stop("format_switch(const T&, CoordType) my bad");
@@ -403,19 +403,19 @@ vector<string> format_switch(const T& t)
 Coordbase::Coordbase(CoordType _ct) :
 	ct(_ct), ff(*vff[coordtype_to_int(ct)])
 {
-	fmt::print("§{} {} ", "Coordbase::Coordbase(CoordType)", ct); _ctrsgn(typeid(*this));
+//	fmt::print("§{} {} ", "Coordbase::Coordbase(CoordType)", ct); _ctrsgn(typeid(*this));
 }
 
 
 Coordbase::~Coordbase()
 {
-	fmt::print("§{} {} ", "Coordbase::~Coordbase()", ct); _ctrsgn(typeid(*this), true);
+//	fmt::print("§{} {} ", "Coordbase::~Coordbase()", ct); _ctrsgn(typeid(*this), true);
 }
 
 
 CoordType Coordbase::get_coordtype() const
 {
-	fmt::print("@{} ct={}\n", "Coordbase::get_coordtype()", coordtype_to_int(ct));
+//	fmt::print("@{} ct={}\n", "Coordbase::get_coordtype()", coordtype_to_int(ct));
 	return ct;
 }
 
@@ -427,7 +427,7 @@ Coord::Coord(CoordType ct, NumericVector nv) :
 	Coordbase(ct), nv(nv),
 	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") }
 {
-	fmt::print("§{} {} ", "Coord::Coord(CoordType, NumericVector)", ct); _ctrsgn(typeid(*this));
+//	fmt::print("§{} {} ", "Coord::Coord(CoordType, NumericVector)", ct); _ctrsgn(typeid(*this));
 }
 
 
@@ -460,9 +460,9 @@ void Coord::validate(bool warn)
 /// __________________________________________________
 /// Format coordinates as vector<string> of CoordType
 template<CoordType type>
-vector<string> Coord::format_ct() const
+vector<string> Coord::format() const
 {
-	fmt::print("@Coord::format_ct<CoordType::{}>()\n", type);
+//	fmt::print("@Coord::format<CoordType::{}>()\n", type);
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), Format<type>(ff));
 	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<Coord, type>(ff, latlon));
@@ -525,9 +525,9 @@ void WayPoint::validate(bool warn)
 /// __________________________________________________
 /// Format waypoints as vector<string> of CoordType
 template<CoordType type>
-vector<string> WayPoint::format_ct() const
+vector<string> WayPoint::format() const
 {
-//	fmt::print("@WayPoint::format_ct<CoordType::{}>()\n", type);
+//	fmt::print("@WayPoint::format<CoordType::{}>()\n", type);
 	vector<string> sv_lat(nvlat.size());
 	transform(nvlat.begin(), nvlat.end(), sv_lat.begin(), Format<type>(ff));
 	transform(sv_lat.begin(), sv_lat.end(), nvlat.begin(), sv_lat.begin(), FormatLL<WayPoint, type>(ff, vector<bool>{ true }));
@@ -538,21 +538,6 @@ vector<string> WayPoint::format_ct() const
 	vector<string> out(sv_lat.size());
 	transform(sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(), [](string& latstr, string& lonstr) { return latstr + "  " + lonstr; });
 	return out;
-}
-
-
-/// __________________________________________________
-/// Format waypoints vector<string> with names
-vector<string> WayPoint::format(bool usenames) const
-{
-//	fmt::print("@{}\n", "WayPoint::format(bool)");
-	vector<string>&& sv = format_switch(*this);
-	if (usenames) {
-		RObject names = getnames(df);
-		if (!prefixwithnames(sv, names))
-			stop("Invalid \"namescol\" attribute!");
-	}
-	return sv;
 }
 
 
@@ -734,15 +719,14 @@ NumericVector validatecoords(NumericVector x, bool force = true)
 // [[Rcpp::export(name = "format.coords")]]
 CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validate = true)
 {
-	fmt::print("{1}@{0} usenames: {2}, validate: {3}\n", "formatcoords(NumericVector, bool, bool)", exportstr, usenames, validate);
+//	fmt::print("{1}@{0} usenames: {2}, validate: {3}\n", "formatcoords(NumericVector, bool, bool)", exportstr, usenames, validate);
 	checkinherits(x, "coords");
 	if(!x.size())
 		stop("x has 0 length!");
 	if (validate)
 		if (!check_valid(x))
 			warning("Formatting invalid coords!");
-	Coord cd(get_coordtype(x), x);
-	vector<string>&& sv = format_switch(cd);
+	vector<string>&& sv { format_switch(Coord(get_coordtype(x), x)) };
 	vector<string> names { get_vec_attr<NumericVector, string>(x, "names") };
 	if (names.size() && usenames) {
 		stdlenstr(names);
@@ -839,7 +823,13 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate
 	if (validate)
 		if (!check_valid(x))
 			warning("Formatting invalid waypoints!");
-	return wrap(WayPoint(get_coordtype(x), x).format(usenames));
+	vector<string>&& sv { format_switch(WayPoint(get_coordtype(x), x)) };
+	if (usenames) {
+		RObject names = getnames(x);
+		if (!prefixwithnames(sv, names))
+			stop("Invalid \"namescol\" attribute!");
+	}
+	return wrap( sv );
 }
 
 
