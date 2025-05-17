@@ -425,7 +425,7 @@ CoordType Coordbase::get_coordtype() const
 
 Coord::Coord(CoordType ct, NumericVector nv) :
 	Coordbase(ct), nv(nv),
-	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") } //,
+	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") }
 {
 //	fmt::print("§{} {} ", "Coord::Coord(CoordType, NumericVector)", ct); _ctrsgn(typeid(*this));
 }
