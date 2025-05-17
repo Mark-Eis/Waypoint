@@ -492,7 +492,7 @@ WayPoint::WayPoint(CoordType ct, DataFrame df) :
 	nvlat(df[get_vec_attr<DataFrame, int>(df, "llcols")[0] - 1]), 
 	nvlon(df[get_vec_attr<DataFrame, int>(df, "llcols")[1] - 1])
 {
-//	fmt::print("§{} {} ", "WayPoint::WayPoint(WayPointType, DataFrame)", ct); _ctrsgn(typeid(*this));
+//	fmt::print("§{} {} ", "WayPoint::WayPoint(CoordType, DataFrame)", ct); _ctrsgn(typeid(*this));
 }
 
 
