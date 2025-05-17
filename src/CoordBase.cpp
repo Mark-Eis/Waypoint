@@ -251,7 +251,8 @@ RObject getnames(const DataFrame df)
 
 /// __________________________________________________
 /// Formatter struct template specialisation
- 
+#if DEBUG > 0
+
 auto fmt::formatter<CoordType>::format(CoordType ct, format_context& ctx) const
 	-> format_context::iterator
 {
@@ -275,6 +276,7 @@ auto fmt::formatter<CoordType>::format(CoordType ct, format_context& ctx) const
 	return formatter<string_view>::format(name, ctx);
 }
 
+#endif
 
 /// __________________________________________________
 /// Convert int to CoordType enum
