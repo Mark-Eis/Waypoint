@@ -366,15 +366,14 @@ class Coord : public Coordbase {
 
 	public:
 		explicit Coord(CoordType, NumericVector);
-		~Coord() = default;
-//		~Coord() { fmt::print("§{} {} ", "Coord::~Coord()", ct); _ctrsgn(typeid(*this), true); }
+//		~Coord() = default;
+		~Coord() { fmt::print("§{} {} ", "Coord::~Coord()", ct); _ctrsgn(typeid(*this), true); }
 
 		template<CoordType type>
 		void convert();
 		void validate(bool warn = true);
 		template<CoordType type>
 		vector<string> format_ct() const;
-		vector<string> format(bool usenames) const;
 };
 
 /// __________________________________________________

@@ -21,7 +21,7 @@ using std::transform;
 #include "fmt/format.h"		// …fmt/*.h copied to /Library/R/arm64/4.5/library/Rcpp/include. Works, but not in pkgdown
 #include "fmt/ranges.h"		// …fmt/*.h copied to /Library/R/arm64/4.5/library/Rcpp/include. Works, but not in pkgdown
 
-#define DEBUG 0
+#define DEBUG 1
 
 
 /// __________________________________________________
@@ -377,7 +377,7 @@ void convert_switch(T t, CoordType newtype)
 template<class T>
 vector<string> format_switch(const T& t)
 {
-//	fmt::print("@{} T: {} CoordType::{}\n", "format_switch<T>(const T&)", demangle(typeid(t)), t.get_coordtype());
+	fmt::print("@{} T: {} CoordType::{}\n", "format_switch<T>(const T&)", demangle(typeid(t)), t.get_coordtype());
 	static_assert(std::is_same<Coord, T>::value || std::is_same<WayPoint, T>::value, "T must be Coord or WayPoint");
 	switch (t.get_coordtype())
 	{
@@ -403,19 +403,19 @@ vector<string> format_switch(const T& t)
 Coordbase::Coordbase(CoordType _ct) :
 	ct(_ct), ff(*vff[coordtype_to_int(ct)])
 {
-//	fmt::print("§{} {} ", "Coordbase::Coordbase(CoordType)", ct); _ctrsgn(typeid(*this));
+	fmt::print("§{} {} ", "Coordbase::Coordbase(CoordType)", ct); _ctrsgn(typeid(*this));
 }
 
 
 Coordbase::~Coordbase()
 {
-//	fmt::print("§{} {} ", "Coordbase::~Coordbase()", ct); _ctrsgn(typeid(*this), true);
+	fmt::print("§{} {} ", "Coordbase::~Coordbase()", ct); _ctrsgn(typeid(*this), true);
 }
 
 
 CoordType Coordbase::get_coordtype() const
 {
-//	fmt::print("@{} ct={}\n", "Coordbase::get_coordtype()", coordtype_to_int(ct));
+	fmt::print("@{} ct={}\n", "Coordbase::get_coordtype()", coordtype_to_int(ct));
 	return ct;
 }
 
@@ -427,7 +427,7 @@ Coord::Coord(CoordType ct, NumericVector nv) :
 	Coordbase(ct), nv(nv),
 	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") }
 {
-//	fmt::print("§{} {} ", "Coord::Coord(CoordType, NumericVector)", ct); _ctrsgn(typeid(*this));
+	fmt::print("§{} {} ", "Coord::Coord(CoordType, NumericVector)", ct); _ctrsgn(typeid(*this));
 }
 
 
@@ -462,26 +462,11 @@ void Coord::validate(bool warn)
 template<CoordType type>
 vector<string> Coord::format_ct() const
 {
-//	fmt::print("@Coord::format_ct<CoordType::{}>()\n", type);
+	fmt::print("@Coord::format_ct<CoordType::{}>()\n", type);
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), Format<type>(ff));
 	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<Coord, type>(ff, latlon));
 	return out;
-}
-
-
-/// __________________________________________________
-/// Format coords vector<string> with names
-vector<string> Coord::format(bool usenames) const
-{
-//	fmt::print("@{}\n", "Coord::format(bool)");
-	vector<string>&& sv = format_switch(*this);
-	vector<string> names { get_vec_attr<NumericVector, string>(nv, "names") };
-	if (names.size() && usenames) {
-		stdlenstr(names);
-		prefixvecstr(sv, names);
-	}
-	return sv;
 }
 
 
@@ -749,14 +734,21 @@ NumericVector validatecoords(NumericVector x, bool force = true)
 // [[Rcpp::export(name = "format.coords")]]
 CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validate = true)
 {
-//	fmt::print("{1}@{0} usenames: {2}, validate: {3}\n", "formatcoords(NumericVector, bool, bool)", exportstr, usenames, validate);
+	fmt::print("{1}@{0} usenames: {2}, validate: {3}\n", "formatcoords(NumericVector, bool, bool)", exportstr, usenames, validate);
 	checkinherits(x, "coords");
 	if(!x.size())
 		stop("x has 0 length!");
 	if (validate)
 		if (!check_valid(x))
 			warning("Formatting invalid coords!");
-	return wrap(Coord(get_coordtype(x), x).format(usenames));
+	Coord cd(get_coordtype(x), x);
+	vector<string>&& sv = format_switch(cd);
+	vector<string> names { get_vec_attr<NumericVector, string>(x, "names") };
+	if (names.size() && usenames) {
+		stdlenstr(names);
+		prefixvecstr(sv, names);
+	}
+	return wrap(sv);
 }
 
 
