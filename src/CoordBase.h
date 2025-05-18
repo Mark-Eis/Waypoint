@@ -335,7 +335,7 @@ class Validator {
 template<class T, class U>
 void convert_switch(T, CoordType);
 template<class T>
-vector<string> format_switch(const T&);
+vector<string> format_switch(const T&, CoordType);
 
 
 /// __________________________________________________
@@ -425,11 +425,11 @@ NumericVector as_coords(NumericVector, int);
 NumericVector convertcoords(NumericVector, int);
 NumericVector latlon(NumericVector, LogicalVector);
 NumericVector validatecoords(NumericVector, bool);
-CharacterVector formatcoords(NumericVector, bool, bool);
+CharacterVector formatcoords(NumericVector, bool, bool, int);
 DataFrame as_waypointsdefault(DataFrame, int);
 DataFrame convertwaypoints(DataFrame, int);
 DataFrame validatewaypoints(DataFrame, bool);
-CharacterVector formatwaypoints(DataFrame, bool, bool);
+CharacterVector formatwaypoints(DataFrame, bool, bool, int);
 CharacterVector ll_headers(int, int);
 NumericVector as_coordswaypoints(DataFrame, bool);
 
