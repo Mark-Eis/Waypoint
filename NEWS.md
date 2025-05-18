@@ -1,4 +1,4 @@
-# Waypoint (development version)
+# Waypoint 1.2.0
 
 * Class and function forward declarations moved to header file CoordBase.h (#113).
 
