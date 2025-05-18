@@ -379,6 +379,11 @@ convert <- function(x, ...)
 #' @param validate \code{logical}, whether or not to \code{\link{validate}} \code{x} before
 #' formatting; default \code{TRUE}.
 #'
+#' @param fmtreq  \code{integer}, \code{1L}, \code{2L} or \code{3L}, specifying the coordinate
+#'   format desired for formatting or printing, see \code{fmt} argument for \code{"\link{coords}"}
+#'   and \code{"\link{waypoints}"}; the default, \code{0L}, will format or print in the existing
+#'   format.
+#'
 #' @param width \code{character} vector, used to match width of headers to formatted output.
 #'
 #' @inheritParams coords
@@ -421,6 +426,9 @@ convert <- function(x, ...)
 #' ## ...or without them
 #' format(dm, usenames = FALSE)
 #'
+#' ## Format as decimal degrees,
+#' format(dm, fmtreq = 1)
+#'
 #' ###
 #' ## Continuing example from `as_waypoints()`...
 #' \dontshow{
@@ -440,6 +448,9 @@ convert <- function(x, ...)
 #' ## Print explicitly using S3 print() method, specifying
 #' ## the maximal number of entries to be printed
 #' print(wp, max = 21)
+#'
+#' ## Print as degrees and minutes
+#' print(wp, fmtreq = 2)
 #'
 #' ## Format as a fixed-width character vector,
 #' ## with names...

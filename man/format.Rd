@@ -13,9 +13,9 @@
 
 \method{print}{waypoints}(x, ..., max = NULL)
 
-\method{format}{coords}(x, ..., usenames = TRUE, validate = TRUE)
+\method{format}{coords}(x, ..., usenames = TRUE, validate = TRUE, fmtreq = 0L)
 
-\method{format}{waypoints}(x, ..., usenames = TRUE, validate = TRUE)
+\method{format}{waypoints}(x, ..., usenames = TRUE, validate = TRUE, fmtreq = 0L)
 
 ll_headers(width, fmt)
 }
@@ -34,6 +34,11 @@ class \code{"\link{waypoints}"} created by function \code{\link{as_waypoints}()}
 
 \item{validate}{\code{logical}, whether or not to \code{\link{validate}} \code{x} before
 formatting; default \code{TRUE}.}
+
+\item{fmtreq}{\code{integer}, \code{1L}, \code{2L} or \code{3L}, specifying the coordinate
+format desired for formatting or printing, see \code{fmt} argument for \code{"\link{coords}"}
+and \code{"\link{waypoints}"}; the default, \code{0L}, will format or print in the existing
+format.}
 
 \item{width}{\code{character} vector, used to match width of headers to formatted output.}
 
