@@ -59,16 +59,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // formatcoords
-CharacterVector formatcoords(NumericVector x, bool usenames, bool validate, int fmtreq);
-RcppExport SEXP _Waypoint_formatcoords(SEXP xSEXP, SEXP usenamesSEXP, SEXP validateSEXP, SEXP fmtreqSEXP) {
+CharacterVector formatcoords(NumericVector x, bool usenames, bool validate, int fmt);
+RcppExport SEXP _Waypoint_formatcoords(SEXP xSEXP, SEXP usenamesSEXP, SEXP validateSEXP, SEXP fmtSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
     Rcpp::traits::input_parameter< bool >::type usenames(usenamesSEXP);
     Rcpp::traits::input_parameter< bool >::type validate(validateSEXP);
-    Rcpp::traits::input_parameter< int >::type fmtreq(fmtreqSEXP);
-    rcpp_result_gen = Rcpp::wrap(formatcoords(x, usenames, validate, fmtreq));
+    Rcpp::traits::input_parameter< int >::type fmt(fmtSEXP);
+    rcpp_result_gen = Rcpp::wrap(formatcoords(x, usenames, validate, fmt));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -109,16 +109,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // formatwaypoints
-CharacterVector formatwaypoints(DataFrame x, bool usenames, bool validate, int fmtreq);
-RcppExport SEXP _Waypoint_formatwaypoints(SEXP xSEXP, SEXP usenamesSEXP, SEXP validateSEXP, SEXP fmtreqSEXP) {
+CharacterVector formatwaypoints(DataFrame x, bool usenames, bool validate, int fmt);
+RcppExport SEXP _Waypoint_formatwaypoints(SEXP xSEXP, SEXP usenamesSEXP, SEXP validateSEXP, SEXP fmtSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< DataFrame >::type x(xSEXP);
     Rcpp::traits::input_parameter< bool >::type usenames(usenamesSEXP);
     Rcpp::traits::input_parameter< bool >::type validate(validateSEXP);
-    Rcpp::traits::input_parameter< int >::type fmtreq(fmtreqSEXP);
-    rcpp_result_gen = Rcpp::wrap(formatwaypoints(x, usenames, validate, fmtreq));
+    Rcpp::traits::input_parameter< int >::type fmt(fmtSEXP);
+    rcpp_result_gen = Rcpp::wrap(formatwaypoints(x, usenames, validate, fmt));
     return rcpp_result_gen;
 END_RCPP
 }

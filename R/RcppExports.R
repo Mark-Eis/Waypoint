@@ -22,8 +22,8 @@ validate.coords <- function(x, ..., force = TRUE) {
 }
 
 #' @rdname format
-format.coords <- function(x, ..., usenames = TRUE, validate = TRUE, fmtreq = 0L) {
-    .Call(`_Waypoint_formatcoords`, x, usenames, validate, fmtreq)
+format.coords <- function(x, ..., usenames = TRUE, validate = TRUE, fmt = 0L) {
+    .Call(`_Waypoint_formatcoords`, x, usenames, validate, fmt)
 }
 
 #' @rdname waypoints
@@ -42,8 +42,8 @@ validate.waypoints <- function(x, ..., force = TRUE) {
 }
 
 #' @rdname format
-format.waypoints <- function(x, ..., usenames = TRUE, validate = TRUE, fmtreq = 0L) {
-    .Call(`_Waypoint_formatwaypoints`, x, usenames, validate, fmtreq)
+format.waypoints <- function(x, ..., usenames = TRUE, validate = TRUE, fmt = 0L) {
+    .Call(`_Waypoint_formatwaypoints`, x, usenames, validate, fmt)
 }
 
 #' @rdname format

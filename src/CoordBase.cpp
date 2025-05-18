@@ -14,12 +14,8 @@ using std::transform;
 #include "CoordBase.h"
 
 #define FMT_HEADER_ONLY
-// #include </opt/homebrew/Cellar/fmt/11.1.4/include/fmt/format.h>		// verbose path not found!
-// #include </opt/homebrew/Cellar/fmt/11.1.4/include/fmt/ranges.h>		// verbose path not found!
-// #include <fmt/format.h>		// …fmt/*.h copied to /Library/R/arm64/4.5/library/Rcpp/include. Works, but not in pkgdown
-// #include <fmt/ranges.h>		// …fmt/*.h copied to /Library/R/arm64/4.5/library/Rcpp/include. Works, but not in pkgdown
-#include "fmt/format.h"		// …fmt/*.h copied to /Library/R/arm64/4.5/library/Rcpp/include. Works, but not in pkgdown
-#include "fmt/ranges.h"		// …fmt/*.h copied to /Library/R/arm64/4.5/library/Rcpp/include. Works, but not in pkgdown
+#include "fmt/format.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt. Works, but not always in pkgdown
+#include "fmt/ranges.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt. Works, but not always in pkgdown
 
 #define DEBUG 0
 
@@ -343,7 +339,7 @@ template<class T, class U>
 void convert_switch(T t, CoordType newtype)
 {
 	CoordType type = get_coordtype(t);
-//	fmt::print("@{} T: {} oldtype: {} newtype: {}\n", "convert_switch<T&, U>(T, CoordType)", demangle(typeid(t)), type, newtype);
+//	fmt::print("@{} T: {} oldtype: {}, newtype: {}\n", "convert_switch<T&, U>(T, CoordType)", demangle(typeid(t)), type, newtype);
 	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	static_assert(std::is_same<Coord, U>::value || std::is_same<WayPoint, U>::value, "T must be Coord or WayPoint");
 	U u(type, t);
@@ -377,7 +373,7 @@ void convert_switch(T t, CoordType newtype)
 template<class T>
 vector<string> format_switch(const T& t, CoordType ctreq)
 {
-//	fmt::print("@{} T: {} CoordType::{}\n", "format_switch<T>(const T&, CoordType)", demangle(typeid(t)), t.get_coordtype());
+//	fmt::print("@{} T: {} CoordType::{}, ctreq CoordType::{}\n", "format_switch<T>(const T&, CoordType)", demangle(typeid(t)), t.get_coordtype(), ctreq);
 	static_assert(std::is_same<Coord, T>::value || std::is_same<WayPoint, T>::value, "T must be Coord or WayPoint");
 	switch (ctreq)
 	{
@@ -717,7 +713,7 @@ NumericVector validatecoords(NumericVector x, bool force = true)
 /// Format coords vector - S3 method format.coords()
 //' @rdname format
 // [[Rcpp::export(name = "format.coords")]]
-CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validate = true, int fmtreq = 0)
+CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validate = true, int fmt = 0)
 {
 //	fmt::print("{1}@{0} usenames: {2}, validate: {3}\n", "formatcoords(NumericVector, bool, bool)", exportstr, usenames, validate);
 	checkinherits(x, "coords");
@@ -727,7 +723,7 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validat
 		if (!check_valid(x))
 			warning("Formatting invalid coords!");
 	CoordType ct { get_coordtype(x) };
-	vector<string> sv { format_switch(Coord(ct, x), fmtreq ? get_coordtype(fmtreq) : ct) };
+	vector<string> sv { format_switch(Coord(ct, x), fmt ? get_coordtype(fmt) : ct) };
 	vector<string> names { get_vec_attr<NumericVector, string>(x, "names") };
 	if (names.size() && usenames) {
 		stdlenstr(names);
@@ -813,7 +809,7 @@ DataFrame validatewaypoints(DataFrame x, bool force = true)
 /// Format waypoints vector - S3 method format.waypoints()
 //' @rdname format
 // [[Rcpp::export(name = "format.waypoints")]]
-CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate = true, int fmtreq = 0)
+CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate = true, int fmt = 0)
 {
 //	fmt::print("{1}@{0} usenames: {2}, validate: {3}\n", "formatwaypoints(DataFrame, bool, bool)", exportstr, usenames, validate);
 	checkinherits(x, "waypoints");
@@ -825,7 +821,7 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate
 		if (!check_valid(x))
 			warning("Formatting invalid waypoints!");
 	CoordType ct { get_coordtype(x) };
-	vector<string> sv { format_switch(WayPoint(ct, x), fmtreq ? get_coordtype(fmtreq) : ct) };
+	vector<string> sv { format_switch(WayPoint(ct, x), fmt ? get_coordtype(fmt) : ct) };
 	if (usenames) {
 		RObject names = getnames(x);
 		if (!prefixwithnames(sv, names))

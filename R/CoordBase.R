@@ -362,7 +362,12 @@ convert <- function(x, ...)
 #' \code{FALSE} i.e. invalid values, a warning is issued and similarly, if these attributes are
 #' missing, a warning is issued and the objects are re-validated as described under
 #' \code{\link{validate}()}.
-#' 
+#'
+#' The optional argument \code{fmt} may be used to specify the coordinate format desired for
+#' formatting or printing \code{"coords"} or \code{"waypoints"} objects, see the \code{fmt} argument
+#' for \code{\link[=coords]{as_coords}()} and \code{\link[=waypoints]{as_waypoints}()}; using the
+#' default, \code{fmt = 0L}, will format or print in the existing coordinate format.
+#'
 #' \code{ll_headers()} outputs the headings \verb{"Latitude ... Longitude"} formatted to the width
 #' of argument \code{width}, adjusted for format \code{fmt} and is primarily intended for use by the
 #' \code{print()} method for class \code{"waypoints"}. Likewise argument \code{validate} is used by
@@ -378,11 +383,6 @@ convert <- function(x, ...)
 #'
 #' @param validate \code{logical}, whether or not to \code{\link{validate}} \code{x} before
 #' formatting; default \code{TRUE}.
-#'
-#' @param fmtreq  \code{integer}, \code{1L}, \code{2L} or \code{3L}, specifying the coordinate
-#'   format desired for formatting or printing, see \code{fmt} argument for \code{"\link{coords}"}
-#'   and \code{"\link{waypoints}"}; the default, \code{0L}, will format or print in the existing
-#'   format.
 #'
 #' @param width \code{character} vector, used to match width of headers to formatted output.
 #'
@@ -427,7 +427,7 @@ convert <- function(x, ...)
 #' format(dm, usenames = FALSE)
 #'
 #' ## Format as decimal degrees,
-#' format(dm, fmtreq = 1)
+#' format(dm, fmt = 1)
 #'
 #' ###
 #' ## Continuing example from `as_waypoints()`...
@@ -450,7 +450,7 @@ convert <- function(x, ...)
 #' print(wp, max = 21)
 #'
 #' ## Print as degrees and minutes
-#' print(wp, fmtreq = 2)
+#' print(wp, fmt = 2)
 #'
 #' ## Format as a fixed-width character vector,
 #' ## with names...
