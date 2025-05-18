@@ -726,7 +726,7 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validat
 	if (validate)
 		if (!check_valid(x))
 			warning("Formatting invalid coords!");
-	vector<string>&& sv { format_switch(Coord(get_coordtype(x), x)) };
+	vector<string> sv { format_switch(Coord(get_coordtype(x), x)) };
 	vector<string> names { get_vec_attr<NumericVector, string>(x, "names") };
 	if (names.size() && usenames) {
 		stdlenstr(names);
@@ -823,7 +823,7 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate
 	if (validate)
 		if (!check_valid(x))
 			warning("Formatting invalid waypoints!");
-	vector<string>&& sv { format_switch(WayPoint(get_coordtype(x), x)) };
+	vector<string> sv { format_switch(WayPoint(get_coordtype(x), x)) };
 	if (usenames) {
 		RObject names = getnames(x);
 		if (!prefixwithnames(sv, names))
