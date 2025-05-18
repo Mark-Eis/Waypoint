@@ -51,10 +51,10 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, max <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'coords'</span></span>
-<span><span class="fu">format</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, usenames <span class="op">=</span> <span class="cn">TRUE</span>, validate <span class="op">=</span> <span class="cn">TRUE</span>, fmtreq <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span></span>
+<span><span class="fu">format</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, usenames <span class="op">=</span> <span class="cn">TRUE</span>, validate <span class="op">=</span> <span class="cn">TRUE</span>, fmt <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'waypoints'</span></span>
-<span><span class="fu">format</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, usenames <span class="op">=</span> <span class="cn">TRUE</span>, validate <span class="op">=</span> <span class="cn">TRUE</span>, fmtreq <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span></span>
+<span><span class="fu">format</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, usenames <span class="op">=</span> <span class="cn">TRUE</span>, validate <span class="op">=</span> <span class="cn">TRUE</span>, fmt <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">ll_headers</span><span class="op">(</span><span class="va">width</span>, <span class="va">fmt</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -88,20 +88,13 @@ class <code>"<a href="waypoints.html">waypoints</a>"</code> created by function 
 formatting; default <code>TRUE</code>.</p></dd>
 
 
-<dt id="arg-fmtreq">fmtreq<a class="anchor" aria-label="anchor" href="#arg-fmtreq"></a></dt>
-<dd><p><code>integer</code>, <code>1L</code>, <code>2L</code> or <code>3L</code>, specifying the coordinate
-format desired for formatting or printing, see <code>fmt</code> argument for <code>"<a href="coords.html">coords</a>"</code>
-and <code>"<a href="waypoints.html">waypoints</a>"</code>; the default, <code>0L</code>, will format or print in the existing
+<dt id="arg-fmt">fmt<a class="anchor" aria-label="anchor" href="#arg-fmt"></a></dt>
+<dd><p><code>integer</code>, <code>1L</code>, <code>2L</code> or <code>3L</code>, specifying the required coordinate
 format.</p></dd>
 
 
 <dt id="arg-width">width<a class="anchor" aria-label="anchor" href="#arg-width"></a></dt>
 <dd><p><code>character</code> vector, used to match width of headers to formatted output.</p></dd>
-
-
-<dt id="arg-fmt">fmt<a class="anchor" aria-label="anchor" href="#arg-fmt"></a></dt>
-<dd><p><code>integer</code>, <code>1L</code>, <code>2L</code> or <code>3L</code>, specifying the required coordinate
-format.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -133,6 +126,10 @@ are present and all <code>TRUE</code> i.e., valid. If these attributes are found
 <code>FALSE</code> i.e. invalid values, a warning is issued and similarly, if these attributes are
 missing, a warning is issued and the objects are re-validated as described under
 <code><a href="validate.html">validate</a>()</code>.</p>
+<p>The optional argument <code>fmt</code> may be used to specify the coordinate format desired for
+formatting or printing <code>"coords"</code> or <code>"waypoints"</code> objects, see the <code>fmt</code> argument
+for <code><a href="coords.html">as_coords</a>()</code> and <code><a href="waypoints.html">as_waypoints</a>()</code>; using the
+default, <code>fmt = 0L</code>, will format or print in the existing coordinate format.</p>
 <p><code>ll_headers()</code> outputs the headings <code>"Latitude ... Longitude"</code> formatted to the width
 of argument <code>width</code>, adjusted for format <code>fmt</code> and is primarily intended for use by the
 <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> method for class <code>"waypoints"</code>. Likewise argument <code>validate</code> is used by
@@ -152,24 +149,64 @@ unecessary replicate validation and may otherwise be left as the default.</p>
 <span class="r-in"><span><span class="co">## Print named "coords" object in degrees and minutes,</span></span></span>
 <span class="r-in"><span><span class="co">## implicitly using S3 print() method</span></span></span>
 <span class="r-in"><span><span class="va">dm</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> invalid format specifier</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Nelson's Column                           51°30.4659′ N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Ostravice                                 49°32.7726′ N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tally Ho                                  48°06.4339′ N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Washington Monument                       38°53.3696′ N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Null Island                                0°00.0000′ N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tristan da Cunha                          37°06.7044′ S</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mawson Peak                               53°06.2869′ S</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   25°14.4093′ S</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Nelson's Column                            0°07.6754′ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Ostravice                                 18°23.9137′ E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tally Ho                                 122°46.7203′ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Washington Monument                       77°02.1145′ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Null Island                                0°00.0000′ E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tristan da Cunha                          12°17.3178′ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mawson Peak                               73°31.0370′ E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   57°31.1536′ W</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Print explicitly using S3 print() method, specifying</span></span></span>
 <span class="r-in"><span><span class="co">## the maximal number of entries to be printed</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dm</span>, max <span class="op">=</span> <span class="fl">14</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> invalid format specifier</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Nelson's Column       51°30.4659′ N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Ostravice             49°32.7726′ N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tally Ho              48°06.4339′ N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Washington Monument   38°53.3696′ N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Null Island            0°00.0000′ N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tristan da Cunha      37°06.7044′ S</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mawson Peak           53°06.2869′ S</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [ reached 'max' / getOption("max.print") -- omitted 9 entries ]</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Format as a fixed-width character vector,</span></span></span>
 <span class="r-in"><span><span class="co">## with names...</span></span></span>
 <span class="r-in"><span><span class="fu">format</span><span class="op">(</span><span class="va">dm</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> invalid format specifier</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "Nelson's Column                           51°30.4659′ N"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2] "Ostravice                                 49°32.7726′ N"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "Tally Ho                                  48°06.4339′ N"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4] "Washington Monument                       38°53.3696′ N"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "Null Island                                0°00.0000′ N"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "Tristan da Cunha                          37°06.7044′ S"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "Mawson Peak                               53°06.2869′ S"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "Silvio Pettirossi International Airport   25°14.4093′ S"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "Nelson's Column                            0°07.6754′ W"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "Ostravice                                 18°23.9137′ E"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "Tally Ho                                 122°46.7203′ W"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12] "Washington Monument                       77°02.1145′ W"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "Null Island                                0°00.0000′ E"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [14] "Tristan da Cunha                          12°17.3178′ W"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "Mawson Peak                               73°31.0370′ E"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16] "Silvio Pettirossi International Airport   57°31.1536′ W"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ...or without them</span></span></span>
 <span class="r-in"><span><span class="fu">format</span><span class="op">(</span><span class="va">dm</span>, usenames <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> invalid format specifier</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] " 51°30.4659′ N" " 49°32.7726′ N" " 48°06.4339′ N" " 38°53.3696′ N"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "  0°00.0000′ N" " 37°06.7044′ S" " 53°06.2869′ S" " 25°14.4093′ S"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "  0°07.6754′ W" " 18°23.9137′ E" "122°46.7203′ W" " 77°02.1145′ W"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "  0°00.0000′ E" " 12°17.3178′ W" " 73°31.0370′ E" " 57°31.1536′ W"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Format as decimal degrees,</span></span></span>
-<span class="r-in"><span><span class="fu">format</span><span class="op">(</span><span class="va">dm</span>, fmtreq <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">format</span><span class="op">(</span><span class="va">dm</span>, fmt <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "Nelson's Column                            51.507765° lat"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [2] "Ostravice                                  49.546210° lat"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "Tally Ho                                   48.107232° lat"</span>
@@ -193,25 +230,62 @@ unecessary replicate validation and may otherwise be left as the default.</p>
 <span class="r-in"><span><span class="co">## Print named "waypoints" object in degrees and minutes,</span></span></span>
 <span class="r-in"><span><span class="co">## implicitly using S3 print() method</span></span></span>
 <span class="r-in"><span><span class="va">wp</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> invalid format specifier</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                Latitude        Longitude</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                           ______________  _______________</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Nelson's Column                           51°30′27.95″ N    0°07′40.53″ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Ostravice                                 49°32′46.36″ N   18°23′54.82″ E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tally Ho                                  48°06′26.04″ N  122°46′43.22″ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Washington Monument                       38°53′22.18″ N   77°02′06.87″ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Null Island                                0°00′00.00″ N    0°00′00.00″ E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tristan da Cunha                          37°06′42.26″ S   12°17′19.07″ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mawson Peak                               53°06′17.21″ S   73°31′02.22″ E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   25°14′24.56″ S   57°31′09.21″ W</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Print explicitly using S3 print() method, specifying</span></span></span>
 <span class="r-in"><span><span class="co">## the maximal number of entries to be printed</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">wp</span>, max <span class="op">=</span> <span class="fl">21</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> invalid format specifier</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                            Latitude        Longitude</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                       ______________  _______________</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Nelson's Column       51°30′27.95″ N    0°07′40.53″ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Ostravice             49°32′46.36″ N   18°23′54.82″ E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tally Ho              48°06′26.04″ N  122°46′43.22″ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Washington Monument   38°53′22.18″ N   77°02′06.87″ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Null Island            0°00′00.00″ N    0°00′00.00″ E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tristan da Cunha      37°06′42.26″ S   12°17′19.07″ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mawson Peak           53°06′17.21″ S   73°31′02.22″ E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [ reached 'max' / getOption("max.print") -- omitted 1 rows ]</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Print as degrees and minutes</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">wp</span>, fmtreq <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> invalid format specifier</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">wp</span>, fmt <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                              Latitude        Longitude</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                         ______________  _______________</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Nelson's Column                           51°30.4658′ N    0°07.6755′ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Ostravice                                 49°32.7727′ N   18°23.9137′ E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tally Ho                                  48°06.4340′ N  122°46.7203′ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Washington Monument                       38°53.3697′ N   77°02.1145′ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Null Island                                0°00.0000′ N    0°00.0000′ E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tristan da Cunha                          37°06.7043′ S   12°17.3178′ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mawson Peak                               53°06.2868′ S   73°31.0370′ E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   25°14.4093′ S   57°31.1535′ W</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Format as a fixed-width character vector,</span></span></span>
 <span class="r-in"><span><span class="co">## with names...</span></span></span>
 <span class="r-in"><span><span class="fu">format</span><span class="op">(</span><span class="va">wp</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> invalid format specifier</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Nelson's Column                           51°30′27.95″ N    0°07′40.53″ W"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "Ostravice                                 49°32′46.36″ N   18°23′54.82″ E"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] "Tally Ho                                  48°06′26.04″ N  122°46′43.22″ W"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4] "Washington Monument                       38°53′22.18″ N   77°02′06.87″ W"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "Null Island                                0°00′00.00″ N    0°00′00.00″ E"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "Tristan da Cunha                          37°06′42.26″ S   12°17′19.07″ W"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [7] "Mawson Peak                               53°06′17.21″ S   73°31′02.22″ E"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [8] "Silvio Pettirossi International Airport   25°14′24.56″ S   57°31′09.21″ W"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ...or without them</span></span></span>
 <span class="r-in"><span><span class="fu">format</span><span class="op">(</span><span class="va">wp</span>, usenames <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> invalid format specifier</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] " 51°30′27.95″ N    0°07′40.53″ W" " 49°32′46.36″ N   18°23′54.82″ E"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3] " 48°06′26.04″ N  122°46′43.22″ W" " 38°53′22.18″ N   77°02′06.87″ W"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [5] "  0°00′00.00″ N    0°00′00.00″ E" " 37°06′42.26″ S   12°17′19.07″ W"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [7] " 53°06′17.21″ S   73°31′02.22″ E" " 25°14′24.56″ S   57°31′09.21″ W"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">dm</span>, <span class="va">wp</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
