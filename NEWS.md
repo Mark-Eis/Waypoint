@@ -12,7 +12,8 @@
 
 * Use C++ {fmt} library to ensure formatting and printing of correct widths when names contain extended ASCII codes (#109, #117).
 
-* S3 `format()` and `print()` methods for `"coords"` and `"waypoints"` objects enable changing the coordinate format (#129, #130, #131) 
+* S3 `format()` and `print()` methods for `"coords"` and `"waypoints"` objects now have a `fmt` argument enabling changing the formatted/printed
+  coordinate format (#129, #130, #131). 
 
 # Waypoint 1.1.1
 
