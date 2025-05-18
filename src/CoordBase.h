@@ -217,7 +217,7 @@ inline string Format<CoordType::degmin>::operator()(double n) const
 {
 //	fmt::print("@Format<CoordType::{}>::operator()\n", CoordType::degmin);
 	return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
-		   fmt::format("{:0>{}.{}f}\u2032", abs(ff.get_decmin(n)), 7, 4);
+		   fmt::format("{:0>{}.{}f}\u2032", fabs(ff.get_decmin(n)), 7, 4);
 }
 
 /// __________________________________________________
@@ -228,7 +228,7 @@ inline string Format<CoordType::degminsec>::operator()(double n) const
 //	fmt::print("@Format<CoordType::{}>::operator()\n", CoordType::degminsec);
 	return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
 		   fmt::format("{:0>{}}\u2032", abs(ff.get_min(n)), 2) +
-		   fmt::format("{:0>{}.{}f}\u2033", abs(ff.get_sec(n)), 5, 2);
+		   fmt::format("{:0>{}.{}f}\u2033", fabs(ff.get_sec(n)), 5, 2);
 }
 
 
@@ -322,9 +322,9 @@ class Validator {
 		bool operator()(double n)
 		{
 //			fmt::print("@{} validating: {: {}f}\n", "Validator()", n, 9);
-			return !((abs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
-				(abs(ff.get_decmin(n)) >= 60) ||
-				(abs(ff.get_sec(n)) >= 60));
+			return !((fabs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
+				(fabs(ff.get_decmin(n)) >= 60) ||
+				(fabs(ff.get_sec(n)) >= 60));
 		}
 };
 
