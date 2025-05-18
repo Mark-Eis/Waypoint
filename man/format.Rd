@@ -112,6 +112,9 @@ format(dm)
 ## ...or without them
 format(dm, usenames = FALSE)
 
+## Format as decimal degrees,
+format(dm, fmtreq = 1)
+
 ###
 ## Continuing example from `as_waypoints()`...
 \dontshow{
@@ -131,6 +134,9 @@ wp
 ## Print explicitly using S3 print() method, specifying
 ## the maximal number of entries to be printed
 print(wp, max = 21)
+
+## Print as degrees and minutes
+print(wp, fmtreq = 2)
 
 ## Format as a fixed-width character vector,
 ## with names...
