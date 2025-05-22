@@ -127,7 +127,7 @@ format(dm, fmt = 1)
    invisible(as_waypoints(wp, fmt = 3))
 }
 
-## Print named "waypoints" object in degrees and minutes,
+## Print named "waypoints" object in degrees, minutes and seconds
 ## implicitly using S3 print() method
 wp
 

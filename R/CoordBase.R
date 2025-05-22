@@ -1,5 +1,5 @@
 ## Waypoint R Package
-## Mark Eisler (c) March 2025
+## Mark Eisler (c) May 2025
 ## For conversion and validation of geographic coordinates
 ##
 ## Requires R version 4.4.2 (2024-10-31) -- "Pile of Leaves" or later
@@ -758,6 +758,64 @@ review.waypoints <- function(x, ..., show_n = 20L)
         Lat = review(as_coords(x, TRUE), show_n = show_n),
         Lon = review(as_coords(x, FALSE), show_n = show_n)
     )
+
+
+## __________________________________________________
+#' @title
+#' Extract or Replace Parts of a Coords Object
+#'
+#' @name Extract.coords
+#'
+#' @description
+#' Extract or replace subsets of coords.
+#'
+#' @details
+#' The index may not reference values greater than \code{length(x)} without throwing an error.
+#'
+#' @family extract
+#' @seealso \code{"\link{coords}"}, \code{\link[base:Extract]{Extract}}.
+#'
+#' @param x a \code{"coords"} object.
+#'
+#' @param i indices specifying elements to extract or replace—see \code{\link[base:Extract]{Extract}}.
+#'
+#' @return a \code{"coords"} object.
+#'
+#' @export
+#' @examples
+#' ## Continuing example from `as_coords()`...
+#' \dontshow{
+#'    dm <-
+#'        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
+#'	       -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
+#'    names(dm) <- 
+#'        rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+#'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
+#'    invisible(as_coords(dm, fmt = 2))
+#'    latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
+#' }
+#'
+#' ## Named "coords" object in degrees and minutes with
+#' ## eight values each of latitude and longitude
+#' dm
+#'
+#' dm[1:8]
+#'
+#' dm[-8:0]
+#'
+#' rm(dm)
+
+## ========================================
+##  Extract.coords
+
+`[.coords` <- function (x, i) 
+{
+    if (max(i) > length(x)) stop(gettext("subscript out of bounds"), domain = NA, call. = FALSE)
+    y <- NextMethod("[")
+    attributes(y) <- lapply(attributes(x)[!names(attributes(x)) %in% "class"], \(atrx) if(length(atrx) == 1) atrx else atrx[i])
+    class(y) <- oldClass(x)
+    y
+}
 
 
 ## __________________________________________________
