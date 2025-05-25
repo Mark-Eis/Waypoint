@@ -3,30 +3,46 @@
 \name{Extract.coords}
 \alias{Extract.coords}
 \alias{[.coords}
+\alias{[<-.coords}
 \title{Extract or Replace Parts of a Coords Object}
 \usage{
 \method{[}{coords}(x, i)
+
+\method{[}{coords}(x, i) <- value
 }
 \arguments{
-\item{x}{a \code{"coords"} object.}
+\item{x}{a \code{"\link{coords}"} object.}
 
-\item{i}{indices specifying elements to extract or replace—see \code{\link[base:Extract]{Extract}}.}
+\item{i}{indices specifying elements to extract or replace—see
+\code{\link[base:Extract]{Extract}}.}
+
+\item{value}{a \code{numeric}, a \code{numeric} vector of coordinate values of \code{length(i)},
+or a \code{"coords"} object, possibly named.}
 }
 \value{
-a \code{"coords"} object.
+a \code{"\link{coords}"} object.
 }
 \description{
 Extract or replace subsets of coords.
 }
 \details{
-The index may not reference values greater than \code{length(x)} without throwing an error.
+Subsetting a \code{"\link{coords}"} object (except by an empty index) will drop all attributes
+except \code{fmt}, \code{latlon}, \code{names} and \code{valid}. Indices referencing values
+greater than \code{length(x)} will throw a \verb{subscript out of bounds} error. If names are not
+required, use \code{\link[base:unname]{unname}()}, see \emph{examples}.
+
+Replacement values may be a single \code{numeric}, a \code{numeric} vector of coordinate values
+of \code{length(i)}, or a \code{"coords"} object, possibly with a \code{"\link[coords]{latlon}"}
+attribute. If the \code{"coords"} object \code{x} has no existing \code{"latlon"} attribute,
+the corresponding attribute of the replacement value is ignored. Names of replacement values are
+also ignored; to replace names, use \code{\link[base:names]{`names<-`}()}.
 }
 \examples{
 ## Continuing example from `as_coords()`...
 \dontshow{
    dm <-
        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
-       -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
+         -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
    names(dm) <- 
        rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
@@ -38,13 +54,24 @@ The index may not reference values greater than \code{length(x)} without throwin
 ## eight values each of latitude and longitude
 dm
 
+## Extract the first eight values
 dm[1:8]
 
+## Exclude the first eight values
 dm[-8:0]
 
-rm(dm)
+## Index odd-numbered values
+(index <- as.logical(1:16 \%\% 2))
+dm[index]
+
+## Extract values without names
+unname(dm)[1:4]
+
+rm(dm, index)
+
 }
 \seealso{
-\code{"\link{coords}"}, \code{\link[base:Extract]{Extract}}.
+\code{"\link{coords}"}, \code{\link[base:Extract]{Extract}},
+\code{\link[base:unname]{unname}()}.
 }
 \concept{extract}

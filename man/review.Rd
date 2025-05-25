@@ -32,7 +32,7 @@ comprising the following elements: -
 \item{invalids}{\code{numeric} vector including invalid elements of argument \code{x}, if any.}
 
 \item{which_invalid}{\code{integer} vector specifying which elements of argument \code{x} are
-	 invalid, if any.}
+  invalid, if any.}
 
 The method for class \code{"waypoints"} returns a list of two sub-lists, each sub-list with
 elements as described above for the method for class \code{"coords"}, one each for latitude and

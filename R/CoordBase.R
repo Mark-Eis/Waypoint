@@ -273,7 +273,7 @@ as_waypoints <- function(object, ...)
 #' \dontshow{
 #'    dm <-
 #'        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
-#'	       -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
+#'          -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
 #'    names(dm) <- 
 #'        rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
 #'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
@@ -372,7 +372,7 @@ convert <- function(x, ...)
 #' of argument \code{width}, adjusted for format \code{fmt} and is primarily intended for use by the
 #' \code{print()} method for class \code{"waypoints"}. Likewise argument \code{validate} is used by
 #' the \code{print()} methods for classes \code{"coords"} and \code{"waypoints"} to prevent
-#' unecessary replicate validation and may otherwise be left as the default.
+#' unnecessary replicate validation and may otherwise be left as the default.
 #'
 #' @seealso
 #' \code{\link[base:format]{format}()}, \code{\link[base:print]{print}()},
@@ -403,7 +403,7 @@ convert <- function(x, ...)
 #' \dontshow{
 #'    dm <-
 #'        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
-#'		   -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
+#'          -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
 #'    names(dm) <- 
 #'        rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
 #'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
@@ -560,7 +560,7 @@ print.waypoints <- function (x, ..., max = NULL) {
 #' \dontshow{
 #'    dm <-
 #'        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
-#'		   -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
+#'          -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
 #'    names(dm) <- 
 #'        rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
 #'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
@@ -653,7 +653,7 @@ validate <- function(x, ...)
 #' \item{invalids}{\code{numeric} vector including invalid elements of argument \code{x}, if any.}
 #'
 #' \item{which_invalid}{\code{integer} vector specifying which elements of argument \code{x} are
-#' 	 invalid, if any.}
+#'   invalid, if any.}
 #'
 #' The method for class \code{"waypoints"} returns a list of two sub-lists, each sub-list with
 #' elements as described above for the method for class \code{"coords"}, one each for latitude and
@@ -770,24 +770,38 @@ review.waypoints <- function(x, ..., show_n = 20L)
 #' Extract or replace subsets of coords.
 #'
 #' @details
-#' The index may not reference values greater than \code{length(x)} without throwing an error.
+#XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#' Subsetting a \code{"\link{coords}"} object (except by an empty index) will drop all attributes
+#' except \code{fmt}, \code{latlon}, \code{names} and \code{valid}. Indices referencing values
+#' greater than \code{length(x)} will throw a \verb{subscript out of bounds} error. If names are not
+#' required, use \code{\link[base:unname]{unname}()}, see \emph{examples}.
+#'
+#' Replacement values may be a single \code{numeric}, a \code{numeric} vector of coordinate values
+#' of \code{length(i)}, or a \code{"coords"} object, possibly with a \code{"\link[coords]{latlon}"}
+#' attribute. If the \code{"coords"} object \code{x} has no existing \code{"latlon"} attribute,
+#' the corresponding attribute of the replacement value is ignored. Names of replacement values are
+#' also ignored; to replace names, use \code{\link[base:names]{`names<-`}()}.
 #'
 #' @family extract
-#' @seealso \code{"\link{coords}"}, \code{\link[base:Extract]{Extract}}.
+#' @seealso \code{"\link{coords}"}, \code{\link[base:Extract]{Extract}},
+#' \code{\link[base:unname]{unname}()}.
 #'
-#' @param x a \code{"coords"} object.
+#' @param x a \code{"\link{coords}"} object.
 #'
-#' @param i indices specifying elements to extract or replace—see \code{\link[base:Extract]{Extract}}.
+#' @param i indices specifying elements to extract or replace—see
+#'   \code{\link[base:Extract]{Extract}}.
 #'
-#' @return a \code{"coords"} object.
+#' @param value a \code{numeric}, a \code{numeric} vector of coordinate values of \code{length(i)},
+#'   or a \code{"coords"} object, possibly named.
 #'
-#' @export
+#' @return a \code{"\link{coords}"} object.
+#'
 #' @examples
 #' ## Continuing example from `as_coords()`...
 #' \dontshow{
 #'    dm <-
 #'        c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
-#'	       -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
+#'          -007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
 #'    names(dm) <- 
 #'        rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
 #'              "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
@@ -799,22 +813,64 @@ review.waypoints <- function(x, ..., show_n = 20L)
 #' ## eight values each of latitude and longitude
 #' dm
 #'
+#' ## Extract the first eight values
 #' dm[1:8]
 #'
+#' ## Exclude the first eight values
 #' dm[-8:0]
 #'
-#' rm(dm)
+#' ## Index odd-numbered values
+#' (index <- as.logical(1:16 %% 2))
+#' dm[index]
+#'
+#' ## Extract values without names
+#' unname(dm)[1:4]
+#'
+#' rm(dm, index)
 
 ## ========================================
-##  Extract.coords
+##  S3method `[.coords`(x, i)
+#'
+#' @export
 
-`[.coords` <- function (x, i) 
+`[.coords` <- function(x, i) 
 {
+    if (missing(i)) return(x)
     if (max(i) > length(x)) stop(gettext("subscript out of bounds"), domain = NA, call. = FALSE)
+    attrx <- attributes(x)
     y <- NextMethod("[")
-    attributes(y) <- lapply(attributes(x)[!names(attributes(x)) %in% "class"], \(atrx) if(length(atrx) == 1) atrx else atrx[i])
+    attributes(y) <- lapply(attrx[names(attrx) %in% c("fmt", "latlon", "names", "valid")], \(ax) if(length(ax) == length(x)) ax[i] else ax)
     class(y) <- oldClass(x)
     y
+}
+
+
+## ========================================
+##  S3method `[.coords<-`(x, i, value)
+#'
+#' @rdname Extract.coords
+#' @export
+
+`[<-.coords` <- function(x, i, value) 
+{
+    if (max(i) > length(x)) stop(gettext("subscript out of bounds"), domain = NA, call. = FALSE)
+    vfmt <- attr(value, "fmt", exact = TRUE)
+    if (!is.null(vfmt) && attr(x, "fmt", exact = TRUE) != vfmt) stop("value has different fmt attribute\n", call. = FALSE)
+    y <- NextMethod("[<-")
+    vll <- attr(value, "latlon", exact = TRUE)
+    if (!is.null(vll)) {
+        if (length(vll) != length(value) && length(vll) != 1)
+            stop("\"latlon\" attribute of replacement value must be either length 1 or length(value)\n", call. = FALSE)
+        xll <- attr(x, "latlon", exact = TRUE)
+        if (length(xll) == length(x))
+            attr(y, "latlon")[i] <- vll
+        else if (length(xll) == 1 && !all(vll == xll)) {
+            attr(y, "latlon") <- rep(xll, length(x))
+            attr(y, "latlon")[i] <- vll
+        }
+    }
+    class(y) <- oldClass(x)
+    validate(y)
 }
 
 
