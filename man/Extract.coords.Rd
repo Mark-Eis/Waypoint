@@ -32,10 +32,10 @@ greater than \code{length(x)} will throw a \verb{subscript out of bounds} error.
 required, use \code{\link[base:unname]{unname}()}, see \emph{examples}.
 
 Replacement values may be a single \code{numeric}, a \code{numeric} vector of coordinate values
-of \code{length(i)}, or a \code{"coords"} object, possibly with a \code{"\link[coords]{latlon}"}
-attribute. If the \code{"coords"} object \code{x} has no existing \code{"latlon"} attribute,
-the corresponding attribute of the replacement value is ignored. Names of replacement values are
-also ignored; to replace names, use \code{\link[base:names]{`names<-`}()}.
+of \code{length(i)}, or a \code{"coords"} object, possibly with a \code{"latlon"} attribute.
+However, the \code{"latlon"} attribute of the replacement value is ignored if the \code{"coords"}
+object \code{x} has no corresponding attribute set. If replacement values are named, the names
+are also ignored; to replace names, use \code{\link[base:names]{`names<-`}()}.
 }
 \examples{
 ## Continuing example from `as_coords()`...
@@ -67,14 +67,16 @@ dm[index]
 ## Extract values without names
 unname(dm)[1:4]
 
-## Update position of Tally Ho
+## Create "coords" object with updated position of Tally Ho
 newpos <- as_coords(c(4930.342, -12411.580), fmt = 2)
 latlon(newpos) <- c(TRUE, FALSE)
+newpos
 
+## Update position using the "coords" object as replacement value
 dm[c(3, 11)] <- newpos
 dm[c(3, 11)]
 
-## Or more simply, as latlon didn't actually change
+## Or, as latlon didn't actually change, use simple numeric vector
 dm[c(3, 11)] <- c(4930.342, -12411.580)
 dm[c(3, 11)]
 
