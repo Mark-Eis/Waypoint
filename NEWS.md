@@ -1,5 +1,9 @@
 # Waypoint (development version)
 
+* S3 `[` and `[<-` methods for `"coords"`.
+
+* Correct `format()` documentation error.
+
 # Waypoint 1.2.0
 
 * Class and function forward declarations moved to header file CoordBase.h (#113).

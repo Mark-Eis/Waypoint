@@ -55,9 +55,7 @@ devtools::install_github("Mark-Eis/Waypoint")
   methods for neat formatting and printing of objects of classes "`coords`" and
   "`waypoints`".
 
-* Extract or replace subsets of "`coords`" with
-  [`[.coords`](https://mark-eis.github.io/Waypoint/reference/Extract.coords.html) and
-  [`[<-.coords`](https://mark-eis.github.io/Waypoint/reference/Extract.coords.html).
+* Extract or replace subsets of "`coords`" with `[.coords` and   `[<-.coords`.
   
 #### Methodology  
 
