@@ -44,7 +44,7 @@ devtools::install_github("Mark-Eis/Waypoint")
 
 * Assign latitude and longitude attributes to individual coordinate values
   within "`coords`" objects with
- [`latlon<-`](https://mark-eis.github.io/Waypoint/reference/latlon.html)().
+ [`latlon<-`](https://mark-eis.github.io/Waypoint/reference/coords.html).
 
 * Ensure values within "`coords`" and "`waypoints`" objects are valid
   geographic locations with `validate()` and identifies individual invalid
@@ -54,6 +54,10 @@ devtools::install_github("Mark-Eis/Waypoint")
   [`print()`](https://mark-eis.github.io/Waypoint/reference/format.html) S3
   methods for neat formatting and printing of objects of classes "`coords`" and
   "`waypoints`".
+
+* Extract or replace subsets of "`coords`" with
+  [`[.coords`](https://mark-eis.github.io/Waypoint/reference/Extract.coords.html) and
+  [`[<-.coords`](https://mark-eis.github.io/Waypoint/reference/Extract.coords.html).
   
 #### Methodology  
 
