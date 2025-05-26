@@ -56,8 +56,8 @@ devtools::install_github("Mark-Eis/Waypoint")
   "`waypoints`".
 
 * Extract or replace subsets of "`coords`" with
-  [`[.coords`](https://mark-eis.github.io/Waypoint/reference/Extract.coords.html) and
-  [`[<-.coords`](https://mark-eis.github.io/Waypoint/reference/Extract.coords.html).
+  [`[`(<coords>)](https://mark-eis.github.io/Waypoint/reference/Extract.coords.html) and
+  [`[<-`(<coords>)](https://mark-eis.github.io/Waypoint/reference/Extract.coords.html).
   
 #### Methodology  
 
