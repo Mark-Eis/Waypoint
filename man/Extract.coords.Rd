@@ -67,7 +67,18 @@ dm[index]
 ## Extract values without names
 unname(dm)[1:4]
 
-rm(dm, index)
+## Update position of Tally Ho
+newpos <- as_coords(c(4930.342, -12411.580), fmt = 2)
+latlon(newpos) <- c(TRUE, FALSE)
+
+dm[c(3, 11)] <- newpos
+dm[c(3, 11)]
+
+## Or more simply, as latlon didn't actually change
+dm[c(3, 11)] <- c(4930.342, -12411.580)
+dm[c(3, 11)]
+
+rm(dm, index, newpos)
 
 }
 \seealso{
