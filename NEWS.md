@@ -1,6 +1,6 @@
 # Waypoint (development version)
 
-* S3 extract `[` and replace `[<-` methods for `"coords"`.
+* S3 extract `[`(<*coords*>) and replace `[<-`(<*coords*>) methods for `"coords"` objects.
 
 * Correct `format()` documentation error.
 
