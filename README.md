@@ -55,19 +55,8 @@ devtools::install_github("Mark-Eis/Waypoint")
   methods for neat formatting and printing of objects of classes "`coords`" and
   "`waypoints`".
 
-* Extract or replace subsets of "`coords`" with
-  [`[`(<coords>)](https://mark-eis.github.io/Waypoint/reference/Extract.coords.html) and
-  [`[<-`(<coords>)](https://mark-eis.github.io/Waypoint/reference/Extract.coords.html).
+* Extract or replace subsets of "`coords`" with <code><a href="https://mark-eis.github.io/Waypoint/reference/Extract.coords.html">&#96;[&#96;(<i>&lt;coords&gt;</i>)</a></code> and <code><a href="https://mark-eis.github.io/Waypoint/reference/Extract.coords.html">&#96;[&lt;-&#96;(<i>&lt;coords&gt;</i>)</a></code>
 
-* Extract or replace subsets of "`coords`" with
-
-<code><a href="https://mark-eis.github.io/Waypoint/reference/Extract.coords.html">&#96;[&#96;(<i>&lt;coords&gt;</i>)</a></code>
-
-<code><a href="https://mark-eis.github.io/Waypoint/reference/Extract.coords.html">&#96;[&lt;-&#96;(<i>&lt;coords&gt;</i>)</a></code>
-
-  [`[\`(\<coords\>)`](https://mark-eis.github.io/Waypoint/reference/Extract.coords.html) and
-  [`[<-\`(\<coords\>)`](https://mark-eis.github.io/Waypoint/reference/Extract.coords.html).
-  
 #### Methodology  
 
 *Waypoint* uses high performance C++ code seamlessly integrated into R using
