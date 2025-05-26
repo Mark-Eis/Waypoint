@@ -2,8 +2,6 @@
 
 * S3 extract <code>&#96;[&#96;(<i>&lt;coords&gt;</i>)</code> and replace <code>&#96;[<-&#96;(<i>&lt;coords&gt;</i>)</code> methods for `"coords"` objects.
 
-* S3 extract `[`(<*coords*>) and replace `[<-`(<*coords*>) methods for `"coords"` objects.
-
 * Correct `format()` documentation error.
 
 # Waypoint 1.2.0
