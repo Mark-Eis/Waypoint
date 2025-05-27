@@ -26,8 +26,8 @@ reference:
   desc: |
     Neat formatting and printing of “coords” and 'waypoints" objects
   contents:
-  - format
-  - print
+  - starts_with("format") 
+  - starts_with("print") 
 - title: Extract and Replace Coords Subsets
   desc: |
     Methods to extract or replace subsets of "coords" objects.
