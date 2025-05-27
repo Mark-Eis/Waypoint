@@ -19,7 +19,7 @@ individual coordinate values represent latitude or longitude.'></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">Waypoint</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0.9004</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -116,7 +116,7 @@ argument with additional attributes: –</p>
 </dl><p>The <code>as_cords()</code> method for class <code>"coords"</code> returns its <code>numeric</code> vector argument
 <code>object</code> modified in place, whereas the method for class 'waypoints' returns a new
 <code>numeric</code> vector.</p>
-<p><code>latlon()</code> returns its <code>"coords"</code> argument <code>cd</code> with a <code>logical</code> vector
+<p><code>latlon()&lt;-</code> returns its <code>"coords"</code> argument <code>cd</code> with a <code>logical</code> vector
 attribute <code>"latlon"</code> added or updated to reflect argument <code>value</code>.</p>
     </div>
     <div class="section level2">
@@ -132,7 +132,7 @@ format of values in the <code>numeric</code> vector argument <code>object</code>
 <p>The values of a newly created <code>"coords"</code> object are checked to ensure they are valid
 geographic locations as described under <code><a href="validate.html">validate</a>()</code>.</p>
 <p>Individual coordinate values in a <code>Coords</code> object may be specified as representing latitude
-or longitude using <code>latlon()</code>. The <code>value</code> argument may either be a single value,
+or longitude using <code>latlon()&lt;-</code>. The <code>value</code> argument may either be a single value,
 <code>TRUE</code> signifying that all values are latitude, <code>FALSE</code> signifying that all values are
 longitude, or a <code>logical</code> vector of the same length as as the <code>Coords</code> object signifying
 whether individual values are latitude or longitude.</p>
