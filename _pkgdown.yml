@@ -3,3 +3,41 @@ template:
   bootstrap: 5
   math-rendering: mathjax
   light-switch: true
+reference:
+- title: Create Coords and Waypoints 
+  desc: |
+    Create “coords” and 'waypoints" objects in three possible formats
+  contents:
+  - as_coords
+  - as_waypoints
+  - starts_with("latlon")
+- title: Convert Coords and Waypoints 
+  desc: |
+    Convert between (i) decimal degree, (ii) degrees and minutes, and (iii) degrees, minutes and seconds formats
+  contents:
+  - convert
+- title: Validate Coords and Waypoints 
+  desc: |
+    Ensure values within "coords" and "waypoints" objects are valid geographic locations and identify individual invalid values
+  contents:
+  - validate
+  - review
+- title: Format and Print Coords and Waypoints 
+  desc: |
+    Neat formatting and printing of “coords” and 'waypoints" objects
+  contents:
+  - format
+  - print
+- title: Extract and Replace Coords Subsets
+  desc: |
+    Methods to extract or replace subsets of "coords" objects.
+  contents:
+  - "`[`(<coords>)"
+  - "`[<-`(<coords>)"
+- title: Miscellaneous 
+  desc: |
+    Anything else
+  contents:
+  - "`%L%`"
+  - ll_headers
+
