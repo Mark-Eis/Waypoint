@@ -146,7 +146,7 @@ as_coords <- function(object, ...)
 #' \code{object}, by default immediately before (on the left-hand side of) the latitude and
 #' longitude columns. An alternative column for waypoint names may be specified by setting an
 #' \code{integer} \code{\link[base:attributes]{attribute}} named "namescol" indicating its position
-#' in \code{object. If neither a "Name" column nor a \code{"namescol"} attribute is present in
+#' in \code{object}. If neither a "Name" column nor a \code{"namescol"} attribute is present in
 #' \code{object}, \code{\link[base:row.names]{row.names}} are used for waypoint names.
 #'
 #' The latitude and longitude values of a newly created \code{"waypoints"} object are checked to
