@@ -32,8 +32,8 @@ reference:
   desc: |
     Methods to extract or replace subsets of "coords" objects.
   contents:
-  - "`[`(<coords>)"
-  - "`[<-`(<coords>)"
+  - "`[.coords`"
+  - "`[<-.coords`"
 - title: Miscellaneous 
   desc: |
     Anything else
