@@ -775,7 +775,8 @@ review.waypoints <- function(x, ..., show_n = 20L)
 #' of \code{length(i)}, or a \code{"coords"} object, possibly with a \code{"latlon"} attribute.
 #' However, the \code{"latlon"} attribute of the replacement value is ignored if the \code{"coords"}
 #' object \code{x} has no corresponding attribute set. If replacement values are named, the names
-#' are also ignored; to replace names, use \code{\link[base:names]{`names<-`}()}.
+## #' are also ignored; to replace names, use \code{\link[base:names]{`names<-`}()}.
+#' are also ignored; to replace names, use \code{\link[base:names]{`names`}()} replacement form.
 #'
 #' @family extract
 #' @seealso \code{"\link{coords}"}, \code{\link[base:Extract]{Extract}},
