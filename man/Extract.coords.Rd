@@ -35,7 +35,7 @@ Replacement values may be a single \code{numeric}, a \code{numeric} vector of co
 of \code{length(i)}, or a \code{"coords"} object, possibly with a \code{"latlon"} attribute.
 However, the \code{"latlon"} attribute of the replacement value is ignored if the \code{"coords"}
 object \code{x} has no corresponding attribute set. If replacement values are named, the names
-are also ignored; to replace names, use \code{\link[base:names]{`names`}()} replacement form.
+are also ignored; to replace names, use \code{\link[base:names]{names}()} replacement form.
 }
 \examples{
 ## Continuing example from `as_coords()`...
