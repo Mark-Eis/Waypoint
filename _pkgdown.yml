@@ -40,4 +40,5 @@ reference:
   contents:
   - "`%L%`"
   - ll_headers
+  - "Waypoint-package"
 
