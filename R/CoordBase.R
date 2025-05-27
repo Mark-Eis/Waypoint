@@ -33,7 +33,7 @@
 #' geographic locations as described under \code{\link{validate}()}.
 #'
 #' Individual coordinate values in a \code{Coords} object may be specified as representing latitude
-#' or longitude using \code{latlon()}. The \code{value} argument may either be a single value,
+#' or longitude using \code{latlon()<-}. The \code{value} argument may either be a single value,
 #' \code{TRUE} signifying that all values are latitude, \code{FALSE} signifying that all values are
 #' longitude, or a \code{logical} vector of the same length as as the \code{Coords} object signifying
 #' whether individual values are latitude or longitude.
@@ -74,7 +74,7 @@
 #' \code{object} modified in place, whereas the method for class 'waypoints' returns a new
 #' \code{numeric} vector.
 #'
-#' \code{latlon()} returns its \code{"coords"} argument \code{cd} with a \code{logical} vector
+#' \code{latlon()<-} returns its \code{"coords"} argument \code{cd} with a \code{logical} vector
 #' attribute \code{"latlon"} added or updated to reflect argument \code{value}.
 #'
 #' @examples
@@ -722,16 +722,8 @@ review.coords <- function(x, ..., show_n = 20L)
         return(review(x, show_n = show_n))
     }
     fmt <- attr(x, "fmt");
-    if (n_invalid) {
+    if (n_invalid)
         invalids <- x[invalid]
-        suppressWarnings(as_coords(invalids, fmt = fmt))
-        acl <- attr(x, "latlon")
-        if (!is.null(acl)) {
-            if (length(acl) > 1)
-                suppressWarnings(latlon(invalids) <- acl[invalid])
-            else
-                suppressWarnings(latlon(invalids) <- acl[1])
-        }
     } else
         invalids <- NA_integer_
     list(
