@@ -42,7 +42,30 @@ frame argument \code{object}, with additional attributes: –
 series of geographic or GPS waypoints of paired latitude and longitude values.
 }
 \details{
+Data frame argument \code{object} should have \code{numeric} vector latitude and longitude
+columns with individual values having a decimal point after the number of whole degrees in the
+case of \emph{decimal degrees}, after the number of whole minutes in the case of
+\emph{degrees and minutes}, and after the number of whole seconds in the case of
+\emph{degrees, minutes and seconds}. These should be the first two columns of the data frame, or
+the second and third columns if the first column contains waypoints names (see below).
+Alternative columns may be specified for the latitude and longitude by setting \code{"llcols"} as
+a length 2 \code{integer} vector attribute of \code{object} indicating their positions in the
+data frame.
 
+The \code{fmt} argument should be \code{1L} to represent decimal degrees, \code{2L} for degrees
+and minutes, and \code{3L} for degrees, minutes and seconds and is used to provide the
+format of values in data frame argument \code{object} to be converted to class
+\code{"waypoints"}.
+
+If the waypoints have names, these should be included in a "Name" column of data frame argument
+\code{object}, by default immediately before (on the left-hand side of) the latitude and
+longitude columns. An alternative column for waypoint names may be specified by setting an
+\code{integer} \code{\link[base:attributes]{attribute}} named "namescol" indicating its position
+in \code{object}. If neither a "Name" column nor a \code{"namescol"} attribute is present in
+\code{object}, \code{\link[base:row.names]{row.names}} are used for waypoint names.
+
+The latitude and longitude values of a newly created \code{"waypoints"} object are checked to
+ensure they are valid geographic locations as described under \code{\link{validate}()}.
 }
 \examples{
 ## Dataframe representing waypoint names, and latitude and longitude values
