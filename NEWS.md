@@ -1,8 +1,12 @@
 # Waypoint (development version)
 
-* S3 extract <code>&#96;[&#96;(<i>&lt;coords&gt;</i>)</code> and replace <code>&#96;[<-&#96;(<i>&lt;coords&gt;</i>)</code> methods for `"coords"` objects.
+* New S3 extract <code>&#96;[&#96;(<i>&lt;coords&gt;</i>)</code> and replace
+  <code>&#96;[<-&#96;(<i>&lt;coords&gt;</i>)</code> methods for `"coords"` objects (#135).
 
-* Correct `format()` documentation error.
+* S3 extract <code>&#96;[&#96;(<i>&lt;coords&gt;</i>)</code> method allows simpler code
+  in `print.coords()` and `review.coords()` S3 methods (#136).
+
+* Corrected `as_waypoints()` and `format()` documentation (#133, #134, #137).
 
 # Waypoint 1.2.0
 
