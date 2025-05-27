@@ -724,7 +724,7 @@ review.coords <- function(x, ..., show_n = 20L)
     fmt <- attr(x, "fmt");
     if (n_invalid)
         invalids <- x[invalid]
-    } else
+    else
         invalids <- NA_integer_
     list(
         allvalid = all(attr(x, "valid")),

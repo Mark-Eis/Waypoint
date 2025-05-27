@@ -48,7 +48,7 @@ The \code{as_cords()} method for class \code{"coords"} returns its \code{numeric
 \code{object} modified in place, whereas the method for class 'waypoints' returns a new
 \code{numeric} vector.
 
-\code{latlon()} returns its \code{"coords"} argument \code{cd} with a \code{logical} vector
+\code{latlon()<-} returns its \code{"coords"} argument \code{cd} with a \code{logical} vector
 attribute \code{"latlon"} added or updated to reflect argument \code{value}.
 }
 \description{
@@ -73,7 +73,7 @@ The values of a newly created \code{"coords"} object are checked to ensure they 
 geographic locations as described under \code{\link{validate}()}.
 
 Individual coordinate values in a \code{Coords} object may be specified as representing latitude
-or longitude using \code{latlon()}. The \code{value} argument may either be a single value,
+or longitude using \code{latlon()<-}. The \code{value} argument may either be a single value,
 \code{TRUE} signifying that all values are latitude, \code{FALSE} signifying that all values are
 longitude, or a \code{logical} vector of the same length as as the \code{Coords} object signifying
 whether individual values are latitude or longitude.
