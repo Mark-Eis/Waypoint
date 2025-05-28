@@ -6,25 +6,25 @@ template:
 reference:
 - title: Coords and Waypoints 
   desc: |
-    Create “coords” and 'waypoints" objects
+    Create “coords” and 'waypoints" objects.
   contents:
   - as_coords
   - as_waypoints
   - starts_with("latlon")
 - title: Convert 
   desc: |
-    Convert between (i) decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds
+    Convert between (i) decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
   contents:
   - convert
 - title: Validate and Review 
   desc: |
-    Validate geographic locations and identify individual invalid values
+    Validate geographic locations and identify individual invalid values.
   contents:
   - validate
   - review
 - title: Format and Print
   desc: |
-    Neat formatting and printing of “coords” and "waypoints"
+    Neat formatting and printing of “coords” and "waypoints".
   contents:
   - starts_with("format") 
   - starts_with("print") 
