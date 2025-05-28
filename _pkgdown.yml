@@ -24,7 +24,7 @@ reference:
   - review
 - title: Format and Print
   desc: |
-    Neat formatting and printing of “coords” and 'waypoints" objects
+    Neat formatting and printing of “coords” and "waypoints"
   contents:
   - starts_with("format") 
   - starts_with("print") 
