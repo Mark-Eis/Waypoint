@@ -769,7 +769,7 @@ review.waypoints <- function(x, ..., show_n = 20L)
 #' object \code{x} has no corresponding attribute set. If replacement values are named, the names
 #' are also ignored; to replace names, use \code{\link[base:names]{names<-}()} replacement form.
 #'
-#' @Note
+#' @note
 #' To extract and replace subsets of \code{"\link{waypoints}"} objects, simply use the \pkg{base}
 #' package \code{\link[base:Extract]{`[`}} and \code{\link[base:Extract]{`[<-`}} operators, taking 
 #' care not to exclude the \code{latitude} and \code{longitude} columns or \code{"Name"} column
