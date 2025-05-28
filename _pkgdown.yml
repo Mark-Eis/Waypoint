@@ -6,19 +6,19 @@ template:
 reference:
 - title: Coords and Waypoints 
   desc: |
-    Create “coords” and 'waypoints" objects in three possible formats
+    Create “coords” and 'waypoints" objects
   contents:
   - as_coords
   - as_waypoints
   - starts_with("latlon")
 - title: Convert 
   desc: |
-    Convert between (i) decimal degree, (ii) degrees and minutes, and (iii) degrees, minutes and seconds formats
+    Convert between (i) decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds
   contents:
   - convert
 - title: Validate and Review 
   desc: |
-    Ensure values within "coords" and "waypoints" objects are valid geographic locations and identify individual invalid values
+    Validate geographic locations and identify individual invalid values
   contents:
   - validate
   - review
@@ -35,11 +35,9 @@ reference:
   - "`[.coords`"
   - "`[<-.coords`"
 - title: Other
-  desc: Miscellaneous functions
   contents:
   - "`%L%`"
-- title: Waypoint Package 
-  desc: About the Waypoint package
+- title: About
   contents:
    - "Waypoint-package"
 
