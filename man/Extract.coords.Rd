@@ -39,7 +39,7 @@ are also ignored; to replace names, use \code{\link[base:names]{names<-}()} repl
 }
 \note{
 To extract and replace subsets of \code{"\link{waypoints}"} objects, simply use the \pkg{base}
-package \code{\link[base:Extract]{`[`}} and \code{\link[base:Extract]{`[<-`}} operators, taking 
+package \code{\link[base:Extract]{[}} and \code{\link[base:Extract]{[<-}} operators, taking 
 care not to exclude the \code{latitude} and \code{longitude} columns or \code{"Name"} column
 (if present), which could lead to undefined results.
 }
