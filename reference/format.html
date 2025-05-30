@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Waypoint</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0.9004</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,7 +54,7 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, max <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'waypoints'</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, max <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, fmt <span class="op">=</span> <span class="cn">NULL</span>, max <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'coords'</span></span>
 <span><span class="fu">format</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, usenames <span class="op">=</span> <span class="cn">TRUE</span>, validate <span class="op">=</span> <span class="cn">TRUE</span>, fmt <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span></span>
@@ -84,6 +84,11 @@ class <code>"<a href="waypoints.html">waypoints</a>"</code> created by function 
     <code><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a>("max.print")</code> used.</p></dd>
 
 
+<dt id="arg-fmt">fmt<a class="anchor" aria-label="anchor" href="#arg-fmt"></a></dt>
+<dd><p><code>integer</code>, <code>1L</code>, <code>2L</code> or <code>3L</code>, specifying the required coordinate
+format.</p></dd>
+
+
 <dt id="arg-usenames">usenames<a class="anchor" aria-label="anchor" href="#arg-usenames"></a></dt>
 <dd><p><code>logical</code>, whether or not to include names in formatted output; default
 <code>TRUE</code>.</p></dd>
@@ -92,11 +97,6 @@ class <code>"<a href="waypoints.html">waypoints</a>"</code> created by function 
 <dt id="arg-validate">validate<a class="anchor" aria-label="anchor" href="#arg-validate"></a></dt>
 <dd><p><code>logical</code>, whether or not to <code><a href="validate.html">validate</a></code> <code>x</code> before
 formatting; default <code>TRUE</code>.</p></dd>
-
-
-<dt id="arg-fmt">fmt<a class="anchor" aria-label="anchor" href="#arg-fmt"></a></dt>
-<dd><p><code>integer</code>, <code>1L</code>, <code>2L</code> or <code>3L</code>, specifying the required coordinate
-format.</p></dd>
 
 
 <dt id="arg-width">width<a class="anchor" aria-label="anchor" href="#arg-width"></a></dt>
@@ -263,8 +263,8 @@ unnecessary replicate validation and may otherwise be left as the default.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Print as degrees and minutes</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">wp</span>, fmt <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                              Latitude        Longitude</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                         ______________  _______________</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                               Latitude       Longitude</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                           _____________  ______________</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Nelson's Column                           51°30.4658′ N    0°07.6755′ W</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Ostravice                                 49°32.7727′ N   18°23.9137′ E</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Tally Ho                                  48°06.4340′ N  122°46.7203′ W</span>
