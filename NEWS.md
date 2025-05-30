@@ -2,7 +2,7 @@
 
 * S3 `print()` methods for `"coords"` and `"waypoints"` now employ the null coalescing operator `%||%` as intended (#140). 
 
-* S3 `print()` method for `"waypoints"` objects now has  explicit `fmt` argument and corrected formatting of the
+* S3 `print()` method for `"waypoints"` objects now has an explicit `fmt` argument and correct formatting of the
   "Latitude ... Longitude" headings when this argument is used (#139).
 
 * New S3 extract <code>&#96;[&#96;(<i>&lt;coords&gt;</i>)</code> and replace
