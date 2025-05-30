@@ -470,8 +470,7 @@ convert <- function(x, ...)
 print.coords <- function (x, ..., max = NULL) {
     n <- length(x)
     validate(x, force = FALSE)
-    if (is.null(max))
-        max <- getOption("max.print", 99999L)
+    max <- max %||% getOption("max.print", 99999L)
     if (!is.finite(max)) 
         stop("invalid 'max' / getOption(\"max.print\"): ", max)
     omit <- (n0 <- max %/% (if (is.null(names(x))) 1L else 2L)) < n
@@ -495,8 +494,7 @@ print.coords <- function (x, ..., max = NULL) {
 print.waypoints <- function (x, ..., fmt = NULL, max = NULL) {
     n <- length(row.names(x))
     validate(x, force = FALSE)
-    if (is.null(max))
-        max <- getOption("max.print", 99999L)
+    max <- max %||% getOption("max.print", 99999L)
     if (!is.finite(max)) 
         stop("invalid 'max' / getOption(\"max.print\"): ", max)
     omit <- (n0 <- max %/% 3L) < n
@@ -505,7 +503,7 @@ print.waypoints <- function (x, ..., fmt = NULL, max = NULL) {
     fmt <- fmt %||% attr(x, "fmt")
     if (0 == fmt) fmt <- attr(x, "fmt")
     fmtx <- format(x, validate = FALSE, fmt = fmt, ...)
-    writeLines(ll_headers((nchar(fmtx)[1]), fmt))
+    writeLines(ll_headers((nchar(fmtx[1])), fmt))
     writeLines(fmtx)
     if (omit) 
         cat(" [ reached 'max' / getOption(\"max.print\") -- omitted", n - n0, "rows ]\n")
