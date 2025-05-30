@@ -1,7 +1,7 @@
 Package: Waypoint
 Type: Package
 Title: Convert, Validate, Format and Print Geographic Coordinates and Waypoints
-Version: 1.2.0.9004
+Version: 1.2.0.9005
 Authors@R: 
     person("Mark", "Eisler", email = "mark.eisler@bristol.ac.uk", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0001-6843-3345"))
