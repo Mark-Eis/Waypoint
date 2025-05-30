@@ -487,12 +487,12 @@ print.coords <- function (x, ..., max = NULL) {
 
 
 ## ========================================
-##  S3method print.waypoints(x, ...)
+##  S3method print.waypoints(x, ..., fmt = NULL, max = NULL)
 #'
 #' @rdname format
 #' @export
 
-print.waypoints <- function (x, ..., max = NULL) {
+print.waypoints <- function (x, ..., fmt = NULL, max = NULL) {
     n <- length(row.names(x))
     validate(x, force = FALSE)
     if (is.null(max))
@@ -502,8 +502,10 @@ print.waypoints <- function (x, ..., max = NULL) {
     omit <- (n0 <- max %/% 3L) < n
     if (omit) 
          x <- x[seq_len(n0), , drop = FALSE]
-    fmtx <- format(x, validate = FALSE, ...)
-    writeLines(ll_headers((nchar(fmtx)[1]), attr(x, "fmt")))
+    fmt <- fmt %||% attr(x, "fmt")
+    if (0 == fmt) fmt <- attr(x, "fmt")
+    fmtx <- format(x, validate = FALSE, fmt = fmt, ...)
+    writeLines(ll_headers((nchar(fmtx)[1]), fmt))
     writeLines(fmtx)
     if (omit) 
         cat(" [ reached 'max' / getOption(\"max.print\") -- omitted", n - n0, "rows ]\n")

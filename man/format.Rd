@@ -11,7 +11,7 @@
 \usage{
 \method{print}{coords}(x, ..., max = NULL)
 
-\method{print}{waypoints}(x, ..., max = NULL)
+\method{print}{waypoints}(x, ..., fmt = NULL, max = NULL)
 
 \method{format}{coords}(x, ..., usenames = TRUE, validate = TRUE, fmt = 0L)
 
@@ -29,14 +29,14 @@ class \code{"\link{waypoints}"} created by function \code{\link{as_waypoints}()}
     entries to be printed.  By default, when \code{NULL},
     \code{\link[base]{getOption}("max.print")} used.}
 
+\item{fmt}{\code{integer}, \code{1L}, \code{2L} or \code{3L}, specifying the required coordinate
+format.}
+
 \item{usenames}{\code{logical}, whether or not to include names in formatted output; default
 \code{TRUE}.}
 
 \item{validate}{\code{logical}, whether or not to \code{\link{validate}} \code{x} before
 formatting; default \code{TRUE}.}
-
-\item{fmt}{\code{integer}, \code{1L}, \code{2L} or \code{3L}, specifying the required coordinate
-format.}
 
 \item{width}{\code{character} vector, used to match width of headers to formatted output.}
 }
