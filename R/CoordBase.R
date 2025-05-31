@@ -756,7 +756,7 @@ review.waypoints <- function(x, ..., show_n = 20L)
 #' @title
 #' Extract or Replace Parts of a Coords Object
 #'
-#' @name Extract.coords
+#' @name Extract
 #'
 #' @description
 #' Extract or replace subsets of coords.
@@ -858,7 +858,7 @@ review.waypoints <- function(x, ..., show_n = 20L)
 ## ========================================
 ##  S3method `[.coords<-`(x, i, value)
 #'
-#' @rdname Extract.coords
+#' @rdname Extract
 #' @export
 
 `[<-.coords` <- function(x, i, value) 
