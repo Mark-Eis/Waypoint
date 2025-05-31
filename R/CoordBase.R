@@ -251,6 +251,10 @@ as_waypoints <- function(object, ...)
 #' to ensure its values represent valid geographic locations as described under
 #' \code{\link{validate}()}.
 #'
+#' @note \code{convert()} modifies its argument \code{x} in place. To format or print
+#'   \code{"coords"} or \code{"waypoints"} in another coordinate format without modifying the
+#'   original object, use \code{\link{format}()} or \code{\link[Waypoint:format]{print}()}.
+#'
 #' @family coordsandway
 #' @seealso
 #' \code{"\link{coords}"}, \code{"\link{waypoints}"} and \code{\link{validate}()}.

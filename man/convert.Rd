@@ -42,6 +42,11 @@ Prior to conversion, the \code{"coords"} or \code{"waypoints"} object to be conv
 to ensure its values represent valid geographic locations as described under
 \code{\link{validate}()}.
 }
+\note{
+\code{convert()} modifies its argument \code{x} in place. To format or print
+  \code{"coords"} or \code{"waypoints"} in another coordinate format without modifying the
+  original object, use \code{\link{format}()} or \code{\link[Waypoint:format]{print}()}.
+}
 \examples{
 ## Continuing example from `as_coords()`...
 \dontshow{
