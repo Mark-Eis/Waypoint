@@ -15,7 +15,7 @@ decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and second
 
     <a class="navbar-brand me-2" href="../index.html">Waypoint</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -97,6 +97,12 @@ seconds in the case of degrees, minutes and seconds.</p>
 <p>Prior to conversion, the <code>"coords"</code> or <code>"waypoints"</code> object to be converted is checked
 to ensure its values represent valid geographic locations as described under
 <code><a href="validate.html">validate</a>()</code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
+    <p><code>convert()</code> modifies its argument <code>x</code> in place. To format or print
+  <code>"coords"</code> or <code>"waypoints"</code> in another coordinate format without modifying the
+  original object, use <code><a href="format.html">format</a>()</code> or <code><a href="format.html">print</a>()</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
