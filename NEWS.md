@@ -1,17 +1,20 @@
 # Waypoint (development version)
 
-* S3 `print()` methods for `"coords"` and `"waypoints"` now employ the null coalescing operator `%||%` as intended (#140). 
+* S3 `print()` methods for `"coords"` and `"waypoints"` now employ the null coalescing operator
+  `%||%` as intended (#140). 
 
-* S3 `print()` method for `"waypoints"` objects now has an explicit `fmt` argument and correct formatting of the
-  "Latitude ... Longitude" headings when this argument is used (#139).
+* S3 `print()` method for `"waypoints"` objects now has an explicit `fmt` argument and correct
+  formatting of the "Latitude ... Longitude" headings when this argument is used (#139).
 
 * New S3 extract <code>&#96;[&#96;(<i>&lt;coords&gt;</i>)</code> and replace
   <code>&#96;[<-&#96;(<i>&lt;coords&gt;</i>)</code> methods for `"coords"` objects (#135).
 
-* S3 extract <code>&#96;[&#96;(<i>&lt;coords&gt;</i>)</code> method allows simpler code
-  in `print.coords()` and `review.coords()` S3 methods (#136).
+* S3 extract <code>&#96;[&#96;(<i>&lt;coords&gt;</i>)</code> method allows simpler code in
+  `print.coords()` and `review.coords()` S3 methods (#136).
 
 * Corrected `as_waypoints()` and `format()` documentation (#133, #134, #137).
+
+* Note added to documentation for `convert()`.
 
 # Waypoint 1.2.0
 
