@@ -1,0 +1,91 @@
+# Changelog
+
+## Waypoint (development version)
+
+- Simplify fmt::formatter::format(CoordType, format_context&) (#142).
+
+• Improve get_coordtype(int i) (#141, \#142).
+
+## Waypoint 1.2.1
+
+CRAN release: 2025-05-31
+
+- S3 [`print()`](https://rdrr.io/r/base/print.html) methods for
+  `"coords"` and `"waypoints"` now employ the null coalescing operator
+  `%||%` as intended (#140).
+
+- S3 [`print()`](https://rdrr.io/r/base/print.html) method for
+  `"waypoints"` objects now has an explicit `fmt` argument and correct
+  formatting of the “Latitude … Longitude” headings when this argument
+  is used (#139).
+
+- New S3 extract `` `[`( ``*`<coords>`*`)` and replace
+  `` `[<-`( ``*`<coords>`*`)` methods for `"coords"` objects (#135).
+
+- S3 extract `` `[`( ``*`<coords>`*`)` method allows simpler code in
+  [`print.coords()`](https://mark-eis.github.io/Waypoint/reference/format.md)
+  and
+  [`review.coords()`](https://mark-eis.github.io/Waypoint/reference/review.md)
+  S3 methods (#136).
+
+- Corrected
+  [`as_waypoints()`](https://mark-eis.github.io/Waypoint/reference/waypoints.md)
+  and
+  [`format()`](https://mark-eis.github.io/Waypoint/reference/format.md)
+  documentation (#133, \#134, \#137).
+
+- Note added to documentation for
+  [`convert()`](https://mark-eis.github.io/Waypoint/reference/convert.md).
+
+## Waypoint 1.2.0
+
+CRAN release: 2025-05-18
+
+- Class and function forward declarations moved to header file
+  CoordBase.h (#113).
+
+- S3
+  [`format()`](https://mark-eis.github.io/Waypoint/reference/format.md)
+  methods documented more comprehensively (#108).
+
+- Correct error message in `get_coordtype(const int)` (#111).
+
+- Code improved in `format_switch(const T& t)` (#112, \#116).
+
+- Remove redundant `Coordbase::get_ff()` (#110).
+
+- Use C++ {fmt} library to ensure formatting and printing of correct
+  widths when names contain extended ASCII codes (#109, \#117).
+
+- S3
+  [`format()`](https://mark-eis.github.io/Waypoint/reference/format.md)
+  and [`print()`](https://rdrr.io/r/base/print.html) methods for
+  `"coords"` and `"waypoints"` objects now have a `fmt` argument
+  enabling changing the formatted/printed coordinate format (#129,
+  \#130, \#131).
+
+## Waypoint 1.1.1
+
+CRAN release: 2025-04-04
+
+- S3
+  [`format()`](https://mark-eis.github.io/Waypoint/reference/format.md)
+  method for `"waypoints"` objects `usenames` argument fixed.
+
+- S3 [`print()`](https://rdrr.io/r/base/print.html) methods for
+  `"coords"` and `"waypoints"` objects print widths correctly when `max`
+  argument / `getOption("max.print")` is exceeded.
+
+- S3
+  [`validate()`](https://mark-eis.github.io/Waypoint/reference/validate.md)
+  methods for `"coords"` and `"waypoints"` objects now have `force`
+  argument signifying whether to perform full *de novo* revalidation or
+  simply check existing `"valid"`, `"validlat"` and `"validlon"`
+  attributes, essentially to enable the fix to S3
+  [`print()`](https://rdrr.io/r/base/print.html) methods above.
+
+## Waypoint 1.1.0
+
+CRAN release: 2025-03-19
+
+- Initial CRAN submission.
