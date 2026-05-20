@@ -1,3 +1,5 @@
+# Waypoint (development version)
+
 # Waypoint 1.2.1
 
 * S3 `print()` methods for `"coords"` and `"waypoints"` now employ the null coalescing operator
