@@ -4,7 +4,7 @@
 
 - Simplify fmt::formatter::format(CoordType, format_context&) (#142).
 
-• Improve get_coordtype(int i) (#141, \#142).
+- Improve get_coordtype(int i) (#141, \#142).
 
 ## Waypoint 1.2.1
 
