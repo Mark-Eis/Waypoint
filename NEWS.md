@@ -1,5 +1,9 @@
 # Waypoint (development version)
 
+* Simplify fmt::formatter<CoordType>::format(CoordType, format_context&) (#142).
+
+• Improve get_coordtype(int i) (#141, #142).
+
 # Waypoint 1.2.1
 
 * S3 `print()` methods for `"coords"` and `"waypoints"` now employ the null coalescing operator
