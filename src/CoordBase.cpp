@@ -3,8 +3,11 @@
 
 #include <Rcpp.h>
 #include <cxxabi.h>
+#include <array>
+
 using namespace Rcpp;
 
+using std::array;
 using std::vector; 
 using std::string;
 using std::string_view;
@@ -29,7 +32,7 @@ using std::transform;
 /// Report object construction and destruction
 void _ctrsgn(const std::type_info& obj, bool destruct)
 {
-	fmt::print("{}ing ", destruct ? "Destroy" : "Construct");
+//	fmt::print("{}ing ", destruct ? "Destroy" : "Construct");
 	std::fflush(nullptr);
 	string s = obj.name();
 	system(("c++filt -t " + s).data());
@@ -252,24 +255,8 @@ RObject getnames(const DataFrame df)
 auto fmt::formatter<CoordType>::format(CoordType ct, format_context& ctx) const
 	-> format_context::iterator
 {
-	string_view name = "unknown";
-	switch (ct) {
-		case CoordType::decdeg:
-			name = "DecDeg";
-			break;
-
-		case CoordType::degmin:
-			name = "DegMin";
-			break;
-
-		case CoordType::degminsec:
-			name = "DegMinSec";
-			break;
-
-			default:
-				stop("fmt::formatter<CoordType>::format(CoordType, format_context&) my bad");
-	}
-	return formatter<string_view>::format(name, ctx);
+	constexpr array<const char*, 3> names {"DecDeg", "DegMin", "DegMinSec"};
+	return formatter<string_view>::format(names[fmt::underlying(ct)], ctx);
 }
 
 #endif
@@ -281,7 +268,9 @@ inline const CoordType get_coordtype(int i)
 //	fmt::print("@{} {}\n", "get_coordtype(int)" , i);
 	if (i < 1 || i > 3)
 		stop("\"fmt\" must be between 1 and 3");
-	return vector<CoordType>{ CoordType::decdeg, CoordType::degmin, CoordType::degminsec }[i - 1];
+	using enum CoordType;
+	constexpr array<CoordType, 3> coordtypes{ decdeg, degmin, degminsec };
+	return coordtypes[i - 1];
 }
 
 
