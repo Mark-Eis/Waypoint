@@ -344,9 +344,9 @@ class Validator {
 /// __________________________________________________
 /// __________________________________________________
 ///CoordType switches
-template<NumericVector_or_DataFrame T, class U>
+template<NumericVector_or_DataFrame T, class Coordbase_derived>
 void convert_switch(T, CoordType);
-template<class T>
+template<Coordbase_derived T>
 vector<string> format_switch(const T&, CoordType);
 
 
@@ -361,7 +361,7 @@ class Coordbase {
 	public:
 		Coordbase(CoordType _ct);
 		Coordbase(const Coordbase&) = delete;						// Disallow copying
-		Coordbase& operator=(const Coordbase&) = delete;			//  ——— ditto ———
+		Coordbase& operator=(const Coordbase&) = delete;				//  ——— ditto ———
 		Coordbase(Coordbase&&) = delete;							// Disallow transfer ownership
 		Coordbase& operator=(Coordbase&&) = delete;					// Disallow moving
 		virtual ~Coordbase() = 0;
@@ -419,13 +419,13 @@ bool check_valid(const DataFrame);
 template<NumericVector_or_DataFrame T>
 bool validated(T, const char*, bool&);
 
-template<NumericVector_or_DataFrame T, class U>
+template<NumericVector_or_DataFrame T, Coordbase_derived U>
 const T revalidate(const T);
 
 constexpr auto revalid_Coord = &revalidate<NumericVector, Coord>;
 constexpr auto revalid_WayPoint = &revalidate<DataFrame, WayPoint>;
 
-template<NumericVector_or_DataFrame T, class U>
+template<NumericVector_or_DataFrame T, Coordbase_derived U>
 inline const T validate(const T);
 
 bool valid_ll(const DataFrame);

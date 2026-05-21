@@ -32,7 +32,7 @@ using std::transform;
 /// Report object construction and destruction
 void _ctrsgn(const std::type_info& obj, bool destruct)
 {
-//	fmt::print("{}ing ", destruct ? "Destroy" : "Construct");
+	fmt::print("{}ing ", destruct ? "Destroy" : "Construct");
 	std::fflush(nullptr);
 	string s = obj.name();
 	system(("c++filt -t " + s).data());
@@ -319,12 +319,11 @@ vector<FamousFive*> vff { &ff_decdeg, &ff_degmin, &ff_degminsec };
 
 /// __________________________________________________
 /// Convert coords or waypoints format CoordType switch 
-template<NumericVector_or_DataFrame T, class U>
+template<NumericVector_or_DataFrame T, Coordbase_derived U>
 void convert_switch(T t, CoordType newtype)
 {
 	CoordType type = get_coordtype(t);
 //	fmt::print("@{} T: {} oldtype: {}, newtype: {}\n", "convert_switch<T&, U>(T, CoordType)", demangle(typeid(t)), type, newtype);
-	static_assert(std::is_same<Coord, U>::value || std::is_same<WayPoint, U>::value, "T must be Coord or WayPoint");
 	U u(type, t);
 	u.validate();
 
@@ -353,11 +352,10 @@ void convert_switch(T t, CoordType newtype)
 
 /// __________________________________________________
 /// Format coords or waypoints vector<string> CoordType switch 
-template<class T>
+template<Coordbase_derived T>
 vector<string> format_switch(const T& t, CoordType ctreq)
 {
 //	fmt::print("@{} T: {} CoordType::{}, ctreq CoordType::{}\n", "format_switch<T>(const T&, CoordType)", demangle(typeid(t)), t.get_coordtype(), ctreq);
-	static_assert(std::is_same<Coord, T>::value || std::is_same<WayPoint, T>::value, "T must be Coord or WayPoint");
 	switch (ctreq)
 	{
 		case CoordType::decdeg:
@@ -575,11 +573,10 @@ bool validated(T t, const char* attrname, bool& unvalidated)
 
 /// __________________________________________________
 /// Revalidate NumericVector or DataFrame
-template<NumericVector_or_DataFrame T, class U>
+template<NumericVector_or_DataFrame T, Coordbase_derived U>
 const T revalidate(const T t)
 {
 //	fmt::print("@{} T: {}\n", "revalidate<T, U>(const T)", demangle(typeid(t)));
-	static_assert(std::is_same<Coord, U>::value || std::is_same<WayPoint, U>::value, "T must be Coord or WayPoint");
 	warning("Revalidating %s…!", demangle(typeid(t)));
 	validate<T, U>(t);	
 	return check_valid(t);
@@ -588,11 +585,10 @@ const T revalidate(const T t)
 
 /// __________________________________________________
 /// Validate NumericVector or DataFrame
-template<NumericVector_or_DataFrame T, class U>
+template<NumericVector_or_DataFrame T, Coordbase_derived U>
 inline const T validate(const T t)
 {
 //	fmt::print("@{} T: {}\n", "validate<T, U>(const T)", demangle(typeid(t)));
-	static_assert(std::is_same<Coord, U>::value || std::is_same<WayPoint, U>::value, "T must be Coord or WayPoint");
 	U(get_coordtype(t), t).validate();
 	return t;	
 }
