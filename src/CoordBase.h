@@ -13,6 +13,13 @@
 /// __________________________________________________
 /// Class and Function declarations
 
+/// Concept
+template <typename T>
+concept NumericVector_or_DataFrame = std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value;
+
+template <typename T>
+concept List_or_DataFrame = std::is_same<List, T>::value || std::is_same<DataFrame, T>::value;
+
 /// __________________________________________________
 /// __________________________________________________
 /// Development and debugging
@@ -30,11 +37,11 @@ inline double polish(double);
 /// __________________________________________________
 /// __________________________________________________
 /// Utility
-template<class T, class U> 
+template<NumericVector_or_DataFrame T, class U> 
 inline vector<U> get_vec_attr(const T&, const char*);
-template<class T>
+template<NumericVector_or_DataFrame T>
 inline int get_fmt_attribute(const T&);
-template<class T>
+template<NumericVector_or_DataFrame T>
 inline void checkinherits(T&, const char*);
 template<class T>
 inline bool is_item_in_obj(const T, int);
@@ -43,7 +50,7 @@ template<class T>
 inline void prefixvecstr(vector<string>&, const vector<T>&);
 inline bool prefixwithnames(vector<string>&, RObject&);
 inline string str_tolower(string);
-template<class T>
+template<List_or_DataFrame T>
 int nameinobj(const T, const char*);
 RObject getnames(const DataFrame);
 
@@ -59,7 +66,7 @@ struct fmt::formatter<CoordType>: formatter<string_view>
 };
 
 inline const CoordType get_coordtype(int);
-template<class T>
+template<NumericVector_or_DataFrame T>
 inline const CoordType get_coordtype(const T&);
 inline int coordtype_to_int(CoordType);
 
@@ -131,6 +138,11 @@ struct FF_degminsec : public FamousFive {
 class Coordbase;
 class Coord;
 class WayPoint;
+
+/// __________________________________________________
+/// Concept
+template <typename T>
+concept Coordbase_derived = std::is_base_of_v<Coordbase, T>;
 
 
 /// __________________________________________________
@@ -332,7 +344,7 @@ class Validator {
 /// __________________________________________________
 /// __________________________________________________
 ///CoordType switches
-template<class T, class U>
+template<NumericVector_or_DataFrame T, class U>
 void convert_switch(T, CoordType);
 template<class T>
 vector<string> format_switch(const T&, CoordType);
@@ -404,16 +416,16 @@ class WayPoint : public Coordbase {
 bool check_valid(const NumericVector);
 bool check_valid(const DataFrame);
 
-template<class T>
+template<NumericVector_or_DataFrame T>
 bool validated(T, const char*, bool&);
 
-template<class T, class U>
+template<NumericVector_or_DataFrame T, class U>
 const T revalidate(const T);
 
 constexpr auto revalid_Coord = &revalidate<NumericVector, Coord>;
 constexpr auto revalid_WayPoint = &revalidate<DataFrame, WayPoint>;
 
-template<class T, class U>
+template<NumericVector_or_DataFrame T, class U>
 inline const T validate(const T);
 
 bool valid_ll(const DataFrame);

@@ -32,7 +32,7 @@ using std::transform;
 /// Report object construction and destruction
 void _ctrsgn(const std::type_info& obj, bool destruct)
 {
-	fmt::print("{}ing ", destruct ? "Destroy" : "Construct");
+//	fmt::print("{}ing ", destruct ? "Destroy" : "Construct");
 	std::fflush(nullptr);
 	string s = obj.name();
 	system(("c++filt -t " + s).data());
@@ -97,33 +97,30 @@ inline double polish(double x)
 
 /// __________________________________________________
 /// Return named attribute as vector<U> or empty vector<U>
-template<class T, class U> 
+template<NumericVector_or_DataFrame T, class U> 
 inline vector<U> get_vec_attr(const T& t, const char* attrname)
 {
 //	fmt::print("@{} attr=\"{}\" {}\n", "get_vec_attr<T, U>(const T&, const char*)", attrname, t.hasAttribute(attrname) ? true : false);
-	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	return t.hasAttribute(attrname) ? as<vector<U>>(t.attr(attrname)) : vector<U>();
 }
 
 
 /// __________________________________________________
 /// Return "fmt" attribute as int
-template<class T>
+template<NumericVector_or_DataFrame T>
 inline int get_fmt_attribute(const T& t)
 {
 //	fmt::print("@{} fmt={}\n", "get_fmt_attribute<T>(const T&)", as<int>(t.attr("fmt")));
-	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	return as<int>(t.attr("fmt"));
 }
 
 
 /// __________________________________________________
 /// Does object inherit given class?
-template<class T>
+template<NumericVector_or_DataFrame T>
 inline void checkinherits(T& t, const char* classname)
 {
 //	fmt::print("@{} T {} classname \"{}\"\n", "checkinherits<T>(T&, const char*)", demangle(typeid(t)), classname);
-	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	if (!t.inherits(classname)) stop("Argument must be a \"%s\" object", classname);
 }
 
@@ -200,11 +197,10 @@ inline string str_tolower(string s)
 
 /// __________________________________________________
 /// Find position of name within object names
-template<class T>
+template<List_or_DataFrame T>
 int nameinobj(const T t, const char* name)
 {
 //	fmt::print("@{} name={}\n", "nameinobj<T>(const T, const char*)", name);
-	static_assert(std::is_same<List, T>::value || std::is_same<DataFrame, T>::value, "T must be List or DataFrame");
 	vector<string> names { get_vec_attr<T, string>(t, "names") };
 	if (!names.size())
 		return -1;
@@ -276,11 +272,10 @@ inline const CoordType get_coordtype(int i)
 
 /// __________________________________________________
 /// Convert "fmt" attribute to CoordType enum
-template<class T>
+template<NumericVector_or_DataFrame T>
 inline const CoordType get_coordtype(const T& t)
 {
 //	fmt::print("@{} t {}\n", "get_coordtype<T>(const T&)", demangle(typeid(t)));
-	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	return get_coordtype(get_fmt_attribute(t));
 }
 
@@ -324,12 +319,11 @@ vector<FamousFive*> vff { &ff_decdeg, &ff_degmin, &ff_degminsec };
 
 /// __________________________________________________
 /// Convert coords or waypoints format CoordType switch 
-template<class T, class U>
+template<NumericVector_or_DataFrame T, class U>
 void convert_switch(T t, CoordType newtype)
 {
 	CoordType type = get_coordtype(t);
 //	fmt::print("@{} T: {} oldtype: {}, newtype: {}\n", "convert_switch<T&, U>(T, CoordType)", demangle(typeid(t)), type, newtype);
-	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	static_assert(std::is_same<Coord, U>::value || std::is_same<WayPoint, U>::value, "T must be Coord or WayPoint");
 	U u(type, t);
 	u.validate();
@@ -568,11 +562,10 @@ bool check_valid(const DataFrame df)
 
 /// __________________________________________________
 /// Check NumericVector or DataFrame has been validated and valid vector attribute all true
-template<class T>
+template<NumericVector_or_DataFrame T>
 bool validated(T t, const char* attrname, bool& unvalidated)
 {
 //	fmt::print("@{} T: {} attrname: {} \n", "validated<T>(T, const char*, bool&)", demangle(typeid(t)), attrname);
-	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	const vector<bool>&& validvec = get_vec_attr<T, bool>(t, attrname);
 	bool valid = all_of(validvec.begin(), validvec.end(), [](bool v) { return v;});
 	unvalidated = (validvec.size()) ? false : true;
@@ -582,11 +575,10 @@ bool validated(T t, const char* attrname, bool& unvalidated)
 
 /// __________________________________________________
 /// Revalidate NumericVector or DataFrame
-template<class T, class U>
+template<NumericVector_or_DataFrame T, class U>
 const T revalidate(const T t)
 {
 //	fmt::print("@{} T: {}\n", "revalidate<T, U>(const T)", demangle(typeid(t)));
-	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	static_assert(std::is_same<Coord, U>::value || std::is_same<WayPoint, U>::value, "T must be Coord or WayPoint");
 	warning("Revalidating %s…!", demangle(typeid(t)));
 	validate<T, U>(t);	
@@ -596,11 +588,10 @@ const T revalidate(const T t)
 
 /// __________________________________________________
 /// Validate NumericVector or DataFrame
-template<class T, class U>
+template<NumericVector_or_DataFrame T, class U>
 inline const T validate(const T t)
 {
 //	fmt::print("@{} T: {}\n", "validate<T, U>(const T)", demangle(typeid(t)));
-	static_assert(std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value, "T must be NumericVector or DataFrame");
 	static_assert(std::is_same<Coord, U>::value || std::is_same<WayPoint, U>::value, "T must be Coord or WayPoint");
 	U(get_coordtype(t), t).validate();
 	return t;	
