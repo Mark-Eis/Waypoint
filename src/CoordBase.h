@@ -246,78 +246,6 @@ inline string Format<CoordType::degminsec>::operator()(double n) const
 
 /// __________________________________________________
 /// __________________________________________________
-/// Formatting functors for latitude and longitude
-
-/// Default functor for degrees, minutes (and seconds)
-template<class T, CoordType type>
-class FormatLL {
-		const FamousFive& ff; 
-		vector<bool>::const_iterator ll_it;
-		int ll_size;
-	public:
-		FormatLL(const FamousFive& _ff, const vector<bool>& ll) : ff(_ff), ll_it(ll.begin()), ll_size(ll.size())
-		{
-			static_assert(std::is_same<Coord, T>::value || std::is_same<WayPoint, T>::value, "T must be Coord or WayPoint");
-//			fmt::print("§FormatLL<{}, CoordType::{}>::FormatLL(const FamousFive&, vector<bool>&) ", "Coord or WayPoint", type); _ctrsgn(typeid(*this));
-//			std::fflush(nullptr);
-		}
-		~FormatLL() = default;
-//		~FormatLL() { fmt::print("§FormatLL<{}, CoordType::{}>::~FormatLL() ", "Coord or WayPoint", type); _ctrsgn(typeid(*this), true); }
-		string operator()(string ostr, double n)
-		{
-//			fmt::print("@FormatLL<{}, CoordType::{}>::operator(string, double) [default]\n", "Coord or WayPoint", type);
-			return ostr += ll_size ? cardpoint(ff.get_decmin(n) < 0, ll_size > 1 ? *ll_it++ : *ll_it) : cardi_b(ff.get_decmin(n) < 0);
-		}
-};
-
-/// __________________________________________________
-/// Specialised functor for decimal degrees Coord
-template<>
-class FormatLL<Coord, CoordType::decdeg> {
-		vector<bool>::const_iterator ll_it;
-		int ll_size;
-	public:
-		FormatLL(const FamousFive& _ff, const vector<bool>& ll) : ll_it(ll.begin()), ll_size(ll.size())
-		{
-//			fmt::print("§FormatLL<{}, CoordType::{}>::FormatLL(const FamousFive&, vector<bool>&) ", "Coord", CoordType::decdeg ); _ctrsgn(typeid(*this));
-//			std::fflush(nullptr);
-		}
-		~FormatLL() = default;
-//		~FormatLL() { fmt::print("§FormatLL<{}, CoordType::{}>::~FormatLL() ", "Coord", CoordType::decdeg); _ctrsgn(typeid(*this), true); }
-		string operator()(string ostr, double n)
-		{
-//			fmt::print("@FormatLL<{}, CoordType::{}>::operator(string, double)\n", "Coord", CoordType::decdeg);
-			if (ll_size)
-				return ostr += ((ll_size > 1 ? *ll_it++ : *ll_it) ? " lat" : " lon");
-			else
-				return ostr;
-		}
-};
-
-/// __________________________________________________
-/// Specialised functor for decimal degrees WayPoint—simply returns its argument
-template<>
-class FormatLL<WayPoint, CoordType::decdeg> {
-		vector<bool>::const_iterator ll_it;
-		int ll_size;
-	public:
-		FormatLL(const FamousFive& _ff, const vector<bool>& ll) : ll_it(ll.begin()), ll_size(ll.size())
-		{
-//			fmt::print("§FormatLL<{}, CoordType::{}>::FormatLL(const FamousFive&, vector<bool>&) ", "WayPoint", CoordType::decdeg); _ctrsgn(typeid(*this));
-//			std::fflush(nullptr);
-		}
-		~FormatLL() = default;
-//		~FormatLL() { fmt::print("§FormatLL<{}, CoordType::{}>::~FormatLL() ", "WayPoint", CoordType::decdeg); _ctrsgn(typeid(*this), true); }
-		string operator()(string ostr, double n)
-		{
-//			fmt::print("@FormatLL<{}, CoordType::{}>::operator(string, double)\n", "WayPoint", CoordType::decdeg);
-			return ostr;
-		}
-};
-
-
-/// __________________________________________________
-/// __________________________________________________
 /// Validate functor
 
 class Validator {
@@ -407,6 +335,80 @@ class WayPoint : public Coordbase {
 		void validate(bool = true);
 		template<CoordType type>
 		vector<string> format() const;
+};
+
+
+/// __________________________________________________
+/// __________________________________________________
+/// Formatting functors for latitude and longitude
+/// • must follow Coordbase, Coord and Waypoint definitions
+///   or else Coordbase_derived concept won't compile
+
+
+/// Default functor for degrees, minutes (and seconds)
+template<Coordbase_derived T, CoordType type>
+class FormatLL {
+		const FamousFive& ff; 
+		vector<bool>::const_iterator ll_it;
+		int ll_size;
+	public:
+		FormatLL(const FamousFive& _ff, const vector<bool>& ll) : ff(_ff), ll_it(ll.begin()), ll_size(ll.size())
+		{
+//			fmt::print("§FormatLL<{}, CoordType::{}>::FormatLL(const FamousFive&, vector<bool>&) ", "Coord or WayPoint", type); _ctrsgn(typeid(*this));
+//			std::fflush(nullptr);
+		}
+		~FormatLL() = default;
+//		~FormatLL() { fmt::print("§FormatLL<{}, CoordType::{}>::~FormatLL() ", "Coord or WayPoint", type); _ctrsgn(typeid(*this), true); }
+		string operator()(string ostr, double n)
+		{
+//			fmt::print("@FormatLL<{}, CoordType::{}>::operator(string, double) [default]\n", "Coord or WayPoint", type);
+			return ostr += ll_size ? cardpoint(ff.get_decmin(n) < 0, ll_size > 1 ? *ll_it++ : *ll_it) : cardi_b(ff.get_decmin(n) < 0);
+		}
+};
+
+/// __________________________________________________
+/// Specialised functor for decimal degrees Coord
+template<>
+class FormatLL<Coord, CoordType::decdeg> {
+		vector<bool>::const_iterator ll_it;
+		int ll_size;
+	public:
+		FormatLL(const FamousFive& _ff, const vector<bool>& ll) : ll_it(ll.begin()), ll_size(ll.size())
+		{
+//			fmt::print("§FormatLL<{}, CoordType::{}>::FormatLL(const FamousFive&, vector<bool>&) ", "Coord", CoordType::decdeg ); _ctrsgn(typeid(*this));
+//			std::fflush(nullptr);
+		}
+		~FormatLL() = default;
+//		~FormatLL() { fmt::print("§FormatLL<{}, CoordType::{}>::~FormatLL() ", "Coord", CoordType::decdeg); _ctrsgn(typeid(*this), true); }
+		string operator()(string ostr, double n)
+		{
+//			fmt::print("@FormatLL<{}, CoordType::{}>::operator(string, double)\n", "Coord", CoordType::decdeg);
+			if (ll_size)
+				return ostr += ((ll_size > 1 ? *ll_it++ : *ll_it) ? " lat" : " lon");
+			else
+				return ostr;
+		}
+};
+
+/// __________________________________________________
+/// Specialised functor for decimal degrees WayPoint—simply returns its argument
+template<>
+class FormatLL<WayPoint, CoordType::decdeg> {
+		vector<bool>::const_iterator ll_it;
+		int ll_size;
+	public:
+		FormatLL(const FamousFive& _ff, const vector<bool>& ll) : ll_it(ll.begin()), ll_size(ll.size())
+		{
+//			fmt::print("§FormatLL<{}, CoordType::{}>::FormatLL(const FamousFive&, vector<bool>&) ", "WayPoint", CoordType::decdeg); _ctrsgn(typeid(*this));
+//			std::fflush(nullptr);
+		}
+		~FormatLL() = default;
+//		~FormatLL() { fmt::print("§FormatLL<{}, CoordType::{}>::~FormatLL() ", "WayPoint", CoordType::decdeg); _ctrsgn(typeid(*this), true); }
+		string operator()(string ostr, double n)
+		{
+//			fmt::print("@FormatLL<{}, CoordType::{}>::operator(string, double)\n", "WayPoint", CoordType::decdeg);
+			return ostr;
+		}
 };
 
 
