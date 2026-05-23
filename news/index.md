@@ -2,6 +2,16 @@
 
 ## Waypoint (development version)
 
+- Abstract replicated code in `WayPoint::format()` to a single function
+  (#146).
+
+- `FormatLL<>` functors replaced with lambdas in `Coord::format()` and
+  `WayPoint::format()` (#145).
+
+- Replace `static_assert` statements in templates with concepts (#144).
+
+- Remove redundant code from `as_waypoints(DataFrame, int = 1)` (#143).
+
 - Simplify
   `fmt::formatter<CoordType>::format(CoordType, format_context&)`
   (#142).

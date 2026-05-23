@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Waypoint</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.1.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,7 +45,11 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="waypoint-development-version">Waypoint (development version)<a class="anchor" aria-label="anchor" href="#waypoint-development-version"></a></h2>
-<ul><li><p>Simplify <code>fmt::formatter&lt;CoordType&gt;::format(CoordType, format_context&amp;)</code> (#142).</p></li>
+<ul><li><p>Abstract replicated code in <code>WayPoint::format()</code> to a single function (#146).</p></li>
+<li><p><code>FormatLL&lt;&gt;</code> functors replaced with lambdas in <code>Coord::format()</code> and <code>WayPoint::format()</code> (#145).</p></li>
+<li><p>Replace <code>static_assert</code> statements in templates with concepts (#144).</p></li>
+<li><p>Remove redundant code from <code>as_waypoints(DataFrame, int = 1)</code> (#143).</p></li>
+<li><p>Simplify <code>fmt::formatter&lt;CoordType&gt;::format(CoordType, format_context&amp;)</code> (#142).</p></li>
 <li><p>Improve <code>get_coordtype(int i)</code> (#141, #142).</p></li>
 </ul></div>
     <div class="section level2">
