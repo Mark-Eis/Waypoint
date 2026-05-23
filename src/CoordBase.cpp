@@ -439,7 +439,7 @@ void Coord::validate(bool warn)
 template<CoordType type>
 vector<string> Coord::format() const
 {
-	fmt::print("@Coord::format<CoordType::{}>() const; ll_size type: {}, ll_size: {}\n", type, demangle(typeid(latlon.size())), latlon.size());
+//	fmt::print("@Coord::format<CoordType::{}>() const; ll_size type: {}, ll_size: {}\n", type, demangle(typeid(latlon.size())), latlon.size());
 
 	vector<bool>::const_iterator ll_it { latlon.begin() };
 	const auto ll_size { latlon.size() };
