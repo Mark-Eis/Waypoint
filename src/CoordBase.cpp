@@ -20,7 +20,7 @@ using std::transform;
 #include "fmt/format.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt. Works, but not always in pkgdown
 #include "fmt/ranges.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt. Works, but not always in pkgdown
 
-#define DEBUG 0
+#define DEBUG 1
 
 
 /// __________________________________________________
@@ -439,10 +439,21 @@ void Coord::validate(bool warn)
 template<CoordType type>
 vector<string> Coord::format() const
 {
-//	fmt::print("@Coord::format<CoordType::{}>()\n", type);
+	fmt::print("@Coord::format<CoordType::{}>() const; ll_size type: {}, ll_size: {}\n", type, demangle(typeid(latlon.size())), latlon.size());
+
+	vector<bool>::const_iterator ll_it { latlon.begin() };
+	const auto ll_size { latlon.size() };
+	
+	const auto lambda1 = [&ll_it, &ll_size](string& outstr, double n){return outstr + ((ll_size > 1 ? *ll_it++ : *ll_it) ? " lat" : " lon");};
+	const auto lambda2 = [&ll_it, &ll_size](string& outstr, double n){return outstr + (ll_size ? cardpoint(n < 0, ll_size > 1 ? *ll_it++ : *ll_it) : cardi_b(n < 0));};
+
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), Format<type>(ff));
-	transform(out.begin(), out.end(), nv.begin(), out.begin(), FormatLL<Coord, type>(ff, latlon));
+	if (CoordType::decdeg == type) {
+		if (ll_size) 
+			transform(out.begin(), out.end(), nv.begin(), out.begin(), lambda1);
+	} else
+		transform(out.begin(), out.end(), nv.begin(), out.begin(), lambda2);
 	return out;
 }
 
@@ -498,19 +509,55 @@ void WayPoint::validate(bool warn)
 	df.attr("validlon") = validlon;
 }
 
+/*
+/// __________________________________________________
+/// Format waypoints as vector<string> of CoordType
+template<CoordType type>
+vector<string> WayPoint::format() const
+{
+	fmt::print("@WayPoint::format<CoordType::{}>()\n", type);
+
+	const auto lambda1 = [](string& latstr, double n){return latstr + cardpoint(n < 0, true);};
+	const auto lambda2 = [](string& lonstr, double n){return lonstr + cardpoint(n < 0, false);};
+
+	vector<string> sv_lat(nvlat.size());
+	transform(nvlat.begin(), nvlat.end(), sv_lat.begin(), Format<type>(ff));
+	if (CoordType::decdeg != type)
+		transform(sv_lat.begin(), sv_lat.end(), nvlat.begin(), sv_lat.begin(), lambda1);
+	vector<string> sv_lon(nvlon.size());
+	transform(nvlon.begin(), nvlon.end(), sv_lon.begin(), Format<type>(ff));
+	if (CoordType::decdeg != type)
+		transform(sv_lon.begin(), sv_lon.end(), nvlon.begin(), sv_lon.begin(), lambda2);
+
+	vector<string> out(sv_lat.size());
+	transform(sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(), [](string& latstr, string& lonstr) { return latstr + "  " + lonstr; });
+	return out;
+} */
 
 /// __________________________________________________
 /// Format waypoints as vector<string> of CoordType
 template<CoordType type>
 vector<string> WayPoint::format() const
 {
-//	fmt::print("@WayPoint::format<CoordType::{}>()\n", type);
+	fmt::print("@WayPoint::format<CoordType::{}>()\n", type);
+
+	bool lat;
+//	const auto lambda1 = [](string& latstr, double n){return latstr + cardpoint(n < 0, true);};
+//	const auto lambda2 = [](string& lonstr, double n){return lonstr + cardpoint(n < 0, false);};
+	const auto lambda1 = [&lat](string& outstr, double n){return outstr + cardpoint(n < 0, lat);};
+
 	vector<string> sv_lat(nvlat.size());
 	transform(nvlat.begin(), nvlat.end(), sv_lat.begin(), Format<type>(ff));
-	transform(sv_lat.begin(), sv_lat.end(), nvlat.begin(), sv_lat.begin(), FormatLL<WayPoint, type>(ff, vector<bool>{ true }));
+	if (CoordType::decdeg != type) {
+		lat = true;
+		transform(sv_lat.begin(), sv_lat.end(), nvlat.begin(), sv_lat.begin(), lambda1);
+	}
 	vector<string> sv_lon(nvlon.size());
 	transform(nvlon.begin(), nvlon.end(), sv_lon.begin(), Format<type>(ff));
-	transform(sv_lon.begin(), sv_lon.end(), nvlon.begin(), sv_lon.begin(), FormatLL<WayPoint, type>(ff, vector<bool>{ false }));
+	if (CoordType::decdeg != type) {
+		lat = false;
+		transform(sv_lon.begin(), sv_lon.end(), nvlon.begin(), sv_lon.begin(), lambda1);
+	}
 
 	vector<string> out(sv_lat.size());
 	transform(sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(), [](string& latstr, string& lonstr) { return latstr + "  " + lonstr; });
