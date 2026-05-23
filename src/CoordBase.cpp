@@ -509,30 +509,6 @@ void WayPoint::validate(bool warn)
 	df.attr("validlon") = validlon;
 }
 
-/*
-/// __________________________________________________
-/// Format waypoints as vector<string> of CoordType
-template<CoordType type>
-vector<string> WayPoint::format() const
-{
-	fmt::print("@WayPoint::format<CoordType::{}>()\n", type);
-
-	const auto lambda1 = [](string& latstr, double n){return latstr + cardpoint(n < 0, true);};
-	const auto lambda2 = [](string& lonstr, double n){return lonstr + cardpoint(n < 0, false);};
-
-	vector<string> sv_lat(nvlat.size());
-	transform(nvlat.begin(), nvlat.end(), sv_lat.begin(), Format<type>(ff));
-	if (CoordType::decdeg != type)
-		transform(sv_lat.begin(), sv_lat.end(), nvlat.begin(), sv_lat.begin(), lambda1);
-	vector<string> sv_lon(nvlon.size());
-	transform(nvlon.begin(), nvlon.end(), sv_lon.begin(), Format<type>(ff));
-	if (CoordType::decdeg != type)
-		transform(sv_lon.begin(), sv_lon.end(), nvlon.begin(), sv_lon.begin(), lambda2);
-
-	vector<string> out(sv_lat.size());
-	transform(sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(), [](string& latstr, string& lonstr) { return latstr + "  " + lonstr; });
-	return out;
-} */
 
 /// __________________________________________________
 /// Format waypoints as vector<string> of CoordType
@@ -542,8 +518,6 @@ vector<string> WayPoint::format() const
 	fmt::print("@WayPoint::format<CoordType::{}>()\n", type);
 
 	bool lat;
-//	const auto lambda1 = [](string& latstr, double n){return latstr + cardpoint(n < 0, true);};
-//	const auto lambda2 = [](string& lonstr, double n){return lonstr + cardpoint(n < 0, false);};
 	const auto lambda1 = [&lat](string& outstr, double n){return outstr + cardpoint(n < 0, lat);};
 
 	vector<string> sv_lat(nvlat.size());
@@ -552,6 +526,7 @@ vector<string> WayPoint::format() const
 		lat = true;
 		transform(sv_lat.begin(), sv_lat.end(), nvlat.begin(), sv_lat.begin(), lambda1);
 	}
+
 	vector<string> sv_lon(nvlon.size());
 	transform(nvlon.begin(), nvlon.end(), sv_lon.begin(), Format<type>(ff));
 	if (CoordType::decdeg != type) {
