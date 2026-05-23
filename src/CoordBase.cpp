@@ -517,8 +517,8 @@ vector<string> WayPoint::format() const
 {
 	fmt::print("@WayPoint::format<CoordType::{}>()\n", type);
 
-	vector<string> sv_lat { format2<type>(true) };
-	vector<string> sv_lon { format2<type>(false) };
+	vector<string> sv_lat ( std::move(format2<type>(true)) );
+	vector<string> sv_lon ( std::move(format2<type>(false)) );
 
 	vector<string> out(sv_lat.size());
 	transform(sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(), [](string& latstr, string& lonstr) { return latstr + "  " + lonstr; });
