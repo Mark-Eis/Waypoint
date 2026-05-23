@@ -517,12 +517,11 @@ vector<string> WayPoint::format() const
 {
 //	fmt::print("@WayPoint::format<CoordType::{}>()\n", type);
 
-	vector<string> sv_lat ( std::move(format2<type>(true)) );
-	vector<string> sv_lon ( std::move(format2<type>(false)) );
+	vector sv_lat{ format2<type>(true) };
+	vector sv_lon{ format2<type>(false) };
 
-	vector<string> out(sv_lat.size());
-	transform(sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(), [](string& latstr, string& lonstr) { return latstr + "  " + lonstr; });
-	return out;
+	transform(sv_lat.begin(), sv_lat.end(), sv_lon.begin(), sv_lat.begin(), [](string& latstr, string& lonstr){return latstr + "  " + lonstr;});
+	return sv_lat;
 }
 
 
@@ -535,7 +534,7 @@ vector<string> WayPoint::format2(const bool lat) const
 	if (nvlat.size() != nvlon.size())
 		throw std::logic_error("WayPoint::format2() my bad\n");
 	
-	auto& nv { lat ? nvlat : nvlon };
+	auto& nv{ lat ? nvlat : nvlon };
 	vector<string> out_sv(nv.size());
 	transform(nv.begin(), nv.end(), out_sv.begin(), Format<type>(ff));
 	if (CoordType::decdeg != type)
