@@ -325,6 +325,8 @@ class WayPoint : public Coordbase {
 		NumericVector nvlon;
 		vector<bool> validlat { false };
 		vector<bool> validlon { false };
+		template<CoordType type>
+		vector<string> format2(const bool) const;
 	public:
 		explicit WayPoint(CoordType, DataFrame);
 		~WayPoint() = default;

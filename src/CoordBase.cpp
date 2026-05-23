@@ -517,26 +517,30 @@ vector<string> WayPoint::format() const
 {
 	fmt::print("@WayPoint::format<CoordType::{}>()\n", type);
 
-	bool lat;
-	const auto lambda1 = [&lat](string& outstr, double n){return outstr + cardpoint(n < 0, lat);};
-
-	vector<string> sv_lat(nvlat.size());
-	transform(nvlat.begin(), nvlat.end(), sv_lat.begin(), Format<type>(ff));
-	if (CoordType::decdeg != type) {
-		lat = true;
-		transform(sv_lat.begin(), sv_lat.end(), nvlat.begin(), sv_lat.begin(), lambda1);
-	}
-
-	vector<string> sv_lon(nvlon.size());
-	transform(nvlon.begin(), nvlon.end(), sv_lon.begin(), Format<type>(ff));
-	if (CoordType::decdeg != type) {
-		lat = false;
-		transform(sv_lon.begin(), sv_lon.end(), nvlon.begin(), sv_lon.begin(), lambda1);
-	}
+	vector<string> sv_lat { format2<type>(true) };
+	vector<string> sv_lon { format2<type>(false) };
 
 	vector<string> out(sv_lat.size());
 	transform(sv_lat.begin(), sv_lat.end(), sv_lon.begin(), out.begin(), [](string& latstr, string& lonstr) { return latstr + "  " + lonstr; });
 	return out;
+}
+
+
+/// __________________________________________________
+/// Format waypoints auxillary function
+template<CoordType type>
+vector<string> WayPoint::format2(const bool lat) const
+{
+	fmt::print("@WayPoint::format2<CoordType::{}>(const bool lat) const; {}\n", type, lat? "lat" : "lon");
+	if (nvlat.size() != nvlon.size())
+		throw std::logic_error("WayPoint::format2() my bad\n");
+	
+	auto& nv { lat ? nvlat : nvlon };
+	vector<string> out_sv(nv.size());
+	transform(nv.begin(), nv.end(), out_sv.begin(), Format<type>(ff));
+	if (CoordType::decdeg != type)
+		transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), [lat](string& outstr, double n){return outstr + cardpoint(n < 0, lat);});
+	return out_sv;
 }
 
 
