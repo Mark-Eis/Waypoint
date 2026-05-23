@@ -20,7 +20,7 @@ using std::transform;
 #include "fmt/format.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt. Works, but not always in pkgdown
 #include "fmt/ranges.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt. Works, but not always in pkgdown
 
-#define DEBUG 1
+#define DEBUG 0
 
 
 /// __________________________________________________
@@ -515,7 +515,7 @@ void WayPoint::validate(bool warn)
 template<CoordType type>
 vector<string> WayPoint::format() const
 {
-	fmt::print("@WayPoint::format<CoordType::{}>()\n", type);
+//	fmt::print("@WayPoint::format<CoordType::{}>()\n", type);
 
 	vector<string> sv_lat ( std::move(format2<type>(true)) );
 	vector<string> sv_lon ( std::move(format2<type>(false)) );
@@ -531,7 +531,7 @@ vector<string> WayPoint::format() const
 template<CoordType type>
 vector<string> WayPoint::format2(const bool lat) const
 {
-	fmt::print("@WayPoint::format2<CoordType::{}>(const bool lat) const; {}\n", type, lat? "lat" : "lon");
+//	fmt::print("@WayPoint::format2<CoordType::{}>(const bool lat) const; {}\n", type, lat? "lat" : "lon");
 	if (nvlat.size() != nvlon.size())
 		throw std::logic_error("WayPoint::format2() my bad\n");
 	
