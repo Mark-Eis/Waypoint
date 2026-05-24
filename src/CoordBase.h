@@ -88,8 +88,7 @@ struct FamousFive {
 
 inline FamousFive::~FamousFive()
 {
-//	fmt::print("§{} ", "~FamousFive()"); _ctrsgn(typeid(*this), true);
-//	std::fflush(nullptr);
+//	fmt::print("§{} ", "~FamousFive()"); _ctrsgn(typeid(*this), true); std::fflush(nullptr);
 }	
 
 /// __________________________________________________
@@ -156,8 +155,8 @@ class Convertor {
 	public:
 		Convertor(const FamousFive& _ff) : ff(_ff)
 		{
-//			fmt::print("§Convertor<CoordType::{}>::Convertor()(const FamousFive&) ", type); _ctrsgn(typeid(*this));
-//			std::fflush(nullptr);}
+//			fmt::print("§Convertor<CoordType::{}>::Convertor()(const FamousFive&) ", type); _ctrsgn(typeid(*this)); std::fflush(nullptr);
+		}
 		~Convertor() = default;
 //		~Convertor() { fmt::print("§Convertor<CoordType::{}>::~Convertor() ", type); _ctrsgn(typeid(*this), true); }
 		double operator()(double n);
@@ -204,8 +203,7 @@ class Format {
 	public:
 		Format(const FamousFive& _ff) : ff(_ff)
 		{
-//			fmt::print("§Format<CoordType::{}>::Format()(const FamousFive&) ", type); _ctrsgn(typeid(*this));
-//			std::fflush(nullptr);
+//			fmt::print("§Format<CoordType::{}>::Format()(const FamousFive&) ", type); _ctrsgn(typeid(*this)); std::fflush(nullptr);
 		}
 		~Format() = default;
 //		~Format() { fmt::print("§Format<CoordType::{}>::~Format() ", type); _ctrsgn(typeid(*this), true); }

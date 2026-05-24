@@ -662,8 +662,7 @@ NumericVector convertcoords(NumericVector x, int fmt)
 	CoordType newtype = get_coordtype(fmt);
 //	fmt::print("{1}@{0} from {2} to {3}\n", "convertcoords(NumericVector, int)", exportstr, type, newtype);
 	if (newtype == type) {
-//		fmt::print("——fmt out == fmt in!——\n");
-//		std::fflush(nullptr);
+//		fmt::print("——fmt out == fmt in!——\n"); std::fflush(nullptr);
 		if (!check_valid(x))
 			stop("Invalid coords!");
 	} else 
@@ -769,8 +768,7 @@ DataFrame convertwaypoints(DataFrame x, int fmt)
 	CoordType newtype = get_coordtype(fmt);
 //	fmt::print("{1}@{0} from {2} to {3}\n", "convertwaypoints(DataFrame, int)", exportstr, type, newtype);
 	if (newtype == type) {
-//		fmt::print("——fmt out == fmt in!——\n");
-//		std::fflush(nullptr);
+//		fmt::print("——fmt out == fmt in!——\n"); std::fflush(nullptr);
 		if (!check_valid(x))
 			stop("Invalid waypoints!");
 	} else {
