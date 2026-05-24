@@ -157,7 +157,7 @@ class Convertor {
 		Convertor(const FamousFive& _ff) : ff(_ff)
 		{
 //			fmt::print("§Convertor<CoordType::{}>::Convertor()(const FamousFive&) ", type); _ctrsgn(typeid(*this));
-			std::fflush(nullptr);}
+//			std::fflush(nullptr);}
 		~Convertor() = default;
 //		~Convertor() { fmt::print("§Convertor<CoordType::{}>::~Convertor() ", type); _ctrsgn(typeid(*this), true); }
 		double operator()(double n);
