@@ -531,9 +531,6 @@ template<CoordType type>
 vector<string> WayPoint::format2(const bool lat) const
 {
 //	fmt::print("@WayPoint::format2<CoordType::{}>(const bool lat) const; {}\n", type, lat? "lat" : "lon");
-	if (nvlat.size() != nvlon.size())
-		throw std::logic_error("WayPoint::format2() my bad\n");
-	
 	auto& nv{ lat ? nvlat : nvlon };
 	vector<string> out_sv(nv.size());
 	transform(nv.begin(), nv.end(), out_sv.begin(), Format<type>(ff));
