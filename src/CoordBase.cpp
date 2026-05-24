@@ -201,7 +201,7 @@ template<List_or_DataFrame T>
 int nameinobj(const T t, const char* name)
 {
 //	fmt::print("@{} name={}\n", "nameinobj<T>(const T, const char*)", name);
-	vector<string> names { get_vec_attr<T, string>(t, "names") };
+	vector names{ get_vec_attr<T, string>(t, "names") };
 	if (!names.size())
 		return -1;
 	typedef decltype(names.size()) Tmp;
@@ -225,7 +225,7 @@ int nameinobj(const T t, const char* name)
 RObject getnames(const DataFrame df)
 {
 //	fmt::print("@{}\n", "getnames(const DataFrame)");
-	vector<int> namescolvec { get_vec_attr<DataFrame, int>(df, "namescol") };
+	vector namescolvec{ get_vec_attr<DataFrame, int>(df, "namescol") };
 	if (1 == namescolvec.size()) {
 		int namescol = namescolvec[0] - 1;
 		if (is_item_in_obj(df, namescol))
@@ -586,7 +586,7 @@ template<NumericVector_or_DataFrame T>
 bool validated(T t, const char* attrname, bool& unvalidated)
 {
 //	fmt::print("@{} T: {} attrname: {} \n", "validated<T>(T, const char*, bool&)", demangle(typeid(t)), attrname);
-	const vector<bool>&& validvec = get_vec_attr<T, bool>(t, attrname);
+	const vector validvec{ get_vec_attr<T, bool>(t, attrname) };
 	bool valid = all_of(validvec.begin(), validvec.end(), [](bool v) { return v;});
 	unvalidated = (validvec.size()) ? false : true;
 	return valid;
@@ -622,7 +622,7 @@ bool valid_ll(const DataFrame df)
 {
 //	fmt::print("@{}\n", "valid_ll(const DataFrame)");
 	bool valid = false;
-	vector<int> llcols { get_vec_attr<DataFrame, int>(df, "llcols") };
+	vector llcols { get_vec_attr<DataFrame, int>(df, "llcols") };
 	if (2 == llcols.size()) {
 		transform(llcols.begin(), llcols.end(), llcols.begin(), [](int x){ return --x; });
 		if (is_item_in_obj(df, llcols[0]) && is_item_in_obj(df, llcols[1]) && llcols[0] != llcols[1])
@@ -720,8 +720,8 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validat
 		if (!check_valid(x))
 			warning("Formatting invalid coords!");
 	CoordType ct { get_coordtype(x) };
-	vector<string> sv { format_switch(Coord(ct, x), fmt ? get_coordtype(fmt) : ct) };
-	vector<string> names { get_vec_attr<NumericVector, string>(x, "names") };
+	vector sv{ format_switch(Coord(ct, x), fmt ? get_coordtype(fmt) : ct) };
+	vector names{ get_vec_attr<NumericVector, string>(x, "names") };
 	if (names.size() && usenames) {
 		stdlenstr(names);
 		prefixvecstr(sv, names);
@@ -746,7 +746,7 @@ DataFrame as_waypoints(DataFrame object, int fmt = 1)
 			object.attr("namescol") = namescol;
 	}
 	if (!object.hasAttribute("llcols")) {
-		const vector<int> llcols { namescol + 1, namescol + 2 };
+		const vector llcols{ namescol + 1, namescol + 2 };
 		object.attr("llcols") = llcols;
 	}
 	if(!valid_ll(object))
@@ -816,7 +816,7 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate
 		if (!check_valid(x))
 			warning("Formatting invalid waypoints!");
 	CoordType ct { get_coordtype(x) };
-	vector<string> sv { format_switch(WayPoint(ct, x), fmt ? get_coordtype(fmt) : ct) };
+	vector sv{ format_switch(WayPoint(ct, x), fmt ? get_coordtype(fmt) : ct) };
 	if (usenames) {
 		RObject names = getnames(x);
 		if (!prefixwithnames(sv, names))
@@ -835,7 +835,7 @@ CharacterVector ll_headers(int width, int fmt)
 //	fmt::print("{1}@{0} width={2}, fmt={3}\n", "ll_headers(int, int)", exportstr, width, fmt);
 	--fmt;  //      to C++ array numbering
 	constexpr int spacing[][3] { {15,  17,  18}, {11, 13, 14} };
-	return wrap(vector<string> {
+	return wrap(vector {
 		fmt::format("{:>{}}{:>{}}", "Latitude", width - spacing[0][fmt], "Longitude", spacing[0][fmt] - 1), // --fmt —> C++ array numbering
 		fmt::format("{:>{}}", string(spacing[1][fmt], '_') + string(2, ' ') + string(spacing[1][fmt] + 1, '_'), width),
 	});
