@@ -292,6 +292,7 @@ class Coordbase {
 		Coordbase& operator=(Coordbase&&) = delete;					// Disallow moving
 		virtual ~Coordbase() = 0;
 		CoordType get_coordtype() const;
+		virtual void validate(bool) = 0;
 };
 
 /// __________________________________________________
@@ -309,7 +310,7 @@ class Coord : public Coordbase {
 
 		template<CoordType type>
 		void convert();
-		void validate(bool warn = true);
+		void validate(bool = true);
 		template<CoordType type>
 		vector<string> format() const;
 };
