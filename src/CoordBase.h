@@ -141,7 +141,17 @@ class WayPoint;
 /// __________________________________________________
 /// Concept
 template <typename T>
-concept Coordbase_derived = std::is_base_of_v<Coordbase, T>;
+concept Coord_or_WayPoint =
+	requires (T t) {
+		t.template convert<CoordType::decdeg>();
+		t.template convert<CoordType::degmin>();
+		t.template convert<CoordType::degminsec>();
+		t.template format<CoordType::decdeg>();
+		t.template format<CoordType::degmin>();
+		t.template format<CoordType::degminsec>();
+		t.get_coordtype();
+		t.validate();
+	};
 
 
 /// __________________________________________________
@@ -270,9 +280,9 @@ class Validator {
 /// __________________________________________________
 /// __________________________________________________
 ///CoordType switches
-template<NumericVector_or_DataFrame T, class Coordbase_derived>
+template<NumericVector_or_DataFrame T, class Coord_or_WayPoint>
 void convert_switch(T, CoordType);
-template<Coordbase_derived T>
+template<Coord_or_WayPoint T>
 vector<string> format_switch(const T&, CoordType);
 
 
@@ -348,13 +358,13 @@ bool check_valid(const DataFrame);
 template<NumericVector_or_DataFrame T>
 bool validated(T, const char*, bool&);
 
-template<NumericVector_or_DataFrame T, Coordbase_derived U>
+template<NumericVector_or_DataFrame T, Coord_or_WayPoint U>
 const T revalidate(const T);
 
 constexpr auto revalid_Coord = &revalidate<NumericVector, Coord>;
 constexpr auto revalid_WayPoint = &revalidate<DataFrame, WayPoint>;
 
-template<NumericVector_or_DataFrame T, Coordbase_derived U>
+template<NumericVector_or_DataFrame T, Coord_or_WayPoint U>
 inline const T validate(const T);
 
 bool valid_ll(const DataFrame);

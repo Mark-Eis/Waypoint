@@ -319,7 +319,7 @@ vector<FamousFive*> vff { &ff_decdeg, &ff_degmin, &ff_degminsec };
 
 /// __________________________________________________
 /// Convert coords or waypoints format CoordType switch 
-template<NumericVector_or_DataFrame T, Coordbase_derived U>
+template<NumericVector_or_DataFrame T, Coord_or_WayPoint U>
 void convert_switch(T t, CoordType newtype)
 {
 	CoordType type = get_coordtype(t);
@@ -352,7 +352,7 @@ void convert_switch(T t, CoordType newtype)
 
 /// __________________________________________________
 /// Format coords or waypoints vector<string> CoordType switch 
-template<Coordbase_derived T>
+template<Coord_or_WayPoint T>
 vector<string> format_switch(const T& t, CoordType ctreq)
 {
 //	fmt::print("@{} T: {} CoordType::{}, ctreq CoordType::{}\n", "format_switch<T>(const T&, CoordType)", demangle(typeid(t)), t.get_coordtype(), ctreq);
@@ -595,7 +595,7 @@ bool validated(T t, const char* attrname, bool& unvalidated)
 
 /// __________________________________________________
 /// Revalidate NumericVector or DataFrame
-template<NumericVector_or_DataFrame T, Coordbase_derived U>
+template<NumericVector_or_DataFrame T, Coord_or_WayPoint U>
 const T revalidate(const T t)
 {
 //	fmt::print("@{} T: {}\n", "revalidate<T, U>(const T)", demangle(typeid(t)));
@@ -607,7 +607,7 @@ const T revalidate(const T t)
 
 /// __________________________________________________
 /// Validate NumericVector or DataFrame
-template<NumericVector_or_DataFrame T, Coordbase_derived U>
+template<NumericVector_or_DataFrame T, Coord_or_WayPoint U>
 inline const T validate(const T t)
 {
 //	fmt::print("@{} T: {}\n", "validate<T, U>(const T)", demangle(typeid(t)));
