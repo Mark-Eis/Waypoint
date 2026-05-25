@@ -489,10 +489,10 @@ void WayPoint::validate(bool warn)
 //	fmt::print("@{}\n", "WayPoint::validate(bool)");
 
 	validlat.assign(nvlat.size(), {false});
-	transform(nvlat.begin(), nvlat.end(), validlat.begin(), Validator(ff, vector<bool>{ true }));
+	transform(nvlat.begin(), nvlat.end(), validlat.begin(), Validator(ff, vector{ true }));
 
 	validlon.assign(nvlon.size(), {false});
-	transform(nvlon.begin(), nvlon.end(), validlon.begin(), Validator(ff, vector<bool>{ false }));
+	transform(nvlon.begin(), nvlon.end(), validlon.begin(), Validator(ff, vector{ false }));
 
 	if (all_of(validlat.begin(), validlat.end(), [](bool v) { return v;}))
 		validlat.assign({true});
