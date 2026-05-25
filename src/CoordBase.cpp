@@ -449,7 +449,7 @@ vector<string> Coord::format() const
 
 	vector<string> out(nv.size());
 	transform(nv.begin(), nv.end(), out.begin(), Format<type>(ff));
-	if (CoordType::decdeg == type) {
+	if constexpr (CoordType::decdeg == type) {
 		if (ll_size) 
 			transform(out.begin(), out.end(), nv.begin(), out.begin(), lambda1);
 	} else
@@ -534,7 +534,7 @@ vector<string> WayPoint::format2(const bool lat) const
 	auto& nv{ lat ? nvlat : nvlon };
 	vector<string> out_sv(nv.size());
 	transform(nv.begin(), nv.end(), out_sv.begin(), Format<type>(ff));
-	if (CoordType::decdeg != type)
+	if constexpr (CoordType::decdeg != type)
 		transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), [lat](string& outstr, double n){return outstr + cardpoint(n < 0, lat);});
 	return out_sv;
 }
