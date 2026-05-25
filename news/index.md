@@ -2,6 +2,11 @@
 
 ## Waypoint (development version)
 
+- `if constexpr` statements within templated functions (#153).
+
+- [`validate()`](https://mark-eis.github.io/Waypoint/reference/validate.md)
+  as pure virtual function in `Coordbase` (#152).
+
 - Abstract replicated code in `WayPoint::format()` to a single function
   (#146).
 
