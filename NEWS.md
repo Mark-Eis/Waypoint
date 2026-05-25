@@ -1,5 +1,9 @@
 # Waypoint (development version)
 
+* `if constexpr` statements within templated functions (#153).
+
+* `validate()` as pure virtual function in `Coordbase` (#152).
+
 * Abstract replicated code in `WayPoint::format()` to a single function (#146).
 
 * `FormatLL<>` functors replaced with lambdas in `Coord::format()` and `WayPoint::format()` (#145).
