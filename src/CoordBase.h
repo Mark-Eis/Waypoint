@@ -205,55 +205,6 @@ inline double Convertor<CoordType::degminsec>::operator()(double n)
 
 /// __________________________________________________
 /// __________________________________________________
-/// Templated coord formatting functors
-template<CoordType type>
-class Format {
-	protected:
-		const FamousFive& ff;
-	public:
-		Format(const FamousFive& _ff) : ff(_ff)
-		{
-//			fmt::print("§Format<CoordType::{}>::Format()(const FamousFive&) ", type); _ctrsgn(typeid(*this)); std::fflush(nullptr);
-		}
-		~Format() = default;
-//		~Format() { fmt::print("§Format<CoordType::{}>::~Format() ", type); _ctrsgn(typeid(*this), true); }
-		string operator()(double n) const;
-};
-
-
-/// __________________________________________________
-/// Default operator(), for decimal degrees
-template<CoordType type>
-inline string Format<type>::operator()(double n) const
-{
-//	fmt::print("@Format<CoordType::{}>::operator() [default]\n", type);
-	return fmt::format("{:>{}.{}f}\u00B0", ff.get_decdeg(n), 11, 6);
-}
-
-/// __________________________________________________
-/// Specialised operator() for degrees and minutes
-template<>
-inline string Format<CoordType::degmin>::operator()(double n) const
-{
-//	fmt::print("@Format<CoordType::{}>::operator()\n", CoordType::degmin);
-	return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
-		   fmt::format("{:0>{}.{}f}\u2032", fabs(ff.get_decmin(n)), 7, 4);
-}
-
-/// __________________________________________________
-/// Specialised operator() for degrees, minutes and seconds
-template<>
-inline string Format<CoordType::degminsec>::operator()(double n) const
-{
-//	fmt::print("@Format<CoordType::{}>::operator()\n", CoordType::degminsec);
-	return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
-		   fmt::format("{:0>{}}\u2032", abs(ff.get_min(n)), 2) +
-		   fmt::format("{:0>{}.{}f}\u2033", fabs(ff.get_sec(n)), 5, 2);
-}
-
-
-/// __________________________________________________
-/// __________________________________________________
 /// Validate functor
 
 class Validator {
