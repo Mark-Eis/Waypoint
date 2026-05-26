@@ -2,21 +2,20 @@ url: https://mark-eis.github.io/Waypoint/
 template:
   bootstrap: 5
   math-rendering: mathjax
-  light-switch: true
+  light-switch: yes
 reference:
-- title: Coords and Waypoints 
+- title: Coords and Waypoints
   desc: |
     Create “coords” and 'waypoints" objects.
   contents:
   - as_coords
   - as_waypoints
   - starts_with("latlon")
-- title: Convert 
+- title: Convert
   desc: |
     Convert between (i) decimal degrees, (ii) degrees and minutes, and (iii) degrees, minutes and seconds.
-  contents:
-  - convert
-- title: Validate and Review 
+  contents: convert
+- title: Validate and Review
   desc: |
     Validate geographic locations and identify individual invalid values.
   contents:
@@ -26,18 +25,16 @@ reference:
   desc: |
     Neat formatting and printing of “coords” and "waypoints".
   contents:
-  - starts_with("format") 
-  - starts_with("print") 
+  - starts_with("format")
+  - starts_with("print")
 - title: Extract and Replace
   desc: |
     Methods to extract or replace subsets of "coords" objects.
   contents:
-  - "`[.coords`"
-  - "`[<-.coords`"
+  - '`[.coords`'
+  - '`[<-.coords`'
 - title: Other
-  contents:
-  - "`%L%`"
+  contents: '`%L%`'
 - title: About
-  contents:
-   - "Waypoint-package"
+  contents: Waypoint-package
 
