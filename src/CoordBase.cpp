@@ -20,7 +20,7 @@ using std::transform;
 #include "fmt/format.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt. Works, but not always in pkgdown
 #include "fmt/ranges.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt. Works, but not always in pkgdown
 
-#define DEBUG 0
+#define DEBUG 1
 
 
 /// __________________________________________________
@@ -398,6 +398,42 @@ CoordType Coordbase::get_coordtype() const
 
 
 /// __________________________________________________
+/// Format coordinates as vector<string> of CoordType
+template<CoordType type>
+vector<string> Coordbase::format0(NumericVector nv) const
+{
+	fmt::print("@Coordbase::format0<CoordType::{}>() const\n", type);
+
+	const auto lambda_dd = [this](double n){
+				return fmt::format("{:>{}.{}f}\u00B0{}", ff.get_decdeg(n), 11, 6, "€");
+			};
+	const auto lambda_dm = [this](double n){
+				return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
+					   fmt::format("{:0>{}.{}f}\u2032{}", fabs(ff.get_decmin(n)), 7, 4, "€€");
+			};
+	const auto lambda_dms = [this](double n){
+				return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
+					   fmt::format("{:0>{}}\u2032", abs(ff.get_min(n)), 2) +
+					   fmt::format("{:0>{}.{}f}\u2033{}", fabs(ff.get_sec(n)), 5, 2, "€€€");
+			};
+
+	vector outstr{ vector<string>(nv.size()) };
+
+	if constexpr (CoordType::decdeg == type) {
+		fmt::print("@Coordbase::format0<CoordType>() const; Mimiland DD\n");
+		transform(nv.begin(), nv.end(), outstr.begin(), lambda_dd);
+	} else if constexpr (CoordType::degmin == type) {
+		fmt::print("@Coordbase::format0<CoordType>() const; Mimiland DM\n");
+		transform(nv.begin(), nv.end(), outstr.begin(), lambda_dm);
+	} else {
+		fmt::print("@Coordbase::format0<CoordType>() const; Mimiland DMS\n");
+		transform(nv.begin(), nv.end(), outstr.begin(), lambda_dms);
+	}
+	return outstr;
+}
+
+
+/// __________________________________________________
 /// Coordinate derived class
 
 Coord::Coord(CoordType ct, NumericVector nv) :
@@ -439,21 +475,27 @@ void Coord::validate(bool warn)
 template<CoordType type>
 vector<string> Coord::format() const
 {
-//	fmt::print("@Coord::format<CoordType::{}>() const; ll_size type: {}, ll_size: {}\n", type, demangle(typeid(latlon.size())), latlon.size());
+	fmt::print("@Coord::format<CoordType::{}>() const; ll_size type: {}, ll_size: {}\n", type, demangle(typeid(latlon.size())), latlon.size());
 
 	vector<bool>::const_iterator ll_it { latlon.begin() };
 	const auto ll_size { latlon.size() };
 	
-	const auto lambda1 = [&ll_it, &ll_size](string& outstr, double n){return outstr + ((ll_size > 1 ? *ll_it++ : *ll_it) ? " lat" : " lon");};
-	const auto lambda2 = [&ll_it, &ll_size](string& outstr, double n){return outstr + (ll_size ? cardpoint(n < 0, ll_size > 1 ? *ll_it++ : *ll_it) : cardi_b(n < 0));};
+	const auto lambda1 = [&ll_it, &ll_size](string& outstr, double n){
+				return outstr + ((ll_size > 1 ? *ll_it++ : *ll_it) ? " lat" : " lon");
+			};
+	const auto lambda2 = [&ll_it, &ll_size](string& outstr, double n){
+				return outstr + (ll_size ? cardpoint(n < 0, ll_size > 1 ? *ll_it++ : *ll_it) : cardi_b(n < 0));
+			};
 
-	vector<string> out(nv.size());
-	transform(nv.begin(), nv.end(), out.begin(), Format<type>(ff));
+	vector out{ format0<type>(nv) };
 	if constexpr (CoordType::decdeg == type) {
+		fmt::print("@Coord::format<CoordType>() const; Mimiland DD\n");
 		if (ll_size) 
 			transform(out.begin(), out.end(), nv.begin(), out.begin(), lambda1);
-	} else
+	} else {
+		fmt::print("@Coord::format<CoordType>() const; Mimiland DM / DMS\n");
 		transform(out.begin(), out.end(), nv.begin(), out.begin(), lambda2);
+	}
 	return out;
 }
 

@@ -295,12 +295,14 @@ class Coordbase {
 		const FamousFive& ff;
 
 	public:
-		Coordbase(CoordType _ct);
+		Coordbase(CoordType);
 		Coordbase(const Coordbase&) = delete;						// Disallow copying
 		Coordbase& operator=(const Coordbase&) = delete;				//  ——— ditto ———
-		Coordbase(Coordbase&&) = delete;							// Disallow transfer ownership
+		Coordbase(Coordbase&&) = delete; 							// Disallow transfer ownership
 		Coordbase& operator=(Coordbase&&) = delete;					// Disallow moving
 		virtual ~Coordbase() = 0;
+		template<CoordType type>
+		vector<string> format0(NumericVector) const;
 		CoordType get_coordtype() const;
 		virtual void validate(bool) = 0;
 };
