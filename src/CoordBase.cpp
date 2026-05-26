@@ -400,6 +400,28 @@ CoordType Coordbase::get_coordtype() const
 /// __________________________________________________
 /// Format coordinates as vector<string> of CoordType
 template<CoordType type>
+void Coordbase::convert0(NumericVector nv)
+{
+//	fmt::print("@Coordbase::convert0<CoordType::{}>()\n", type);
+
+	if constexpr (CoordType::decdeg == type)
+		transform(nv.begin(), nv.end(), nv.begin(), [this](double n){
+				return ff.get_decdeg(n);
+			});
+	else if constexpr (CoordType::degmin == type)
+		transform(nv.begin(), nv.end(), nv.begin(), [this](double n){
+				return ff.get_deg(n) * 1e2 + ff.get_decmin(n);
+			});
+	else
+		transform(nv.begin(), nv.end(), nv.begin(), [this](double n){
+				return ff.get_deg(n) * 1e4 + ff.get_min(n) * 1e2 + ff.get_sec(n);
+			});
+}
+
+
+/// __________________________________________________
+/// Format coordinates as vector<string> of CoordType
+template<CoordType type>
 vector<string> Coordbase::format0(NumericVector nv) const
 {
 //	fmt::print("@Coordbase::format0<CoordType::{}>() const\n", type);
@@ -442,7 +464,7 @@ template<CoordType newtype>
 inline void Coord::convert()
 {
 //	fmt::print("@Coord::convert<{}>() to {}\n", ct, newtype);
-	transform(nv.begin(), nv.end(), nv.begin(), Convertor<newtype>(ff));
+	convert0<newtype>(nv);
 }
 
 
@@ -503,8 +525,8 @@ template<CoordType newtype>
 inline void WayPoint::convert()
 {
 //	fmt::print("@WayPoint::convert<{}>() to {}\n", ct, newtype);
-	transform(nvlat.begin(), nvlat.end(), nvlat.begin(), Convertor<newtype>(ff));
-	transform(nvlon.begin(), nvlon.end(), nvlon.begin(), Convertor<newtype>(ff));
+	convert0<newtype>(nvlat);
+	convert0<newtype>(nvlon);
 }
 
 
