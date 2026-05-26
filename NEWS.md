@@ -1,5 +1,7 @@
 # Waypoint (development version)
 
+* Replace `Validator` functor class with lambda in new member function `Coordbase::validate0()` (#155).
+
 * Replace `Convert` functor class with lambdas selected using `if constexpr … else` statement in new
   member function `Coordbase::convert0()` (#154).
 
