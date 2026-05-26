@@ -156,31 +156,6 @@ concept Coord_or_WayPoint =
 
 /// __________________________________________________
 /// __________________________________________________
-/// Validate functor
-
-class Validator {
-		const FamousFive& ff;
-		vector<bool>::const_iterator ll_it;
-		int ll_size;
-	public:
-		Validator(const FamousFive& _ff, const vector<bool>& ll) : ff(_ff), ll_it(ll.begin()), ll_size(ll.size())
-		{
-//			fmt::print("§{} ", "Validator::Validator(const FamousFive&, vector<bool>&)"); _ctrsgn(typeid(*this));
-		}
-		~Validator() = default;
-//		~Validator() { fmt::print("§{} ", "Validator::~Validator()"); _ctrsgn(typeid(*this), true); }
-		bool operator()(double n)
-		{
-//			fmt::print("@{} validating: {: {}f}\n", "Validator()", n, 9);
-			return !((fabs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
-				(fabs(ff.get_decmin(n)) >= 60) ||
-				(fabs(ff.get_sec(n)) >= 60));
-		}
-};
-
-
-/// __________________________________________________
-/// __________________________________________________
 ///CoordType switches
 template<NumericVector_or_DataFrame T, class Coord_or_WayPoint>
 void convert_switch(T, CoordType);
@@ -207,6 +182,7 @@ class Coordbase {
 		template<CoordType type>
 		void convert0(NumericVector);
 		virtual void validate(bool) = 0;
+		void validate0(NumericVector, vector<bool>&, const vector<bool>&);
 		template<CoordType type>
 		vector<string> format0(NumericVector) const;
 };
