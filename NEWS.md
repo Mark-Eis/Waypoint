@@ -4,7 +4,10 @@
 
 * `validate()` as pure virtual function in `Coordbase` (#152).
 
-* Abstract replicated code in `WayPoint::format()` to a single function (#146).
+* Replace `Format` functor class with lambdas selected using `if constexpr …` expressions in
+  new member function Coordbase::format0() (#149).
+
+* Abstract replicated code in `WayPoint::format()` to a single function `WayPoint::format2()` (#146).
 
 * `FormatLL<>` functors replaced with lambdas in `Coord::format()` and `WayPoint::format()` (#145).
 
