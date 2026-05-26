@@ -396,39 +396,6 @@ CoordType Coordbase::get_coordtype() const
 	return ct;
 }
 
-/*
-/// __________________________________________________
-/// Format coordinates as vector<string> of CoordType
-template<CoordType type>
-vector<string> Coordbase::format0(NumericVector nv) const
-{
-//	fmt::print("@Coordbase::format0<CoordType::{}>() const\n", type);
-
-	const auto lambda_dd = [this](double n){
-				return fmt::format("{:>{}.{}f}\u00B0", ff.get_decdeg(n), 11, 6);
-			};
-	const auto lambda_dm = [this](double n){
-				return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
-					   fmt::format("{:0>{}.{}f}\u2032", fabs(ff.get_decmin(n)), 7, 4);
-			};
-	const auto lambda_dms = [this](double n){
-				return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
-					   fmt::format("{:0>{}}\u2032", abs(ff.get_min(n)), 2) +
-					   fmt::format("{:0>{}.{}f}\u2033", fabs(ff.get_sec(n)), 5, 2);
-			};
-
-	vector outstr{ vector<string>(nv.size()) };
-
-	if constexpr (CoordType::decdeg == type)
-		transform(nv.begin(), nv.end(), outstr.begin(), lambda_dd);
-	else if constexpr (CoordType::degmin == type)
-		transform(nv.begin(), nv.end(), outstr.begin(), lambda_dm);
-	else
-		transform(nv.begin(), nv.end(), outstr.begin(), lambda_dms);
-	
-	return outstr;
-}
-*/
 
 /// __________________________________________________
 /// Format coordinates as vector<string> of CoordType
