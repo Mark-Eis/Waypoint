@@ -398,7 +398,7 @@ CoordType Coordbase::get_coordtype() const
 
 
 /// __________________________________________________
-/// Format coordinates as vector<string> of CoordType
+/// Convert NumericVector CoordType
 template<CoordType type>
 void Coordbase::convert0(NumericVector nv)
 {
@@ -459,7 +459,7 @@ Coord::Coord(CoordType ct, NumericVector nv) :
 
 
 /// __________________________________________________
-/// Convert NumericVector coordinate format
+/// Convert Coord NumericVector CoordType
 template<CoordType newtype>
 inline void Coord::convert()
 {
@@ -520,7 +520,7 @@ WayPoint::WayPoint(CoordType ct, DataFrame df) :
 
 
 /// __________________________________________________
-/// Convert DataFrame coordinate format
+/// Convert both DataFrame NumericVectors CoordType
 template<CoordType newtype>
 inline void WayPoint::convert()
 {
