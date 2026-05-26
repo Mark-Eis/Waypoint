@@ -2,13 +2,21 @@
 
 ## Waypoint (development version)
 
+- Replace `Convert` functor class with lambdas selected using
+  `if constexpr … else` statement in new member function
+  `Coordbase::convert0()` (#154).
+
 - `if constexpr` statements within templated functions (#153).
 
 - [`validate()`](https://mark-eis.github.io/Waypoint/reference/validate.md)
   as pure virtual function in `Coordbase` (#152).
 
+- Replace `Format` functor class with lambdas selected using
+  `if constexpr … else` statement in new member function
+  `Coordbase::format0()` (#149, \#153).
+
 - Abstract replicated code in `WayPoint::format()` to a single function
-  (#146).
+  `WayPoint::format2()` (#146).
 
 - `FormatLL<>` functors replaced with lambdas in `Coord::format()` and
   `WayPoint::format()` (#145).

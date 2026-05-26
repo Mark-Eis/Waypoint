@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Waypoint</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.1.9007</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.1.9009</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,9 +45,11 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="waypoint-development-version">Waypoint (development version)<a class="anchor" aria-label="anchor" href="#waypoint-development-version"></a></h2>
-<ul><li><p><code>if constexpr</code> statements within templated functions (#153).</p></li>
+<ul><li><p>Replace <code>Convert</code> functor class with lambdas selected using <code>if constexpr … else</code> statement in new member function <code>Coordbase::convert0()</code> (#154).</p></li>
+<li><p><code>if constexpr</code> statements within templated functions (#153).</p></li>
 <li><p><code><a href="../reference/validate.html">validate()</a></code> as pure virtual function in <code>Coordbase</code> (#152).</p></li>
-<li><p>Abstract replicated code in <code>WayPoint::format()</code> to a single function (#146).</p></li>
+<li><p>Replace <code>Format</code> functor class with lambdas selected using <code>if constexpr … else</code> statement in new member function <code>Coordbase::format0()</code> (#149, #153).</p></li>
+<li><p>Abstract replicated code in <code>WayPoint::format()</code> to a single function <code>WayPoint::format2()</code> (#146).</p></li>
 <li><p><code>FormatLL&lt;&gt;</code> functors replaced with lambdas in <code>Coord::format()</code> and <code>WayPoint::format()</code> (#145).</p></li>
 <li><p>Replace <code>static_assert</code> statements in templates with concepts (#144).</p></li>
 <li><p>Remove redundant code from <code>as_waypoints(DataFrame, int = 1)</code> (#143).</p></li>
