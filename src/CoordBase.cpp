@@ -520,7 +520,7 @@ WayPoint::WayPoint(CoordType ct, DataFrame df) :
 
 
 /// __________________________________________________
-/// Convert both DataFrame NumericVectors CoordType
+/// Convert both WayPoint NumericVectors CoordType
 template<CoordType newtype>
 inline void WayPoint::convert()
 {
