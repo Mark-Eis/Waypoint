@@ -423,12 +423,11 @@ void Coordbase::convert0(NumericVector nv)
 /// Validate coordinates in NumericVector
 void Coordbase::validate0(NumericVector nv, vector<bool>& valid, const vector<bool>& latlon)
 {
-	fmt::print("@{} latlon: {}\n", "Coordbase::validate0()", fmt::join(latlon, ", "));
+//	fmt::print("@{} latlon: {}\n", "Coordbase::validate0()", fmt::join(latlon, ", "));
 	vector<bool>::const_iterator ll_it{ latlon.begin() };
 	auto ll_size { latlon.size() };
 
 	valid.assign(nv.size(), {false});
-//	transform(nv.begin(), nv.end(), valid.begin(), Validator(ff, latlon));
 	transform(nv.begin(), nv.end(), valid.begin(), [this, &ll_it, &ll_size](double n){
 		return !((fabs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
 				(fabs(ff.get_decmin(n)) >= 60) ||
@@ -490,7 +489,7 @@ inline void Coord::convert()
 /// Validate coords vector
 void Coord::validate(bool warn)
 {
-	fmt::print("@{} latlon: {}\n", "Coord::validate()", fmt::join(latlon, ", "));
+//	fmt::print("@{} latlon: {}\n", "Coord::validate()", fmt::join(latlon, ", "));
 	validate0(nv, valid, latlon);
 
 	if (all_of(valid.begin(), valid.end(), [](bool v) { return v;}))
@@ -552,7 +551,7 @@ inline void WayPoint::convert()
 /// Validate WayPoint
 void WayPoint::validate(bool warn)
 {
-	fmt::print("@{}\n", "WayPoint::validate(bool)");
+//	fmt::print("@{}\n", "WayPoint::validate(bool)");
 
 	validate0(nvlat, validlat, vector{ true });
 	validate0(nvlon, validlon, vector{ false });
