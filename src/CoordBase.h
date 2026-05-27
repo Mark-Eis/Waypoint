@@ -171,6 +171,12 @@ class Coordbase {
 		CoordType ct;
 		const FamousFive& ff;
 
+		template<CoordType type>
+		void convert0(NumericVector);
+		void validate0(NumericVector, vector<bool>&, const vector<bool>&);
+		template<CoordType type>
+		vector<string> format0(NumericVector) const;
+
 	public:
 		Coordbase(CoordType);
 		Coordbase(const Coordbase&) = delete;						// Disallow copying
@@ -178,13 +184,8 @@ class Coordbase {
 		Coordbase(Coordbase&&) = delete; 							// Disallow transfer ownership
 		Coordbase& operator=(Coordbase&&) = delete;					// Disallow moving
 		virtual ~Coordbase() = 0;
-		CoordType get_coordtype() const;
-		template<CoordType type>
-		void convert0(NumericVector);
 		virtual void validate(bool) = 0;
-		void validate0(NumericVector, vector<bool>&, const vector<bool>&);
-		template<CoordType type>
-		vector<string> format0(NumericVector) const;
+		CoordType get_coordtype() const;
 };
 
 /// __________________________________________________
