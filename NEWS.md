@@ -1,5 +1,7 @@
 # Waypoint (development version)
 
+* Protect base class functions without public interface (#156).
+
 * Replace `Validator` functor class with lambda in new member function `Coordbase::validate0()` (#155).
 
 * Replace `Convert` functor class with lambdas selected using `if constexpr … else` statement in new
