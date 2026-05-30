@@ -1,7 +1,7 @@
 # Waypoint (development version)
 
-* Simplify `validated()` using bitwise return value and rename as `template<NumericVector_or_DataFrame T>
-  check_logical_attr<NumericVector_or_DataFrame>(T , const char*)` (#157).
+* Simplify `validated()` using bitwise return value and rename as `template<NumericVector_or_DataFrame T>`
+  `check_logical_attr(T , const char*)` (#157).
 
 * Protect base class functions without public interface (#156).
 
