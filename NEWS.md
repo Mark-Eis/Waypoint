@@ -1,5 +1,7 @@
 # Waypoint (development version)
 
+* Rectify  erroneous "Invalid coords!" error after revalidating valid `coords` (#158).
+
 * Simplify `validated()` using bitwise return value and rename as `template<NumericVector_or_DataFrame T>`
   `check_logical_attr(T , const char*)` (#157).
 
