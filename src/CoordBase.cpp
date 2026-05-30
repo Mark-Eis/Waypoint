@@ -627,7 +627,7 @@ bool check_valid(const NumericVector nv)
 //	fmt::print("@check_valid(const NumericVector)\n");
 	int validated = check_logical_attr(nv, "valid");
 	if (!validated)
-		revalid_Coord(nv);
+		return revalid_Coord(nv);
 	return validated >> 1;
 }
 
@@ -657,7 +657,7 @@ bool check_valid(const DataFrame df)
 /// __________________________________________________
 /// Revalidate NumericVector or DataFrame
 template<NumericVector_or_DataFrame T, Coord_or_WayPoint U>
-const T revalidate(const T t)
+bool revalidate(const T t)
 {
 //	fmt::print("@{} T: {}\n", "revalidate<T, U>(const T)", demangle(typeid(t)));
 	warning("Revalidating %s…!", demangle(typeid(t)));

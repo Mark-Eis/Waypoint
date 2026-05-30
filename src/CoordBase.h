@@ -241,7 +241,7 @@ bool check_valid(const NumericVector);
 bool check_valid(const DataFrame);
 
 template<NumericVector_or_DataFrame T, Coord_or_WayPoint U>
-const T revalidate(const T);
+bool revalidate(const T);
 
 constexpr auto revalid_Coord = &revalidate<NumericVector, Coord>;
 constexpr auto revalid_WayPoint = &revalidate<DataFrame, WayPoint>;
