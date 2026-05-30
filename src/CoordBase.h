@@ -42,6 +42,8 @@ inline vector<U> get_vec_attr(const T&, const char*);
 template<NumericVector_or_DataFrame T>
 inline int get_fmt_attribute(const T&);
 template<NumericVector_or_DataFrame T>
+int check_logical_attr(T t, const char* attrname);
+template<NumericVector_or_DataFrame T>
 inline void checkinherits(T&, const char*);
 template<class T>
 inline bool is_item_in_obj(const T, int);
@@ -237,9 +239,6 @@ class WayPoint : public Coordbase {
 /// Validation
 bool check_valid(const NumericVector);
 bool check_valid(const DataFrame);
-
-template<NumericVector_or_DataFrame T>
-bool validated(T, const char*, bool&);
 
 template<NumericVector_or_DataFrame T, Coord_or_WayPoint U>
 const T revalidate(const T);

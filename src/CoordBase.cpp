@@ -116,6 +116,21 @@ inline int get_fmt_attribute(const T& t)
 
 
 /// __________________________________________________
+/// Check whether a NumericVector or DataFrame has a specified logical vector attribute and whether all true
+template<NumericVector_or_DataFrame T>
+int check_logical_attr(T t, const char* attrname)
+{
+//	fmt::print("@check_logical_attr<NumericVector_or_DataFrame>(T, const char*); T: {}; attrname {}\n", demangle(typeid(t)), attrname);
+	const vector vec_attr{ get_vec_attr<T, bool>(t, attrname) };
+	if (vec_attr.size()) {
+		return all_of(vec_attr.begin(), vec_attr.end(), [](bool v) { return v;}) ? 0b11 : 0b01;
+	} else {
+		return 0b00;
+	}
+}
+
+
+/// __________________________________________________
 /// Does object inherit given class?
 template<NumericVector_or_DataFrame T>
 inline void checkinherits(T& t, const char* classname)
@@ -607,15 +622,13 @@ vector<string> WayPoint::format2(const bool lat) const
 
 /// __________________________________________________
 /// Check "valid" attribute of NumericVector all true
-
 bool check_valid(const NumericVector nv)
 {
-//	fmt::print("@{}\n", "check_valid(const NumericVector)");
-	bool unvalidated = false;
-	bool valid = validated(nv, "valid", unvalidated);
-	if (unvalidated)
+//	fmt::print("@check_valid(const NumericVector)\n");
+	int validated = check_logical_attr(nv, "valid");
+	if (!validated)
 		revalid_Coord(nv);
-	return valid;
+	return validated >> 1;
 }
 
 
@@ -623,34 +636,21 @@ bool check_valid(const NumericVector nv)
 /// Check "lat_valid" and "lon_valid attributes of DataFrame are all true
 bool check_valid(const DataFrame df)
 {
-//	fmt::print("@{}\n", "check_valid(const DataFrame)");
-	bool unvalidated = false;
+//	fmt::print("@check_valid(const DataFrame)\n");
 
-	bool latvalid = validated(df, "validlat", unvalidated);
-	if (unvalidated)
-		return revalid_WayPoint(df);
-	bool lonvalid = validated(df, "validlon", unvalidated);
-	if (unvalidated)
+	int latvalidated = check_logical_attr(df, "validlat");
+	if (!latvalidated)
 		return revalid_WayPoint(df);
 
-	if (!latvalid)
+	int lonvalidated = check_logical_attr(df, "validlon");
+	if (!lonvalidated)
+		return revalid_WayPoint(df);
+
+	if (!(latvalidated >> 1))
 		warning("Invalid latitude!");
-	if (!lonvalid)
+	if (!(lonvalidated >> 1))
 		warning("Invalid longitude!");
-	return latvalid || lonvalid;
-}
-
-
-/// __________________________________________________
-/// Check NumericVector or DataFrame has been validated and valid vector attribute all true
-template<NumericVector_or_DataFrame T>
-bool validated(T t, const char* attrname, bool& unvalidated)
-{
-//	fmt::print("@{} T: {} attrname: {} \n", "validated<T>(T, const char*, bool&)", demangle(typeid(t)), attrname);
-	const vector validvec{ get_vec_attr<T, bool>(t, attrname) };
-	bool valid = all_of(validvec.begin(), validvec.end(), [](bool v) { return v;});
-	unvalidated = (validvec.size()) ? false : true;
-	return valid;
+	return latvalidated >> 1 || lonvalidated >> 1;
 }
 
 
