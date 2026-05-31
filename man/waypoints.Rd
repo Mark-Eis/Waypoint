@@ -110,8 +110,9 @@ rm(wp1, wp2)
 
 }
 \seealso{
-\code{\link[base:attr]{attr}()}, \code{\link[base:data.frame]{data.frame}()}, and
-  \code{\link{validate}()}.
+\code{\link[base:attr]{attr}()}, \code{\link[base:data.frame]{data.frame}()}
+\code{\link[=format]{format}(<waypoints>)}, \code{\link[=format]{print}(<waypoints>)},
+and \code{\link{validate}()}.
 
 Other coordsandway: 
 \code{\link{convert}()},

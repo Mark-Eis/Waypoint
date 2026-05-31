@@ -13,14 +13,14 @@
 \arguments{
 \item{x}{a \code{"\link{coords}"} object.}
 
-\item{i}{indices specifying elements to extract or replace—see
+\item{i}{indices specifying elements to extract or replace—see \pkg{base}
 \code{\link[base:Extract]{Extract}}.}
 
 \item{value}{a \code{numeric}, a \code{numeric} vector of coordinate values of \code{length(i)},
 or a \code{"coords"} object, possibly named.}
 }
 \value{
-a \code{"\link{coords}"} object.
+A \code{"\link{coords}"} object.
 }
 \description{
 Extract or replace subsets of coords.
@@ -32,16 +32,25 @@ greater than \code{length(x)} will throw a \verb{subscript out of bounds} error.
 required, use \code{\link[base:unname]{unname}()}, see \emph{examples}.
 
 Replacement values may be a single \code{numeric}, a \code{numeric} vector of coordinate values
-of \code{length(i)}, or a \code{"coords"} object, possibly with a \code{"latlon"} attribute.
-However, the \code{"latlon"} attribute of the replacement value is ignored if the \code{"coords"}
-object \code{x} has no corresponding attribute set. If replacement values are named, the names
-are also ignored; to replace names, use \code{\link[base:names]{names<-}()} replacement form.
+of \code{length(i)}, or a \code{"\link{coords}"} object, possibly with a \code{"latlon"}
+attribute. However, the \code{"latlon"} attribute of the replacement value is ignored if the
+\code{"\link{coords}"} object \code{x} has no corresponding attribute set. If replacement values
+are named, the names are also ignored; to replace names, use \code{\link[base:names]{names<-}()}
+replacement form.
+
+On use, the \code{\link[=Extract]{[<-}(<coords>)} replacement operator automatically revalidates
+\code{"\link{coords}"} objects after the replacement operation by invoking
+\code{\link{validate}()}.
 }
 \note{
 To extract and replace subsets of \code{"\link{waypoints}"} objects, simply use the \pkg{base}
 package \code{\link[base:Extract]{[}} and \code{\link[base:Extract]{[<-}} operators, taking 
 care not to exclude the \code{latitude} and \code{longitude} columns or \code{"Name"} column
-(if present), which could lead to undefined results.
+(if present), which could lead to undefined results. Whereas \code{"\link{coords}"} objects are
+automatically revalidated after using the \code{\link[=Extract]{[<-}(<coords>)} replacement
+operator, following value replacement using the \pkg{base} \code{\link[base:Extract]{[<-}}
+operator, \code{"\link{waypoints}"} objects should be revalidated using
+\code{\link{validate}()}, see \code{\link{validate}} \emph{Examples}.
 }
 \examples{
 ## Continuing example from `as_coords()`...
@@ -90,7 +99,7 @@ rm(dm, index, newpos)
 
 }
 \seealso{
-\code{"\link{coords}"}, \code{\link[base:Extract]{Extract}},
-\code{\link[base:unname]{unname}()}.
+\code{"\link{coords}"}, \pkg{base} \code{\link[base:Extract]{Extract}},
+\code{\link[base:unname]{unname}()}, and \code{\link{validate}()}.
 }
 \concept{extract}

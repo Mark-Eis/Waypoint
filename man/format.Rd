@@ -47,7 +47,8 @@ containing values formatted in decimal degrees, degrees and minutes, or degrees,
 seconds as appropriate.
 }
 \description{
-Format and print objects of class \code{"coords"} or \code{"waypoints"}.
+Elegantly format and print objects of class \code{"coords"} or \code{"waypoints"} in alternative
+coordinate formats.
 }
 \details{
 The \code{format()} methods for \code{"\link{coords}"} and \code{"\link{waypoints}"} objects

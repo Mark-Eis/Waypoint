@@ -64,11 +64,12 @@ Argument \code{force} is primarily intended for use by the \code{print()} method
 ## Validate "coords" object in degrees and minutes
 validate(dm)
 
-## Deliberately change the first coordinate
-## to a value greater than 60 minutes
+## Deliberately change the first coordinate to a value greater		
+## than 60 minutes using the `[<-(<coords>)` replacement operator,
+## which itself invokes `validate(dm)` -- see help(`[<-.coords`)
 dm[1] <- 5160.4659
 
-validate(dm)
+dm
 
 ## Examine "valid" attribute of dm
 attr(dm, "valid")
@@ -90,8 +91,10 @@ attr(dm, "valid")
 
 validate(wp)
 
-## Deliberately change the penultimate latitude
-## to an absolute value greater than 90 degrees
+## Deliberately change the penultimate latitude to an absolute
+## value greater than 90 degrees, using the usual base package
+## replacement `[<-` operator, which does not invoke `validate(dm)`
+## -- we must do so ourselves
 wp$lat[7] <- -93.104781
 
 validate(wp)
@@ -103,7 +106,7 @@ rm(dm, wp)
 
 }
 \seealso{
-\code{"\link{coords}"} and \code{"\link{waypoints}"}.
+\code{"\link{coords}"}, \code{"\link{waypoints}"} and \code{\link[=Extract]{[<-}(<coords>)}.
 
 Other validate: 
 \code{\link{review}()}

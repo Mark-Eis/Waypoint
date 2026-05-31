@@ -40,8 +40,9 @@
 #'
 #' @family coordsandway
 #' @seealso
-#' \code{\link[base:attr]{attr}()}, \code{\link[base:attributes]{attributes}}, and
-#'   \code{\link{validate}()}.
+#' \code{\link[base:attr]{attr}()}, \code{\link[base:attributes]{attributes}},
+#' \code{\link[=format]{format}(<coords>)}, \code{\link[=format]{print}(<coords>)},
+#' \code{\link{validate}()} and \code{\link[=Extract]{[<-}(<coords>)}.
 #'
 #' @param object a \code{numeric} vector of coordinate values, optionally named, or an object of
 #'   class \code{"waypoints"}.
@@ -154,8 +155,9 @@ as_coords <- function(object, ...)
 #'
 #' @family coordsandway
 #' @seealso
-#' \code{\link[base:attr]{attr}()}, \code{\link[base:data.frame]{data.frame}()}, and
-#'   \code{\link{validate}()}.
+#' \code{\link[base:attr]{attr}()}, \code{\link[base:data.frame]{data.frame}()}
+#' \code{\link[=format]{format}(<waypoints>)}, \code{\link[=format]{print}(<waypoints>)},
+#' and \code{\link{validate}()}.
 #'
 #' @param object a data frame with each row representing a waypoint, comprising at least two
 #'   \code{numeric} columns containing values of latitude and longitude, and optionally a
@@ -340,7 +342,8 @@ convert <- function(x, ...)
 #' @name format
 #' 
 #' @description
-#' Format and print objects of class \code{"coords"} or \code{"waypoints"}.
+#' Elegantly format and print objects of class \code{"coords"} or \code{"waypoints"} in alternative
+#' coordinate formats.
 #'
 #' @details
 #' The \code{format()} methods for \code{"\link{coords}"} and \code{"\link{waypoints}"} objects
@@ -541,7 +544,7 @@ print.waypoints <- function (x, ..., fmt = NULL, max = NULL) {
 #'
 #' @family validate
 #' @seealso
-#' \code{"\link{coords}"} and \code{"\link{waypoints}"}.
+#' \code{"\link{coords}"}, \code{"\link{waypoints}"} and \code{\link[=Extract]{[<-}(<coords>)}.
 #'
 #' @param force \code{logical} signifying whether, if \code{TRUE}, to perform full \emph{de novo}
 #'   revalidation or, if \code{FALSE}, simply check existing \code{"valid"} attribute in the case
@@ -573,11 +576,12 @@ print.waypoints <- function (x, ..., fmt = NULL, max = NULL) {
 #' ## Validate "coords" object in degrees and minutes
 #' validate(dm)
 #'
-#' ## Deliberately change the first coordinate
-#' ## to a value greater than 60 minutes
+#' ## Deliberately change the first coordinate to a value greater		
+#' ## than 60 minutes using the `[<-(<coords>)` replacement operator,
+#' ## which itself invokes `validate(dm)` -- see help(`[<-.coords`)
 #' dm[1] <- 5160.4659
 #'
-#' validate(dm)
+#' dm
 #'
 #' ## Examine "valid" attribute of dm
 #' attr(dm, "valid")
@@ -599,8 +603,10 @@ print.waypoints <- function (x, ..., fmt = NULL, max = NULL) {
 #'
 #' validate(wp)
 #'
-#' ## Deliberately change the penultimate latitude
-#' ## to an absolute value greater than 90 degrees
+#' ## Deliberately change the penultimate latitude to an absolute
+#' ## value greater than 90 degrees, using the usual base package
+#' ## replacement `[<-` operator, which does not invoke `validate(dm)`
+#' ## -- we must do so ourselves
 #' wp$lat[7] <- -93.104781
 #'
 #' validate(wp)
@@ -768,30 +774,39 @@ review.waypoints <- function(x, ..., show_n = 20L)
 #' required, use \code{\link[base:unname]{unname}()}, see \emph{examples}.
 #'
 #' Replacement values may be a single \code{numeric}, a \code{numeric} vector of coordinate values
-#' of \code{length(i)}, or a \code{"coords"} object, possibly with a \code{"latlon"} attribute.
-#' However, the \code{"latlon"} attribute of the replacement value is ignored if the \code{"coords"}
-#' object \code{x} has no corresponding attribute set. If replacement values are named, the names
-#' are also ignored; to replace names, use \code{\link[base:names]{names<-}()} replacement form.
+#' of \code{length(i)}, or a \code{"\link{coords}"} object, possibly with a \code{"latlon"}
+#' attribute. However, the \code{"latlon"} attribute of the replacement value is ignored if the
+#' \code{"\link{coords}"} object \code{x} has no corresponding attribute set. If replacement values
+#' are named, the names are also ignored; to replace names, use \code{\link[base:names]{names<-}()}
+#' replacement form.
+#'
+#' On use, the \code{\link[=Extract]{[<-}(<coords>)} replacement operator automatically revalidates
+#' \code{"\link{coords}"} objects after the replacement operation by invoking
+#' \code{\link{validate}()}.
 #'
 #' @note
 #' To extract and replace subsets of \code{"\link{waypoints}"} objects, simply use the \pkg{base}
 #' package \code{\link[base:Extract]{[}} and \code{\link[base:Extract]{[<-}} operators, taking 
 #' care not to exclude the \code{latitude} and \code{longitude} columns or \code{"Name"} column
-#' (if present), which could lead to undefined results.
+#' (if present), which could lead to undefined results. Whereas \code{"\link{coords}"} objects are
+#' automatically revalidated after using the \code{\link[=Extract]{[<-}(<coords>)} replacement
+#' operator, following value replacement using the \pkg{base} \code{\link[base:Extract]{[<-}}
+#' operator, \code{"\link{waypoints}"} objects should be revalidated using
+#' \code{\link{validate}()}, see \code{\link{validate}} \emph{Examples}.
 #'
 #' @family extract
-#' @seealso \code{"\link{coords}"}, \code{\link[base:Extract]{Extract}},
-#' \code{\link[base:unname]{unname}()}.
+#' @seealso \code{"\link{coords}"}, \pkg{base} \code{\link[base:Extract]{Extract}},
+#' \code{\link[base:unname]{unname}()}, and \code{\link{validate}()}.
 #'
 #' @param x a \code{"\link{coords}"} object.
 #'
-#' @param i indices specifying elements to extract or replace—see
+#' @param i indices specifying elements to extract or replace—see \pkg{base}
 #'   \code{\link[base:Extract]{Extract}}.
 #'
 #' @param value a \code{numeric}, a \code{numeric} vector of coordinate values of \code{length(i)},
 #'   or a \code{"coords"} object, possibly named.
 #'
-#' @return a \code{"\link{coords}"} object.
+#' @return A \code{"\link{coords}"} object.
 #'
 #' @examples
 #' ## Continuing example from `as_coords()`...

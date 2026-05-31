@@ -111,8 +111,9 @@ rm(dm)
 
 }
 \seealso{
-\code{\link[base:attr]{attr}()}, \code{\link[base:attributes]{attributes}}, and
-  \code{\link{validate}()}.
+\code{\link[base:attr]{attr}()}, \code{\link[base:attributes]{attributes}},
+\code{\link[=format]{format}(<coords>)}, \code{\link[=format]{print}(<coords>)},
+\code{\link{validate}()} and \code{\link[=Extract]{[<-}(<coords>)}.
 
 Other coordsandway: 
 \code{\link{convert}()},
