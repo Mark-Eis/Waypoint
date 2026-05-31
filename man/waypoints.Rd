@@ -8,7 +8,7 @@
 \usage{
 as_waypoints(object, ...)
 
-\method{as_waypoints}{default}(object, ..., fmt = 1L)
+\method{as_waypoints}{default}(object, fmt = 1L)
 }
 \arguments{
 \item{object}{a data frame with each row representing a waypoint, comprising at least two

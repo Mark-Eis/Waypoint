@@ -798,7 +798,6 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validat
 DataFrame as_waypoints(DataFrame object, int fmt = 1)
 {
 //	fmt::print("{1}@{0} fmt={2}\n", "as_waypoints(DataFrame, int)", exportstr, fmt);
-	CoordType type = get_coordtype(fmt);
 	object.attr("fmt") = fmt;
 	int namescol = 0;
 	if (!object.hasAttribute("namescol")) {
