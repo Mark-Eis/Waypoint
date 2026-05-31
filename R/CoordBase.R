@@ -576,7 +576,7 @@ print.waypoints <- function (x, ..., fmt = NULL, max = NULL) {
 #' ## Validate "coords" object in degrees and minutes
 #' validate(dm)
 #'
-#' ## Deliberately change the first coordinate to a value greater		
+#' ## Deliberately change the first coordinate to a value greater
 #' ## than 60 minutes using the `[<-(<coords>)` replacement operator,
 #' ## which itself invokes `validate(dm)` -- see help(`[<-.coords`)
 #' dm[1] <- 5160.4659
