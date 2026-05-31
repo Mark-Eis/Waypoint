@@ -24,8 +24,8 @@ Waypoint from [GitHub](https://github.com/) with:
 
 ``` r
 
-# install.packages("devtools")
-devtools::install_github("Mark-Eis/Waypoint")
+# install.packages("pak")
+pak::pkg_install("Mark-Eis/Waypoint")
 ```
 
 ------------------------------------------------------------------------
