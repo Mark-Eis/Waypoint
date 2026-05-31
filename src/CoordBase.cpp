@@ -706,7 +706,7 @@ NumericVector as_coords(NumericVector object, int fmt = 1)
 {
 //	fmt::print("{1}@{0} fmt={2}\n", "as_coords(NumericVector, int)", exportstr, fmt);
 	object.attr("fmt") = fmt;
-	convert_switch<NumericVector, Coord>(object, get_coordtype(fmt));
+	Coord{get_coordtype(fmt), object}.validate();
 	object.attr("class") = "coords";
 	return object;
 }
@@ -812,7 +812,7 @@ DataFrame as_waypoints(DataFrame object, int fmt = 1)
 	}
 	if(!valid_ll(object))
 		stop("Invalid llcols attribute!");
-	convert_switch<DataFrame, WayPoint>(object, type);
+	WayPoint{get_coordtype(fmt), object}.validate();
 	object.attr("class") = CharacterVector{"waypoints", "data.frame"};
 	return object;
 }
