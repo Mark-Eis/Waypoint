@@ -1,5 +1,9 @@
 # Waypoint (development version)
 
+* Improve documentation of `[<-.coords` replacement operator and `validate()` examples (#160).
+
+* Remove abstruse `convert_switch<>()` function call from `as_coords()` and `as_waypoints` (#159).
+
 * Rectify  erroneous "Invalid coords!" warning after revalidating valid `coords` (#158).
 
 * Simplify `validated()` using bitwise return value and rename as `template<NumericVector_or_DataFrame T>`
