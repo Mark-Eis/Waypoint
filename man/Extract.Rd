@@ -38,7 +38,7 @@ attribute. However, the \code{"latlon"} attribute of the replacement value is ig
 are named, the names are also ignored; to replace names, use \code{\link[base:names]{names<-}()}
 replacement form.
 
-On use, the \code{\link[=Extract]{[<-}(<coords>)} replacement operator automatically revalidates
+The \code{\link[=Extract]{[<-}(<coords>)} replacement operator automatically revalidates
 \code{"\link{coords}"} objects after the replacement operation by invoking
 \code{\link{validate}()}.
 }
