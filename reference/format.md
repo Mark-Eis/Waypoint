@@ -1,6 +1,7 @@
 # Format and Print Coords or Waypoints
 
-Format and print objects of class `"coords"` or `"waypoints"`.
+Elegantly format and print objects of class `"coords"` or `"waypoints"`
+in alternative coordinate formats.
 
 ## Usage
 

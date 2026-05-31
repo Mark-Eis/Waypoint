@@ -95,7 +95,10 @@ described under
 ## See also
 
 [`attr()`](https://rdrr.io/r/base/attr.html),
-[`data.frame()`](https://rdrr.io/r/base/data.frame.html), and
+[`data.frame()`](https://rdrr.io/r/base/data.frame.html)
+[`format`](https://mark-eis.github.io/Waypoint/reference/format.md)`(<waypoints>)`,
+[`print`](https://mark-eis.github.io/Waypoint/reference/format.md)`(<waypoints>)`,
+and
 [`validate()`](https://mark-eis.github.io/Waypoint/reference/validate.md).
 
 Other coordsandway:

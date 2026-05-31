@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Waypoint</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.1.9013</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.1.9014</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@
 
 
 <dt id="arg-i">i<a class="anchor" aria-label="anchor" href="#arg-i"></a></dt>
-<dd><p>indices specifying elements to extract or replace—see
+<dd><p>indices specifying elements to extract or replace—see <span class="pkg">base</span>
 <code><a href="https://rdrr.io/r/base/Extract.html" class="external-link">Extract</a></code>.</p></dd>
 
 
@@ -77,7 +77,7 @@ or a <code>"coords"</code> object, possibly named.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>a <code>"<a href="coords.html">coords</a>"</code> object.</p>
+    <p>A <code>"<a href="coords.html">coords</a>"</code> object.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -86,22 +86,30 @@ except <code>fmt</code>, <code>latlon</code>, <code>names</code> and <code>valid
 greater than <code>length(x)</code> will throw a <code>subscript out of bounds</code> error. If names are not
 required, use <code><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname()</a></code>, see <em>examples</em>.</p>
 <p>Replacement values may be a single <code>numeric</code>, a <code>numeric</code> vector of coordinate values
-of <code>length(i)</code>, or a <code>"coords"</code> object, possibly with a <code>"latlon"</code> attribute.
-However, the <code>"latlon"</code> attribute of the replacement value is ignored if the <code>"coords"</code>
-object <code>x</code> has no corresponding attribute set. If replacement values are named, the names
-are also ignored; to replace names, use <code><a href="https://rdrr.io/r/base/names.html" class="external-link">names&lt;-()</a></code> replacement form.</p>
+of <code>length(i)</code>, or a <code>"<a href="coords.html">coords</a>"</code> object, possibly with a <code>"latlon"</code>
+attribute. However, the <code>"latlon"</code> attribute of the replacement value is ignored if the
+<code>"<a href="coords.html">coords</a>"</code> object <code>x</code> has no corresponding attribute set. If replacement values
+are named, the names are also ignored; to replace names, use <code><a href="https://rdrr.io/r/base/names.html" class="external-link">names&lt;-()</a></code>
+replacement form.</p>
+<p>The <code>[&lt;-(&lt;coords&gt;)</code> replacement operator automatically revalidates
+<code>"<a href="coords.html">coords</a>"</code> objects after the replacement operation by invoking
+<code><a href="validate.html">validate()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
     <p>To extract and replace subsets of <code>"<a href="waypoints.html">waypoints</a>"</code> objects, simply use the <span class="pkg">base</span>
 package <code><a href="https://rdrr.io/r/base/Extract.html" class="external-link">[</a></code> and <code><a href="https://rdrr.io/r/base/Extract.html" class="external-link">[&lt;-</a></code> operators, taking
 care not to exclude the <code>latitude</code> and <code>longitude</code> columns or <code>"Name"</code> column
-(if present), which could lead to undefined results.</p>
+(if present), which could lead to undefined results. Whereas <code>"<a href="coords.html">coords</a>"</code> objects are
+automatically revalidated after using the <code>[&lt;-(&lt;coords&gt;)</code> replacement
+operator, following value replacement using the <span class="pkg">base</span> <code><a href="https://rdrr.io/r/base/Extract.html" class="external-link">[&lt;-</a></code>
+operator, <code>"<a href="waypoints.html">waypoints</a>"</code> objects should be revalidated using
+<code><a href="validate.html">validate()</a></code>, see <code><a href="validate.html">validate</a></code> <em>Examples</em>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code>"<a href="coords.html">coords</a>"</code>, <code><a href="https://rdrr.io/r/base/Extract.html" class="external-link">Extract</a></code>,
-<code><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname()</a></code>.</p></div>
+    <div class="dont-index"><p><code>"<a href="coords.html">coords</a>"</code>, <span class="pkg">base</span> <code><a href="https://rdrr.io/r/base/Extract.html" class="external-link">Extract</a></code>,
+<code><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname()</a></code>, and <code><a href="validate.html">validate()</a></code>.</p></div>
     </div>
 
     <div class="section level2">

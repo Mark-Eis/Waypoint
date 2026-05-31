@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Waypoint</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.1.9013</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.1.9014</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,7 +45,9 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="waypoint-development-version">Waypoint (development version)<a class="anchor" aria-label="anchor" href="#waypoint-development-version"></a></h2>
-<ul><li><p>Rectify erroneous “Invalid coords!” warning after revalidating valid <code>coords</code> (#158).</p></li>
+<ul><li><p>Improve documentation of <code>[&lt;-.coords</code> replacement operator and <code><a href="../reference/validate.html">validate()</a></code> examples (#160).</p></li>
+<li><p>Remove abstruse <code>convert_switch&lt;&gt;()</code> function call from <code><a href="../reference/coords.html">as_coords()</a></code> and <code>as_waypoints</code> (#159).</p></li>
+<li><p>Rectify erroneous “Invalid coords!” warning after revalidating valid <code>coords</code> (#158).</p></li>
 <li><p>Simplify <code>validated()</code> using bitwise return value and rename as <code>template&lt;NumericVector_or_DataFrame T&gt;</code> <code>check_logical_attr(T , const char*)</code> (#157).</p></li>
 <li><p>Protect base class functions without public interface (#156).</p></li>
 <li><p>Replace <code>Validator</code> functor class with lambda in new member function <code>Coordbase::validate0()</code> (#155).</p></li>

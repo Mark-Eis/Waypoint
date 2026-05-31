@@ -2,6 +2,14 @@
 
 ## Waypoint (development version)
 
+- Improve documentation of `[<-.coords` replacement operator and
+  [`validate()`](https://mark-eis.github.io/Waypoint/reference/validate.md)
+  examples (#160).
+
+- Remove abstruse `convert_switch<>()` function call from
+  [`as_coords()`](https://mark-eis.github.io/Waypoint/reference/coords.md)
+  and `as_waypoints` (#159).
+
 - Rectify erroneous “Invalid coords!” warning after revalidating valid
   `coords` (#158).
 

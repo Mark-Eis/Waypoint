@@ -69,9 +69,10 @@ value `TRUE`.
 
 ## See also
 
-`"`[`coords`](https://mark-eis.github.io/Waypoint/reference/coords.md)`"`
+`"`[`coords`](https://mark-eis.github.io/Waypoint/reference/coords.md)`"`,
+`"`[`waypoints`](https://mark-eis.github.io/Waypoint/reference/waypoints.md)`"`
 and
-`"`[`waypoints`](https://mark-eis.github.io/Waypoint/reference/waypoints.md)`"`.
+[`[<-`](https://mark-eis.github.io/Waypoint/reference/Extract.md)`(<coords>)`.
 
 Other validate:
 [`review()`](https://mark-eis.github.io/Waypoint/reference/review.md)
@@ -100,13 +101,13 @@ validate(dm)
 #> Mawson Peak                               73°31.0370′ E
 #> Silvio Pettirossi International Airport   57°31.1536′ W
 
-## Deliberately change the first coordinate
-## to a value greater than 60 minutes
+## Deliberately change the first coordinate to a value greater    
+## than 60 minutes using the `[<-(<coords>)` replacement operator,
+## which itself invokes `validate(dm)` -- see help(`[<-.coords`)
 dm[1] <- 5160.4659
 #> Warning: Validation failed!
 
-validate(dm)
-#> Warning: Validation failed!
+dm
 #> Warning: Invalid coords!
 #> Nelson's Column                           51°60.4659′ N
 #> Ostravice                                 49°32.7726′ N
@@ -147,8 +148,10 @@ validate(wp)
 #> Mawson Peak                               -53.104781°    73.517283°
 #> Silvio Pettirossi International Airport   -25.240156°   -57.519227°
 
-## Deliberately change the penultimate latitude
-## to an absolute value greater than 90 degrees
+## Deliberately change the penultimate latitude to an absolute
+## value greater than 90 degrees, using the usual base package
+## replacement `[<-` operator, which does not invoke `validate(dm)`
+## -- we must do so ourselves
 wp$lat[7] <- -93.104781
 
 validate(wp)

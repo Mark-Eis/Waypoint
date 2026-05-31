@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Waypoint</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.1.9013</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.1.9014</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -102,7 +102,7 @@ non-compliant coordinate values.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code>"<a href="coords.html">coords</a>"</code> and <code>"<a href="waypoints.html">waypoints</a>"</code>.</p>
+    <div class="dont-index"><p><code>"<a href="coords.html">coords</a>"</code>, <code>"<a href="waypoints.html">waypoints</a>"</code> and <code><a href="Extract.html">[&lt;-</a>(&lt;coords&gt;)</code>.</p>
 <p>Other validate:
 <code><a href="review.html">review()</a></code></p></div>
     </div>
@@ -130,13 +130,13 @@ non-compliant coordinate values.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mawson Peak                               73°31.0370′ E</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   57°31.1536′ W</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## Deliberately change the first coordinate</span></span></span>
-<span class="r-in"><span><span class="co">## to a value greater than 60 minutes</span></span></span>
+<span class="r-in"><span><span class="co">## Deliberately change the first coordinate to a value greater    </span></span></span>
+<span class="r-in"><span><span class="co">## than 60 minutes using the `[&lt;-(&lt;coords&gt;)` replacement operator,</span></span></span>
+<span class="r-in"><span><span class="co">## which itself invokes `validate(dm)` -- see help(`[&lt;-.coords`)</span></span></span>
 <span class="r-in"><span><span class="va">dm</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">5160.4659</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Validation failed!</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">validate</span><span class="op">(</span><span class="va">dm</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Validation failed!</span>
+<span class="r-in"><span><span class="va">dm</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Invalid coords!</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Nelson's Column                           51°60.4659′ N</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Ostravice                                 49°32.7726′ N</span>
@@ -177,8 +177,10 @@ non-compliant coordinate values.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Mawson Peak                               -53.104781°    73.517283°</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   -25.240156°   -57.519227°</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## Deliberately change the penultimate latitude</span></span></span>
-<span class="r-in"><span><span class="co">## to an absolute value greater than 90 degrees</span></span></span>
+<span class="r-in"><span><span class="co">## Deliberately change the penultimate latitude to an absolute</span></span></span>
+<span class="r-in"><span><span class="co">## value greater than 90 degrees, using the usual base package</span></span></span>
+<span class="r-in"><span><span class="co">## replacement `[&lt;-` operator, which does not invoke `validate(dm)`</span></span></span>
+<span class="r-in"><span><span class="co">## -- we must do so ourselves</span></span></span>
 <span class="r-in"><span><span class="va">wp</span><span class="op">$</span><span class="va">lat</span><span class="op">[</span><span class="fl">7</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fl">93.104781</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">validate</span><span class="op">(</span><span class="va">wp</span><span class="op">)</span></span></span>

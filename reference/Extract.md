@@ -22,7 +22,7 @@ x[i] <- value
 
 - i:
 
-  indices specifying elements to extract or replace—see
+  indices specifying elements to extract or replace—see base
   [`Extract`](https://rdrr.io/r/base/Extract.html).
 
 - value:
@@ -32,7 +32,7 @@ x[i] <- value
 
 ## Value
 
-a
+A
 `"`[`coords`](https://mark-eis.github.io/Waypoint/reference/coords.md)`"`
 object.
 
@@ -47,12 +47,19 @@ not required, use [`unname()`](https://rdrr.io/r/base/unname.html), see
 *examples*.
 
 Replacement values may be a single `numeric`, a `numeric` vector of
-coordinate values of `length(i)`, or a `"coords"` object, possibly with
-a `"latlon"` attribute. However, the `"latlon"` attribute of the
-replacement value is ignored if the `"coords"` object `x` has no
-corresponding attribute set. If replacement values are named, the names
-are also ignored; to replace names, use
+coordinate values of `length(i)`, or a
+`"`[`coords`](https://mark-eis.github.io/Waypoint/reference/coords.md)`"`
+object, possibly with a `"latlon"` attribute. However, the `"latlon"`
+attribute of the replacement value is ignored if the
+`"`[`coords`](https://mark-eis.github.io/Waypoint/reference/coords.md)`"`
+object `x` has no corresponding attribute set. If replacement values are
+named, the names are also ignored; to replace names, use
 [`names<-()`](https://rdrr.io/r/base/names.html) replacement form.
+
+The `[<-(<coords>)` replacement operator automatically revalidates
+`"`[`coords`](https://mark-eis.github.io/Waypoint/reference/coords.md)`"`
+objects after the replacement operation by invoking
+[`validate()`](https://mark-eis.github.io/Waypoint/reference/validate.md).
 
 ## Note
 
@@ -62,13 +69,24 @@ objects, simply use the base package
 [`[`](https://rdrr.io/r/base/Extract.html) and
 [`[<-`](https://rdrr.io/r/base/Extract.html) operators, taking care not
 to exclude the `latitude` and `longitude` columns or `"Name"` column (if
-present), which could lead to undefined results.
+present), which could lead to undefined results. Whereas
+`"`[`coords`](https://mark-eis.github.io/Waypoint/reference/coords.md)`"`
+objects are automatically revalidated after using the `[<-(<coords>)`
+replacement operator, following value replacement using the base
+[`[<-`](https://rdrr.io/r/base/Extract.html) operator,
+`"`[`waypoints`](https://mark-eis.github.io/Waypoint/reference/waypoints.md)`"`
+objects should be revalidated using
+[`validate()`](https://mark-eis.github.io/Waypoint/reference/validate.md),
+see
+[`validate`](https://mark-eis.github.io/Waypoint/reference/validate.md)
+*Examples*.
 
 ## See also
 
 `"`[`coords`](https://mark-eis.github.io/Waypoint/reference/coords.md)`"`,
-[`Extract`](https://rdrr.io/r/base/Extract.html),
-[`unname()`](https://rdrr.io/r/base/unname.html).
+base [`Extract`](https://rdrr.io/r/base/Extract.html),
+[`unname()`](https://rdrr.io/r/base/unname.html), and
+[`validate()`](https://mark-eis.github.io/Waypoint/reference/validate.md).
 
 ## Examples
 

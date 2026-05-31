@@ -103,8 +103,12 @@ whether individual values are latitude or longitude.
 ## See also
 
 [`attr()`](https://rdrr.io/r/base/attr.html),
-[`attributes`](https://rdrr.io/r/base/attributes.html), and
-[`validate()`](https://mark-eis.github.io/Waypoint/reference/validate.md).
+[`attributes`](https://rdrr.io/r/base/attributes.html),
+[`format`](https://mark-eis.github.io/Waypoint/reference/format.md)`(<coords>)`,
+[`print`](https://mark-eis.github.io/Waypoint/reference/format.md)`(<coords>)`,
+[`validate()`](https://mark-eis.github.io/Waypoint/reference/validate.md)
+and
+[`[<-`](https://mark-eis.github.io/Waypoint/reference/Extract.md)`(<coords>)`.
 
 Other coordsandway:
 [`convert()`](https://mark-eis.github.io/Waypoint/reference/convert.md),
