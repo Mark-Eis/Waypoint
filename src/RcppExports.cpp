@@ -84,65 +84,63 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// convertwaypoints
-DataFrame convertwaypoints(DataFrame x, int fmt);
-RcppExport SEXP _Waypoint_convertwaypoints(SEXP xSEXP, SEXP fmtSEXP) {
+// bin
+void bin();
+RcppExport SEXP _Waypoint_bin() {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    bin();
+    return R_NilValue;
+END_RCPP
+}
+// foo
+CharacterVector foo(NumericVector object, int fmt_cur, int fmt_req);
+RcppExport SEXP _Waypoint_foo(SEXP objectSEXP, SEXP fmt_curSEXP, SEXP fmt_reqSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< DataFrame >::type x(xSEXP);
-    Rcpp::traits::input_parameter< int >::type fmt(fmtSEXP);
-    rcpp_result_gen = Rcpp::wrap(convertwaypoints(x, fmt));
+    Rcpp::traits::input_parameter< NumericVector >::type object(objectSEXP);
+    Rcpp::traits::input_parameter< int >::type fmt_cur(fmt_curSEXP);
+    Rcpp::traits::input_parameter< int >::type fmt_req(fmt_reqSEXP);
+    rcpp_result_gen = Rcpp::wrap(foo(object, fmt_cur, fmt_req));
     return rcpp_result_gen;
 END_RCPP
 }
-// validatewaypoints
-DataFrame validatewaypoints(DataFrame x, bool force);
-RcppExport SEXP _Waypoint_validatewaypoints(SEXP xSEXP, SEXP forceSEXP) {
+// bar
+NumericVector bar(NumericVector x, int fmt_cur, int fmt_req);
+RcppExport SEXP _Waypoint_bar(SEXP xSEXP, SEXP fmt_curSEXP, SEXP fmt_reqSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< DataFrame >::type x(xSEXP);
-    Rcpp::traits::input_parameter< bool >::type force(forceSEXP);
-    rcpp_result_gen = Rcpp::wrap(validatewaypoints(x, force));
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type fmt_cur(fmt_curSEXP);
+    Rcpp::traits::input_parameter< int >::type fmt_req(fmt_reqSEXP);
+    rcpp_result_gen = Rcpp::wrap(bar(x, fmt_cur, fmt_req));
     return rcpp_result_gen;
 END_RCPP
 }
-// formatwaypoints
-CharacterVector formatwaypoints(DataFrame x, bool usenames, bool validate, int fmt);
-RcppExport SEXP _Waypoint_formatwaypoints(SEXP xSEXP, SEXP usenamesSEXP, SEXP validateSEXP, SEXP fmtSEXP) {
+// bas
+NumericVector bas(NumericVector x, int fmt_cur, const char* what);
+RcppExport SEXP _Waypoint_bas(SEXP xSEXP, SEXP fmt_curSEXP, SEXP whatSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< DataFrame >::type x(xSEXP);
-    Rcpp::traits::input_parameter< bool >::type usenames(usenamesSEXP);
-    Rcpp::traits::input_parameter< bool >::type validate(validateSEXP);
-    Rcpp::traits::input_parameter< int >::type fmt(fmtSEXP);
-    rcpp_result_gen = Rcpp::wrap(formatwaypoints(x, usenames, validate, fmt));
+    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type fmt_cur(fmt_curSEXP);
+    Rcpp::traits::input_parameter< const char* >::type what(whatSEXP);
+    rcpp_result_gen = Rcpp::wrap(bas(x, fmt_cur, what));
     return rcpp_result_gen;
 END_RCPP
 }
-// ll_headers
-CharacterVector ll_headers(int width, int fmt);
-RcppExport SEXP _Waypoint_ll_headers(SEXP widthSEXP, SEXP fmtSEXP) {
+// cla_test
+int cla_test(RObject object, const char* attrname);
+RcppExport SEXP _Waypoint_cla_test(SEXP objectSEXP, SEXP attrnameSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type width(widthSEXP);
-    Rcpp::traits::input_parameter< int >::type fmt(fmtSEXP);
-    rcpp_result_gen = Rcpp::wrap(ll_headers(width, fmt));
-    return rcpp_result_gen;
-END_RCPP
-}
-// as_coordswaypoints
-NumericVector as_coordswaypoints(DataFrame object, bool which);
-RcppExport SEXP _Waypoint_as_coordswaypoints(SEXP objectSEXP, SEXP whichSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< DataFrame >::type object(objectSEXP);
-    Rcpp::traits::input_parameter< bool >::type which(whichSEXP);
-    rcpp_result_gen = Rcpp::wrap(as_coordswaypoints(object, which));
+    Rcpp::traits::input_parameter< RObject >::type object(objectSEXP);
+    Rcpp::traits::input_parameter< const char* >::type attrname(attrnameSEXP);
+    rcpp_result_gen = Rcpp::wrap(cla_test(object, attrname));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -154,11 +152,11 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Waypoint_validatecoords", (DL_FUNC) &_Waypoint_validatecoords, 2},
     {"_Waypoint_formatcoords", (DL_FUNC) &_Waypoint_formatcoords, 4},
     {"_Waypoint_as_waypoints", (DL_FUNC) &_Waypoint_as_waypoints, 2},
-    {"_Waypoint_convertwaypoints", (DL_FUNC) &_Waypoint_convertwaypoints, 2},
-    {"_Waypoint_validatewaypoints", (DL_FUNC) &_Waypoint_validatewaypoints, 2},
-    {"_Waypoint_formatwaypoints", (DL_FUNC) &_Waypoint_formatwaypoints, 4},
-    {"_Waypoint_ll_headers", (DL_FUNC) &_Waypoint_ll_headers, 2},
-    {"_Waypoint_as_coordswaypoints", (DL_FUNC) &_Waypoint_as_coordswaypoints, 2},
+    {"_Waypoint_bin", (DL_FUNC) &_Waypoint_bin, 0},
+    {"_Waypoint_foo", (DL_FUNC) &_Waypoint_foo, 3},
+    {"_Waypoint_bar", (DL_FUNC) &_Waypoint_bar, 3},
+    {"_Waypoint_bas", (DL_FUNC) &_Waypoint_bas, 3},
+    {"_Waypoint_cla_test", (DL_FUNC) &_Waypoint_cla_test, 2},
     {NULL, NULL, 0}
 };
 

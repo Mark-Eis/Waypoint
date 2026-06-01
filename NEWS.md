@@ -1,4 +1,4 @@
-# Waypoint (development version)
+# Waypoint 1.3.0
 
 * Improve documentation of `[<-.coords` replacement operator and `validate()` examples (#160).
 
