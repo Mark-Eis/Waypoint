@@ -103,7 +103,7 @@ template<NumericVector_or_DataFrame T, class U>
 inline vector<U> get_vec_attr(const T& t, const char* attrname)
 {
 //	fmt::print("@{} attr=\"{}\" {}\n", "get_vec_attr<T, U>(const T&, const char*)", attrname, t.hasAttribute(attrname) ? true : false);
-	return t.hasAttribute(attrname) ? as<vector<U>>(t.attr(attrname)) : vector<U>();
+	return t.hasAttribute(attrname) ? as<vector<U>>(t.attr(attrname)) : vector<U>{};
 }
 
 
@@ -350,7 +350,7 @@ vector<string> Coordlet<current_type>::format0(bool wpt) const
 
 	vector<bool>::const_iterator ll_it { latlon.begin() };
 	const auto ll_size { latlon.size() };
-	vector out_sv{ vector<string>(nv.size()) };
+	auto out_sv = vector<string>(nv.size());
 
 	if constexpr (CoordType::decdeg == required_type)
 		transform(nv.begin(), nv.end(), out_sv.begin(), [this](double n){
@@ -369,6 +369,9 @@ vector<string> Coordlet<current_type>::format0(bool wpt) const
 			});
 
 	if (wpt) {
+		if constexpr (CoordType::decdeg != required_type)
+			transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), [&ll_it](string& outstr, double n){
+				return outstr + cardpoint(n < 0, *ll_it);});
 	} else {
 		if constexpr (CoordType::decdeg == required_type) {
 			if (ll_size) 
@@ -497,6 +500,15 @@ WayPoint::WayPoint(CoordType ct, DataFrame df) :
 	fmt::print("§{} {} ", "WayPoint::WayPoint(CoordType, DataFrame)", ct); _ctrsgn(typeid(*this));
 }
 
+
+vector<string> WayPoint::format(CoordType dt) const
+{
+	vector sv_lat{ format_switch_current(nvlat, ct, dt, true) };
+	vector sv_lon{ format_switch_current(nvlon, ct, dt, true) };
+
+	transform(sv_lat.begin(), sv_lat.end(), sv_lon.begin(), sv_lat.begin(), [](auto& latstr, auto& lonstr){return latstr + "  " + lonstr;});
+	return sv_lat;
+}
 
 
 
@@ -823,11 +835,8 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate
 		if (!check_valid(x))
 			warning("Formatting invalid waypoints!");
 	CoordType ct { get_coordtype(x) };
-	auto wp = WayPoint{ ct, x };
-	
-	vector sv{ format_switch_current(wp.get_nv(true), ct, fmt ? get_coordtype(fmt) : ct) };
-//	vector sv{ format_switch(WayPoint(ct, x), fmt ? get_coordtype(fmt) : ct) };
-//	vector sv = vector<string>{ "In Mimiland!", "In Mimiland!", "In Mimiland!", "In Mimiland!", "In Mimiland!", "In Mimiland!", "In Mimiland!", "In Mimiland!" };
+	vector sv{ WayPoint{ ct, x }.format(fmt ? get_coordtype(fmt) : ct) };
+
 	if (usenames) {
 		RObject names = getnames(x);
 		if (!prefixwithnames(sv, names))

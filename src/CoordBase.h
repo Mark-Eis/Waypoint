@@ -198,10 +198,10 @@ class WayPoint {
 		template<CoordType type>
 		void convert();
 		void validate(bool = true);
-		template<CoordType type>
-		vector<string> format() const;
+//		template<CoordType type>
+		vector<string> format(CoordType) const;
 // Temporary Bodge!
-		NumericVector get_nv(bool lat) { return lat ? nvlat : nvlon; }
+//		NumericVector get_nv(bool lat) { return lat ? nvlat : nvlon; }
 };
 
 
