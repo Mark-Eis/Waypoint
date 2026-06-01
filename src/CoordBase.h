@@ -134,12 +134,12 @@ struct FamousFive<CoordType::degminsec> final : FamousFive0 {
 template<CoordType current_type>
 class Coordlet;
 // template<CoordType current_type>
-class WayPoint;
+class Waypoint;
 
 /// __________________________________________________
 /// Concept
 template <typename T>
-concept Coord_or_WayPoint =
+concept Coord_or_Waypoint =
 	requires (T t) {
 		t.template convert<CoordType::decdeg>();
 		t.template convert<CoordType::degmin>();
@@ -162,19 +162,21 @@ class Coordlet {
 		NumericVector nv;
 		vector<bool> valid { false };
 		const vector<bool> latlon;
+		const bool wpt { false };
 
 		template<CoordType required_type>
 		void convert0();
 		template<CoordType required_type> 
-		vector<string> format0(bool wpt) const;
+		vector<string> format0() const;
 	public:
-		explicit Coordlet(NumericVector nv);
+		explicit Coordlet(NumericVector);
+		explicit Coordlet(NumericVector, const bool);
 		Coordlet(const Coordlet&) = delete;						// Disallow copying
 		Coordlet& operator=(const Coordlet&) = delete;			//  ——— ditto ———
 		Coordlet(Coordlet&&) = delete;							// Disallow transfer ownership
 		Coordlet& operator=(Coordlet&&) = delete;				// Disallow moving
 		virtual ~Coordlet() = default;
-		vector<string> format_switch(CoordType required_type, bool wpt) const;
+		vector<string> format_switch(CoordType required_type) const;
 		void convert_switch(CoordType required_type);
 		void validate(bool = true, const char* = "");
 };
@@ -182,7 +184,7 @@ class Coordlet {
 
 /// __________________________________________________
 /// Waypoint class
-class WayPoint {
+class Waypoint {
 	protected:
 		CoordType ct;
 		DataFrame df;
@@ -191,17 +193,14 @@ class WayPoint {
 		vector<bool> validlat { false };
 		vector<bool> validlon { false };
 	public:
-		explicit WayPoint(CoordType, DataFrame);
-		~WayPoint() = default;
-//		~WayPoint() { fmt::print("§{} {} ", "WayPoint::~WayPoint()", ct); _ctrsgn(typeid(*this), true); }
+		explicit Waypoint(CoordType, DataFrame);
+		~Waypoint() = default;
+//		~Waypoint() { fmt::print("§{} {} ", "Waypoint::~Waypoint()", ct); _ctrsgn(typeid(*this), true); }
 
 		template<CoordType type>
 		void convert();
 		void validate(bool = true);
-//		template<CoordType type>
 		vector<string> format(CoordType) const;
-// Temporary Bodge!
-//		NumericVector get_nv(bool lat) { return lat ? nvlat : nvlon; }
 };
 
 
@@ -225,13 +224,13 @@ void validate_switch_current(NumericVector, CoordType, bool, const char* = "");
 bool check_valid(const NumericVector);
 bool check_valid(const DataFrame);
 
-template<NumericVector_or_DataFrame T /*, Coord_or_WayPoint U */>
+template<NumericVector_or_DataFrame T /*, Coord_or_Waypoint U */>
 bool revalidate(const T);
 
 // constexpr auto revalid_Coord = &revalidate<NumericVector, Coord>;
-// constexpr auto revalid_WayPoint = &revalidate<DataFrame, WayPoint>;
+// constexpr auto revalid_Waypoint = &revalidate<DataFrame, Waypoint>;
 
-template<NumericVector_or_DataFrame T /*, Coord_or_WayPoint U */>
+template<NumericVector_or_DataFrame T /*, Coord_or_Waypoint U */>
 inline const T validate(const T);
 
 bool valid_ll(const DataFrame);
