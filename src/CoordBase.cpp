@@ -1,3 +1,6 @@
+/// __________________________________________________
+/// CoordBase.cpp
+/// __________________________________________________
 
 // [[Rcpp::plugins(cpp23)]]
 
@@ -14,13 +17,11 @@ using std::string_view;
 using namespace std::string_view_literals;
 using std::transform;
 
-#include "Waypoint.h"
+#include "CoordBase.h"
 
 #define FMT_HEADER_ONLY
-// #include "fmt/format.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt. Works, but not always in pkgdown
-// #include "fmt/ranges.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt. Works, but not always in pkgdown
-#include "/Users/frzmce/Library/CloudStorage/OneDrive-UniversityofBristol/Documents/R/Packages/Waypoint/src/fmt/format.h"
-#include "/Users/frzmce/Library/CloudStorage/OneDrive-UniversityofBristol/Documents/R/Packages/Waypoint/src/fmt/ranges.h"
+#include "fmt/format.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt. Works, but not always in pkgdown
+#include "fmt/ranges.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt. Works, but not always in pkgdown
 
 #define DEBUG 1
 
