@@ -74,10 +74,14 @@ inline int coordtype_to_int(CoordType);
 inline string cardpoint(bool, bool);
 inline string cardi_b(bool);
 
+
 /// __________________________________________________
 /// __________________________________________________
-/// FamousFiveT Templated and OO
-struct FamousFive {
+/// FamousFive -- Templated and OO
+
+/// __________________________________________________
+/// Abstract base class with pure virtual functions	
+struct FamousFive0 {
 	virtual int get_deg(double x) const = 0;
 	virtual double get_decdeg(double x) const = 0;
 	virtual int get_min(double x) const = 0;
@@ -86,9 +90,14 @@ struct FamousFive {
 };
 
 /// __________________________________________________
-/// Default struct for decimal degrees	
+/// Default empty derived struct for SFINAE	
 template<CoordType type>
-struct FamousFiveT final : FamousFive {
+struct FamousFive final : FamousFive0 {};
+
+/// __________________________________________________
+/// Specialised derived struct for decimal degrees	
+template<>
+struct FamousFive<CoordType::decdeg> final : FamousFive0 {
 	int get_deg(double x) const { return int(x); }
 	double get_decdeg(double x) const { return x; }
 	int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
@@ -97,9 +106,9 @@ struct FamousFiveT final : FamousFive {
 };
 
 /// __________________________________________________
-/// Specialised struct for degrees and minutes
+/// Specialised derived struct for degrees and minutes
 template<>
-struct FamousFiveT<CoordType::degmin> final : FamousFive {
+struct FamousFive<CoordType::degmin> final : FamousFive0 {
 	int get_deg(double x) const { return int(x / 1e2); }
 	double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
 	int get_min(double x) const { return int(x) % int(1e2); }
@@ -108,9 +117,9 @@ struct FamousFiveT<CoordType::degmin> final : FamousFive {
 };
 
 /// __________________________________________________
-/// Specialised struct for degrees, minutes and seconds
+/// Specialised derived struct for degrees, minutes and seconds
 template<>
-struct FamousFiveT<CoordType::degminsec> final : FamousFive {
+struct FamousFive<CoordType::degminsec> final : FamousFive0 {
 	int get_deg(double x) const { return int(x / 1e4); }
 	double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
 	int get_min(double x) const { return (int(x) % int(1e4)) / 1e2; }
@@ -149,7 +158,7 @@ concept Coord_or_WayPoint =
 template<CoordType current_type>
 class Coordlet {
 
-		FamousFiveT<current_type> ff;
+		FamousFive<current_type> ff;
 		NumericVector nv;
 		vector<bool> valid { false };
 		const vector<bool> latlon;
