@@ -2,8 +2,8 @@
 /// CoordBase.h
 /// __________________________________________________
 
-#ifndef Waypoint_H_
-#define Waypoint_H_
+#ifndef COORDBASE_H_
+#define COORDBASE_H_
 
 #define FMT_HEADER_ONLY
 // #include "fmt/base.h"		// …fmt/*.h copied to …/R/Packages/Waypoint/src.  Works, but not in pkgdown
@@ -227,4 +227,4 @@ CharacterVector ll_headers(int, int);
 NumericVector as_coordswaypoints(DataFrame, bool);
 
 
-#endif  // Waypoint_H_
+#endif  // COORDBASE_H_
