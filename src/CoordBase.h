@@ -133,7 +133,7 @@ struct FamousFive<CoordType::degminsec> final : FamousFive0 {
 /// Class forward declarations
 template<CoordType current_type>
 class Coordlet;
-template<CoordType current_type>
+// template<CoordType current_type>
 class WayPoint;
 
 /// __________________________________________________
@@ -177,6 +177,31 @@ class Coordlet {
 		vector<string> format_switch(CoordType required_type, bool wpt) const;
 		void convert_switch(CoordType required_type);
 		void validate(bool = true, const char* = "");
+};
+
+
+/// __________________________________________________
+/// Waypoint class
+class WayPoint {
+	protected:
+		CoordType ct;
+		DataFrame df;
+		NumericVector nvlat;
+		NumericVector nvlon;
+		vector<bool> validlat { false };
+		vector<bool> validlon { false };
+	public:
+		explicit WayPoint(CoordType, DataFrame);
+		~WayPoint() = default;
+//		~WayPoint() { fmt::print("§{} {} ", "WayPoint::~WayPoint()", ct); _ctrsgn(typeid(*this), true); }
+
+		template<CoordType type>
+		void convert();
+		void validate(bool = true);
+		template<CoordType type>
+		vector<string> format() const;
+// Temporary Bodge!
+		NumericVector get_nv(bool lat) { return lat ? nvlat : nvlon; }
 };
 
 

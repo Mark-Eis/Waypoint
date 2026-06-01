@@ -486,6 +486,22 @@ void Coordlet<current_type>::validate(bool warn, const char* what)
 
 
 /// __________________________________________________
+/// __________________________________________________
+/// Waypoint class
+
+WayPoint::WayPoint(CoordType ct, DataFrame df) :
+	ct(ct), df(df),
+	nvlat(df[get_vec_attr<DataFrame, int>(df, "llcols")[0] - 1]), 
+	nvlon(df[get_vec_attr<DataFrame, int>(df, "llcols")[1] - 1])
+{
+	fmt::print("§{} {} ", "WayPoint::WayPoint(CoordType, DataFrame)", ct); _ctrsgn(typeid(*this));
+}
+
+
+
+
+
+/// __________________________________________________
 /// Switch current CoordType to format nv
 vector<string> format_switch_current(NumericVector nv, CoordType current_type, CoordType required_type, bool wpt)
 {
@@ -611,7 +627,7 @@ bool check_valid(const NumericVector nv)
 /// Check "lat_valid" and "lon_valid attributes of DataFrame are all true
 bool check_valid(const DataFrame df)
 {
-//	fmt::print("@check_valid(const DataFrame)\n");
+	fmt::print("@check_valid(const DataFrame)\n");
 
 	int latvalidated = check_logical_attr(df, "validlat");
 	if (!latvalidated)
@@ -634,12 +650,9 @@ bool check_valid(const DataFrame df)
 template<NumericVector_or_DataFrame T>
 bool revalidate(const T t)
 {
-//	fmt::print("@revalidate<T>(const T); T: {}\n", demangle(typeid(t)));
+	fmt::print("@revalidate<T>(const T); T: {}\n", demangle(typeid(t)));
 	warning("Revalidating %s…!", demangle(typeid(t)));
-	if constexpr (std::is_same_v<T, NumericVector>)
-		validate(t);										// Temporary solution
-	else
-		stop("Compiler pacifier!");							// Temporary solution
+	validate(t);										// Temporary solution
 	return check_valid(t);
 }
 
@@ -649,8 +662,11 @@ bool revalidate(const T t)
 template<NumericVector_or_DataFrame T>
 inline const T validate(const T t)
 {
-//	fmt::print("@validate<T>(const T); T: {}\n", demangle(typeid(t)));
-	validate_switch_current(t, get_coordtype(t), true, "coords [validate<T>(const T)]");			//¡¡¡Temporary solution!!!
+	fmt::print("@validate<T>(const T); T: {}\n", demangle(typeid(t)));
+	if constexpr (std::is_same_v<T, NumericVector>)
+		validate_switch_current(t, get_coordtype(t), true, "coords [validate<T>(const T)]");			//¡¡¡Temporary solution!!!
+	else
+		stop("Compiler pacifier! @validate<T>(const T); T: %s", demangle(typeid(t)));							// Temporary solution
 	return t;	
 }
 
@@ -788,6 +804,36 @@ DataFrame as_waypoints(DataFrame object, int fmt = 1)
 //	WayPoint{get_coordtype(fmt), object}.validate();
 	object.attr("class") = CharacterVector{"waypoints", "data.frame"};
 	return object;
+}
+
+
+/// __________________________________________________
+/// Format waypoints vector - S3 method format.waypoints()
+//' @rdname format
+// [[Rcpp::export(name = "format.waypoints")]]
+CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate = true, int fmt = 0)
+{
+	fmt::print("{1}@{0} usenames: {2}, validate: {3}\n", "formatwaypoints(DataFrame, bool, bool)", exportstr, usenames, validate);
+	checkinherits(x, "waypoints");
+	if(!x.nrows())
+		stop("x has 0 rows!");
+	if(!valid_ll(x))
+		stop("Invalid llcols attribute!");
+	if (validate)
+		if (!check_valid(x))
+			warning("Formatting invalid waypoints!");
+	CoordType ct { get_coordtype(x) };
+	auto wp = WayPoint{ ct, x };
+	
+	vector sv{ format_switch_current(wp.get_nv(true), ct, fmt ? get_coordtype(fmt) : ct) };
+//	vector sv{ format_switch(WayPoint(ct, x), fmt ? get_coordtype(fmt) : ct) };
+//	vector sv = vector<string>{ "In Mimiland!", "In Mimiland!", "In Mimiland!", "In Mimiland!", "In Mimiland!", "In Mimiland!", "In Mimiland!", "In Mimiland!" };
+	if (usenames) {
+		RObject names = getnames(x);
+		if (!prefixwithnames(sv, names))
+			stop("Invalid \"namescol\" attribute!");
+	}
+	return wrap(sv);
 }
 
 
