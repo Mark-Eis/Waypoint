@@ -1,6 +1,3 @@
-/// __________________________________________________
-/// CoordBase.cpp
-/// __________________________________________________
 
 // [[Rcpp::plugins(cpp23)]]
 
@@ -11,19 +8,21 @@
 using namespace Rcpp;
 
 using std::array;
-using std::vector; 
+using std::vector;
 using std::string;
 using std::string_view;
 using namespace std::string_view_literals;
 using std::transform;
 
-#include "CoordBase.h"
+#include "Waypoint.h"
 
 #define FMT_HEADER_ONLY
-#include "fmt/format.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt. Works, but not always in pkgdown
-#include "fmt/ranges.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt. Works, but not always in pkgdown
+// #include "fmt/format.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt. Works, but not always in pkgdown
+// #include "fmt/ranges.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt. Works, but not always in pkgdown
+#include "/Users/frzmce/Library/CloudStorage/OneDrive-UniversityofBristol/Documents/R/Packages/Waypoint/src/fmt/format.h"
+#include "/Users/frzmce/Library/CloudStorage/OneDrive-UniversityofBristol/Documents/R/Packages/Waypoint/src/fmt/ranges.h"
 
-#define DEBUG 0
+#define DEBUG 1
 
 
 /// __________________________________________________
@@ -33,16 +32,15 @@ using std::transform;
 #if DEBUG > 0
 
 /// Report object construction and destruction
-void _ctrsgn(const std::type_info& obj, bool destruct)
+void _ctrsgn(const std::type_info& obj, bool destruct /* = false */)		// default arg should be in header
 {
-	fmt::print("{}ing ", destruct ? "Destroy" : "Construct");
+//	fmt::print("{}ing ", destruct ? "Destroy" : "Construct");
 	std::fflush(nullptr);
 	string s = obj.name();
 	system(("c++filt -t " + s).data());
 }
 
 /// Format string for debugging code
-//constexpr string_view exportstr { "——Rcpp::export——" };
 constexpr auto exportstr { "——Rcpp::export——"sv };
 
 #endif
@@ -324,11 +322,64 @@ inline string cardi_b(bool negative)
 }
 
 
-/// __________________________________________________
-/// __________________________________________________
-/// Instantiate FamousFive Derived Classes
+/// ——— ¡¡Nothing new above this line!! ———
 
-vector<FamousFive*> vff { &ff_decdeg, &ff_degmin, &ff_degminsec };
+
+/// __________________________________________________
+/// __________________________________________________
+/// Coordlet class
+
+/// __________________________________________________
+/// Constructor of Coordlet
+template<CoordType current_type>
+Coordlet<current_type>::Coordlet(NumericVector nv) :
+	nv{ nv },
+	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") }
+{
+//	fmt::print("§{} {} ", fmt::format("Coordlet<CoordType::{}>::Coordlet(NumericVector)", current_type), "");  _ctrsgn(typeid(*this));
+}
+
+
+/// __________________________________________________
+/// Format Coordlet::nv as vector<string> of CoordType
+template<CoordType current_type> template<CoordType required_type>
+vector<string> Coordlet<current_type>::format0(bool wpt) const
+{
+//	fmt::print("@Coordlet<CoordType::{}>::format0<CoordType::{}>() const; wpt: {}\n", current_type, required_type, wpt);
+
+	vector<bool>::const_iterator ll_it { latlon.begin() };
+	const auto ll_size { latlon.size() };
+	vector out_sv{ vector<string>(nv.size()) };
+
+	if constexpr (CoordType::decdeg == required_type)
+		transform(nv.begin(), nv.end(), out_sv.begin(), [this](double n){
+				return fmt::format("{:>{}.{}f}\u00B0", ff.get_decdeg(n), 11, 6);
+			});
+	else if constexpr (CoordType::degmin == required_type)
+		transform(nv.begin(), nv.end(), out_sv.begin(), [this](double n){
+				return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
+					   fmt::format("{:0>{}.{}f}\u2032", fabs(ff.get_decmin(n)), 7, 4);
+			});
+	else
+		transform(nv.begin(), nv.end(), out_sv.begin(), [this](double n){
+				return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
+					   fmt::format("{:0>{}}\u2032", abs(ff.get_min(n)), 2) +
+					   fmt::format("{:0>{}.{}f}\u2033", fabs(ff.get_sec(n)), 5, 2);
+			});
+
+	if (wpt) {
+	} else {
+		if constexpr (CoordType::decdeg == required_type) {
+			if (ll_size) 
+				transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), [&ll_it, &ll_size](string& out_sv, double n){
+					return out_sv + ((ll_size > 1 ? *ll_it++ : *ll_it) ? " lat" : " lon");});
+		} else
+			transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), [&ll_it, &ll_size](string& out_sv, double n){
+				return out_sv + (ll_size ? cardpoint(n < 0, ll_size > 1 ? *ll_it++ : *ll_it) : cardi_b(n < 0));});
+	}
+
+	return out_sv;
+}
 
 
 /// __________________________________________________
@@ -336,97 +387,41 @@ vector<FamousFive*> vff { &ff_decdeg, &ff_degmin, &ff_degminsec };
 /// CoordType switches
 
 /// __________________________________________________
-/// Convert coords or waypoints format CoordType switch 
-template<NumericVector_or_DataFrame T, Coord_or_WayPoint U>
-void convert_switch(T t, CoordType newtype)
+/// Switch CoordType required for Coordlet<CoordType>::format0()
+template<CoordType current_type>
+vector<string> Coordlet<current_type>::format_switch(CoordType required_type, bool wpt) const
 {
-	CoordType type = get_coordtype(t);
-//	fmt::print("@{} T: {} oldtype: {}, newtype: {}\n", "convert_switch<T&, U>(T, CoordType)", demangle(typeid(t)), type, newtype);
-	U u(type, t);
-	u.validate();
+//	fmt::print("@Coordlet<CoordType::{}>::format_switch(CoordType); required: {}; wpt: {}\n", current_type, required_type, wpt);
 
-	if (type != newtype) {
-		switch (newtype)
-		{
-			case CoordType::decdeg:
-				u.template convert<CoordType::decdeg>();
-				break;
-
-			case CoordType::degmin:
-				u.template convert<CoordType::degmin>();
-				break;
-
-			case CoordType::degminsec:
-				u.template convert<CoordType::degminsec>();
-				break;
-
-			default:
-				stop("convert_switch<T&, U>(const T&, U) my bad");
-		}
-		t.attr("fmt") = coordtype_to_int(newtype) + 1;
-	}
-}
-
-
-/// __________________________________________________
-/// Format coords or waypoints vector<string> CoordType switch 
-template<Coord_or_WayPoint T>
-vector<string> format_switch(const T& t, CoordType ctreq)
-{
-//	fmt::print("@{} T: {} CoordType::{}, ctreq CoordType::{}\n", "format_switch<T>(const T&, CoordType)", demangle(typeid(t)), t.get_coordtype(), ctreq);
-	switch (ctreq)
+	switch (required_type)
 	{
 		case CoordType::decdeg:
-			return t.template format<CoordType::decdeg>();
+			return format0<CoordType::decdeg>(wpt);
 
 		case CoordType::degmin:
-			return t.template format<CoordType::degmin>();
+			return format0<CoordType::degmin>(wpt);
 
 		case CoordType::degminsec:
-			return t.template format<CoordType::degminsec>();
+			return format0<CoordType::degminsec>(wpt);
 
 		default:
-			stop("format_switch(const T&, CoordType) my bad");
+			stop("Coordlet<CoordType>::format_switch(CoordType) my bad");
 	}
 }
 
 
 /// __________________________________________________
-/// __________________________________________________
-/// Coordbase class
-
-Coordbase::Coordbase(CoordType _ct) :
-	ct(_ct), ff(*vff[coordtype_to_int(ct)])
+/// Convert Coordlet::nv to a new CoordType
+template<CoordType current_type> template<CoordType required_type>
+void Coordlet<current_type>::convert0()
 {
-//	fmt::print("§{} {} ", "Coordbase::Coordbase(CoordType)", ct); _ctrsgn(typeid(*this));
-}
+//	fmt::print("@Coordlet<CoordType::{}>::convert0<CoordType::{}>()\n", current_type, required_type);
 
-
-Coordbase::~Coordbase()
-{
-//	fmt::print("§{} {} ", "Coordbase::~Coordbase()", ct); _ctrsgn(typeid(*this), true);
-}
-
-
-CoordType Coordbase::get_coordtype() const
-{
-//	fmt::print("@{} ct={}\n", "Coordbase::get_coordtype()", coordtype_to_int(ct));
-	return ct;
-}
-
-
-/// __________________________________________________
-/// Convert NumericVector CoordType
-template<CoordType type>
-void Coordbase::convert0(NumericVector nv)
-{
-//	fmt::print("@Coordbase::convert0<CoordType::{}>()\n", type);
-
-	if constexpr (CoordType::decdeg == type)
+	if constexpr (CoordType::decdeg == required_type)
 		transform(nv.begin(), nv.end(), nv.begin(), [this](double n){
 				return ff.get_decdeg(n);
 			});
-	else if constexpr (CoordType::degmin == type)
+	else if constexpr (CoordType::degmin == required_type)
 		transform(nv.begin(), nv.end(), nv.begin(), [this](double n){
 				return ff.get_deg(n) * 1e2 + ff.get_decmin(n);
 			});
@@ -438,10 +433,38 @@ void Coordbase::convert0(NumericVector nv)
 
 
 /// __________________________________________________
-/// Validate coordinates in NumericVector
-void Coordbase::validate0(NumericVector nv, vector<bool>& valid, const vector<bool>& latlon)
+/// Switch CoordType required for Coordlet<CoordType>::convert0()
+template<CoordType current_type>
+void Coordlet<current_type>::convert_switch(CoordType required_type)
 {
-//	fmt::print("@{} latlon: {}\n", "Coordbase::validate0()", fmt::join(latlon, ", "));
+//	fmt::print("@Coordlet<CoordType::{}>::convert_switch(CoordType); required_type: {}\n", current_type, required_type);
+	validate(true, "coords to be converted");
+	switch (required_type)
+	{
+		case CoordType::decdeg:
+			convert0<CoordType::decdeg>();
+			break;
+
+		case CoordType::degmin:
+			convert0<CoordType::degmin>();
+			break;
+
+		case CoordType::degminsec:
+			convert0<CoordType::degminsec>();
+			break;
+
+		default:
+			stop("Coordlet<CoordType>::convert_switch(CoordType) my bad");
+	}
+}
+
+
+/// __________________________________________________
+/// Validate Coordlet::nv
+template<CoordType current_type>
+void Coordlet<current_type>::validate(bool warn, const char* what)
+{
+//	fmt::print("@Coordlet<CoordType::{}>::validate(bool); warn: {}; what: {}; latlon: {}\n", current_type, warn, what, fmt::join(latlon, ", "));
 	vector<bool>::const_iterator ll_it{ latlon.begin() };
 	auto ll_size { latlon.size() };
 
@@ -451,171 +474,118 @@ void Coordbase::validate0(NumericVector nv, vector<bool>& valid, const vector<bo
 				(fabs(ff.get_decmin(n)) >= 60) ||
 				(fabs(ff.get_sec(n)) >= 60));
 	});
-}
-
-
-/// __________________________________________________
-/// Format coordinates as vector<string> of CoordType
-template<CoordType type>
-vector<string> Coordbase::format0(NumericVector nv) const
-{
-//	fmt::print("@Coordbase::format0<CoordType::{}>() const\n", type);
-	vector outstr{ vector<string>(nv.size()) };
-
-	if constexpr (CoordType::decdeg == type)
-		transform(nv.begin(), nv.end(), outstr.begin(), [this](double n){
-				return fmt::format("{:>{}.{}f}\u00B0", ff.get_decdeg(n), 11, 6);
-			});
-	else if constexpr (CoordType::degmin == type)
-		transform(nv.begin(), nv.end(), outstr.begin(), [this](double n){
-				return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
-					   fmt::format("{:0>{}.{}f}\u2032", fabs(ff.get_decmin(n)), 7, 4);
-			});
-	else
-		transform(nv.begin(), nv.end(), outstr.begin(), [this](double n){
-				return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
-					   fmt::format("{:0>{}}\u2032", abs(ff.get_min(n)), 2) +
-					   fmt::format("{:0>{}.{}f}\u2033", fabs(ff.get_sec(n)), 5, 2);
-			});
-	
-	return outstr;
-}
-
-
-/// __________________________________________________
-/// Coordinate derived class
-
-Coord::Coord(CoordType ct, NumericVector nv) :
-	Coordbase(ct), nv(nv),
-	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") }
-{
-//	fmt::print("§{} {} ", "Coord::Coord(CoordType, NumericVector)", ct); _ctrsgn(typeid(*this));
-}
-
-
-/// __________________________________________________
-/// Convert Coord NumericVector CoordType
-template<CoordType newtype>
-inline void Coord::convert()
-{
-//	fmt::print("@Coord::convert<{}>() to {}\n", ct, newtype);
-	convert0<newtype>(nv);
-}
-
-
-/// __________________________________________________
-/// Validate coords vector
-void Coord::validate(bool warn)
-{
-//	fmt::print("@{} latlon: {}\n", "Coord::validate()", fmt::join(latlon, ", "));
-	validate0(nv, valid, latlon);
 
 	if (all_of(valid.begin(), valid.end(), [](bool v) { return v;}))
 		valid.assign({true});
 	else
 		if (warn)
-			warning("Validation failed!");
+			warning("Validation%s%s failed!", strlen(what) ? " of " : "", what);
 	nv.attr("valid") = valid;
 }
 
 
 /// __________________________________________________
-/// Format coordinates as vector<string> of CoordType
-template<CoordType type>
-vector<string> Coord::format() const
+/// Switch current CoordType to format nv
+vector<string> format_switch_current(NumericVector nv, CoordType current_type, CoordType required_type, bool wpt)
 {
-//	fmt::print("@Coord::format<CoordType::{}>() const; ll_size type: {}, ll_size: {}\n", type, demangle(typeid(latlon.size())), latlon.size());
-	vector<bool>::const_iterator ll_it { latlon.begin() };
-	const auto ll_size { latlon.size() };
-	vector out_sv{ format0<type>(nv) };
+//	fmt::print("@format_switch_current(NumericVector, CoordType, CoordType, bool); current: {}; required: {}; wpt: {}\n", current_type, required_type, wpt);
+	using enum CoordType;
 
-	if constexpr (CoordType::decdeg == type) {
-		if (ll_size) 
-			transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), [&ll_it, &ll_size](string& outstr, double n){
-				return outstr + ((ll_size > 1 ? *ll_it++ : *ll_it) ? " lat" : " lon");});
-	} else
-		transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), [&ll_it, &ll_size](string& outstr, double n){
-			return outstr + (ll_size ? cardpoint(n < 0, ll_size > 1 ? *ll_it++ : *ll_it) : cardi_b(n < 0));});
+	switch (current_type)
+	{
+		case decdeg:
+			return format_required<decdeg>(nv, required_type, wpt);
 
-	return out_sv;
+		case degmin:
+			return format_required<degmin>(nv, required_type, wpt);
+
+		case degminsec:
+			return format_required<degminsec>(nv, required_type, wpt);
+
+		default:
+			stop("format_switch_current(NumericVector, CoordType) my bad");
+	}
 }
 
 
 /// __________________________________________________
-/// __________________________________________________
-/// Waypoint class
-
-WayPoint::WayPoint(CoordType ct, DataFrame df) :
-	Coordbase(ct), df(df),
-	nvlat(df[get_vec_attr<DataFrame, int>(df, "llcols")[0] - 1]), 
-	nvlon(df[get_vec_attr<DataFrame, int>(df, "llcols")[1] - 1])
+/// Switch required CoordType to format nv
+template<CoordType current_type> 
+inline vector<string> format_required(NumericVector nv, CoordType required_type, bool wpt)
 {
-//	fmt::print("§{} {} ", "WayPoint::WayPoint(CoordType, DataFrame)", ct); _ctrsgn(typeid(*this));
+//	fmt::print("@format_required<CoordType::{}>(NumericVector, CoordType); required: {}; wpt: {}\n", current_type, required_type, wpt);
+	return Coordlet<current_type>{ nv }.format_switch(required_type, wpt);
 }
 
 
 /// __________________________________________________
-/// Convert both WayPoint NumericVectors CoordType
-template<CoordType newtype>
-inline void WayPoint::convert()
+/// Switch current CoordType to convert nv
+void convert_switch_current(NumericVector nv, CoordType current_type, CoordType required_type)
 {
-//	fmt::print("@WayPoint::convert<{}>() to {}\n", ct, newtype);
-	convert0<newtype>(nvlat);
-	convert0<newtype>(nvlon);
+//	fmt::print("@convert_switch_current(NumericVector, CoordType, CoordType); current_type: {}; required_type: {}\n", current_type, required_type);
+	using enum CoordType;
+
+	if (required_type != current_type) {
+		switch (current_type)
+		{
+			case decdeg:
+				convert_required<decdeg>(nv, required_type);
+				break;
+	
+			case degmin:
+				convert_required<degmin>(nv, required_type);
+				break;
+	
+			case degminsec:
+				convert_required<degminsec>(nv, required_type);
+				break;
+	
+			default:
+				stop("convert_switch_current(NumericVector, CoordType) my bad");
+		}
+		nv.attr("fmt") = coordtype_to_int(required_type) + 1;
+	} else {
+		fmt::print("——fmt out == fmt in!——\n"); std::fflush(nullptr);
+		if (!check_valid(nv))
+			stop("Invalid coords!");
+	}
 }
 
 
 /// __________________________________________________
-/// Validate WayPoint
-void WayPoint::validate(bool warn)
+/// Switch required CoordType to convert nv
+template<CoordType current_type> 
+inline void convert_required(NumericVector nv, CoordType required_type)
 {
-//	fmt::print("@{}\n", "WayPoint::validate(bool)");
-
-	validate0(nvlat, validlat, vector{ true });
-	validate0(nvlon, validlon, vector{ false });
-
-	if (all_of(validlat.begin(), validlat.end(), [](bool v) { return v;}))
-		validlat.assign({true});
-	else
-		if (warn)
-			warning("Validation of latitude failed!");
-	df.attr("validlat") = validlat;
-
-	if (all_of(validlon.begin(), validlon.end(), [](bool v) { return v;}))
-		validlon.assign({true});
-	else
-		if (warn)
-			warning("Validation of longitude failed!");
-	df.attr("validlon") = validlon;
+//	fmt::print("@convert_required<CoordType::{}>(NumericVector, CoordType); required_type: {}\n", current_type, required_type);
+	Coordlet<current_type>{ nv }.convert_switch(required_type);
 }
 
 
 /// __________________________________________________
-/// Format waypoints as vector<string> of CoordType
-template<CoordType type>
-vector<string> WayPoint::format() const
+/// Switch current CoordType to validate nv
+void validate_switch_current(NumericVector nv, CoordType current_type, bool warn, const char* what)
 {
-//	fmt::print("@WayPoint::format<CoordType::{}>()\n", type);
-	vector sv_lat{ format2<type>(true) };
-	vector sv_lon{ format2<type>(false) };
+//	fmt::print("@validate_switch_current(NumericVector, CoordType, bool, const char*); current_type: {}; warn: {}; what: {}\n", current_type, warn, what);
+	using enum CoordType;
 
-	transform(sv_lat.begin(), sv_lat.end(), sv_lon.begin(), sv_lat.begin(), [](auto& latstr, auto& lonstr){return latstr + "  " + lonstr;});
-	return sv_lat;
-}
+	switch (current_type)
+	{
+		case decdeg:
+			Coordlet<decdeg>{ nv }.validate(warn, what);
+			break;
 
+		case degmin:
+			Coordlet<degmin>{ nv }.validate(warn, what);
+			break;
 
-/// __________________________________________________
-/// Format waypoints auxillary function
-template<CoordType type>
-vector<string> WayPoint::format2(const bool lat) const
-{
-//	fmt::print("@WayPoint::format2<CoordType::{}>(const bool lat) const; {}\n", type, lat? "lat" : "lon");
-	auto& nv{ lat ? nvlat : nvlon };
-	vector out_sv{ format0<type>(nv) };
+		case degminsec:
+			Coordlet<degminsec>{ nv }.validate(warn, what);
+			break;
 
-	if constexpr (CoordType::decdeg != type)
-		transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), [lat](string& outstr, double n){return outstr + cardpoint(n < 0, lat);});
-	return out_sv;
+		default:
+			stop("validate_switch_current(NumericVector, CoordType, bool, const char*) my bad");
+	}
 }
 
 
@@ -629,8 +599,9 @@ bool check_valid(const NumericVector nv)
 {
 //	fmt::print("@check_valid(const NumericVector)\n");
 	int validated = check_logical_attr(nv, "valid");
+//	fmt::print("@check_valid(const NumericVector); validated is: {}; all valid is: {}\n", bool(validated), bool(validated >> 1));  // To be deleted
 	if (!validated)
-		return revalid_Coord(nv);
+		return revalidate(nv);
 	return validated >> 1;
 }
 
@@ -643,11 +614,11 @@ bool check_valid(const DataFrame df)
 
 	int latvalidated = check_logical_attr(df, "validlat");
 	if (!latvalidated)
-		return revalid_WayPoint(df);
+		return revalidate(df);
 
 	int lonvalidated = check_logical_attr(df, "validlon");
 	if (!lonvalidated)
-		return revalid_WayPoint(df);
+		return revalidate(df);
 
 	if (!(latvalidated >> 1))
 		warning("Invalid latitude!");
@@ -658,24 +629,27 @@ bool check_valid(const DataFrame df)
 
 
 /// __________________________________________________
-/// Revalidate NumericVector or DataFrame
-template<NumericVector_or_DataFrame T, Coord_or_WayPoint U>
+/// Revalidate NumericVector —— Temporary solution, needs to work for DataFrame
+template<NumericVector_or_DataFrame T>
 bool revalidate(const T t)
 {
-//	fmt::print("@{} T: {}\n", "revalidate<T, U>(const T)", demangle(typeid(t)));
+//	fmt::print("@revalidate<T>(const T); T: {}\n", demangle(typeid(t)));
 	warning("Revalidating %s…!", demangle(typeid(t)));
-	validate<T, U>(t);	
+	if constexpr (std::is_same_v<T, NumericVector>)
+		validate(t);										// Temporary solution
+	else
+		stop("Compiler pacifier!");							// Temporary solution
 	return check_valid(t);
 }
 
 
 /// __________________________________________________
-/// Validate NumericVector or DataFrame
-template<NumericVector_or_DataFrame T, Coord_or_WayPoint U>
+/// Validate NumericVector or DataFrame —— Temporary solution, needs to work for DataFrame
+template<NumericVector_or_DataFrame T>
 inline const T validate(const T t)
 {
-//	fmt::print("@{} T: {}\n", "validate<T, U>(const T)", demangle(typeid(t)));
-	U(get_coordtype(t), t).validate();
+//	fmt::print("@validate<T>(const T); T: {}\n", demangle(typeid(t)));
+	validate_switch_current(t, get_coordtype(t), true, "coords [validate<T>(const T)]");			//¡¡¡Temporary solution!!!
 	return t;	
 }
 
@@ -709,7 +683,7 @@ NumericVector as_coords(NumericVector object, int fmt = 1)
 {
 //	fmt::print("{1}@{0} fmt={2}\n", "as_coords(NumericVector, int)", exportstr, fmt);
 	object.attr("fmt") = fmt;
-	Coord{get_coordtype(fmt), object}.validate();
+	validate_switch_current(object, get_coordtype(fmt), true, "coords");
 	object.attr("class") = "coords";
 	return object;
 }
@@ -725,12 +699,7 @@ NumericVector convertcoords(NumericVector x, int fmt)
 	CoordType type = get_coordtype(x);
 	CoordType newtype = get_coordtype(fmt);
 //	fmt::print("{1}@{0} from {2} to {3}\n", "convertcoords(NumericVector, int)", exportstr, type, newtype);
-	if (newtype == type) {
-//		fmt::print("——fmt out == fmt in!——\n"); std::fflush(nullptr);
-		if (!check_valid(x))
-			stop("Invalid coords!");
-	} else 
-		convert_switch<NumericVector, Coord>(x, newtype);
+	convert_switch_current(x, type, newtype);
 	return x;
 }
 
@@ -747,7 +716,7 @@ NumericVector latlon(NumericVector cd, LogicalVector value)
 		stop("value must be either length 1 or length(cd)");
 	else
 		cd.attr("latlon") = value;
-	validate<NumericVector, Coord>(cd);
+	validate_switch_current(cd, get_coordtype(cd), true, "coords [`latlon<-`]");
 	return cd;
 }
 
@@ -760,13 +729,13 @@ NumericVector validatecoords(NumericVector x, bool force = true)
 {
 //	fmt::print("{1}@{0} force: {2}\n", "validatecoords(NumericVector, bool)", exportstr, force);
 	checkinherits(x, "coords");
-	if (force)
-		return validate<NumericVector, Coord>(x);
+	if (force)									
+		validate_switch_current(x, get_coordtype(x), true, "coords [validatecoords]");
 	else {
 		if (!check_valid(x))
 			warning("Invalid coords!");
-		return x;
 	}
+	return x;
 }
 
 
@@ -783,8 +752,9 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validat
 	if (validate)
 		if (!check_valid(x))
 			warning("Formatting invalid coords!");
+
 	CoordType ct { get_coordtype(x) };
-	vector sv{ format_switch(Coord(ct, x), fmt ? get_coordtype(fmt) : ct) };
+	vector sv{ format_switch_current(x, ct, fmt ? get_coordtype(fmt) : ct) };
 	vector names{ get_vec_attr<NumericVector, string>(x, "names") };
 	if (names.size() && usenames) {
 		stdlenstr(names);
@@ -800,7 +770,7 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validat
 // [[Rcpp::export(name = "as_waypoints.default")]]
 DataFrame as_waypoints(DataFrame object, int fmt = 1)
 {
-//	fmt::print("{1}@{0} fmt={2}\n", "as_waypoints(DataFrame, int)", exportstr, fmt);
+	fmt::print("{1}@{0} fmt={2}\n", "as_waypoints(DataFrame, int)", exportstr, fmt);
 	object.attr("fmt") = fmt;
 	int namescol = 0;
 	if (!object.hasAttribute("namescol")) {
@@ -814,115 +784,229 @@ DataFrame as_waypoints(DataFrame object, int fmt = 1)
 	}
 	if(!valid_ll(object))
 		stop("Invalid llcols attribute!");
-	WayPoint{get_coordtype(fmt), object}.validate();
+//	WayPoint{get_coordtype(fmt), object}.validate();
 	object.attr("class") = CharacterVector{"waypoints", "data.frame"};
 	return object;
 }
 
 
 /// __________________________________________________
-/// Convert waypoints format
-//' @rdname convert
-// [[Rcpp::export(name = "convert.waypoints")]]
-DataFrame convertwaypoints(DataFrame x, int fmt)
+/// __________________________________________________
+
+/*** R
+
+as_coords <- function(object, ...) 
+    UseMethod("as_coords")
+
+convert <- function(x, ...) 
+    UseMethod("convert")
+
+validate <- function(x, ...) 
+    UseMethod("validate")
+
+as_waypoints <- function(object, ...) 
+    UseMethod("as_waypoints")
+
+
+
+## ========================================
+##  S3method print.coords(x, ...)
+#'
+#' @rdname format
+#' @export
+
+print.coords <- function (x, ..., max = NULL) {
+    n <- length(x)
+    validate(x, force = FALSE)
+    max <- max %||% getOption("max.print", 99999L)
+    if (!is.finite(max)) 
+        stop("invalid 'max' / getOption(\"max.print\"): ", max)
+    omit <- (n0 <- max %/% (if (is.null(names(x))) 1L else 2L)) < n
+    if (omit)
+        x0 <- x[seq_len(n0)]
+    else
+        x0 <- x
+    writeLines(format(x0, validate = FALSE, ...))
+    if (omit) 
+        cat(" [ reached 'max' / getOption(\"max.print\") -- omitted", n - n0, "entries ]\n")
+    invisible(x)
+}
+
+
+## ========================================
+##  S3method `[.coords`(x, i)
+#'
+#' @export
+
+
+`[.coords` <- function(x, i) 
 {
-	checkinherits(x, "waypoints");
-	CoordType type = get_coordtype(x);
-	CoordType newtype = get_coordtype(fmt);
-//	fmt::print("{1}@{0} from {2} to {3}\n", "convertwaypoints(DataFrame, int)", exportstr, type, newtype);
-	if (newtype == type) {
-//		fmt::print("——fmt out == fmt in!——\n"); std::fflush(nullptr);
-		if (!check_valid(x))
-			stop("Invalid waypoints!");
-	} else {
-		if(!valid_ll(x))
-			stop("Invalid llcols attribute!");
-		convert_switch<DataFrame, WayPoint>(x, newtype);
-	}
+    if (missing(i)) return(x)
+    if (max(i) > length(x)) stop(gettext("subscript out of bounds"), domain = NA, call. = FALSE)
+    attrx <- attributes(x)
+    y <- NextMethod("[")
+    attributes(y) <- lapply(attrx[names(attrx) %in% c("fmt", "latlon", "names", "valid")], \(ax) if(length(ax) == length(x)) ax[i] else ax)
+    class(y) <- oldClass(x)
+    y
+}
+
+
+## ========================================
+##  S3method `[.coords<-`(x, i, value)
+#'
+#' @rdname Extract
+#' @export
+
+
+`[<-.coords` <- function(x, i, value) 
+{
+    if (max(i) > length(x)) stop(gettext("subscript out of bounds"), domain = NA, call. = FALSE)
+    vfmt <- attr(value, "fmt", exact = TRUE)
+    if (!is.null(vfmt) && attr(x, "fmt", exact = TRUE) != vfmt) stop("value has different fmt attribute\n", call. = FALSE)
+    y <- NextMethod("[<-")
+    vll <- attr(value, "latlon", exact = TRUE)
+    if (!is.null(vll)) {
+        if (length(vll) != length(value) && length(vll) != 1)
+            stop("\"latlon\" attribute of replacement value must be either length 1 or length(value)\n", call. = FALSE)
+        xll <- attr(x, "latlon", exact = TRUE)
+        if (length(xll) == length(x))
+            attr(y, "latlon")[i] <- vll
+        else if (length(xll) == 1 && !all(vll == xll)) {
+            attr(y, "latlon") <- rep(xll, length(x))
+            attr(y, "latlon")[i] <- vll
+        }
+    }
+    class(y) <- oldClass(x)
+    validate(y)
+}
+
+## ========================================
+
+# newds <- T
+newds <- F
+
+if (newds) {
+
+	dd <- c(51.5077650, 49.5462100, 48.1072317, 38.8894933, 0.0000000, -37.1117400, -53.1047817, -25.2401550,
+			-0.1279233, 18.3985617, -122.7786717, -77.0352417, 0.0000000, -12.2886300, 73.5172833, -57.519227)
+	
+	dm <- c(5130.4659, 4932.7726, 4806.4339, 3853.3696, 0.0000, -3706.7044, -5306.2869, -2514.4093,
+			-007.6754, 1823.9137, -12246.7203, -7702.1145, 0.0000, -1217.3178, 7331.0370, -5731.1536)
+	
+	dms <- c(513027.95, 493246.36, 480626.04, 385322.18, 00000.00, -370642.26, -530617.21, -251424.56,
+			-00740.53, 182354.82, -1224643.22, -770206.87, 00000.00, -121719.07, 733102.22, -573109.21)
+			
+	names(dd) <- names(dm) <- names(dms) <- rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+                   "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
+
+	wp1 <- data.frame(
+	    name = c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
+	             "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"),
+	    lat = c(513027.95, 493246.36, 480626.04, 385322.18, 0, -370642.26, -530617.21, -251424.56),
+	    lon = c(-00740.53, 182354.82, -1224643.22, -770206.87, 0, -121719.07, 733102.22, -573109.21)
+	)
+
+}
+*/
+
+
+
+/// __________________________________________________
+/// "Testlets"
+/// __________________________________________________
+/// __________________________________________________
+// [[Rcpp::export]]
+void bin()
+{
+	Rcout << "Hello Mimiland!\n\n";
+
+	Rcout << "sizeof char: " << sizeof(char) << "\n\n";
+	Rcout << "sizeof char: " << sizeof(char) << "\n\n";
+	Rcout << "sizeof char: " << sizeof(char) << "\n\n";
+	Rcout << "sizeof short int: " << sizeof(short int) << "\n\n";
+	Rcout << "sizeof int: " << sizeof(int) << "\n\n";
+	Rcout << "sizeof long int: " << sizeof(long int) << "\n\n";
+	Rcout << "sizeof vector<bool>: " << sizeof(vector<bool>) << "\n\n";
+	
+	Rcout << "sizeof 0b1: " << sizeof(0b1) << "\n\n";
+	Rcout << "sizeof 0b10: " << sizeof(0b10) << "\n\n";
+	auto Ob1_auto = 0b1;
+	auto Ob2_auto = 0b10;
+	Rcout << "sizeof Ob1_auto: " << sizeof(Ob1_auto) << "; "<< demangle(typeid(Ob1_auto)) << "\n\n";
+	Rcout << "sizeof 0b10_auto: " << sizeof(Ob2_auto) << "; "<< demangle(typeid(Ob2_auto)) << "\n\n";
+	char Ob1_char = 0b1;
+	char Ob2_char = 0b10;
+	Rcout << "sizeof Ob1_char: " << sizeof(Ob1_char) << "; "<< demangle(typeid(Ob1_char)) << "\n\n";
+	Rcout << "sizeof 0b10_char: " << sizeof(Ob2_char) << "; "<< demangle(typeid(Ob2_char)) << "\n\n";
+	Rcout << "sizeof 0b10_char: " << sizeof(Ob2_char) << "; "<< demangle(typeid(Ob2_char)) << "\n\n";
+
+	Rcout << "0b1 is " << 0b1 << "; 0b10 is " << 0b10 << "; 0b1 & 0b10 is " << int(0b1 & 0b10) << "; 0b1 | 0b10 is " << int(0b1 | 0b10) << "\n\n";
+}
+
+
+/// __________________________________________________
+/// __________________________________________________
+// [[Rcpp::export]]
+CharacterVector foo(NumericVector object, int fmt_cur = 1, int fmt_req = 1)
+{
+	Rcout << "Hello Mimiland!\n";
+	Rcout << "object: " << object << "\n\n";
+
+	CoordType ct_cur { get_coordtype(fmt_cur) };
+	CoordType ct_req { get_coordtype(fmt_req) };
+	return wrap(format_switch_current(object, ct_cur, ct_req));
+}
+
+
+/// __________________________________________________
+/// __________________________________________________
+// [[Rcpp::export]]
+NumericVector bar(NumericVector x, int fmt_cur = 1, int fmt_req = 1)
+{
+	Rcout << "Hello Mimiland!\n";
+	Rcout << "x: " << x << "\n\n";
+
+	CoordType ct_cur { get_coordtype(fmt_cur) };
+	CoordType ct_req { get_coordtype(fmt_req) };
+	convert_switch_current(x, ct_cur, ct_req);
 	return x;
 }
 
 
 /// __________________________________________________
-/// Validate waypoints vector
-//' @rdname validate
-// [[Rcpp::export(name = "validate.waypoints")]]
-DataFrame validatewaypoints(DataFrame x, bool force = true)
-{
-//	fmt::print("{1}@{0} force: {2}\n", "validatewaypoints(DataFrame, bool)", exportstr, force);
-	checkinherits(x, "waypoints");
-	if(!valid_ll(x))
-		stop("Invalid llcols attribute!");
-	if (force)
-		return validate<DataFrame, WayPoint>(x);
-	else {
-		if (!check_valid(x))
-			warning("Invalid waypoints!");
-		return x;
-	}
-}
-
-
 /// __________________________________________________
-/// Format waypoints vector - S3 method format.waypoints()
-//' @rdname format
-// [[Rcpp::export(name = "format.waypoints")]]
-CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate = true, int fmt = 0)
-{
-//	fmt::print("{1}@{0} usenames: {2}, validate: {3}\n", "formatwaypoints(DataFrame, bool, bool)", exportstr, usenames, validate);
-	checkinherits(x, "waypoints");
-	if(!x.nrows())
-		stop("x has 0 rows!");
-	if(!valid_ll(x))
-		stop("Invalid llcols attribute!");
-	if (validate)
-		if (!check_valid(x))
-			warning("Formatting invalid waypoints!");
-	CoordType ct { get_coordtype(x) };
-	vector sv{ format_switch(WayPoint(ct, x), fmt ? get_coordtype(fmt) : ct) };
-	if (usenames) {
-		RObject names = getnames(x);
-		if (!prefixwithnames(sv, names))
-			stop("Invalid \"namescol\" attribute!");
-	}
-	return wrap(sv);
-}
-
-
-/// __________________________________________________
-/// Latitude and longitude headers for S3 print.waypoint()
-//' @rdname format
 // [[Rcpp::export]]
-CharacterVector ll_headers(int width, int fmt)
+NumericVector bas(NumericVector x, int fmt_cur = 1, const char* what = "bas")
 {
-//	fmt::print("{1}@{0} width={2}, fmt={3}\n", "ll_headers(int, int)", exportstr, width, fmt);
-	--fmt;  //      to C++ array numbering
-	constexpr int spacing[][3] { {15,  17,  18}, {11, 13, 14} };
-	return wrap(vector {
-		fmt::format("{:>{}}{:>{}}", "Latitude", width - spacing[0][fmt], "Longitude", spacing[0][fmt] - 1), // --fmt —> C++ array numbering
-		fmt::format("{:>{}}", string(spacing[1][fmt], '_') + string(2, ' ') + string(spacing[1][fmt] + 1, '_'), width),
-	});
-}
+	Rcout << "Hello Mimiland!\n";
+	Rcout << "x: " << x << "\n\n";
 
-
-/// __________________________________________________
-/// Clone coords object from waypoints vector
-//' @rdname coords
-// [[Rcpp::export(name = "as_coords.waypoints")]]
-NumericVector as_coordswaypoints(DataFrame object, bool which)
-{
-//	fmt::print("{1}@{0} which: {2}\n", "as_coord(DataFrame)", exportstr, which ? "lat" : "lon");
-	checkinherits(object, "waypoints");
-	NumericVector nv = object[get_vec_attr<DataFrame, int>(object, "llcols")[which ? 0 : 1] - 1];
-	nv = clone(nv);
-	nv.attr("class") = "coords";
-	nv.attr("fmt") = object.attr("fmt");
-	nv.attr("valid") = object.attr(which ? "validlat" : "validlon");
-	nv.attr("latlon") = which;
-	nv.attr("names") = getnames(object);
-	return nv;
+	CoordType ct_cur { get_coordtype(fmt_cur) };
+	validate_switch_current(x, ct_cur, true, what);
+	return x;
 }
 
 
 /// __________________________________________________
 /// __________________________________________________
+// [[Rcpp::export]]
+int cla_test(RObject object, const char* attrname = "valid")
+{
+	fmt::print("Testing: -\n\n{}\n{}\n\n",
+		"template<NumericVector_or_DataFrame T>",
+		"int check_logical_attr(T t, const char* attrname)"
+	);
+
+	fmt::print("attrname is {}\n\n", attrname);
+
+    if (is<NumericVector>(object)) {
+    	fmt::print("object is a {}\n\n", "NumericVector");
+        NumericVector nv = as<NumericVector>(object);
+		return check_logical_attr(nv, attrname);
+    } else if (is<DataFrame>(object)) {
+    	fmt::print("object is a {}\n\n", "DataFrame");
+        DataFrame df = as<DataFrame>(object);
+		return check_logical_attr(df, attrname);
+    } else
+        stop("cla_test(): object not a NumericVector or DataFrame ");
+}

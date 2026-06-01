@@ -1,14 +1,13 @@
 /// __________________________________________________
-/// CoordBase.h
+/// Waypoint.h
 /// __________________________________________________
 
-#ifndef COORDBASE_H_
-#define COORDBASE_H_
+#ifndef Waypoint_H_
+#define Waypoint_H_
 
 #define FMT_HEADER_ONLY
-//#include </opt/homebrew/Cellar/fmt/11.1.4/include/fmt/base.h>		// verbose path not found!
-//#include <fmt/base.h>		// …fmt/*.h copied to /Library/R/arm64/4.5/library/Rcpp/include.  Works, but not in pkgdown
-#include "fmt/base.h"		// …fmt/*.h copied to …/R/Packages/Waypoint/src.  Works, but not in pkgdown
+// #include "fmt/base.h"		// …fmt/*.h copied to …/R/Packages/Waypoint/src.  Works, but not in pkgdown
+#include "/Users/frzmce/Library/CloudStorage/OneDrive-UniversityofBristol/Documents/R/Packages/Waypoint/src/fmt/format.h"
 
 /// __________________________________________________
 /// Class and Function declarations
@@ -77,67 +76,56 @@ inline string cardi_b(bool);
 
 /// __________________________________________________
 /// __________________________________________________
-/// FamousFive Class and Derived Classes
-struct FamousFive {
-//	FamousFive() { fmt::print("§{} ", "FamousFive()"); _ctrsgn(typeid(*this)); }
-	virtual ~FamousFive() = 0;	
-	virtual int get_deg(double x) const = 0;
-	virtual double get_decdeg(double x) const = 0;
-	virtual int get_min(double x) const = 0;
-	virtual double get_decmin(double x) const = 0;
-	virtual double get_sec(double x) const = 0;
+/// FamousFiveT Templated
+template<CoordType T>
+struct FamousFiveT {
+	int get_deg(double x) const { return 0; };
+	double get_decdeg(double x) const { return 0; };
+	int get_min(double x) const { return 0; };
+	double get_decmin(double x) const { return 0; };
+	double get_sec(double x) const { return 0; };
 };
 
-inline FamousFive::~FamousFive()
-{
-//	fmt::print("§{} ", "~FamousFive()"); _ctrsgn(typeid(*this), true); std::fflush(nullptr);
-}	
-
 /// __________________________________________________
-/// Derived class for decimal degrees	
-struct FF_decdeg : public FamousFive {
-//	FF_decdeg() { fmt::print("§{} ", "FF_decdeg()"); _ctrsgn(typeid(*this)); }
-	~FF_decdeg() = default;
-//	~FF_decdeg() { fmt::print("§{} ", "~FF_decdeg()"); _ctrsgn(typeid(*this), true); }
+/// Specialised struct for decimal degrees	
+template<>
+struct FamousFiveT<CoordType::decdeg> {
 	int get_deg(double x) const { return int(x); }
 	double get_decdeg(double x) const { return x; }
 	int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
 	double get_decmin(double x) const { return polish(mod1by60(x)); }
 	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
-} ff_decdeg;
+};
 
 /// __________________________________________________
-/// Derived class for degrees and minutes
-struct FF_degmin : public FamousFive {
-//	FF_degmin() { fmt::print("§{} ", "FF_degmin()"); _ctrsgn(typeid(*this)); }
-	~FF_degmin() = default;
-//	~FF_degmin() { fmt::print("§{} ", "~FF_degmin()"); _ctrsgn(typeid(*this), true); }
+/// Specialised struct for degrees and minutes
+template<>
+struct FamousFiveT<CoordType::degmin> {
 	int get_deg(double x) const { return int(x / 1e2); }
 	double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
 	int get_min(double x) const { return int(x) % int(1e2); }
 	double get_decmin(double x) const { return polish(mod1e2(x)); }
 	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
-} ff_degmin;
+};
 
 /// __________________________________________________
-/// Derived class for degrees, minutes and seconds
-struct FF_degminsec : public FamousFive {
-//	FF_degminsec() { fmt::print("§{} ", "FF_degminsec()"); _ctrsgn(typeid(*this)); }
-	~FF_degminsec() = default;
-//	~FF_degminsec() { fmt::print("§{} ", "~FF_degminsec()"); _ctrsgn(typeid(*this), true); }
+/// Specialised struct for degrees, minutes and seconds
+template<>
+struct FamousFiveT<CoordType::degminsec> {
 	int get_deg(double x) const { return int(x / 1e4); }
 	double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
 	int get_min(double x) const { return (int(x) % int(1e4)) / 1e2; }
 	double get_decmin(double x) const { return int(fmod(x, 1e4) / 1e2) + mod1e2(x) / 60; }
 	double get_sec(double x) const { return mod1e2(x); }
-} ff_degminsec;
+};
 
 
 /// __________________________________________________
 /// __________________________________________________
 /// Class forward declarations
-class Coordbase;
-class Coord;
+template<CoordType current_type>
+class Coordlet;
+template<CoordType current_type>
 class WayPoint;
 
 /// __________________________________________________
@@ -158,80 +146,44 @@ concept Coord_or_WayPoint =
 
 /// __________________________________________________
 /// __________________________________________________
-///CoordType switches
-template<NumericVector_or_DataFrame T, class Coord_or_WayPoint>
-void convert_switch(T, CoordType);
-template<Coord_or_WayPoint T>
-vector<string> format_switch(const T&, CoordType);
+/// Coordlet class
+template<CoordType current_type>
+class Coordlet {
 
-
-/// __________________________________________________
-/// __________________________________________________
-/// Coordbase class
-class Coordbase {
-	protected:
-		CoordType ct;
-		const FamousFive& ff;
-
-		template<CoordType type>
-		void convert0(NumericVector);
-		void validate0(NumericVector, vector<bool>&, const vector<bool>&);
-		template<CoordType type>
-		vector<string> format0(NumericVector) const;
-
-	public:
-		Coordbase(CoordType);
-		Coordbase(const Coordbase&) = delete;						// Disallow copying
-		Coordbase& operator=(const Coordbase&) = delete;				//  ——— ditto ———
-		Coordbase(Coordbase&&) = delete; 							// Disallow transfer ownership
-		Coordbase& operator=(Coordbase&&) = delete;					// Disallow moving
-		virtual ~Coordbase() = 0;
-		virtual void validate(bool) = 0;
-		CoordType get_coordtype() const;
-};
-
-/// __________________________________________________
-/// Coordinate derived class
-class Coord : public Coordbase {
-	protected:
+		FamousFiveT<current_type> ff;
 		NumericVector nv;
 		vector<bool> valid { false };
 		const vector<bool> latlon;
 
+		template<CoordType required_type>
+		void convert0();
+		template<CoordType required_type> 
+		vector<string> format0(bool wpt) const;
 	public:
-		explicit Coord(CoordType, NumericVector);
-		~Coord() = default;
-//		~Coord() { fmt::print("§{} {} ", "Coord::~Coord()", ct); _ctrsgn(typeid(*this), true); }
-
-		template<CoordType type>
-		void convert();
-		void validate(bool = true);
-		template<CoordType type>
-		vector<string> format() const;
+		explicit Coordlet(NumericVector nv);
+		Coordlet(const Coordlet&) = delete;						// Disallow copying
+		Coordlet& operator=(const Coordlet&) = delete;			//  ——— ditto ———
+		Coordlet(Coordlet&&) = delete;							// Disallow transfer ownership
+		Coordlet& operator=(Coordlet&&) = delete;				// Disallow moving
+		virtual ~Coordlet() = default;
+		vector<string> format_switch(CoordType required_type, bool wpt) const;
+		void convert_switch(CoordType required_type);
+		void validate(bool = true, const char* = "");
 };
+
 
 /// __________________________________________________
-/// Waypoint derived class
-class WayPoint : public Coordbase {
-	protected:
-		DataFrame df;
-		NumericVector nvlat;
-		NumericVector nvlon;
-		vector<bool> validlat { false };
-		vector<bool> validlon { false };
-		template<CoordType type>
-		vector<string> format2(const bool) const;
-	public:
-		explicit WayPoint(CoordType, DataFrame);
-		~WayPoint() = default;
-//		~WayPoint() { fmt::print("§{} {} ", "WayPoint::~WayPoint()", ct); _ctrsgn(typeid(*this), true); }
+/// __________________________________________________
+/// CoordType switches
+vector<string> format_switch_current(NumericVector, CoordType, CoordType, bool = false);
+template<CoordType current_type> 
+vector<string> format_required(NumericVector, CoordType, bool);
 
-		template<CoordType type>
-		void convert();
-		void validate(bool = true);
-		template<CoordType type>
-		vector<string> format() const;
-};
+void convert_switch_current(NumericVector, CoordType, CoordType);
+template<CoordType current_type> 
+inline void convert_required(NumericVector, CoordType);
+
+void validate_switch_current(NumericVector, CoordType, bool, const char* = "");
 
 
 /// __________________________________________________
@@ -240,13 +192,13 @@ class WayPoint : public Coordbase {
 bool check_valid(const NumericVector);
 bool check_valid(const DataFrame);
 
-template<NumericVector_or_DataFrame T, Coord_or_WayPoint U>
+template<NumericVector_or_DataFrame T /*, Coord_or_WayPoint U */>
 bool revalidate(const T);
 
-constexpr auto revalid_Coord = &revalidate<NumericVector, Coord>;
-constexpr auto revalid_WayPoint = &revalidate<DataFrame, WayPoint>;
+// constexpr auto revalid_Coord = &revalidate<NumericVector, Coord>;
+// constexpr auto revalid_WayPoint = &revalidate<DataFrame, WayPoint>;
 
-template<NumericVector_or_DataFrame T, Coord_or_WayPoint U>
+template<NumericVector_or_DataFrame T /*, Coord_or_WayPoint U */>
 inline const T validate(const T);
 
 bool valid_ll(const DataFrame);
@@ -267,4 +219,4 @@ CharacterVector ll_headers(int, int);
 NumericVector as_coordswaypoints(DataFrame, bool);
 
 
-#endif  // COORDBASE_H_
+#endif  // Waypoint_H_
