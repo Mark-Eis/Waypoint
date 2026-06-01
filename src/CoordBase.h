@@ -162,15 +162,14 @@ class Coordlet {
 		NumericVector nv;
 		vector<bool> valid { false };
 		const vector<bool> latlon;
-		const bool wpt { false };
+		const bool wpt;
 
 		template<CoordType required_type>
 		void convert0();
 		template<CoordType required_type> 
 		vector<string> format0() const;
 	public:
-		explicit Coordlet(NumericVector);
-		explicit Coordlet(NumericVector, const bool);
+		explicit Coordlet(NumericVector, const bool = false);
 		Coordlet(const Coordlet&) = delete;						// Disallow copying
 		Coordlet& operator=(const Coordlet&) = delete;			//  ——— ditto ———
 		Coordlet(Coordlet&&) = delete;							// Disallow transfer ownership
@@ -194,8 +193,7 @@ class Waypoint {
 		vector<bool> validlon { false };
 	public:
 		explicit Waypoint(CoordType, DataFrame);
-		~Waypoint() = default;
-//		~Waypoint() { fmt::print("§{} {} ", "Waypoint::~Waypoint()", ct); _ctrsgn(typeid(*this), true); }
+		~Waypoint();
 
 		template<CoordType type>
 		void convert();
