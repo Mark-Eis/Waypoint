@@ -76,20 +76,19 @@ inline string cardi_b(bool);
 
 /// __________________________________________________
 /// __________________________________________________
-/// FamousFiveT Templated
-template<CoordType T>
-struct FamousFiveT {
-	int get_deg(double x) const { return 0; };
-	double get_decdeg(double x) const { return 0; };
-	int get_min(double x) const { return 0; };
-	double get_decmin(double x) const { return 0; };
-	double get_sec(double x) const { return 0; };
+/// FamousFiveT Templated and OO
+struct FamousFive {
+	virtual int get_deg(double x) const = 0;
+	virtual double get_decdeg(double x) const = 0;
+	virtual int get_min(double x) const = 0;
+	virtual double get_decmin(double x) const = 0;
+	virtual double get_sec(double x) const = 0;
 };
 
 /// __________________________________________________
-/// Specialised struct for decimal degrees	
-template<>
-struct FamousFiveT<CoordType::decdeg> {
+/// Default struct for decimal degrees	
+template<CoordType type>
+struct FamousFiveT final : FamousFive {
 	int get_deg(double x) const { return int(x); }
 	double get_decdeg(double x) const { return x; }
 	int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
@@ -100,7 +99,7 @@ struct FamousFiveT<CoordType::decdeg> {
 /// __________________________________________________
 /// Specialised struct for degrees and minutes
 template<>
-struct FamousFiveT<CoordType::degmin> {
+struct FamousFiveT<CoordType::degmin> final : FamousFive {
 	int get_deg(double x) const { return int(x / 1e2); }
 	double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
 	int get_min(double x) const { return int(x) % int(1e2); }
@@ -111,7 +110,7 @@ struct FamousFiveT<CoordType::degmin> {
 /// __________________________________________________
 /// Specialised struct for degrees, minutes and seconds
 template<>
-struct FamousFiveT<CoordType::degminsec> {
+struct FamousFiveT<CoordType::degminsec> final : FamousFive {
 	int get_deg(double x) const { return int(x / 1e4); }
 	double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
 	int get_min(double x) const { return (int(x) % int(1e4)) / 1e2; }
