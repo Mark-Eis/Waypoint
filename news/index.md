@@ -1,6 +1,6 @@
 # Changelog
 
-## Waypoint (development version)
+## Waypoint 1.3.0
 
 - Improve documentation of `[<-.coords` replacement operator and
   [`validate()`](https://mark-eis.github.io/Waypoint/reference/validate.md)

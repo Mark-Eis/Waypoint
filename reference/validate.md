@@ -101,7 +101,7 @@ validate(dm)
 #> Mawson Peak                               73°31.0370′ E
 #> Silvio Pettirossi International Airport   57°31.1536′ W
 
-## Deliberately change the first coordinate to a value greater    
+## Deliberately change the first coordinate to a value greater
 ## than 60 minutes using the `[<-(<coords>)` replacement operator,
 ## which itself invokes `validate(dm)` -- see help(`[<-.coords`)
 dm[1] <- 5160.4659
