@@ -12,12 +12,21 @@
 /// __________________________________________________
 /// Class and Function declarations
 
+/// __________________________________________________
 /// Concept
 template <typename T>
-concept NumericVector_or_DataFrame = std::is_same<NumericVector, T>::value || std::is_same<DataFrame, T>::value;
+concept NumericVector_or_DataFrame = std::is_same_v<NumericVector, T> || std::is_same_v<DataFrame, T>;
 
 template <typename T>
-concept List_or_DataFrame = std::is_same<List, T>::value || std::is_same<DataFrame, T>::value;
+concept List_or_DataFrame = std::is_same_v<List, T> || std::is_same_v<DataFrame, T>;
+
+template <typename T>
+concept Coords_or_Waypoints =
+	requires (T t) {
+		NumericVector_or_DataFrame<T>;
+		// more...
+	};
+
 
 /// __________________________________________________
 /// __________________________________________________
@@ -135,21 +144,6 @@ template<CoordType current_type>
 class Coordlet;
 // template<CoordType current_type>
 class Waypoint;
-
-/// __________________________________________________
-/// Concept
-template <typename T>
-concept Coord_or_Waypoint =
-	requires (T t) {
-		t.template convert<CoordType::decdeg>();
-		t.template convert<CoordType::degmin>();
-		t.template convert<CoordType::degminsec>();
-		t.template format<CoordType::decdeg>();
-		t.template format<CoordType::degmin>();
-		t.template format<CoordType::degminsec>();
-		t.get_coordtype();
-		t.validate();
-	};
 
 
 /// __________________________________________________
