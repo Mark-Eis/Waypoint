@@ -672,11 +672,9 @@ bool check_valid(const DataFrame df)
 //	fmt::print("@check_valid(const DataFrame)\n");
 
 	int latvalidated = check_logical_attr(df, "validlat");
-	if (!latvalidated)
-		return revalidate(df);
-
 	int lonvalidated = check_logical_attr(df, "validlon");
-	if (!lonvalidated)
+
+	if (!(latvalidated & lonvalidated))
 		return revalidate(df);
 
 	if (!(latvalidated >> 1))
