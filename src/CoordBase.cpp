@@ -374,7 +374,7 @@ vector<string> Coordlet<current_type>::format0() const
 		if (ll_size > 1)
 			transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda1);
 		else
-			if (ll_size == 1)
+			if (ll_size == 1 && !wpt)
 				transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda2);
 
 	} else {
@@ -502,13 +502,14 @@ const vector<bool> Coordlet<current_type>::validate(bool warn, const char* what)
 
 Waypoint::Waypoint(CoordType ct, DataFrame df) :
 	ct{ ct }, df{ df },
-	nvlat{ df[get_vec_attr<DataFrame, int>(df, "llcols")[0] - 1] }, 
-	nvlon{ df[get_vec_attr<DataFrame, int>(df, "llcols")[1] - 1] }
+	nvlat(df[get_vec_attr<DataFrame, int>(df, "llcols")[0] - 1]), 
+	nvlon(df[get_vec_attr<DataFrame, int>(df, "llcols")[1] - 1])
 {
 //	fmt::print("§{} {} ", "Waypoint::Waypoint(CoordType, DataFrame)", ct); _ctrsgn(typeid(*this));
 	nvlat.attr("latlon") = true;
 	nvlon.attr("latlon") = false;
 }
+
 
 Waypoint::~Waypoint()
 {
