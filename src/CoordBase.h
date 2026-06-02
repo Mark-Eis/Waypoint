@@ -170,7 +170,7 @@ class Coordlet {
 		virtual ~Coordlet() = default;
 		vector<string> format_switch(CoordType required_type) const;
 		void convert_switch(CoordType required_type);
-		const vector<bool> validate(bool = true, const char* = "");
+		const vector<bool> validate();
 };
 
 
@@ -206,9 +206,9 @@ void convert_switch_current(NumericVector, CoordType, CoordType);
 template<CoordType current_type> 
 inline void convert_dispatch(NumericVector, CoordType);
 
-const vector<bool> validate_switch_current(NumericVector, CoordType, bool, const char* = "");
+const vector<bool> validate_switch_current(NumericVector, CoordType);
 template<CoordType current_type> 
-const vector<bool> validate_dispatch(NumericVector, bool, const char*);
+const vector<bool> validate_dispatch(NumericVector);
 
 
 /// __________________________________________________
