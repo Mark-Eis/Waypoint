@@ -371,30 +371,24 @@ vector<string> Coordlet<current_type>::format0() const
 		const auto lambda1 = [&ll_it, &ll_size](string& outstr, double n){ return outstr + (*ll_it++ ? " lat" : " lon"); };
 		const auto lambda2 = [&ll_it, &ll_size](string& outstr, double n){ return outstr + (*ll_it ? " lat" : " lon"); };
 
-		if (ll_size) {
-			if (ll_size > 1) {
-				transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda1);
-			} else {
-				if (ll_size == 1) {
-					transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda2);
-				}
-			}
-		}
+		if (ll_size > 1)
+			transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda1);
+		else
+			if (ll_size == 1)
+				transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda2);
 
 	} else {
 		const auto lambda1 = [&ll_it, &ll_size](string& outstr, double n){ return outstr + cardpoint(n < 0, *ll_it++); };
 		const auto lambda2 = [&ll_it](string& outstr, double n){ return outstr + cardpoint(n < 0, *ll_it); };
 		const auto lambda3 = [&ll_it, &ll_size](string& outstr, double n){ return outstr + cardi_b(n < 0); };
 
-		if (ll_size > 1) {
+		if (ll_size > 1)
 			transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda1);
-		} else {
-			if (ll_size == 1) {	// uniform coords or waypoints
+		else
+			if (ll_size == 1)	// uniform coords or waypoints
 				transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda2);
-			} else {	// no latlon info and not decdeg
+			else					// no latlon info and not decdeg
 				transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda3);
-			}
-		}
 	}
 
 	return out_sv;
