@@ -700,16 +700,22 @@ bool revalidate(const T t)
 
 
 /// __________________________________________________
-/// Validate NumericVector or DataFrame —— Temporary solution, needs to work for DataFrame
-template<Coords_or_Waypoints T>
-inline const T validate(const T t)
+/// Validate DataFrame —— Temporary solution, needs to work for DataFrame
+inline const DataFrame validate(const DataFrame df)
 {
-//	fmt::print("@validate<T>(const T); T: {}\n", demangle(typeid(t)));
-	if constexpr (std::is_same_v<T, NumericVector>)
-		validate_switch_current(t, get_coordtype(t), true, "coords [validate<T>(const T)]");			//¡¡¡Temporary solution!!!
-	else
-		stop("Compiler pacifier! @validate<T>(const T); T: %s", demangle(typeid(t)));							// Temporary solution
-	return t;	
+	fmt::print("@validate<DataFrame>(const DataFrame); DataFrame: {}\n", demangle(typeid(df)));
+	stop("Compiler pacifier! @validate<DataFrame>(const DataFrame)");							// Temporary solution
+	return df;	
+}
+
+
+/// __________________________________________________
+/// Validate NumericVector
+inline const NumericVector validate(const NumericVector nv)
+{
+	fmt::print("@validate(const NumericVector)\n");
+	validate_switch_current(nv, get_coordtype(nv), true, "coords [validate(const NumericVector)]");
+	return nv;	
 }
 
 
@@ -789,7 +795,7 @@ NumericVector validatecoords(NumericVector x, bool force = true)
 //	fmt::print("{1}@{0} force: {2}\n", "validatecoords(NumericVector, bool)", exportstr, force);
 	checkinherits(x, "coords");
 	if (force)									
-		validate_switch_current(x, get_coordtype(x), true, "coords [validatecoords]");
+		validate(x);
 	else {
 		if (!check_valid(x))
 			warning("Invalid coords!");
@@ -861,7 +867,7 @@ DataFrame validatewaypoints(DataFrame x, bool force = true)
 	if(!valid_ll(x))
 		stop("Invalid llcols attribute!");
 	if (force)
-		return validate<DataFrame /*, Waypoint */ >(x);
+		return validate(x);
 	else {
 		if (!check_valid(x))
 			warning("Invalid waypoints!");

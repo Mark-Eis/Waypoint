@@ -220,8 +220,8 @@ bool check_valid(const DataFrame);
 template<Coords_or_Waypoints T>
 bool revalidate(const T);
 
-template<Coords_or_Waypoints T>
-inline const T validate(const T);
+inline const DataFrame validate(const DataFrame df);
+inline const NumericVector validate(const NumericVector);
 
 bool valid_ll(const DataFrame);
 
