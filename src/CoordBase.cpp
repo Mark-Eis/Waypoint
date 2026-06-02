@@ -23,7 +23,7 @@ using std::transform;
 #include "fmt/format.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt. Works, but not always in pkgdown
 #include "fmt/ranges.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt. Works, but not always in pkgdown
 
-#define DEBUG 0
+#define DEBUG 1
 
 
 /// __________________________________________________
@@ -34,8 +34,8 @@ using std::transform;
 
 /// Report object construction and destruction
 void _ctrsgn(const std::type_info& obj, bool destruct)
-{
-	fmt::print("{}ing ", destruct ? "Destroy" : "Construct");
+{ /*
+*/	fmt::print("{}ing ", destruct ? "Destroy" : "Construct");
 	std::fflush(nullptr);
 	string s = obj.name();
 	system(("c++filt -t " + s).data());
@@ -463,13 +463,15 @@ void Coordlet<current_type>::convert_switch(CoordType required_type)
 /// __________________________________________________
 /// Validate Coordlet::nv
 template<CoordType current_type>
-void Coordlet<current_type>::validate(bool warn, const char* what)
+const vector<bool> Coordlet<current_type>::validate(bool warn, const char* what)
 {
-//	fmt::print("@Coordlet<CoordType::{}>::validate(bool); warn: {}; what: {}; latlon: {}\n", current_type, warn, what, fmt::join(latlon, ", "));
+	fmt::print("@Coordlet<CoordType::{}>::validate(bool); warn: {}; what: {}; latlon: {}\n", current_type, warn, what, fmt::join(latlon, ", "));
 	vector<bool>::const_iterator ll_it{ latlon.begin() };
 	auto ll_size { latlon.size() };
 
+	auto valid = vector<bool>{};
 	valid.assign(nv.size(), {false});
+
 	transform(nv.begin(), nv.end(), valid.begin(), [this, &ll_it, &ll_size](double n){
 		return !((fabs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
 				(fabs(ff.get_decmin(n)) >= 60) ||
@@ -481,7 +483,8 @@ void Coordlet<current_type>::validate(bool warn, const char* what)
 	else
 		if (warn)
 			warning("Validation%s%s failed!", strlen(what) ? " of " : "", what);
-	nv.attr("valid") = valid;
+
+	return valid;
 }
 
 
@@ -534,13 +537,13 @@ vector<string> format_switch_current(NumericVector nv, CoordType current_type, C
 	switch (current_type)
 	{
 		case decdeg:
-			return format_required<decdeg>(nv, required_type, wpt);
+			return format_dispatch<decdeg>(nv, required_type, wpt);
 
 		case degmin:
-			return format_required<degmin>(nv, required_type, wpt);
+			return format_dispatch<degmin>(nv, required_type, wpt);
 
 		case degminsec:
-			return format_required<degminsec>(nv, required_type, wpt);
+			return format_dispatch<degminsec>(nv, required_type, wpt);
 
 		default:
 			stop("format_switch_current(NumericVector, CoordType) my bad");
@@ -551,9 +554,9 @@ vector<string> format_switch_current(NumericVector nv, CoordType current_type, C
 /// __________________________________________________
 /// Switch required CoordType to format nv
 template<CoordType current_type> 
-inline vector<string> format_required(NumericVector nv, CoordType required_type, bool wpt)
+inline vector<string> format_dispatch(NumericVector nv, CoordType required_type, bool wpt)
 {
-//	fmt::print("@format_required<CoordType::{}>(NumericVector, CoordType); required: {}; wpt: {}\n", current_type, required_type, wpt);
+//	fmt::print("@format_dispatch<CoordType::{}>(NumericVector, CoordType); required: {}; wpt: {}\n", current_type, required_type, wpt);
 	return Coordlet<current_type>{ nv, wpt }.format_switch(required_type);
 }
 
@@ -569,15 +572,15 @@ void convert_switch_current(NumericVector nv, CoordType current_type, CoordType 
 		switch (current_type)
 		{
 			case decdeg:
-				convert_required<decdeg>(nv, required_type);
+				convert_dispatch<decdeg>(nv, required_type);
 				break;
 	
 			case degmin:
-				convert_required<degmin>(nv, required_type);
+				convert_dispatch<degmin>(nv, required_type);
 				break;
 	
 			case degminsec:
-				convert_required<degminsec>(nv, required_type);
+				convert_dispatch<degminsec>(nv, required_type);
 				break;
 	
 			default:
@@ -595,37 +598,45 @@ void convert_switch_current(NumericVector nv, CoordType current_type, CoordType 
 /// __________________________________________________
 /// Switch required CoordType to convert nv
 template<CoordType current_type> 
-inline void convert_required(NumericVector nv, CoordType required_type)
+inline void convert_dispatch(NumericVector nv, CoordType required_type)
 {
-//	fmt::print("@convert_required<CoordType::{}>(NumericVector, CoordType); required_type: {}\n", current_type, required_type);
+//	fmt::print("@convert_dispatch<CoordType::{}>(NumericVector, CoordType); required_type: {}\n", current_type, required_type);
 	Coordlet<current_type>{ nv }.convert_switch(required_type);
 }
 
 
 /// __________________________________________________
 /// Switch current CoordType to validate nv
-void validate_switch_current(NumericVector nv, CoordType current_type, bool warn, const char* what)
+const vector<bool> validate_switch_current(NumericVector nv, CoordType current_type, bool warn, const char* what)
 {
-//	fmt::print("@validate_switch_current(NumericVector, CoordType, bool, const char*); current_type: {}; warn: {}; what: {}\n", current_type, warn, what);
+	fmt::print("@validate_switch_current(NumericVector, CoordType, bool, const char*); current_type: {}; warn: {}; what: {}\n", current_type, warn, what);
 	using enum CoordType;
 
 	switch (current_type)
 	{
 		case decdeg:
-			Coordlet<decdeg>{ nv }.validate(warn, what);
-			break;
+			return validate_dispatch<decdeg>(nv, warn, what);
 
 		case degmin:
-			Coordlet<degmin>{ nv }.validate(warn, what);
-			break;
+			return validate_dispatch<degmin>(nv, warn, what);
 
 		case degminsec:
-			Coordlet<degminsec>{ nv }.validate(warn, what);
-			break;
+			return validate_dispatch<degminsec>(nv, warn, what);
 
 		default:
 			stop("validate_switch_current(NumericVector, CoordType, bool, const char*) my bad");
 	}
+}
+
+/// __________________________________________________
+/// Dispatch required CoordType to validate nv
+template<CoordType current_type> 
+inline const vector<bool> validate_dispatch(NumericVector nv, bool warn, const char* what)
+{
+	fmt::print("@validate_dispatch<CoordType::{}>(NumericVector, bool, const char*); warn: {}; what: {}\n", current_type, warn, what);
+	auto valid = Coordlet<current_type>{ nv }.validate(warn, what);
+	nv.attr("valid") = valid;
+	return valid;
 }
 
 
@@ -767,7 +778,7 @@ NumericVector latlon(NumericVector cd, LogicalVector value)
 // [[Rcpp::export(name = "validate.coords")]]
 NumericVector validatecoords(NumericVector x, bool force = true)
 {
-//	fmt::print("{1}@{0} force: {2}\n", "validatecoords(NumericVector, bool)", exportstr, force);
+	fmt::print("{1}@{0} force: {2}\n", "validatecoords(NumericVector, bool)", exportstr, force);
 	checkinherits(x, "coords");
 	if (force)									
 		validate_switch_current(x, get_coordtype(x), true, "coords [validatecoords]");
@@ -795,6 +806,7 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validat
 
 	CoordType ct { get_coordtype(x) };
 	vector sv{ format_switch_current(x, ct, fmt ? get_coordtype(fmt) : ct) };
+
 	vector names{ get_vec_attr<NumericVector, string>(x, "names") };
 	if (names.size() && usenames) {
 		stdlenstr(names);

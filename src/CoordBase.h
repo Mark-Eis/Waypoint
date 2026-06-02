@@ -160,7 +160,6 @@ class Coordlet {
 
 		FamousFive<current_type> ff;
 		NumericVector nv;
-		vector<bool> valid { false };
 		const vector<bool> latlon;
 		const bool wpt;
 
@@ -177,7 +176,7 @@ class Coordlet {
 		virtual ~Coordlet() = default;
 		vector<string> format_switch(CoordType required_type) const;
 		void convert_switch(CoordType required_type);
-		void validate(bool = true, const char* = "");
+		const vector<bool> validate(bool = true, const char* = "");
 };
 
 
@@ -207,13 +206,15 @@ class Waypoint {
 /// CoordType switches
 vector<string> format_switch_current(NumericVector, CoordType, CoordType, bool = false);
 template<CoordType current_type> 
-vector<string> format_required(NumericVector, CoordType, bool);
+vector<string> format_dispatch(NumericVector, CoordType, bool);
 
 void convert_switch_current(NumericVector, CoordType, CoordType);
 template<CoordType current_type> 
-inline void convert_required(NumericVector, CoordType);
+inline void convert_dispatch(NumericVector, CoordType);
 
-void validate_switch_current(NumericVector, CoordType, bool, const char* = "");
+const vector<bool> validate_switch_current(NumericVector, CoordType, bool, const char* = "");
+template<CoordType current_type> 
+const vector<bool> validate_dispatch(NumericVector, bool, const char*);
 
 
 /// __________________________________________________
