@@ -448,7 +448,6 @@ void Coordlet<current_type>::convert_switch(CoordType required_type)
 {
 //	fmt::print("@Coordlet<CoordType::{}>::convert_switch(CoordType); required_type: {}\n", current_type, required_type);
 
-//	validate();										!!! —— Do this before here —— !!!
 	switch (required_type)
 	{
 		case CoordType::decdeg:
@@ -576,6 +575,7 @@ void convert_switch_current(NumericVector nv, CoordType current_type, CoordType 
 	using enum CoordType;
 
 	if (required_type != current_type) {
+		validate(nv);
 		switch (current_type)
 		{
 			case decdeg:
@@ -696,22 +696,24 @@ bool revalidate(const T t)
 
 
 /// __________________________________________________
-/// Validate DataFrame —— Temporary solution, needs to work for DataFrame
-inline const DataFrame validate(const DataFrame df)
-{
-	fmt::print("@validate<DataFrame>(const DataFrame); DataFrame: {}\n", demangle(typeid(df)));
-	stop("Compiler pacifier! @validate<DataFrame>(const DataFrame)");							// Temporary solution
-	return df;	
-}
-
-
-/// __________________________________________________
 /// Validate NumericVector
 inline const NumericVector validate(const NumericVector nv)
 {
 //	fmt::print("@validate(const NumericVector)\n");
-	validate_switch_current(nv, get_coordtype(nv));			// !!! —— Must check result and warn! —— !!!
+	auto valid{ validate_switch_current(nv, get_coordtype(nv)) };
+	if (std::any_of(valid.begin(), valid.end(), [](bool i){ return !i; }))
+	    warning("Invalid coords! [validate(const NumericVector)]");
 	return nv;	
+}
+
+
+/// __________________________________________________
+/// Validate DataFrame —— Temporary solution
+inline const DataFrame validate(const DataFrame df)
+{
+//	fmt::print("@validate<DataFrame>(const DataFrame); DataFrame: {}\n", demangle(typeid(df)));
+	stop("Compiler pacifier! @validate<DataFrame>(const DataFrame)");							// Temporary solution
+	return df;	
 }
 
 
@@ -795,7 +797,7 @@ NumericVector validatecoords(NumericVector x, bool force = true)
 		validate(x);
 	else {
 		if (!check_valid(x))
-			warning("Invalid coords!");
+			warning("Invalid coords! [validatecoords(NumericVector, bool)]");
 	}
 	return x;
 }
