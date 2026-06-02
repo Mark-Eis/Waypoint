@@ -217,13 +217,10 @@ const vector<bool> validate_dispatch(NumericVector, bool, const char*);
 bool check_valid(const NumericVector);
 bool check_valid(const DataFrame);
 
-template<NumericVector_or_DataFrame T /*, Coord_or_Waypoint U */>
+template<Coords_or_Waypoints T>
 bool revalidate(const T);
 
-// constexpr auto revalid_Coord = &revalidate<NumericVector, Coord>;
-// constexpr auto revalid_Waypoint = &revalidate<DataFrame, Waypoint>;
-
-template<NumericVector_or_DataFrame T /*, Coord_or_Waypoint U */>
+template<Coords_or_Waypoints T>
 inline const T validate(const T);
 
 bool valid_ll(const DataFrame);

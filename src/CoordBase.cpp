@@ -677,7 +677,7 @@ bool check_valid(const DataFrame df)
 
 /// __________________________________________________
 /// Revalidate NumericVector —— Temporary solution, needs to work for DataFrame
-template<NumericVector_or_DataFrame T>
+template<Coords_or_Waypoints T>
 bool revalidate(const T t)
 {
 	fmt::print("@revalidate<T>(const T); T: {}\n", demangle(typeid(t)));
@@ -689,7 +689,7 @@ bool revalidate(const T t)
 
 /// __________________________________________________
 /// Validate NumericVector or DataFrame —— Temporary solution, needs to work for DataFrame
-template<NumericVector_or_DataFrame T>
+template<Coords_or_Waypoints T>
 inline const T validate(const T t)
 {
 	fmt::print("@validate<T>(const T); T: {}\n", demangle(typeid(t)));
