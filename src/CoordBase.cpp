@@ -631,7 +631,7 @@ const vector<bool> validate_switch_current(const NumericVector nv)
 			return validate_dispatch<degminsec>(nv);
 
 		default:
-			stop("validate_switch_current(NumericVector, CoordType) my bad");
+			stop("validate_switch_current(const NumericVector) my bad");
 	}
 }
 
@@ -746,7 +746,6 @@ NumericVector as_coords(NumericVector object, int fmt = 1)
 {
 //	fmt::print("{1}@{0} fmt={2}\n", "as_coords(NumericVector, int)", exportstr, fmt);
 	object.attr("fmt") = fmt;
-//	validate_switch_current(object, get_coordtype(fmt), true, "coords");
 	validate(object);
 	object.attr("class") = "coords";
 	return object;
