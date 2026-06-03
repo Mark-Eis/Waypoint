@@ -77,6 +77,45 @@ struct fmt::formatter<CoordType>: formatter<string_view>
 		-> format_context::iterator;
 };
 
+/// __________________________________________________
+/// __________________________________________________
+/// CoordType Type Traits
+
+/// __________________________________________________
+/// CoordType::decdeg
+template <auto T>
+struct isDecDeg : public std::false_type {};
+
+template <>
+struct isDecDeg<CoordType::decdeg> : public std::true_type {};
+
+template<auto T>
+constexpr bool isDecDeg_v = isDecDeg<T>::value;
+
+/// __________________________________________________
+/// CoordType::degmin
+template <auto T>
+struct isDegMin : public std::false_type {};
+
+template <>
+struct isDegMin<CoordType::degmin> : public std::true_type {};
+
+template<auto T>
+constexpr bool isDegMin_v = isDegMin<T>::value;
+
+/// __________________________________________________
+/// CoordType::degminsec
+template <auto T>
+struct isDegMinSec : public std::false_type {};
+
+template <>
+struct isDegMinSec<CoordType::degminsec> : public std::true_type {};
+
+template<auto T>
+constexpr bool isDegMinSec_v = isDegMinSec<T>::value;
+
+/// __________________________________________________
+/// CoordType access functions
 inline const CoordType get_coordtype(int);
 template<Coords_or_Waypoints T>
 inline const CoordType get_coordtype(const T&);

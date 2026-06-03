@@ -350,11 +350,11 @@ vector<string> Coordlet<current_type>::format0() const
 	const auto ll_size { latlon.size() };
 	auto out_sv = vector<string>(nv.size());
 
-	if constexpr (CoordType::decdeg == required_type)
+	if constexpr (isDecDeg_v<required_type>)
 		transform(nv.begin(), nv.end(), out_sv.begin(), [this](double n){
 				return fmt::format("{:>{}.{}f}\u00B0", ff.get_decdeg(n), 11, 6);
 			});
-	else if constexpr (CoordType::degmin == required_type)
+	else if constexpr (isDegMin_v<required_type>)
 		transform(nv.begin(), nv.end(), out_sv.begin(), [this](double n){
 				return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
 					   fmt::format("{:0>{}.{}f}\u2032", fabs(ff.get_decmin(n)), 7, 4);
@@ -367,7 +367,7 @@ vector<string> Coordlet<current_type>::format0() const
 			});
 
 
-	if constexpr (CoordType::decdeg == required_type) {
+	if constexpr (isDecDeg_v<required_type>) {
 		const auto lambda1 = [&ll_it](string& outstr, double n){ return outstr + (*ll_it++ ? " lat" : " lon"); };
 		const auto lambda2 = [&ll_it](string& outstr, double n){ return outstr + (*ll_it ? " lat" : " lon"); };
 
@@ -426,11 +426,12 @@ void Coordlet<current_type>::convert0()
 {
 //	fmt::print("@Coordlet<CoordType::{}>::convert0<CoordType::{}>()\n", current_type, required_type);
 
-	if constexpr (CoordType::decdeg == required_type)
+	using enum CoordType;
+	if constexpr (isDecDeg_v<required_type>)
 		transform(nv.begin(), nv.end(), nv.begin(), [this](double n){
 				return ff.get_decdeg(n);
 			});
-	else if constexpr (CoordType::degmin == required_type)
+	if constexpr (isDegMin_v<required_type>)
 		transform(nv.begin(), nv.end(), nv.begin(), [this](double n){
 				return ff.get_deg(n) * 1e2 + ff.get_decmin(n);
 			});
