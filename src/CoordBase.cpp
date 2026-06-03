@@ -567,7 +567,7 @@ vector<string> format_switch_current(NumericVector nv, const CoordType required_
 
 
 /// __________________________________________________
-/// Switch required CoordType to format nv
+/// Dispatch nv to Coordlet<CoordType>::format_switch()
 template<CoordType current_type> 
 inline vector<string> format_dispatch(NumericVector nv, const CoordType required_type)
 {
@@ -613,7 +613,7 @@ void convert_switch_current(NumericVector nv, const CoordType required_type)
 
 
 /// __________________________________________________
-/// Switch required CoordType to convert nv
+/// Dispatch nv to Coordlet<CoordType>::convert_switch()
 template<CoordType current_type> 
 inline void convert_dispatch(NumericVector nv, const CoordType required_type)
 {
@@ -646,7 +646,7 @@ const vector<bool> validate_switch_current(const NumericVector nv)
 }
 
 /// __________________________________________________
-/// Dispatch required CoordType to validate nv
+/// Dispatch nv to Coordlet<CoordType>::validate()
 template<CoordType current_type> 
 inline const vector<bool> validate_dispatch(const NumericVector nv)
 {
