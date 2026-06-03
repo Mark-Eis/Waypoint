@@ -78,7 +78,7 @@ struct fmt::formatter<CoordType>: formatter<string_view>
 };
 
 inline const CoordType get_coordtype(int);
-template<NumericVector_or_DataFrame T>
+template<Coords_or_Waypoints T>
 inline const CoordType get_coordtype(const T&);
 inline int coordtype_to_int(CoordType);
 
@@ -180,7 +180,7 @@ class Coordlet {
 /// Waypoint class
 class Waypoint {
 	protected:
-		CoordType ct;
+		const CoordType ct;
 		DataFrame df;
 		NumericVector nvlat;
 		NumericVector nvlon;
@@ -200,11 +200,11 @@ class Waypoint {
 /// __________________________________________________
 /// __________________________________________________
 /// CoordType switches
-vector<string> format_switch_current(NumericVector, CoordType, CoordType, bool = false);
+vector<string> format_switch_current(NumericVector, CoordType);
 template<CoordType current_type> 
-vector<string> format_dispatch(NumericVector, CoordType, bool);
+vector<string> format_dispatch(NumericVector, CoordType);
 
-void convert_switch_current(NumericVector, CoordType, CoordType);
+void convert_switch_current(NumericVector, CoordType);
 template<CoordType current_type> 
 inline void convert_dispatch(NumericVector, CoordType);
 

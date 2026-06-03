@@ -289,7 +289,7 @@ inline const CoordType get_coordtype(int i)
 
 /// __________________________________________________
 /// Convert "fmt" attribute to CoordType enum
-template<NumericVector_or_DataFrame T>
+template<Coords_or_Waypoints T>
 inline const CoordType get_coordtype(const T& t)
 {
 //	fmt::print("@{} t {}\n", "get_coordtype<T>(const T&)", demangle(typeid(t)));
@@ -333,9 +333,9 @@ template<CoordType current_type>
 Coordlet<current_type>::Coordlet(NumericVector nv, const bool wpt) :
 	nv{ nv },
 	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") },
-	wpt{ wpt }
+	wpt{ nv.hasAttribute("wpt") }
 {
-//	fmt::print("§{} {}; ", fmt::format("Coordlet<CoordType::{}>::Coordlet(NumericVector, bool = 0) wpt:", current_type), wpt);  _ctrsgn(typeid(*this));
+//	fmt::print("§Coordlet<CoordType::{}>::Coordlet(NumericVector, bool = 0) wpt: {}; ", current_type, nv.hasAttribute("wpt"));  _ctrsgn(typeid(*this));
 }
 
 
@@ -499,12 +499,16 @@ const vector<bool> Coordlet<current_type>::validate()
 
 Waypoint::Waypoint(CoordType ct, DataFrame df) :
 	ct{ ct }, df{ df },
-	nvlat(df[get_vec_attr<DataFrame, int>(df, "llcols")[0] - 1]), 
-	nvlon(df[get_vec_attr<DataFrame, int>(df, "llcols")[1] - 1])
+	nvlat( df[get_vec_attr<DataFrame, int>(df, "llcols")[0] - 1] ), 
+	nvlon( df[get_vec_attr<DataFrame, int>(df, "llcols")[1] - 1] )
 {
 //	fmt::print("§{} {}; ", "Waypoint::Waypoint(CoordType, DataFrame)", ct); _ctrsgn(typeid(*this));
+	nvlat.attr("fmt") = coordtype_to_int(ct) + 1;
+	nvlon.attr("fmt") = coordtype_to_int(ct) + 1;
 	nvlat.attr("latlon") = true;
 	nvlon.attr("latlon") = false;
+	nvlat.attr("wpt") = true;
+	nvlon.attr("wpt") = true;
 }
 
 
@@ -513,20 +517,23 @@ Waypoint::~Waypoint()
 //	fmt::print("§{} {}; ", "Waypoint::~Waypoint(CoordType, DataFrame)", ct); _ctrsgn(typeid(*this), true);
 	nvlat.attr("latlon") = R_NilValue;
 	nvlon.attr("latlon") = R_NilValue;
+	nvlat.attr("fmt") = R_NilValue;
+	nvlon.attr("fmt") = R_NilValue;
+	nvlat.attr("wpt") = R_NilValue;
+	nvlon.attr("wpt") = R_NilValue;
 }
 
 
-vector<string> Waypoint::format(CoordType dt) const
+vector<string> Waypoint::format(CoordType required_type) const
 {
-//	fmt::print("@Waypoint::format(CoordType) dt: {}\n", dt);
-	vector sv_lat{ format_switch_current(nvlat, ct, dt, true) };
-	vector sv_lon{ format_switch_current(nvlon, ct, dt, true) };
+//	fmt::print("@Waypoint::format(CoordType); current type: {}; required type: {}\n", ct, required_type);
+
+	vector sv_lat{ format_switch_current(nvlat, required_type) };
+	vector sv_lon{ format_switch_current(nvlon, required_type) };
 
 	transform(sv_lat.begin(), sv_lat.end(), sv_lon.begin(), sv_lat.begin(), [](auto& latstr, auto& lonstr){return latstr + "  " + lonstr;});
 	return sv_lat;
 }
-
-
 
 
 /// __________________________________________________
@@ -535,21 +542,21 @@ vector<string> Waypoint::format(CoordType dt) const
 
 /// __________________________________________________
 /// Switch current CoordType to format nv
-vector<string> format_switch_current(NumericVector nv, CoordType current_type, CoordType required_type, bool wpt)
+vector<string> format_switch_current(NumericVector nv, CoordType required_type)
 {
-//	fmt::print("@format_switch_current(NumericVector, CoordType, CoordType, bool); current: {}; required: {}; wpt: {}\n", current_type, required_type, wpt);
-	using enum CoordType;
+//	fmt::print("@format_switch_current(NumericVector, CoordType, bool); current: {}; required: {}; wpt: {}\n", get_coordtype(nv), required_type, nv.hasAttribute("wpt"));
 
-	switch (current_type)
+	using enum CoordType;
+	switch (get_coordtype(nv))
 	{
 		case decdeg:
-			return format_dispatch<decdeg>(nv, required_type, wpt);
+			return format_dispatch<decdeg>(nv, required_type);
 
 		case degmin:
-			return format_dispatch<degmin>(nv, required_type, wpt);
+			return format_dispatch<degmin>(nv, required_type);
 
 		case degminsec:
-			return format_dispatch<degminsec>(nv, required_type, wpt);
+			return format_dispatch<degminsec>(nv, required_type);
 
 		default:
 			stop("format_switch_current(NumericVector, CoordType) my bad");
@@ -560,20 +567,21 @@ vector<string> format_switch_current(NumericVector nv, CoordType current_type, C
 /// __________________________________________________
 /// Switch required CoordType to format nv
 template<CoordType current_type> 
-inline vector<string> format_dispatch(NumericVector nv, CoordType required_type, bool wpt)
+inline vector<string> format_dispatch(NumericVector nv, CoordType required_type)
 {
-//	fmt::print("@format_dispatch<CoordType::{}>(NumericVector, CoordType); required: {}; wpt: {}\n", current_type, required_type, wpt);
-	return Coordlet<current_type>{ nv, wpt }.format_switch(required_type);
+//	fmt::print("@format_dispatch<CoordType::{}>(NumericVector, CoordType); required: {}; wpt: {}\n", current_type, required_type, nv.hasAttribute("wpt"));
+	return Coordlet<current_type>{ nv }.format_switch(required_type);
 }
 
 
 /// __________________________________________________
 /// Switch current CoordType to convert nv
-void convert_switch_current(NumericVector nv, CoordType current_type, CoordType required_type)
+void convert_switch_current(NumericVector nv, CoordType required_type)
 {
-//	fmt::print("@convert_switch_current(NumericVector, CoordType, CoordType); current_type: {}; required_type: {}\n", current_type, required_type);
+//	fmt::print("@convert_switch_current(NumericVector, CoordType); current_type: {}; required_type: {}\n", get_coordtype(nv), required_type);
 	using enum CoordType;
 
+	const auto current_type{ get_coordtype(nv) };
 	if (required_type != current_type) {
 		validate(nv);
 		switch (current_type)
@@ -759,10 +767,10 @@ NumericVector as_coords(NumericVector object, int fmt = 1)
 NumericVector convertcoords(NumericVector x, int fmt)
 {
 	checkinherits(x, "coords");
-	CoordType type = get_coordtype(x);
+//	CoordType type = get_coordtype(x);
 	CoordType newtype = get_coordtype(fmt);
-//	fmt::print("{1}@{0} from {2} to {3}\n", "convertcoords(NumericVector, int)", exportstr, type, newtype);
-	convert_switch_current(x, type, newtype);
+//	fmt::print("{1}@{0} from {2} to {3}\n", "convertcoords(NumericVector, int)", exportstr, get_coordtype(x), newtype);
+	convert_switch_current(x, newtype);
 	return x;
 }
 
@@ -817,7 +825,7 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validat
 			warning("Formatting invalid coords!");
 
 	CoordType ct { get_coordtype(x) };
-	vector sv{ format_switch_current(x, ct, fmt ? get_coordtype(fmt) : ct) };
+	vector sv{ format_switch_current(x, fmt ? get_coordtype(fmt) : ct) };
 
 	vector names{ get_vec_attr<NumericVector, string>(x, "names") };
 	if (names.size() && usenames) {
