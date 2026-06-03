@@ -70,6 +70,7 @@ RObject getnames(const DataFrame);
 /// __________________________________________________
 /// CoordType enum
 enum class CoordType : char { decdeg, degmin, degminsec };
+
 template <>
 struct fmt::formatter<CoordType>: formatter<string_view>
 {
