@@ -402,16 +402,17 @@ vector<string> Coordlet<current_type>::format_switch(CoordType required_type) co
 {
 //	fmt::print("@Coordlet<CoordType::{}>::format_switch(CoordType); required: {}\n", current_type, required_type);
 
+	using enum CoordType;
 	switch (required_type)
 	{
-		case CoordType::decdeg:
-			return format0<CoordType::decdeg>();
+		case decdeg:
+			return format0<decdeg>();
 
-		case CoordType::degmin:
-			return format0<CoordType::degmin>();
+		case degmin:
+			return format0<degmin>();
 
-		case CoordType::degminsec:
-			return format0<CoordType::degminsec>();
+		case degminsec:
+			return format0<degminsec>();
 
 		default:
 			stop("Coordlet<CoordType>::format_switch(CoordType) my bad");
@@ -426,7 +427,6 @@ void Coordlet<current_type>::convert0()
 {
 //	fmt::print("@Coordlet<CoordType::{}>::convert0<CoordType::{}>()\n", current_type, required_type);
 
-	using enum CoordType;
 	if constexpr (isDecDeg_v<required_type>)
 		transform(nv.begin(), nv.end(), nv.begin(), [this](double n){
 				return ff.get_decdeg(n);
@@ -449,18 +449,19 @@ void Coordlet<current_type>::convert_switch(CoordType required_type)
 {
 //	fmt::print("@Coordlet<CoordType::{}>::convert_switch(CoordType); required_type: {}\n", current_type, required_type);
 
+	using enum CoordType;
 	switch (required_type)
 	{
-		case CoordType::decdeg:
-			convert0<CoordType::decdeg>();
+		case decdeg:
+			convert0<decdeg>();
 			break;
 
-		case CoordType::degmin:
-			convert0<CoordType::degmin>();
+		case degmin:
+			convert0<degmin>();
 			break;
 
-		case CoordType::degminsec:
-			convert0<CoordType::degminsec>();
+		case degminsec:
+			convert0<degminsec>();
 			break;
 
 		default:
