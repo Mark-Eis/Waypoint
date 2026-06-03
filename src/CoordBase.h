@@ -15,7 +15,9 @@
 /// __________________________________________________
 /// Concept
 template <typename T>
-concept NumericVector_or_DataFrame = std::is_same_v<NumericVector, T> || std::is_same_v<DataFrame, T>;
+concept NumericVector_or_DataFrame = 
+	std::is_same_v<NumericVector, T> || std::is_same_v<const NumericVector, T> ||
+	std::is_same_v<DataFrame, T> || std::is_same_v<const DataFrame, T>;
 
 template <typename T>
 concept List_or_DataFrame = std::is_same_v<List, T> || std::is_same_v<DataFrame, T>;
@@ -206,9 +208,9 @@ void convert_switch_current(NumericVector, CoordType, CoordType);
 template<CoordType current_type> 
 inline void convert_dispatch(NumericVector, CoordType);
 
-const vector<bool> validate_switch_current(NumericVector, CoordType);
+const vector<bool> validate_switch_current(const NumericVector);
 template<CoordType current_type> 
-const vector<bool> validate_dispatch(NumericVector);
+const vector<bool> validate_dispatch(const NumericVector);
 
 
 /// __________________________________________________
@@ -231,7 +233,7 @@ bool valid_ll(const DataFrame);
 NumericVector as_coords(NumericVector, int);
 NumericVector convertcoords(NumericVector, int);
 NumericVector latlon(NumericVector, LogicalVector);
-NumericVector validatecoords(NumericVector, bool);
+NumericVector validatecoords(const NumericVector, const bool);
 CharacterVector formatcoords(NumericVector, bool, bool, int);
 DataFrame as_waypointsdefault(DataFrame, int);
 DataFrame convertwaypoints(DataFrame, int);
