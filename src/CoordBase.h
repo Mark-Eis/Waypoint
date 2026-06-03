@@ -200,13 +200,13 @@ class Waypoint {
 /// __________________________________________________
 /// __________________________________________________
 /// CoordType switches
-vector<string> format_switch_current(NumericVector, CoordType);
+vector<string> format_switch_current(NumericVector, const CoordType);
 template<CoordType current_type> 
-vector<string> format_dispatch(NumericVector, CoordType);
+vector<string> format_dispatch(NumericVector, const CoordType);
 
-void convert_switch_current(NumericVector, CoordType);
+void convert_switch_current(NumericVector, const CoordType);
 template<CoordType current_type> 
-inline void convert_dispatch(NumericVector, CoordType);
+inline void convert_dispatch(NumericVector, const CoordType);
 
 const vector<bool> validate_switch_current(const NumericVector);
 template<CoordType current_type> 

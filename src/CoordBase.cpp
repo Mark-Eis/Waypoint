@@ -542,9 +542,9 @@ vector<string> Waypoint::format(CoordType required_type) const
 
 /// __________________________________________________
 /// Switch current CoordType to format nv
-vector<string> format_switch_current(NumericVector nv, CoordType required_type)
+vector<string> format_switch_current(NumericVector nv, const CoordType required_type)
 {
-//	fmt::print("@format_switch_current(NumericVector, CoordType, bool); current: {}; required: {}; wpt: {}\n", get_coordtype(nv), required_type, nv.hasAttribute("wpt"));
+//	fmt::print("@format_switch_current(NumericVector, const CoordType, bool); current: {}; required: {}; wpt: {}\n", get_coordtype(nv), required_type, nv.hasAttribute("wpt"));
 
 	using enum CoordType;
 	switch (get_coordtype(nv))
@@ -559,7 +559,7 @@ vector<string> format_switch_current(NumericVector nv, CoordType required_type)
 			return format_dispatch<degminsec>(nv, required_type);
 
 		default:
-			stop("format_switch_current(NumericVector, CoordType) my bad");
+			stop("format_switch_current(NumericVector, const CoordType) my bad");
 	}
 }
 
@@ -567,18 +567,18 @@ vector<string> format_switch_current(NumericVector nv, CoordType required_type)
 /// __________________________________________________
 /// Switch required CoordType to format nv
 template<CoordType current_type> 
-inline vector<string> format_dispatch(NumericVector nv, CoordType required_type)
+inline vector<string> format_dispatch(NumericVector nv, const CoordType required_type)
 {
-//	fmt::print("@format_dispatch<CoordType::{}>(NumericVector, CoordType); required: {}; wpt: {}\n", current_type, required_type, nv.hasAttribute("wpt"));
+//	fmt::print("@format_dispatch<CoordType::{}>(NumericVector, const CoordType); required: {}; wpt: {}\n", current_type, required_type, nv.hasAttribute("wpt"));
 	return Coordlet<current_type>{ nv }.format_switch(required_type);
 }
 
 
 /// __________________________________________________
 /// Switch current CoordType to convert nv
-void convert_switch_current(NumericVector nv, CoordType required_type)
+void convert_switch_current(NumericVector nv, const CoordType required_type)
 {
-//	fmt::print("@convert_switch_current(NumericVector, CoordType); current_type: {}; required_type: {}\n", get_coordtype(nv), required_type);
+//	fmt::print("@convert_switch_current(NumericVector, const CoordType); current_type: {}; required_type: {}\n", get_coordtype(nv), required_type);
 	using enum CoordType;
 
 	const auto current_type{ get_coordtype(nv) };
@@ -599,7 +599,7 @@ void convert_switch_current(NumericVector nv, CoordType required_type)
 				break;
 	
 			default:
-				stop("convert_switch_current(NumericVector, CoordType) my bad");
+				stop("convert_switch_current(NumericVector, const CoordType) my bad");
 		}
 		nv.attr("fmt") = coordtype_to_int(required_type) + 1;
 	} else {
@@ -613,9 +613,9 @@ void convert_switch_current(NumericVector nv, CoordType required_type)
 /// __________________________________________________
 /// Switch required CoordType to convert nv
 template<CoordType current_type> 
-inline void convert_dispatch(NumericVector nv, CoordType required_type)
+inline void convert_dispatch(NumericVector nv, const CoordType required_type)
 {
-//	fmt::print("@convert_dispatch<CoordType::{}>(NumericVector, CoordType); required_type: {}\n", current_type, required_type);
+//	fmt::print("@convert_dispatch<CoordType::{}>(NumericVector, const CoordType); required_type: {}\n", current_type, required_type);
 	Coordlet<current_type>{ nv }.convert_switch(required_type);
 }
 
