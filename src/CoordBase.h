@@ -188,6 +188,10 @@ class Waypoint {
 		vector<bool> validlon { false };
 	public:
 		explicit Waypoint(CoordType, DataFrame);
+		Waypoint(const Waypoint&) = delete;						// Disallow copying
+		Waypoint& operator=(const Waypoint&) = delete;			//  ——— ditto ———
+		Waypoint(Waypoint&&) = delete;							// Disallow transfer ownership
+		Waypoint& operator=(Waypoint&&) = delete;				// Disallow moving
 		~Waypoint();
 
 		template<CoordType type>
