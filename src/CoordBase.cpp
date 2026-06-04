@@ -710,7 +710,7 @@ bool check_valid(const DataFrame df)
 
 
 /// __________________________________________________
-/// Revalidate NumericVector
+/// Revalidate "coords" or "waypoints"
 template<Coords_or_Waypoints T>
 bool revalidate(const T t)
 {
@@ -877,7 +877,6 @@ DataFrame as_waypoints(DataFrame object, int fmt = 1)
 		stop("Invalid llcols attribute!");
 	Waypoint{ object }.validate();
 	object.attr("class") = CharacterVector{"waypoints", "data.frame"};
-//	fmt::print("{}@@as_waypoints(DataFrame, int) fmt={}\n", exportstr, fmt);
 	return object;
 }
 
@@ -917,8 +916,7 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate
 	if (validate)
 		if (!check_valid(x))
 			warning("Formatting invalid waypoints!");
-	CoordType ct { get_coordtype(x) }; //											{	¡¡¡——Simplify——!!!
-	vector sv{ Waypoint{ x }.format(fmt ? get_coordtype(fmt) : ct) }; //			{
+	vector sv{ Waypoint{ x }.format(fmt ? get_coordtype(fmt) : get_coordtype(x)) };
 
 	if (usenames) {
 		RObject names = getnames(x);
