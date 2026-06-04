@@ -166,7 +166,7 @@ inline void stdlenstr(vector<string>& sv)
 
 
 /// __________________________________________________
-/// Prefix vector<string> elements with elements of vector<T>—default for vector<string> prefix
+/// Prefix vector<string> elements with elements of vector<T>—default for vector<string> prefix		// deprecated
 template<class T>
 inline void prefixvecstr(vector<string>& sv, const vector<T>& prefix)
 {
@@ -176,7 +176,7 @@ inline void prefixvecstr(vector<string>& sv, const vector<T>& prefix)
 
 
 /// __________________________________________________
-/// Specialisation for vector<int> prefix
+/// Specialisation for vector<int> prefix															// deprecated
 template<>
 inline void prefixvecstr(vector<string>& sv, const vector<int>& prefix)
 {
@@ -186,7 +186,27 @@ inline void prefixvecstr(vector<string>& sv, const vector<int>& prefix)
 
 
 /// __________________________________________________
-/// Prefix vector<string> elements with elements of RObject 
+/// Concatenate corresponding elements of two vector<string>, with separator; result in second vector<string>
+inline void concat_vecstr_elmnts(const vector<string>& sv_a, vector<string>& sv_b, auto sep)
+{
+//  fmt::print("@ concat_vecstr_elmnts(vector<string>&, const vector<string>&, sep = \" \""));
+    transform(sv_a.begin(), sv_a.end(), sv_b.begin(), sv_b.begin(), [&sep](const string& str_a, const string& str_b) {
+        return str_a + sep + str_b; }); 
+}
+
+
+/// __________________________________________________
+/// Concatenate corresponding elements of vector<int> and vector<string>, with separator; result in vector<string>
+inline void concat_vecstr_elmnts(const vector<int>& iv_a, vector<string>& sv_b, auto sep)
+{
+//  fmt::print("@ concat_vecstr_elmnts(const vector<int>&, vector<string>&, sep = \" \""));
+    transform(iv_a.begin(), iv_a.end(), sv_b.begin(), sv_b.begin(), [&sep](const int i, const string& str_b) {
+        return (std::to_string(i)) + sep + str_b; }); 
+}
+
+
+/// __________________________________________________
+/// Prefix vector<string> elements with elements of RObject											// To be revised — depends on deprecated prefixvecstr()
 inline bool prefixwithnames(vector<string>& sv, RObject& namesobj)
 {
 //	fmt::print("@{}\n", "prefixwithnames(vector<string>&, RObject&)");
