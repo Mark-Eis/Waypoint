@@ -210,6 +210,7 @@ class Coordlet {
 		Coordlet(Coordlet&&) = delete;							// Disallow transfer ownership
 		Coordlet& operator=(Coordlet&&) = delete;				// Disallow moving
 		virtual ~Coordlet() = default;
+//		virtual ~Coordlet() { fmt::print("§Coordlet::~Coordlet(); {}; ", current_type); _ctrsgn(typeid(*this), true); }
 		vector<string> format_switch(CoordType required_type) const;
 		void convert_switch(CoordType required_type);
 		const vector<bool> validate();
@@ -227,7 +228,7 @@ class Waypoint {
 		vector<bool> validlat { false };
 		vector<bool> validlon { false };
 	public:
-		explicit Waypoint(CoordType, DataFrame);
+		explicit Waypoint(DataFrame);
 		Waypoint(const Waypoint&) = delete;						// Disallow copying
 		Waypoint& operator=(const Waypoint&) = delete;			//  ——— ditto ———
 		Waypoint(Waypoint&&) = delete;							// Disallow transfer ownership
@@ -236,7 +237,7 @@ class Waypoint {
 
 		template<CoordType type>
 		void convert();
-		void validate(bool = true);
+		const bool validate() const;
 		vector<string> format(CoordType) const;
 };
 
