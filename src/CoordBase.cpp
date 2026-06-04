@@ -160,7 +160,7 @@ inline bool is_item_in_obj(const T t, int item)
 inline void stdlenstr(vector<string>& sv)
 {
 //	fmt::print("@{}\n", "stdlenstr(vector<string>&)");
-	int maxwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
+	auto maxwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
 	transform(sv.begin(), sv.end(), sv.begin(), [maxwdth](const string& s) { return fmt::format("{:<{}}", s, maxwdth); });
 }
 
@@ -538,6 +538,18 @@ vector<string> Waypoint::format(CoordType required_type) const
 }
 
 
+vector<string> Waypoint::validate() const
+{
+//	fmt::print("@Waypoint::validate(CoordType); current type: {}; required type: {}\n", ct, required_type);
+
+	vector sv_lat{ validate_switch_current(nvlat, required_type) };
+	vector sv_lon{ validate_switch_current(nvlon, required_type) };
+
+	transform(sv_lat.begin(), sv_lat.end(), sv_lon.begin(), sv_lat.begin(), [](auto& latstr, auto& lonstr){return latstr + "  " + lonstr;});
+	return sv_lat;
+}
+
+
 /// __________________________________________________
 /// __________________________________________________
 /// CoordType switches
@@ -769,7 +781,6 @@ NumericVector as_coords(NumericVector object, int fmt = 1)
 NumericVector convertcoords(NumericVector x, int fmt)
 {
 	checkinherits(x, "coords");
-//	CoordType type = get_coordtype(x);
 	CoordType newtype = get_coordtype(fmt);
 //	fmt::print("{1}@{0} from {2} to {3}\n", "convertcoords(NumericVector, int)", exportstr, get_coordtype(x), newtype);
 	convert_switch_current(x, newtype);
@@ -844,7 +855,7 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validat
 // [[Rcpp::export(name = "as_waypoints.default")]]
 DataFrame as_waypoints(DataFrame object, int fmt = 1)
 {
-//	fmt::print("{1}@{0} fmt={2}\n", "as_waypoints(DataFrame, int)", exportstr, fmt);
+	fmt::print("{1}@{0} fmt={2}\n", "as_waypoints(DataFrame, int)", exportstr, fmt);
 	object.attr("fmt") = fmt;
 	int namescol = 0;
 	if (!object.hasAttribute("namescol")) {
@@ -858,8 +869,9 @@ DataFrame as_waypoints(DataFrame object, int fmt = 1)
 	}
 	if(!valid_ll(object))
 		stop("Invalid llcols attribute!");
-//	Waypoint{get_coordtype(fmt), object}.validate();
+	Waypoint{get_coordtype(fmt), object}.validate();
 	object.attr("class") = CharacterVector{"waypoints", "data.frame"};
+	fmt::print("{}@@as_waypoints(DataFrame, int) fmt={}\n", exportstr, fmt);
 	return object;
 }
 
@@ -870,7 +882,7 @@ DataFrame as_waypoints(DataFrame object, int fmt = 1)
 // [[Rcpp::export(name = "validate.waypoints")]]
 DataFrame validatewaypoints(DataFrame x, bool force = true)
 {
-//	fmt::print("{1}@{0} force: {2}\n", "validatewaypoints(DataFrame, bool)", exportstr, force);
+	fmt::print("{1}@{0} force: {2}\n", "validatewaypoints(DataFrame, bool)", exportstr, force);
 	checkinherits(x, "waypoints");
 	if(!valid_ll(x))
 		stop("Invalid llcols attribute!");
@@ -890,7 +902,7 @@ DataFrame validatewaypoints(DataFrame x, bool force = true)
 // [[Rcpp::export(name = "format.waypoints")]]
 CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate = true, int fmt = 0)
 {
-//	fmt::print("{1}@{0} usenames: {2}, validate: {3}\n", "formatwaypoints(DataFrame, bool, bool)", exportstr, usenames, validate);
+	fmt::print("{1}@{0} usenames: {2}, validate: {3}\n", "formatwaypoints(DataFrame, bool, bool)", exportstr, usenames, validate);
 	checkinherits(x, "waypoints");
 	if(!x.nrows())
 		stop("x has 0 rows!");
