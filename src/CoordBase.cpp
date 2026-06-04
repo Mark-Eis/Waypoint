@@ -166,56 +166,36 @@ inline void stdlenstr(vector<string>& sv)
 
 
 /// __________________________________________________
-/// Prefix vector<string> elements with elements of vector<T>—default for vector<string> prefix		// deprecated
-template<class T>
-inline void prefixvecstr(vector<string>& sv, const vector<T>& prefix)
-{
-//	fmt::print("@{} T {}\n", "prefixvecstr<T>(vector<string>&, const vector<T>&) [default]", "vector<string>");
-	transform(sv.begin(), sv.end(), prefix.begin(), sv.begin(), [](string& lls, const string& name) { return name + "  " + lls; });	
-}
-
-
-/// __________________________________________________
-/// Specialisation for vector<int> prefix															// deprecated
-template<>
-inline void prefixvecstr(vector<string>& sv, const vector<int>& prefix)
-{
-//	fmt::print("@{}\n", "prefixvecstr<>(vector<string>&, const vector<int>&)");
-	transform(sv.begin(), sv.end(), prefix.begin(), sv.begin(), [](string& lls, int name) { return std::to_string(name) + "  " + lls; });	
-}
-
-
-/// __________________________________________________
 /// Concatenate corresponding elements of two vector<string>, with separator; result in second vector<string>
-inline void concat_vecstr_elmnts(const vector<string>& sv_a, vector<string>& sv_b, auto sep)
+inline void concat_vecstr_elmnts(const vector<string>& sv_a, vector<string>& sv_b, const string sep)
 {
-//  fmt::print("@ concat_vecstr_elmnts(vector<string>&, const vector<string>&, sep = \" \""));
-    transform(sv_a.begin(), sv_a.end(), sv_b.begin(), sv_b.begin(), [&sep](const string& str_a, const string& str_b) {
-        return str_a + sep + str_b; }); 
+//	fmt::print("@ concat_vecstr_elmnts(vector<string>&, const vector<string>&, sep = \" \")\n");
+	transform(sv_a.begin(), sv_a.end(), sv_b.begin(), sv_b.begin(), [&sep](const string& str_a, const string& str_b) {
+		return str_a + sep + str_b; }); 
 }
 
 
 /// __________________________________________________
 /// Concatenate corresponding elements of vector<int> and vector<string>, with separator; result in vector<string>
-inline void concat_vecstr_elmnts(const vector<int>& iv_a, vector<string>& sv_b, auto sep)
+inline void concat_vecstr_elmnts(const vector<int>& iv_a, vector<string>& sv_b, const string sep)
 {
-//  fmt::print("@ concat_vecstr_elmnts(const vector<int>&, vector<string>&, sep = \" \""));
-    transform(iv_a.begin(), iv_a.end(), sv_b.begin(), sv_b.begin(), [&sep](const int i, const string& str_b) {
-        return (std::to_string(i)) + sep + str_b; }); 
+//	fmt::print("@ concat_vecstr_elmnts(const vector<int>&, vector<string>&, sep = \" \")\n");
+	transform(iv_a.begin(), iv_a.end(), sv_b.begin(), sv_b.begin(), [&sep](const int i, const string& str_b) {
+		return (std::to_string(i)) + sep + str_b; }); 
 }
 
 
 /// __________________________________________________
-/// Prefix vector<string> elements with elements of RObject											// To be revised — depends on deprecated prefixvecstr()
+/// Prefix vector<string> elements with elements of RObject
 inline bool prefixwithnames(vector<string>& sv, RObject& namesobj)
 {
 //	fmt::print("@{}\n", "prefixwithnames(vector<string>&, RObject&)");
 	if (is<CharacterVector>(namesobj)) {
 		vector<string>&& names = as<vector<string>>(namesobj);
 		stdlenstr(names);
-		prefixvecstr(sv, names);
+		concat_vecstr_elmnts(names, sv);
 	} else if(is<IntegerVector>(namesobj))
-		prefixvecstr(sv, as<vector<int>>(namesobj));
+		concat_vecstr_elmnts(as<vector<int>>(namesobj), sv);
 	else
 		return false;
 	return true;
@@ -852,7 +832,7 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validat
 	vector names{ get_vec_attr<NumericVector, string>(x, "names") };
 	if (names.size() && usenames) {
 		stdlenstr(names);
-		prefixvecstr(sv, names);
+		concat_vecstr_elmnts(names, sv);
 	}
 	return wrap(sv);
 }

@@ -58,10 +58,8 @@ inline void checkinherits(T&, const char*);
 template<class T>
 inline bool is_item_in_obj(const T, int);
 inline void stdlenstr(vector<string>&);
-template<class T>																			// { deprecated
-inline void prefixvecstr(vector<string>&, const vector<T>&);									// {
-inline void concat_vecstr_elmnts(const vector<string>&, vector<string>&, auto = " ");
-inline void concat_vecstr_elmnts(const vector<int>&, vector<string>&, auto = " ");
+inline void concat_vecstr_elmnts(const vector<string>&, vector<string>&, const string = " ");
+inline void concat_vecstr_elmnts(const vector<int>&, vector<string>&, const string = " ");
 inline bool prefixwithnames(vector<string>&, RObject&);
 inline string str_tolower(string);
 template<List_or_DataFrame T>
