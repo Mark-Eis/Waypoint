@@ -478,7 +478,6 @@ const vector<bool> Coordlet<current_type>::validate()
 //	fmt::print("@Coordlet<CoordType::{}>::validate(); latlon: {}\n", current_type, fmt::join(latlon, ", "));
 	vector<bool>::const_iterator ll_it{ latlon.begin() };
 	auto ll_size { latlon.size() };
-
 	auto valid = vector<bool>{};
 	valid.assign(nv.size(), {false});
 
@@ -540,7 +539,7 @@ vector<string> Waypoint::format(CoordType required_type) const
 
 const bool Waypoint::validate() const
 {
-//	fmt::print("@Waypoint::validate(CoordType); current type: {}\n", ct);
+//	fmt::print("@Waypoint::validate(); current type: {}\n", ct);
 
 	auto validlat = validate_switch_current(nvlat);
 	auto validlon = validate_switch_current(nvlon);
