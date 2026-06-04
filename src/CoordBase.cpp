@@ -473,7 +473,7 @@ void Coordlet<current_type>::convert_switch(CoordType required_type)
 /// __________________________________________________
 /// Validate Coordlet::nv
 template<CoordType current_type>
-const vector<bool> Coordlet<current_type>::validate()
+const vector<bool> Coordlet<current_type>::validate() const
 {
 //	fmt::print("@Coordlet<CoordType::{}>::validate(); latlon: {}\n", current_type, fmt::join(latlon, ", "));
 	vector<bool>::const_iterator ll_it{ latlon.begin() };

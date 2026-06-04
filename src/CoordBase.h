@@ -213,7 +213,7 @@ class Coordlet {
 //		virtual ~Coordlet() { fmt::print("§Coordlet::~Coordlet(); {}; ", current_type); _ctrsgn(typeid(*this), true); }
 		vector<string> format_switch(CoordType required_type) const;
 		void convert_switch(CoordType required_type);
-		const vector<bool> validate();
+		const vector<bool> validate() const;
 };
 
 
