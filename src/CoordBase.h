@@ -205,9 +205,9 @@ class Coordlet {
 		NumericVector nv;
 		const vector<bool> latlon;
 
-		template<CoordType required_type>
+		template<CoordType>
 		void convert0();
-		template<CoordType required_type> 
+		template<CoordType> 
 		vector<string> format0() const;
 	public:
 		explicit Coordlet(NumericVector);
@@ -217,8 +217,8 @@ class Coordlet {
 		Coordlet& operator=(Coordlet&&) = delete;				// Disallow moving
 		virtual ~Coordlet() = default;
 //		virtual ~Coordlet() { fmt::print("§Coordlet::~Coordlet(); {}; ", current_type); _ctrsgn(typeid(*this), true); }
-		vector<string> format_switch(CoordType required_type) const;
-		void convert_switch(CoordType required_type);
+		vector<string> format_switch(CoordType) const;
+		void convert_switch(CoordType);
 		const vector<bool> validate() const;
 };
 
@@ -230,8 +230,8 @@ class Coords {
 		const CoordType ct;
 		NumericVector nv;
 		vector<bool> valid { false };
-//		template<CoordType required_type>
-//		void format_suffix(vector<string>&) const;
+//		template<CoordType>
+//		void format_suffix(vector<string>&) const;  // Possibly?
 		void format_suffix(vector<string>&, CoordType) const;
 	public:
 		explicit Coords(NumericVector);
@@ -242,11 +242,11 @@ class Coords {
 		~Coords() = default;
 //		virtual ~Coords() { fmt::print("§Coords::~Coords(); {}; ", ct); _ctrsgn(typeid(*this), true); }
 
-		template<CoordType type>
+		template<CoordType>
 		void convert();
 		const bool validate() const;
 		vector<string> format(CoordType) const;
-//		void format_suffix_switch(CoordType required_type) const;  // Possibly?
+//		void format_suffix_switch(CoordType) const;  // Possibly?
 };
 
 
@@ -269,7 +269,7 @@ class Waypoints {
 		Waypoints& operator=(Waypoints&&) = delete;				// Disallow moving
 		~Waypoints();
 
-		template<CoordType type>
+		template<CoordType>
 		void convert();
 		const bool validate() const;
 		vector<string> format(CoordType) const;
