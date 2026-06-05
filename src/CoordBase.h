@@ -226,6 +226,7 @@ class Waypoint {
 		NumericVector nvlon;
 		vector<bool> validlat { false };
 		vector<bool> validlon { false };
+		void format_suffix(vector<string>&, const bool) const;
 	public:
 		explicit Waypoint(DataFrame);
 		Waypoint(const Waypoint&) = delete;						// Disallow copying

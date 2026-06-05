@@ -365,29 +365,30 @@ vector<string> Coordlet<current_type>::format0() const
 					   fmt::format("{:0>{}.{}f}\u2033", fabs(ff.get_sec(n)), 5, 2);
 			});
 
-
-	if constexpr (isDecDeg_v<required_type>) {
-		const auto lambda1 = [&ll_it](string& outstr, double n){ return outstr + (*ll_it++ ? " lat" : " lon"); };
-		const auto lambda2 = [&ll_it](string& outstr, double n){ return outstr + (*ll_it ? " lat" : " lon"); };
-
-		if (ll_size > 1)
-			transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda1);
-		else
-			if (ll_size == 1 && !nv.hasAttribute("wpt"))
-				transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda2);
-
-	} else {
-		const auto lambda1 = [&ll_it](string& outstr, double n){ return outstr + cardpoint(n < 0, *ll_it++); };
-		const auto lambda2 = [&ll_it](string& outstr, double n){ return outstr + cardpoint(n < 0, *ll_it); };
-		const auto lambda3 = [](string& outstr, double n){ return outstr + cardi_b(n < 0); };
-
-		if (ll_size > 1)
-			transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda1);
-		else
-			if (ll_size == 1)	// uniform coords or waypoints
-				transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda2);
-			else					// no latlon info and not decdeg
-				transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda3);
+	if (!nv.hasAttribute("wpt")){
+		if constexpr (isDecDeg_v<required_type>) {
+			const auto lambda1 = [&ll_it](string& outstr, double n){ return outstr + (*ll_it++ ? " lat" : " lon"); };
+			const auto lambda2 = [&ll_it](string& outstr, double n){ return outstr + (*ll_it ? " lat" : " lon"); };
+	
+			if (ll_size > 1)
+				transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda1);
+			else
+				if (ll_size == 1 /*  && !nv.hasAttribute("wpt") */)
+					transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda2);
+	
+		} else {
+			const auto lambda1 = [&ll_it](string& outstr, double n){ return outstr + cardpoint(n < 0, *ll_it++); };
+			const auto lambda2 = [&ll_it](string& outstr, double n){ return outstr + cardpoint(n < 0, *ll_it); };
+			const auto lambda3 = [](string& outstr, double n){ return outstr + cardi_b(n < 0); };
+	
+			if (ll_size > 1)
+				transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda1);
+			else
+				if (ll_size == 1)	// uniform coords or waypoints
+					transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda2);
+				else					// no latlon info and not decdeg
+					transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda3);
+		}
 	}
 
 	return out_sv;
@@ -526,13 +527,27 @@ Waypoint::~Waypoint()
 
 vector<string> Waypoint::format(CoordType required_type) const
 {
-//	fmt::print("@Waypoint::format(CoordType); current type: {}; required type: {}\n", ct, required_type);
+	fmt::print("@Waypoint::format(CoordType); current type: {}; required type: {}\n", ct, required_type);
 
 	vector sv_lat{ format_switch_current(nvlat, required_type) };
 	vector sv_lon{ format_switch_current(nvlon, required_type) };
 
+	if (required_type != CoordType::decdeg) {
+		format_suffix(sv_lat, true);
+		format_suffix(sv_lon, false);
+	}
+
 	transform(sv_lat.begin(), sv_lat.end(), sv_lon.begin(), sv_lat.begin(), [](auto& latstr, auto& lonstr){return latstr + "  " + lonstr;});
 	return sv_lat;
+}
+
+
+void Waypoint::format_suffix(vector<string>& out_sv, const bool latlon) const
+{
+	fmt::print("@Waypoint::format1(vector<string> out_sv) const; {}\n", latlon? "lat" : "lon");
+	transform(out_sv.begin(), out_sv.end(), (latlon? nvlat : nvlon).begin(), out_sv.begin(), [latlon](string& outstr, double n){
+		return outstr + cardpoint(n < 0, latlon); }
+	);
 }
 
 
