@@ -10,7 +10,16 @@
 #include "/Users/frzmce/Library/CloudStorage/OneDrive-UniversityofBristol/Documents/R/Packages/Waypoint/src/fmt/format.h"
 
 /// __________________________________________________
+/// __________________________________________________
 /// Class and Function declarations
+
+/// __________________________________________________
+/// Class forward declarations
+enum class CoordType : char;
+template<CoordType current_type>
+class Coordlet;
+class Coords;
+class Waypoints;
 
 /// __________________________________________________
 /// Concept
@@ -21,13 +30,6 @@ concept NumericVector_or_DataFrame =
 
 template <typename T>
 concept List_or_DataFrame = std::is_same_v<List, T> || std::is_same_v<DataFrame, T>;
-
-template <typename T>
-concept Coords_or_Waypoints =
-	requires (T t) {
-		NumericVector_or_DataFrame<T>;
-		// more...
-	};
 
 
 /// __________________________________________________
@@ -118,12 +120,26 @@ constexpr bool isDegMinSec_v = isDegMinSec<T>::value;
 /// __________________________________________________
 /// CoordType access functions
 inline const CoordType get_coordtype(int);
-template<Coords_or_Waypoints T>
+template<NumericVector_or_DataFrame T>
 inline const CoordType get_coordtype(const T&);
 inline int coordtype_to_int(CoordType);
 
 inline string cardpoint(bool, bool);
 inline string cardi_b(bool);
+
+
+/// __________________________________________________
+/// Concept
+template <typename T>
+concept Coords_or_Waypoints =
+	requires (T t) {
+		t.template convert<CoordType::decdeg>();
+		t.template convert<CoordType::degmin>();
+		t.template convert<CoordType::degminsec>();
+		t.validate();
+//		t.format(CoordType);
+//		t.format();
+	};
 
 
 /// __________________________________________________
@@ -181,15 +197,6 @@ struct FamousFive<CoordType::degminsec> final : FamousFive0 {
 
 /// __________________________________________________
 /// __________________________________________________
-/// Class forward declarations
-template<CoordType current_type>
-class Coordlet;
-// template<CoordType current_type>
-class Waypoints;
-
-
-/// __________________________________________________
-/// __________________________________________________
 /// Coordlet class
 template<CoordType current_type>
 class Coordlet {
@@ -208,11 +215,35 @@ class Coordlet {
 		Coordlet& operator=(const Coordlet&) = delete;			//  ——— ditto ———
 		Coordlet(Coordlet&&) = delete;							// Disallow transfer ownership
 		Coordlet& operator=(Coordlet&&) = delete;				// Disallow moving
-		virtual ~Coordlet() = default;
-//		virtual ~Coordlet() { fmt::print("§Coordlet::~Coordlet(); {}; ", current_type); _ctrsgn(typeid(*this), true); }
+//		virtual ~Coordlet() = default;
+		virtual ~Coordlet() { fmt::print("§Coordlet::~Coordlet(); {}; ", current_type); _ctrsgn(typeid(*this), true); }
 		vector<string> format_switch(CoordType required_type) const;
 		void convert_switch(CoordType required_type);
 		const vector<bool> validate() const;
+};
+
+
+/// __________________________________________________
+/// Coords class
+class Coords {
+	protected:
+		const CoordType ct;
+		NumericVector nv;
+		vector<bool> valid { false };
+		void format_suffix(vector<string>&) const;
+	public:
+		explicit Coords(NumericVector);
+		Coords(const Coords&) = delete;						// Disallow copying
+		Coords& operator=(const Coords&) = delete;			//  ——— ditto ———
+		Coords(Coords&&) = delete;							// Disallow transfer ownership
+		Coords& operator=(Coords&&) = delete;				// Disallow moving
+//		~Coords() = default;
+		virtual ~Coords() { fmt::print("§Coords::~Coords(); {}; ", ct); _ctrsgn(typeid(*this), true); }
+
+		template<CoordType type>
+		void convert();
+		const bool validate() const;
+		vector<string> format(CoordType) const;
 };
 
 
@@ -229,9 +260,9 @@ class Waypoints {
 		void format_suffix(vector<string>&, const bool) const;
 	public:
 		explicit Waypoints(DataFrame);
-		Waypoints(const Waypoints&) = delete;						// Disallow copying
+		Waypoints(const Waypoints&) = delete;					// Disallow copying
 		Waypoints& operator=(const Waypoints&) = delete;			//  ——— ditto ———
-		Waypoints(Waypoints&&) = delete;							// Disallow transfer ownership
+		Waypoints(Waypoints&&) = delete;						// Disallow transfer ownership
 		Waypoints& operator=(Waypoints&&) = delete;				// Disallow moving
 		~Waypoints();
 
@@ -264,11 +295,16 @@ const vector<bool> validate_dispatch(const NumericVector);
 bool check_valid(const NumericVector);
 bool check_valid(const DataFrame);
 
-template<Coords_or_Waypoints T>
+template<NumericVector_or_DataFrame T, Coords_or_Waypoints U>
 bool revalidate(const T);
 
-inline const DataFrame validate(const DataFrame df);
-inline const NumericVector validate(const NumericVector);
+// constexpr auto revalid_Coords = &revalidate<NumericVector, Coords>;
+// constexpr auto revalid_WayPoints = &revalidate<DataFrame, WayPoints>;
+
+// inline const DataFrame validate(const DataFrame df);
+// inline const NumericVector validate(const NumericVector);
+template<NumericVector_or_DataFrame T, Coords_or_Waypoints U>
+inline const T validate(const T);
 
 bool valid_ll(const DataFrame);
 
