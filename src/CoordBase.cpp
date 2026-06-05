@@ -330,10 +330,9 @@ inline string cardi_b(bool negative)
 /// __________________________________________________
 /// Constructor of Coordlet
 template<CoordType current_type>
-Coordlet<current_type>::Coordlet(NumericVector nv, const bool wpt) :
+Coordlet<current_type>::Coordlet(NumericVector nv) :
 	nv{ nv },
-	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") },
-	wpt{ nv.hasAttribute("wpt") }
+	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") }
 {
 //	fmt::print("§Coordlet<CoordType::{}>::Coordlet(NumericVector, bool) wpt: {}; ", current_type, nv.hasAttribute("wpt"));  _ctrsgn(typeid(*this));
 }
@@ -374,7 +373,7 @@ vector<string> Coordlet<current_type>::format0() const
 		if (ll_size > 1)
 			transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda1);
 		else
-			if (ll_size == 1 && !wpt)
+			if (ll_size == 1 && !nv.hasAttribute("wpt"))
 				transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda2);
 
 	} else {

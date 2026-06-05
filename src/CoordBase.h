@@ -197,14 +197,13 @@ class Coordlet {
 		FamousFive<current_type> ff;
 		NumericVector nv;
 		const vector<bool> latlon;
-		const bool wpt;
 
 		template<CoordType required_type>
 		void convert0();
 		template<CoordType required_type> 
 		vector<string> format0() const;
 	public:
-		explicit Coordlet(NumericVector, const bool = false);
+		explicit Coordlet(NumericVector);
 		Coordlet(const Coordlet&) = delete;						// Disallow copying
 		Coordlet& operator=(const Coordlet&) = delete;			//  ——— ditto ———
 		Coordlet(Coordlet&&) = delete;							// Disallow transfer ownership
