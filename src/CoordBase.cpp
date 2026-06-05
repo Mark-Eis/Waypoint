@@ -499,14 +499,14 @@ const vector<bool> Coordlet<current_type>::validate() const
 
 /// __________________________________________________
 /// __________________________________________________
-/// Waypoint class
+/// Waypoints class
 
-Waypoint::Waypoint(DataFrame df) :
+Waypoints::Waypoints(DataFrame df) :
 	ct{ get_coordtype(df) }, df{ df },
 	nvlat( df[get_vec_attr<DataFrame, int>(df, "llcols")[0] - 1] ), 
 	nvlon( df[get_vec_attr<DataFrame, int>(df, "llcols")[1] - 1] )
 {
-//	fmt::print("§Waypoint::Waypoint(DataFrame); {} ", ct); _ctrsgn(typeid(*this));
+//	fmt::print("§Waypoints::Waypoints(DataFrame); {} ", ct); _ctrsgn(typeid(*this));
 	nvlat.attr("fmt") = coordtype_to_int(ct) + 1;
 	nvlon.attr("fmt") = coordtype_to_int(ct) + 1;
 	nvlat.attr("latlon") = true;
@@ -515,9 +515,9 @@ Waypoint::Waypoint(DataFrame df) :
 }
 
 
-Waypoint::~Waypoint()
+Waypoints::~Waypoints()
 {
-//	fmt::print("§Waypoint::~Waypoint(); {} ", ct); _ctrsgn(typeid(*this), true);
+//	fmt::print("§Waypoints::~Waypoints(); {} ", ct); _ctrsgn(typeid(*this), true);
 	nvlat.attr("latlon") = R_NilValue;
 	nvlon.attr("latlon") = R_NilValue;
 	nvlat.attr("fmt") = R_NilValue;
@@ -526,9 +526,9 @@ Waypoint::~Waypoint()
 }
 
 
-vector<string> Waypoint::format(CoordType required_type) const
+vector<string> Waypoints::format(CoordType required_type) const
 {
-//	fmt::print("@Waypoint::format(CoordType); current type: {}; required type: {}\n", ct, required_type);
+//	fmt::print("@Waypoints::format(CoordType); current type: {}; required type: {}\n", ct, required_type);
 
 	vector sv_lat{ format_switch_current(nvlat, required_type) };
 	vector sv_lon{ format_switch_current(nvlon, required_type) };
@@ -543,18 +543,18 @@ vector<string> Waypoint::format(CoordType required_type) const
 }
 
 
-void Waypoint::format_suffix(vector<string>& out_sv, const bool latlon) const
+void Waypoints::format_suffix(vector<string>& out_sv, const bool latlon) const
 {
-//	fmt::print("@Waypoint::format1(vector<string> out_sv) const; {}\n", latlon? "lat" : "lon");
+//	fmt::print("@Waypoints::format1(vector<string> out_sv) const; {}\n", latlon? "lat" : "lon");
 	transform(out_sv.begin(), out_sv.end(), (latlon? nvlat : nvlon).begin(), out_sv.begin(), [latlon](string& outstr, double n){
 		return outstr + cardpoint(n < 0, latlon); }
 	);
 }
 
 
-const bool Waypoint::validate() const
+const bool Waypoints::validate() const
 {
-//	fmt::print("@Waypoint::validate(); current type: {}\n", ct);
+//	fmt::print("@Waypoints::validate(); current type: {}\n", ct);
 
 	auto validlat = validate_switch_current(nvlat);
 	auto validlon = validate_switch_current(nvlon);
@@ -753,7 +753,7 @@ inline const NumericVector validate(const NumericVector nv)
 inline const DataFrame validate(const DataFrame df)
 {
 //	fmt::print("@validate<DataFrame>(const DataFrame); DataFrame: {}\n", demangle(typeid(df)));
-	if (!Waypoint{ df }.validate())
+	if (!Waypoints{ df }.validate())
 	    warning("Invalid waypoints! [validate(const DataFrame)]");
 	return df;	
 }
@@ -889,7 +889,7 @@ DataFrame as_waypoints(DataFrame object, int fmt = 1)
 	}
 	if(!valid_ll(object))
 		stop("Invalid llcols attribute!");
-	Waypoint{ object }.validate();
+	Waypoints{ object }.validate();
 	object.attr("class") = CharacterVector{"waypoints", "data.frame"};
 	return object;
 }
@@ -930,7 +930,7 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate
 	if (validate)
 		if (!check_valid(x))
 			warning("Formatting invalid waypoints!");
-	vector sv{ Waypoint{ x }.format(fmt ? get_coordtype(fmt) : get_coordtype(x)) };
+	vector sv{ Waypoints{ x }.format(fmt ? get_coordtype(fmt) : get_coordtype(x)) };
 
 	if (usenames) {
 		RObject names = getnames(x);

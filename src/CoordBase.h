@@ -185,7 +185,7 @@ struct FamousFive<CoordType::degminsec> final : FamousFive0 {
 template<CoordType current_type>
 class Coordlet;
 // template<CoordType current_type>
-class Waypoint;
+class Waypoints;
 
 
 /// __________________________________________________
@@ -217,8 +217,8 @@ class Coordlet {
 
 
 /// __________________________________________________
-/// Waypoint class
-class Waypoint {
+/// Waypoints class
+class Waypoints {
 	protected:
 		const CoordType ct;
 		DataFrame df;
@@ -228,12 +228,12 @@ class Waypoint {
 		vector<bool> validlon { false };
 		void format_suffix(vector<string>&, const bool) const;
 	public:
-		explicit Waypoint(DataFrame);
-		Waypoint(const Waypoint&) = delete;						// Disallow copying
-		Waypoint& operator=(const Waypoint&) = delete;			//  ——— ditto ———
-		Waypoint(Waypoint&&) = delete;							// Disallow transfer ownership
-		Waypoint& operator=(Waypoint&&) = delete;				// Disallow moving
-		~Waypoint();
+		explicit Waypoints(DataFrame);
+		Waypoints(const Waypoints&) = delete;						// Disallow copying
+		Waypoints& operator=(const Waypoints&) = delete;			//  ——— ditto ———
+		Waypoints(Waypoints&&) = delete;							// Disallow transfer ownership
+		Waypoints& operator=(Waypoints&&) = delete;				// Disallow moving
+		~Waypoints();
 
 		template<CoordType type>
 		void convert();
