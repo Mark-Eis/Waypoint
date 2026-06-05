@@ -334,7 +334,7 @@ Coordlet<current_type>::Coordlet(NumericVector nv) :
 	nv{ nv },
 	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") }
 {
-//	fmt::print("§Coordlet<CoordType::{}>::Coordlet(NumericVector, bool) wpt: {}; ", current_type, nv.hasAttribute("wpt"));  _ctrsgn(typeid(*this));
+//	fmt::print("§Coordlet<CoordType::{}>::Coordlet(NumericVector, bool); ", current_type);  _ctrsgn(typeid(*this));
 }
 
 
@@ -365,30 +365,33 @@ vector<string> Coordlet<current_type>::format0() const
 					   fmt::format("{:0>{}.{}f}\u2033", fabs(ff.get_sec(n)), 5, 2);
 			});
 
-	if (!nv.hasAttribute("wpt")){
-		if constexpr (isDecDeg_v<required_type>) {
-			const auto lambda1 = [&ll_it](string& outstr, double n){ return outstr + (*ll_it++ ? " lat" : " lon"); };
-			const auto lambda2 = [&ll_it](string& outstr, double n){ return outstr + (*ll_it ? " lat" : " lon"); };
-	
-			if (ll_size > 1)
-				transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda1);
-			else
-				if (ll_size == 1 /*  && !nv.hasAttribute("wpt") */)
-					transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda2);
-	
-		} else {
-			const auto lambda1 = [&ll_it](string& outstr, double n){ return outstr + cardpoint(n < 0, *ll_it++); };
-			const auto lambda2 = [&ll_it](string& outstr, double n){ return outstr + cardpoint(n < 0, *ll_it); };
-			const auto lambda3 = [](string& outstr, double n){ return outstr + cardi_b(n < 0); };
-	
-			if (ll_size > 1)
-				transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda1);
-			else
-				if (ll_size == 1)	// uniform coords or waypoints
-					transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda2);
-				else					// no latlon info and not decdeg
-					transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda3);
-		}
+//																				¡¡¡—— Temporary code ——!!!
+	if (wpflag)
+		return out_sv;
+//																				¡¡¡—— End temporary code ——!!!
+
+	if constexpr (isDecDeg_v<required_type>) {
+		const auto lambda1 = [&ll_it](string& outstr, double n){ return outstr + (*ll_it++ ? " lat" : " lon"); };
+		const auto lambda2 = [&ll_it](string& outstr, double n){ return outstr + (*ll_it ? " lat" : " lon"); };
+
+		if (ll_size > 1)
+			transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda1);
+		else
+			if (ll_size == 1)
+				transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda2);
+
+	} else {
+		const auto lambda1 = [&ll_it](string& outstr, double n){ return outstr + cardpoint(n < 0, *ll_it++); };
+		const auto lambda2 = [&ll_it](string& outstr, double n){ return outstr + cardpoint(n < 0, *ll_it); };
+		const auto lambda3 = [](string& outstr, double n){ return outstr + cardi_b(n < 0); };
+
+		if (ll_size > 1)
+			transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda1);
+		else
+			if (ll_size == 1)	// uniform coords or waypoints
+				transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda2);
+			else					// no latlon info and not decdeg
+				transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda3);
 	}
 
 	return out_sv;
@@ -508,8 +511,7 @@ Waypoint::Waypoint(DataFrame df) :
 	nvlon.attr("fmt") = coordtype_to_int(ct) + 1;
 	nvlat.attr("latlon") = true;
 	nvlon.attr("latlon") = false;
-	nvlat.attr("wpt") = true;
-	nvlon.attr("wpt") = true;
+	wpflag = true; //									¡¡¡—— Temporary code ——!!!
 }
 
 
@@ -520,14 +522,13 @@ Waypoint::~Waypoint()
 	nvlon.attr("latlon") = R_NilValue;
 	nvlat.attr("fmt") = R_NilValue;
 	nvlon.attr("fmt") = R_NilValue;
-	nvlat.attr("wpt") = R_NilValue;
-	nvlon.attr("wpt") = R_NilValue;
+	wpflag = false; //									¡¡¡—— Temporary code ——!!!
 }
 
 
 vector<string> Waypoint::format(CoordType required_type) const
 {
-	fmt::print("@Waypoint::format(CoordType); current type: {}; required type: {}\n", ct, required_type);
+//	fmt::print("@Waypoint::format(CoordType); current type: {}; required type: {}\n", ct, required_type);
 
 	vector sv_lat{ format_switch_current(nvlat, required_type) };
 	vector sv_lon{ format_switch_current(nvlon, required_type) };
@@ -544,7 +545,7 @@ vector<string> Waypoint::format(CoordType required_type) const
 
 void Waypoint::format_suffix(vector<string>& out_sv, const bool latlon) const
 {
-	fmt::print("@Waypoint::format1(vector<string> out_sv) const; {}\n", latlon? "lat" : "lon");
+//	fmt::print("@Waypoint::format1(vector<string> out_sv) const; {}\n", latlon? "lat" : "lon");
 	transform(out_sv.begin(), out_sv.end(), (latlon? nvlat : nvlon).begin(), out_sv.begin(), [latlon](string& outstr, double n){
 		return outstr + cardpoint(n < 0, latlon); }
 	);
@@ -576,7 +577,7 @@ const bool Waypoint::validate() const
 /// Switch current CoordType to format nv
 vector<string> format_switch_current(NumericVector nv, const CoordType required_type)
 {
-//	fmt::print("@format_switch_current(NumericVector, const CoordType, bool); current: {}; required: {}; wpt: {}\n", get_coordtype(nv), required_type, nv.hasAttribute("wpt"));
+//	fmt::print("@format_switch_current(NumericVector, const CoordType, bool); current: {}; required: {}\n", get_coordtype(nv), required_type);
 
 	using enum CoordType;
 	switch (get_coordtype(nv))
@@ -601,7 +602,7 @@ vector<string> format_switch_current(NumericVector nv, const CoordType required_
 template<CoordType current_type> 
 inline vector<string> format_dispatch(NumericVector nv, const CoordType required_type)
 {
-//	fmt::print("@format_dispatch<CoordType::{}>(NumericVector, const CoordType); required: {}; wpt: {}\n", current_type, required_type, nv.hasAttribute("wpt"));
+//	fmt::print("@format_dispatch<CoordType::{}>(NumericVector, const CoordType); required: {}\n", current_type, required_type);
 	return Coordlet<current_type>{ nv }.format_switch(required_type);
 }
 

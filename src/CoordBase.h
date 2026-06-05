@@ -240,7 +240,7 @@ class Waypoint {
 		const bool validate() const;
 		vector<string> format(CoordType) const;
 };
-
+extern bool wpflag = false; //									¡¡¡—— Temporary code ——!!!
 
 /// __________________________________________________
 /// __________________________________________________
