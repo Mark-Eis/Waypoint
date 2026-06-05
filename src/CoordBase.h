@@ -215,8 +215,8 @@ class Coordlet {
 		Coordlet& operator=(const Coordlet&) = delete;			//  ——— ditto ———
 		Coordlet(Coordlet&&) = delete;							// Disallow transfer ownership
 		Coordlet& operator=(Coordlet&&) = delete;				// Disallow moving
-//		virtual ~Coordlet() = default;
-		virtual ~Coordlet() { fmt::print("§Coordlet::~Coordlet(); {}; ", current_type); _ctrsgn(typeid(*this), true); }
+		virtual ~Coordlet() = default;
+//		virtual ~Coordlet() { fmt::print("§Coordlet::~Coordlet(); {}; ", current_type); _ctrsgn(typeid(*this), true); }
 		vector<string> format_switch(CoordType required_type) const;
 		void convert_switch(CoordType required_type);
 		const vector<bool> validate() const;
@@ -230,20 +230,23 @@ class Coords {
 		const CoordType ct;
 		NumericVector nv;
 		vector<bool> valid { false };
-		void format_suffix(vector<string>&) const;
+//		template<CoordType required_type>
+//		void format_suffix(vector<string>&) const;
+		void format_suffix(vector<string>&, CoordType) const;
 	public:
 		explicit Coords(NumericVector);
 		Coords(const Coords&) = delete;						// Disallow copying
 		Coords& operator=(const Coords&) = delete;			//  ——— ditto ———
 		Coords(Coords&&) = delete;							// Disallow transfer ownership
 		Coords& operator=(Coords&&) = delete;				// Disallow moving
-//		~Coords() = default;
-		virtual ~Coords() { fmt::print("§Coords::~Coords(); {}; ", ct); _ctrsgn(typeid(*this), true); }
+		~Coords() = default;
+//		virtual ~Coords() { fmt::print("§Coords::~Coords(); {}; ", ct); _ctrsgn(typeid(*this), true); }
 
 		template<CoordType type>
 		void convert();
 		const bool validate() const;
 		vector<string> format(CoordType) const;
+//		void format_suffix_switch(CoordType required_type) const;  // Possibly?
 };
 
 
@@ -271,7 +274,7 @@ class Waypoints {
 		const bool validate() const;
 		vector<string> format(CoordType) const;
 };
-extern bool wpflag = false; //									¡¡¡—— Temporary code ——!!!
+
 
 /// __________________________________________________
 /// __________________________________________________
