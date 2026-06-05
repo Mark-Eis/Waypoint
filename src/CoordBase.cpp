@@ -739,7 +739,7 @@ bool check_valid(const NumericVector nv)
 	fmt::print("@check_valid(const NumericVector)\n");
 	int validated = check_logical_attr(nv, "valid");
 	if (!validated)
-		return revalidate<NumericVector, Coords>(nv);
+		return revalid_Coords(nv);
 	return validated >> 1;
 }
 
@@ -754,7 +754,7 @@ bool check_valid(const DataFrame df)
 	int lonvalidated = check_logical_attr(df, "validlon");
 
 	if (!(latvalidated & lonvalidated))
-		return revalidate<DataFrame, Waypoints>(df);
+		return revalid_WayPoints(df);
 
 	if (!(latvalidated >> 1))
 		warning("Invalid latitude!");

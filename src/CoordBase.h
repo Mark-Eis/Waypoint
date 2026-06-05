@@ -298,8 +298,8 @@ bool check_valid(const DataFrame);
 template<NumericVector_or_DataFrame T, Coords_or_Waypoints U>
 bool revalidate(const T);
 
-// constexpr auto revalid_Coords = &revalidate<NumericVector, Coords>;
-// constexpr auto revalid_WayPoints = &revalidate<DataFrame, WayPoints>;
+constexpr auto revalid_Coords = &revalidate<NumericVector, Coords>;
+constexpr auto revalid_WayPoints = &revalidate<DataFrame, Waypoints>;
 
 template<NumericVector_or_DataFrame T, Coords_or_Waypoints U>
 inline const T validate(const T);
