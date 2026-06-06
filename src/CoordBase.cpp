@@ -350,12 +350,12 @@ vector<string> Coordlet<current_type>::format() const
 		transform(nv.begin(), nv.end(), out_sv.begin(), [this](double n){
 				return fmt::format("{:>{}.{}f}\u00B0", ff.get_decdeg(n), 11, 6);
 			});
-	else if constexpr (isDegMin_v<required_type>)
+	if constexpr (isDegMin_v<required_type>)
 		transform(nv.begin(), nv.end(), out_sv.begin(), [this](double n){
 				return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
 					   fmt::format("{:0>{}.{}f}\u2032", fabs(ff.get_decmin(n)), 7, 4);
 			});
-	else
+	if constexpr (isDegMinSec_v<required_type>)
 		transform(nv.begin(), nv.end(), out_sv.begin(), [this](double n){
 				return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
 					   fmt::format("{:0>{}}\u2032", abs(ff.get_min(n)), 2) +
@@ -406,7 +406,7 @@ void Coordlet<current_type>::convert0()
 		transform(nv.begin(), nv.end(), nv.begin(), [this](double n){
 				return ff.get_deg(n) * 1e2 + ff.get_decmin(n);
 			});
-	else
+	if constexpr (isDegMinSec_v<required_type>)
 		transform(nv.begin(), nv.end(), nv.begin(), [this](double n){
 				return ff.get_deg(n) * 1e4 + ff.get_min(n) * 1e2 + ff.get_sec(n);
 			});
@@ -477,7 +477,8 @@ Coords::Coords(NumericVector nv) : ct{ get_coordtype(nv) }, nv{ nv }
 
 void Coords::convert(CoordType newtype)
 {
-	fmt::print("@Coords::convert(CoordType); current type: {}; new type: {}\n", ct, newtype);
+//	fmt::print("@Coords::convert(CoordType); current type: {}; new type: {}\n", ct, newtype);
+	convert_switch_current(nv, newtype);
 }
 
 
@@ -560,6 +561,14 @@ Waypoints::~Waypoints()
 	nvlon.attr("latlon") = R_NilValue;
 	nvlat.attr("fmt") = R_NilValue;
 	nvlon.attr("fmt") = R_NilValue;
+}
+
+
+void Waypoints::convert(CoordType newtype)
+{
+//	fmt::print("@ Waypoints::convert(CoordType); current type: {}; new type: {}\n", ct, newtype);
+	convert_switch_current(nvlat, newtype);
+	convert_switch_current(nvlon, newtype);
 }
 
 
@@ -651,31 +660,22 @@ void convert_switch_current(NumericVector nv, const CoordType required_type)
 //	fmt::print("@convert_switch_current(NumericVector, const CoordType); current_type: {}; required_type: {}\n", get_coordtype(nv), required_type);
 	using enum CoordType;
 
-	const auto current_type{ get_coordtype(nv) };
-	if (required_type != current_type) {
-		Coords{ nv }.validate();					// 									!!!—— Deprecate - potentially "recursive" do another way ——!!!
-		switch (current_type)
-		{
-			case decdeg:
-				convert_dispatch<decdeg>(nv, required_type);
-				break;
-	
-			case degmin:
-				convert_dispatch<degmin>(nv, required_type);
-				break;
-	
-			case degminsec:
-				convert_dispatch<degminsec>(nv, required_type);
-				break;
-	
-			default:
-				stop("convert_switch_current(NumericVector, const CoordType) my bad");
-		}
-		nv.attr("fmt") = coordtype_to_int(required_type) + 1;
-	} else {
-		fmt::print("——fmt out == fmt in!——\n"); std::fflush(nullptr);
-		if (!check_valid(nv))
-			stop("Invalid coords!");
+	switch (get_coordtype(nv))
+	{
+		case decdeg:
+			convert_dispatch<decdeg>(nv, required_type);
+			break;
+
+		case degmin:
+			convert_dispatch<degmin>(nv, required_type);
+			break;
+
+		case degminsec:
+			convert_dispatch<degminsec>(nv, required_type);
+			break;
+
+		default:
+			stop("convert_switch_current(NumericVector, const CoordType) my bad");
 	}
 }
 
@@ -795,7 +795,7 @@ bool valid_ll(const DataFrame df)
 /// Exported functions
 
 /// __________________________________________________
-/// Create coords
+/// Create coords - S3 method as_coords.default()
 //' @rdname coords 
 // [[Rcpp::export(name = "as_coords.default")]]
 NumericVector as_coords(NumericVector object, int fmt = 1)
@@ -807,9 +807,9 @@ NumericVector as_coords(NumericVector object, int fmt = 1)
 	return object;
 }
 
-
+/*
 /// __________________________________________________
-/// Convert coords format
+/// Convert coords - S3 method convert.coords()
 //' @rdname convert
 // [[Rcpp::export(name = "convert.coords")]]
 NumericVector convertcoords(NumericVector x, int fmt)
@@ -817,7 +817,37 @@ NumericVector convertcoords(NumericVector x, int fmt)
 	checkinherits(x, "coords");
 	CoordType newtype = get_coordtype(fmt);
 //	fmt::print("{1}@{0} from {2} to {3}\n", "convertcoords(NumericVector, int)", exportstr, get_coordtype(x), newtype);
-	convert_switch_current(x, newtype);
+	if (newtype == type) {
+		fmt::print("——fmt out == fmt in!——\n"); std::fflush(nullptr);
+		if (!check_valid(x))
+			stop("Invalid coords!");
+	} else {
+		if(!valid_ll(x))
+			stop("Invalid llcols attribute!");
+		Coords{ x }.convert(newtype);
+	}
+	Coords{ x }.convert(newtype);
+	return x;
+}
+*/
+
+/// __________________________________________________
+/// Convert coords - S3 method convert.coords()
+//' @rdname convert
+// [[Rcpp::export(name = "convert.coords")]]
+NumericVector convertcoords(NumericVector x, int fmt)
+{
+	checkinherits(x, "coords");
+	CoordType type = get_coordtype(x);
+	CoordType newtype = get_coordtype(fmt);
+//	fmt::print("{}@convertcoords(NumericVector, int); from {} to {}\n", exportstr, type, newtype);
+	if (!check_valid(x))
+		stop("Invalid coords!");
+	if (newtype != type) {
+		Coords{ x }.convert(newtype);
+		x.attr("fmt") = fmt;
+	} else
+		Rcout << "\t—— fmt out == fmt in! ——\n\n";
 	return x;
 }
 
@@ -840,7 +870,7 @@ NumericVector latlon(NumericVector cd, LogicalVector value)
 
 
 /// __________________________________________________
-/// Validate coords vector
+/// Validate coords - S3 method validate.coords()
 //' @rdname validate
 // [[Rcpp::export(name = "validate.coords")]]
 NumericVector validatecoords(const NumericVector x, const bool force = true)
@@ -858,7 +888,7 @@ NumericVector validatecoords(const NumericVector x, const bool force = true)
 
 
 /// __________________________________________________
-/// Format coords vector - S3 method format.coords()
+/// Format coords - S3 method format.coords()
 //' @rdname format
 // [[Rcpp::export(name = "format.coords")]]
 CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validate = true, int fmt = 0)
@@ -883,7 +913,7 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validat
 
 
 /// __________________________________________________
-/// Create waypoints
+/// Create waypoints - S3 method as_waypoints.default()
 //' @rdname waypoints
 // [[Rcpp::export(name = "as_waypoints.default")]]
 DataFrame as_waypoints(DataFrame object, int fmt = 1)
@@ -909,7 +939,30 @@ DataFrame as_waypoints(DataFrame object, int fmt = 1)
 
 
 /// __________________________________________________
-/// Validate waypoints vector
+/// Convert waypoints type - S3 method convert.waypoints()
+//' @rdname convert
+// [[Rcpp::export(name = "convert.waypoints")]]
+DataFrame convertwaypoints(DataFrame x, int fmt)
+{
+	checkinherits(x, "waypoints");
+	CoordType type = get_coordtype(x);
+	CoordType newtype = get_coordtype(fmt);
+//	fmt::print("{}@convertwaypoints(DataFrame, int); from {} to {}\n", exportstr, type, newtype);
+	if (!check_valid(x))
+		stop("Invalid waypoints!");
+	if(!valid_ll(x))
+		stop("Invalid llcols attribute!");
+	if (newtype != type) {
+		Waypoints{ x }.convert(newtype);
+		x.attr("fmt") = fmt;
+	} else
+		Rcout << "\t—— fmt out == fmt in! ——\n\n";
+	return x;
+}
+
+
+/// __________________________________________________
+/// Validate waypoints - S3 method validate.waypoints()
 //' @rdname validate
 // [[Rcpp::export(name = "validate.waypoints")]]
 DataFrame validatewaypoints(DataFrame x, bool force = true)
@@ -929,7 +982,7 @@ DataFrame validatewaypoints(DataFrame x, bool force = true)
 
 
 /// __________________________________________________
-/// Format waypoints vector - S3 method format.waypoints()
+/// Format waypoints - S3 method format.waypoints()
 //' @rdname format
 // [[Rcpp::export(name = "format.waypoints")]]
 CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate = true, int fmt = 0)

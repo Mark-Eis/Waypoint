@@ -8,6 +8,7 @@
 #define FMT_HEADER_ONLY
 // #include "fmt/base.h"		// …fmt/*.h copied to …/R/Packages/Waypoint/src.  Works, but not in pkgdown
 #include "/Users/frzmce/Library/CloudStorage/OneDrive-UniversityofBristol/Documents/R/Packages/Waypoint/src/fmt/format.h"
+#include <concepts>
 
 /// __________________________________________________
 /// __________________________________________________
@@ -299,9 +300,6 @@ bool check_valid(const DataFrame);
 
 template<NumericVector_or_DataFrame T, Coords_or_Waypoints U>
 bool revalidate(const T);
-
-// constexpr auto revalid_Coords = &revalidate<NumericVector, Coords>;  // aliases => confusing compiler messages for constraints
-// constexpr auto revalid_WayPoints = &revalidate<DataFrame, Waypoints>;
 
 bool valid_ll(const DataFrame);
 
