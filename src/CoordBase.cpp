@@ -807,29 +807,6 @@ NumericVector as_coords(NumericVector object, int fmt = 1)
 	return object;
 }
 
-/*
-/// __________________________________________________
-/// Convert coords - S3 method convert.coords()
-//' @rdname convert
-// [[Rcpp::export(name = "convert.coords")]]
-NumericVector convertcoords(NumericVector x, int fmt)
-{
-	checkinherits(x, "coords");
-	CoordType newtype = get_coordtype(fmt);
-//	fmt::print("{1}@{0} from {2} to {3}\n", "convertcoords(NumericVector, int)", exportstr, get_coordtype(x), newtype);
-	if (newtype == type) {
-		fmt::print("——fmt out == fmt in!——\n"); std::fflush(nullptr);
-		if (!check_valid(x))
-			stop("Invalid coords!");
-	} else {
-		if(!valid_ll(x))
-			stop("Invalid llcols attribute!");
-		Coords{ x }.convert(newtype);
-	}
-	Coords{ x }.convert(newtype);
-	return x;
-}
-*/
 
 /// __________________________________________________
 /// Convert coords - S3 method convert.coords()
