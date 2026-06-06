@@ -475,7 +475,7 @@ CrdWptBase::~CrdWptBase() {}
 
 /// __________________________________________________
 /// Switch current CoordType to convert nv
-void CrdWptBase::convert_switch_current(NumericVector nv, const CoordType required_type)
+void CrdWptBase::convert_switch_current(NumericVector nv, const CoordType required_type) const
 {
 //	fmt::print("@CrdWptBase::convert_switch_current(NumericVector, const CoordType); current_type: {}; required_type: {}\n", ct, required_type);
 	using enum CoordType;

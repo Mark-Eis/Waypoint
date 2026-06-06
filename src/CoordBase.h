@@ -231,7 +231,7 @@ class Coordlet {
 class CrdWptBase {
 	protected:
 		const CoordType ct;
-		void convert_switch_current(NumericVector, const CoordType);
+		void convert_switch_current(NumericVector, const CoordType) const;
 		vector<string> format_switch_current(NumericVector, const CoordType) const;
 		const vector<bool> validate_switch_current(const NumericVector) const;
 		template<CoordType current_type> 
