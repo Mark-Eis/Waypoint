@@ -475,6 +475,12 @@ Coords::Coords(NumericVector nv) : ct{ get_coordtype(nv) }, nv{ nv }
 }
 
 
+void Coords::convert(CoordType newtype)
+{
+	fmt::print("@Coords::convert(CoordType); current type: {}; new type: {}\n", ct, newtype);
+}
+
+
 vector<string> Coords::format(CoordType required_type) const
 {
 //	fmt::print("@Coords::format(CoordType); current type: {}; required type: {}\n", ct, required_type);
@@ -729,7 +735,7 @@ bool check_valid(const NumericVector nv)
 //	fmt::print("@check_valid(const NumericVector)\n");
 	int validated = check_logical_attr(nv, "valid");
 	if (!validated)
-		return revalid_Coords(nv);
+		return revalidate<NumericVector, Coords>(nv);
 	return validated >> 1;
 }
 
@@ -744,7 +750,7 @@ bool check_valid(const DataFrame df)
 	int lonvalidated = check_logical_attr(df, "validlon");
 
 	if (!(latvalidated & lonvalidated))
-		return revalid_WayPoints(df);
+		return revalidate<DataFrame, Waypoints>(df);
 
 	if (!(latvalidated >> 1))
 		warning("Invalid latitude!");

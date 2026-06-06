@@ -133,12 +133,13 @@ inline string cardi_b(bool);
 template <typename T>
 concept Coords_or_Waypoints =
 	requires (T t) {
-		t.template convert<CoordType::decdeg>();
-		t.template convert<CoordType::degmin>();
-		t.template convert<CoordType::degminsec>();
+		t.convert(CoordType::decdeg);
+		t.convert(CoordType::degmin);
+		t.convert(CoordType::degminsec);
+		t.format(CoordType::decdeg);
+		t.format(CoordType::degmin);
+		t.format(CoordType::degminsec);
 		t.validate();
-//		t.format(CoordType);
-//		t.format();
 	};
 
 
@@ -242,8 +243,7 @@ class Coords {
 		~Coords() = default;
 //		virtual ~Coords() { fmt::print("§Coords::~Coords(); {}; ", ct); _ctrsgn(typeid(*this), true); }
 
-		template<CoordType>
-		void convert();
+		void convert(CoordType);
 		const bool validate() const;
 		vector<string> format(CoordType) const;
 //		void format_suffix_switch(CoordType) const;  // Possibly?
@@ -269,8 +269,7 @@ class Waypoints {
 		Waypoints& operator=(Waypoints&&) = delete;				// Disallow moving
 		~Waypoints();
 
-		template<CoordType>
-		void convert();
+		void convert(CoordType);
 		const bool validate() const;
 		vector<string> format(CoordType) const;
 };
@@ -301,8 +300,8 @@ bool check_valid(const DataFrame);
 template<NumericVector_or_DataFrame T, Coords_or_Waypoints U>
 bool revalidate(const T);
 
-constexpr auto revalid_Coords = &revalidate<NumericVector, Coords>;
-constexpr auto revalid_WayPoints = &revalidate<DataFrame, Waypoints>;
+// constexpr auto revalid_Coords = &revalidate<NumericVector, Coords>;  // aliases => confusing compiler messages for constraints
+// constexpr auto revalid_WayPoints = &revalidate<DataFrame, Waypoints>;
 
 bool valid_ll(const DataFrame);
 
