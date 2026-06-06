@@ -767,7 +767,7 @@ bool revalidate(const T t)
 //	fmt::print("@revalidate<NumericVector_or_DataFrame, Coords_or_Waypoints>(const T); T: {}; U: {}\n", demangle(typeid(t)), demangle(typeid(U)));
 	warning("Revalidating %s…!", demangle(typeid(t)));
 	if (!U{ t }.validate())
-	    warning("Invalid coords or waypoints! [revalidate<Coords_or_Waypoints>(const T)]");
+	    warning("Invalid coords or waypoints! [revalidate]");
 	return check_valid(t);
 }
 
@@ -856,7 +856,7 @@ NumericVector validatecoords(const NumericVector x, const bool force = true)
 	if (force)									
 		Coords{ x }.validate();
 	if (!check_valid(x))
-		warning("Invalid coords! [validatecoords(NumericVector, bool)]");
+		warning("Invalid coords!");
 	return x;
 }
 
