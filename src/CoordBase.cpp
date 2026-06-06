@@ -579,7 +579,7 @@ vector<string> Waypoints::format(CoordType required_type) const
 
 void Waypoints::format_suffix(vector<string>& out_sv, const bool latlon) const
 {
-//	fmt::print("@Waypoints::format1(vector<string> out_sv) const; {}\n", latlon? "lat" : "lon");
+//	fmt::print("@Waypoints::format_suffix(vector<string> out_sv) const; {}\n", latlon? "lat" : "lon");
 	transform(out_sv.begin(), out_sv.end(), (latlon? nvlat : nvlon).begin(), out_sv.begin(), [latlon](string& outstr, double n){
 		return outstr + cardpoint(n < 0, latlon); }
 	);
@@ -650,7 +650,7 @@ void convert_switch_current(NumericVector nv, const CoordType required_type)
 
 	const auto current_type{ get_coordtype(nv) };
 	if (required_type != current_type) {
-		validate<NumericVector, Coords>(nv);		// 									!!!—— Possibly Deprecate - do another way?——!!!
+		Coords{ nv }.validate();					// 									!!!—— Deprecate - potentially "recursive" do another way ——!!!
 		switch (current_type)
 		{
 			case decdeg:
@@ -764,20 +764,9 @@ bool revalidate(const T t)
 {
 //	fmt::print("@revalidate<NumericVector_or_DataFrame, Coords_or_Waypoints>(const T); T: {}; U: {}\n", demangle(typeid(t)), demangle(typeid(U)));
 	warning("Revalidating %s…!", demangle(typeid(t)));
-	validate<T, U>(t);	
-	return check_valid(t);
-}
-
-
-/// __________________________________________________
-/// Validate Coords or Waypoints
-template<NumericVector_or_DataFrame T, Coords_or_Waypoints U>
-inline const T validate(const T t)
-{
-//	fmt::print("@validate<Coords_or_Waypoints>(const T); T: {}\n", demangle(typeid(t)));
 	if (!U{ t }.validate())
-	    warning("Invalid coords or waypoints! [validate<Coords_or_Waypoints>(const T)]");
-	return t;
+	    warning("Invalid coords or waypoints! [revalidate<Coords_or_Waypoints>(const T)]");
+	return check_valid(t);
 }
 
 
@@ -810,7 +799,7 @@ NumericVector as_coords(NumericVector object, int fmt = 1)
 {
 //	fmt::print("{1}@{0} fmt={2}\n", "as_coords(NumericVector, int)", exportstr, fmt);
 	object.attr("fmt") = fmt;
-	validate<NumericVector, Waypoints>(object);
+	Coords{ object }.validate();
 	object.attr("class") = "coords";
 	return object;
 }
@@ -842,7 +831,7 @@ NumericVector latlon(NumericVector cd, LogicalVector value)
 		stop("value must be either length 1 or length(cd)");
 	else
 		cd.attr("latlon") = value;
-	validate<NumericVector, Coords>(cd);
+	Coords{ cd }.validate();
 	return cd;
 }
 
@@ -856,7 +845,7 @@ NumericVector validatecoords(const NumericVector x, const bool force = true)
 //	fmt::print("{1}@{0} force: {2}\n", "validatecoords(const NumericVector, const bool)", exportstr, force);
 	checkinherits(x, "coords");
 	if (force)									
-		validate<NumericVector, Coords>(x);
+		Coords{ x }.validate();
 	else {
 		if (!check_valid(x))
 			warning("Invalid coords! [validatecoords(NumericVector, bool)]");
@@ -927,7 +916,7 @@ DataFrame validatewaypoints(DataFrame x, bool force = true)
 	if(!valid_ll(x))
 		stop("Invalid llcols attribute!");
 	if (force)
-		return validate<DataFrame, Waypoints>(x);
+		return Waypoints{ x }.validate();
 	else {
 		if (!check_valid(x))
 			warning("Invalid waypoints!");
