@@ -996,4 +996,23 @@ CharacterVector ll_headers(int width, int fmt)
 
 
 /// __________________________________________________
+/// Clone coords object from waypoints vector
+//' @rdname coords
+// [[Rcpp::export(name = "as_coords.waypoints")]]
+NumericVector as_coordswaypoints(DataFrame object, bool which)
+{
+//	fmt::print("{1}@{0} which: {2}\n", "as_coord(DataFrame)", exportstr, which ? "lat" : "lon");
+	checkinherits(object, "waypoints");
+	NumericVector nv = object[get_vec_attr<DataFrame, int>(object, "llcols")[which ? 0 : 1] - 1];
+	nv = clone(nv);
+	nv.attr("class") = "coords";
+	nv.attr("fmt") = object.attr("fmt");
+	nv.attr("valid") = object.attr(which ? "validlat" : "validlon");
+	nv.attr("latlon") = which;
+	nv.attr("names") = getnames(object);
+	return nv;
+}
+
+
+/// __________________________________________________
 /// __________________________________________________
