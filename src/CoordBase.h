@@ -208,7 +208,7 @@ class Coordlet {
 		template<CoordType>
 		void convert0();
 		template<CoordType> 
-		vector<string> format0() const;
+		vector<string> format() const;
 	public:
 		explicit Coordlet(NumericVector);
 		Coordlet(const Coordlet&) = delete;						// Disallow copying

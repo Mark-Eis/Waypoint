@@ -341,12 +341,9 @@ Coordlet<current_type>::Coordlet(NumericVector nv) :
 /// __________________________________________________
 /// Format Coordlet::nv as vector<string> of CoordType
 template<CoordType current_type> template<CoordType required_type>
-vector<string> Coordlet<current_type>::format0() const
+vector<string> Coordlet<current_type>::format() const
 {
-//	fmt::print("@Coordlet<CoordType::{}>::format0<CoordType::{}>() const\n", current_type, required_type);
-
-	vector<bool>::const_iterator ll_it { latlon.begin() };
-	const auto ll_size { latlon.size() };
+//	fmt::print("@Coordlet<CoordType::{}>::format<CoordType::{}>() const\n", current_type, required_type);
 	auto out_sv = vector<string>(nv.size());
 
 	if constexpr (isDecDeg_v<required_type>)
@@ -370,7 +367,7 @@ vector<string> Coordlet<current_type>::format0() const
 
 
 /// __________________________________________________
-/// Switch CoordType required for Coordlet<CoordType>::format0()
+/// Switch CoordType required for Coordlet<CoordType>::format()
 template<CoordType current_type>
 vector<string> Coordlet<current_type>::format_switch(CoordType required_type) const
 {
@@ -380,13 +377,13 @@ vector<string> Coordlet<current_type>::format_switch(CoordType required_type) co
 	switch (required_type)
 	{
 		case decdeg:
-			return format0<decdeg>();
+			return format<decdeg>();
 
 		case degmin:
-			return format0<degmin>();
+			return format<degmin>();
 
 		case degminsec:
-			return format0<degminsec>();
+			return format<degminsec>();
 
 		default:
 			stop("Coordlet<CoordType>::format_switch(CoordType) my bad");
