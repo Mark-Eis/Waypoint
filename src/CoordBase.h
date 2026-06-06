@@ -19,6 +19,7 @@
 enum class CoordType : char;
 template<CoordType current_type>
 class Coordlet;
+class CrdWptBase;
 class Coords;
 class Waypoints;
 
@@ -226,10 +227,30 @@ class Coordlet {
 
 
 /// __________________________________________________
-/// Coords class
-class Coords {
+/// CrdWptBase class
+class CrdWptBase {
 	protected:
 		const CoordType ct;
+	public:
+		explicit CrdWptBase(CoordType _ct) : ct { _ct } {}
+		CrdWptBase(const CrdWptBase&) = delete;						// Disallow copying
+		CrdWptBase& operator=(const CrdWptBase&) = delete;			//  ——— ditto ———
+		CrdWptBase(CrdWptBase&&) = delete;							// Disallow transfer ownership
+		CrdWptBase& operator=(CrdWptBase&&) = delete;				// Disallow moving
+		virtual ~CrdWptBase() = 0;
+
+		virtual void convert(CoordType) = 0;
+		virtual const bool validate() const = 0;
+		virtual vector<string> format(CoordType) const = 0;
+		void convert_switch_current(NumericVector, const CoordType);
+		vector<string> format_switch_current(NumericVector, const CoordType) const;
+		const vector<bool> validate_switch_current(const NumericVector) const;
+};
+
+
+/// __________________________________________________
+/// Coords class
+class Coords : public CrdWptBase {
 		NumericVector nv;
 		vector<bool> valid { false };
 //		template<CoordType>
@@ -253,9 +274,7 @@ class Coords {
 
 /// __________________________________________________
 /// Waypoints class
-class Waypoints {
-	protected:
-		const CoordType ct;
+class Waypoints : public CrdWptBase {
 		DataFrame df;
 		NumericVector nvlat;
 		NumericVector nvlon;
@@ -279,15 +298,12 @@ class Waypoints {
 /// __________________________________________________
 /// __________________________________________________
 /// CoordType switches
-vector<string> format_switch_current(NumericVector, const CoordType);
 template<CoordType current_type> 
 vector<string> format_dispatch(NumericVector, const CoordType);
 
-void convert_switch_current(NumericVector, const CoordType);
 template<CoordType current_type> 
 inline void convert_dispatch(NumericVector, const CoordType);
 
-const vector<bool> validate_switch_current(const NumericVector);
 template<CoordType current_type> 
 const vector<bool> validate_dispatch(const NumericVector);
 
@@ -297,10 +313,8 @@ const vector<bool> validate_dispatch(const NumericVector);
 /// Validation
 bool check_valid(const NumericVector);
 bool check_valid(const DataFrame);
-
 template<NumericVector_or_DataFrame T, Coords_or_Waypoints U>
 bool revalidate(const T);
-
 bool valid_ll(const DataFrame);
 
 /// __________________________________________________

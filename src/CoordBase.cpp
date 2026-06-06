@@ -467,9 +467,88 @@ const vector<bool> Coordlet<current_type>::validate() const
 
 /// __________________________________________________
 /// __________________________________________________
+/// CrdWptBase class
+
+/// __________________________________________________
+/// Destructor
+CrdWptBase::~CrdWptBase() {}
+
+/// __________________________________________________
+/// Switch current CoordType to convert nv
+void CrdWptBase::convert_switch_current(NumericVector nv, const CoordType required_type)
+{
+//	fmt::print("@CrdWptBase::convert_switch_current(NumericVector, const CoordType); current_type: {}; required_type: {}\n", ct, required_type);
+	using enum CoordType;
+	switch (ct)
+	{
+		case decdeg:
+			convert_dispatch<decdeg>(nv, required_type);
+			break;
+
+		case degmin:
+			convert_dispatch<degmin>(nv, required_type);
+			break;
+
+		case degminsec:
+			convert_dispatch<degminsec>(nv, required_type);
+			break;
+
+		default:
+			stop("convert_switch_current(NumericVector, const CoordType) my bad");
+	}
+}
+
+/// __________________________________________________
+/// Switch current CoordType to format nv
+vector<string> CrdWptBase::format_switch_current(NumericVector nv, const CoordType required_type) const
+{
+//	fmt::print("@CrdWptBase::format_switch_current(NumericVector, const CoordType, bool); current: {}; required: {}\n", ct, required_type);
+	using enum CoordType;
+	switch (ct)
+	{
+		case decdeg:
+			return format_dispatch<decdeg>(nv, required_type);
+
+		case degmin:
+			return format_dispatch<degmin>(nv, required_type);
+
+		case degminsec:
+			return format_dispatch<degminsec>(nv, required_type);
+
+		default:
+			stop("format_switch_current(NumericVector, const CoordType) my bad");
+	}
+}
+
+
+/// __________________________________________________
+/// Switch current CoordType to validate nv
+const vector<bool> CrdWptBase::validate_switch_current(const NumericVector nv) const
+{
+//	fmt::print("@CrdWptBase::validate_switch_current(const NumericVector); current_type: {}\n", ct);
+	using enum CoordType;
+	switch (ct)
+	{
+		case decdeg:
+			return validate_dispatch<decdeg>(nv);
+
+		case degmin:
+			return validate_dispatch<degmin>(nv);
+
+		case degminsec:
+			return validate_dispatch<degminsec>(nv);
+
+		default:
+			stop("validate_switch_current(const NumericVector) my bad");
+	}
+}
+
+
+/// __________________________________________________
+/// __________________________________________________
 /// Coords class
 
-Coords::Coords(NumericVector nv) : ct{ get_coordtype(nv) }, nv{ nv }
+Coords::Coords(NumericVector nv) : CrdWptBase { get_coordtype(nv) }, nv{ nv }
 {
 //	fmt::print("§Coords::Coords(NumericVector); {} ", ct); _ctrsgn(typeid(*this));
 }
@@ -542,7 +621,7 @@ const bool Coords::validate() const
 /// Waypoints class
 
 Waypoints::Waypoints(DataFrame df) :
-	ct{ get_coordtype(df) }, df{ df },
+	CrdWptBase { get_coordtype(df) }, df{ df },
 	nvlat( df[get_vec_attr<DataFrame, int>(df, "llcols")[0] - 1] ), 
 	nvlon( df[get_vec_attr<DataFrame, int>(df, "llcols")[1] - 1] )
 {
@@ -620,30 +699,6 @@ const bool Waypoints::validate() const
 /// CoordType switches
 
 /// __________________________________________________
-/// Switch current CoordType to format nv
-vector<string> format_switch_current(NumericVector nv, const CoordType required_type)
-{
-//	fmt::print("@format_switch_current(NumericVector, const CoordType, bool); current: {}; required: {}\n", get_coordtype(nv), required_type);
-
-	using enum CoordType;
-	switch (get_coordtype(nv))
-	{
-		case decdeg:
-			return format_dispatch<decdeg>(nv, required_type);
-
-		case degmin:
-			return format_dispatch<degmin>(nv, required_type);
-
-		case degminsec:
-			return format_dispatch<degminsec>(nv, required_type);
-
-		default:
-			stop("format_switch_current(NumericVector, const CoordType) my bad");
-	}
-}
-
-
-/// __________________________________________________
 /// Dispatch nv to Coordlet<CoordType>::format_switch()
 template<CoordType current_type> 
 inline vector<string> format_dispatch(NumericVector nv, const CoordType required_type)
@@ -654,63 +709,12 @@ inline vector<string> format_dispatch(NumericVector nv, const CoordType required
 
 
 /// __________________________________________________
-/// Switch current CoordType to convert nv
-void convert_switch_current(NumericVector nv, const CoordType required_type)
-{
-//	fmt::print("@convert_switch_current(NumericVector, const CoordType); current_type: {}; required_type: {}\n", get_coordtype(nv), required_type);
-	using enum CoordType;
-
-	switch (get_coordtype(nv))
-	{
-		case decdeg:
-			convert_dispatch<decdeg>(nv, required_type);
-			break;
-
-		case degmin:
-			convert_dispatch<degmin>(nv, required_type);
-			break;
-
-		case degminsec:
-			convert_dispatch<degminsec>(nv, required_type);
-			break;
-
-		default:
-			stop("convert_switch_current(NumericVector, const CoordType) my bad");
-	}
-}
-
-
-/// __________________________________________________
 /// Dispatch nv to Coordlet<CoordType>::convert_switch()
 template<CoordType current_type> 
 inline void convert_dispatch(NumericVector nv, const CoordType required_type)
 {
 //	fmt::print("@convert_dispatch<CoordType::{}>(NumericVector, const CoordType); required_type: {}\n", current_type, required_type);
 	Coordlet<current_type>{ nv }.convert_switch(required_type);
-}
-
-
-/// __________________________________________________
-/// Switch current CoordType to validate nv
-const vector<bool> validate_switch_current(const NumericVector nv)
-{
-//	fmt::print("@validate_switch_current(const NumericVector); current_type: {}\n", get_coordtype(nv));
-	using enum CoordType;
-
-	switch (get_coordtype(nv))
-	{
-		case decdeg:
-			return validate_dispatch<decdeg>(nv);
-
-		case degmin:
-			return validate_dispatch<degmin>(nv);
-
-		case degminsec:
-			return validate_dispatch<degminsec>(nv);
-
-		default:
-			stop("validate_switch_current(const NumericVector) my bad");
-	}
 }
 
 
