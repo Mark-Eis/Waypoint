@@ -855,10 +855,8 @@ NumericVector validatecoords(const NumericVector x, const bool force = true)
 	checkinherits(x, "coords");
 	if (force)									
 		Coords{ x }.validate();
-	else {
-		if (!check_valid(x))
-			warning("Invalid coords! [validatecoords(NumericVector, bool)]");
-	}
+	if (!check_valid(x))
+		warning("Invalid coords! [validatecoords(NumericVector, bool)]");
 	return x;
 }
 
@@ -948,12 +946,10 @@ DataFrame validatewaypoints(DataFrame x, bool force = true)
 	if(!valid_ll(x))
 		stop("Invalid llcols attribute!");
 	if (force)
-		return Waypoints{ x }.validate();
-	else {
-		if (!check_valid(x))
-			warning("Invalid waypoints!");
-		return x;
-	}
+		Waypoints{ x }.validate();
+	if (!check_valid(x))
+		warning("Invalid waypoints!");
+	return x;
 }
 
 
