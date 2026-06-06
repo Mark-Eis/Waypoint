@@ -9,9 +9,9 @@
 \usage{
 validate(x, ...)
 
-\method{validate}{coords}(x, ..., force = TRUE)
+\method{validate}{coords}(x, force = TRUE)
 
-\method{validate}{waypoints}(x, ..., force = TRUE)
+\method{validate}{waypoints}(x, force = TRUE)
 }
 \arguments{
 \item{x}{object of class \code{"\link{coords}"} created by function \code{\link{as_coords}()}, or

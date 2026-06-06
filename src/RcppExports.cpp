@@ -134,6 +134,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// as_coordswaypoints
+NumericVector as_coordswaypoints(DataFrame object, bool which);
+RcppExport SEXP _Waypoint_as_coordswaypoints(SEXP objectSEXP, SEXP whichSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< DataFrame >::type object(objectSEXP);
+    Rcpp::traits::input_parameter< bool >::type which(whichSEXP);
+    rcpp_result_gen = Rcpp::wrap(as_coordswaypoints(object, which));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_Waypoint_as_coords", (DL_FUNC) &_Waypoint_as_coords, 2},
@@ -146,6 +158,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Waypoint_validatewaypoints", (DL_FUNC) &_Waypoint_validatewaypoints, 2},
     {"_Waypoint_formatwaypoints", (DL_FUNC) &_Waypoint_formatwaypoints, 4},
     {"_Waypoint_ll_headers", (DL_FUNC) &_Waypoint_ll_headers, 2},
+    {"_Waypoint_as_coordswaypoints", (DL_FUNC) &_Waypoint_as_coordswaypoints, 2},
     {NULL, NULL, 0}
 };
 
