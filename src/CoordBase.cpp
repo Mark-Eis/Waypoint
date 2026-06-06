@@ -543,6 +543,35 @@ const vector<bool> CrdWptBase::validate_switch_current(const NumericVector nv) c
 	}
 }
 
+/// __________________________________________________
+/// Dispatch nv to Coordlet<CoordType>::format_switch()
+template<CoordType current_type> 
+inline vector<string> CrdWptBase::format_dispatch(NumericVector nv, const CoordType required_type) const
+{
+//	fmt::print("@CrdWptBase::format_dispatch<CoordType::{}>(NumericVector, const CoordType); required: {}\n", current_type, required_type);
+	return Coordlet<current_type>{ nv }.format_switch(required_type);
+}
+
+
+/// __________________________________________________
+/// Dispatch nv to Coordlet<CoordType>::convert_switch()
+template<CoordType current_type> 
+inline void CrdWptBase::convert_dispatch(NumericVector nv, const CoordType new_type) const
+{
+//	fmt::print("@CrdWptBase::convert_dispatch<CoordType::{}>(NumericVector, const CoordType); new type: {}\n", current_type, new_type);
+	Coordlet<current_type>{ nv }.convert_switch(new_type);
+}
+
+
+/// __________________________________________________
+/// Dispatch nv to Coordlet<CoordType>::validate()
+template<CoordType current_type> 
+inline const vector<bool> CrdWptBase::validate_dispatch(const NumericVector nv) const
+{
+//	fmt::print("@CrdWptBase::validate_dispatch<CoordType::{}>(const NumericVector)\n", current_type);
+	return Coordlet<current_type>{ nv }.validate();
+}
+
 
 /// __________________________________________________
 /// __________________________________________________
@@ -691,40 +720,6 @@ const bool Waypoints::validate() const
 		std::all_of(validlat.begin(), validlat.end(), [](bool i){ return i; }) &&
 		std::all_of(validlon.begin(), validlon.end(), [](bool i){ return i; })
 	);
-}
-
-
-/// __________________________________________________
-/// __________________________________________________
-/// CoordType switches
-
-/// __________________________________________________
-/// Dispatch nv to Coordlet<CoordType>::format_switch()
-template<CoordType current_type> 
-inline vector<string> format_dispatch(NumericVector nv, const CoordType required_type)
-{
-//	fmt::print("@format_dispatch<CoordType::{}>(NumericVector, const CoordType); required: {}\n", current_type, required_type);
-	return Coordlet<current_type>{ nv }.format_switch(required_type);
-}
-
-
-/// __________________________________________________
-/// Dispatch nv to Coordlet<CoordType>::convert_switch()
-template<CoordType current_type> 
-inline void convert_dispatch(NumericVector nv, const CoordType required_type)
-{
-//	fmt::print("@convert_dispatch<CoordType::{}>(NumericVector, const CoordType); required_type: {}\n", current_type, required_type);
-	Coordlet<current_type>{ nv }.convert_switch(required_type);
-}
-
-
-/// __________________________________________________
-/// Dispatch nv to Coordlet<CoordType>::validate()
-template<CoordType current_type> 
-inline const vector<bool> validate_dispatch(const NumericVector nv)
-{
-//	fmt::print("@validate_dispatch<CoordType::{}>(const NumericVector)\n", current_type);
-	return Coordlet<current_type>{ nv }.validate();
 }
 
 

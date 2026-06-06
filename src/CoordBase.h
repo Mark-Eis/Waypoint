@@ -231,6 +231,15 @@ class Coordlet {
 class CrdWptBase {
 	protected:
 		const CoordType ct;
+		void convert_switch_current(NumericVector, const CoordType);
+		vector<string> format_switch_current(NumericVector, const CoordType) const;
+		const vector<bool> validate_switch_current(const NumericVector) const;
+		template<CoordType current_type> 
+		vector<string> format_dispatch(NumericVector, const CoordType) const;
+		template<CoordType current_type> 
+		inline void convert_dispatch(NumericVector, const CoordType) const;		
+		template<CoordType current_type> 
+		const vector<bool> validate_dispatch(const NumericVector) const;
 	public:
 		explicit CrdWptBase(CoordType _ct) : ct { _ct } {}
 		CrdWptBase(const CrdWptBase&) = delete;						// Disallow copying
@@ -242,9 +251,6 @@ class CrdWptBase {
 		virtual void convert(CoordType) = 0;
 		virtual const bool validate() const = 0;
 		virtual vector<string> format(CoordType) const = 0;
-		void convert_switch_current(NumericVector, const CoordType);
-		vector<string> format_switch_current(NumericVector, const CoordType) const;
-		const vector<bool> validate_switch_current(const NumericVector) const;
 };
 
 
@@ -293,19 +299,6 @@ class Waypoints : public CrdWptBase {
 		const bool validate() const;
 		vector<string> format(CoordType) const;
 };
-
-
-/// __________________________________________________
-/// __________________________________________________
-/// CoordType switches
-template<CoordType current_type> 
-vector<string> format_dispatch(NumericVector, const CoordType);
-
-template<CoordType current_type> 
-inline void convert_dispatch(NumericVector, const CoordType);
-
-template<CoordType current_type> 
-const vector<bool> validate_dispatch(const NumericVector);
 
 
 /// __________________________________________________
