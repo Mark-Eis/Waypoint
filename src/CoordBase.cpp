@@ -282,11 +282,11 @@ inline const CoordType get_coordtype(const T& t)
 }
 
 /// __________________________________________________
-/// Convert CoordType enum to int
+/// Convert CoordType enum to int; + 1 for R
 inline int coordtype_to_int(CoordType ct)
 {
 //	fmt::print("@{} ct={}\n", "coordtype_to_int(CoordType)", ct);
-	return static_cast<char>(ct);
+	return static_cast<char>(ct) + 1;
 }
 
 /// __________________________________________________
@@ -561,7 +561,7 @@ void Coords::convert(CoordType newtype)
 {
 //	fmt::print("@Coords::convert(CoordType); current type: {}; new type: {}\n", ct, newtype);
 	convert_switch_current(nv, newtype);
-	nv.attr("fmt") = coordtype_to_int(newtype) + 1;
+	nv.attr("fmt") = coordtype_to_int(newtype);
 }
 
 /// __________________________________________________
@@ -657,8 +657,8 @@ Waypoints::Waypoints(DataFrame df) :
 	nvlon( df[get_vec_attr<DataFrame, int>(df, "llcols")[1] - 1] )
 {
 //	fmt::print("§Waypoints::Waypoints(DataFrame); {} ", ct); _ctrsgn(typeid(*this));
-	nvlat.attr("fmt") = coordtype_to_int(ct) + 1;
-	nvlon.attr("fmt") = coordtype_to_int(ct) + 1;
+	nvlat.attr("fmt") = coordtype_to_int(ct);
+	nvlon.attr("fmt") = coordtype_to_int(ct);
 	nvlat.attr("latlon") = true;
 	nvlon.attr("latlon") = false;
 }
@@ -681,7 +681,7 @@ void Waypoints::convert(CoordType newtype)
 //	fmt::print("@ Waypoints::convert(CoordType); current type: {}; new type: {}\n", ct, newtype);
 	convert_switch_current(nvlat, newtype);
 	convert_switch_current(nvlon, newtype);
-	df.attr("fmt") = coordtype_to_int(newtype) + 1;
+	df.attr("fmt") = coordtype_to_int(newtype);
 }
 
 /// __________________________________________________
