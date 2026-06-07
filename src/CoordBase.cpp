@@ -196,8 +196,8 @@ inline bool prefixwithnames(vector<string>& sv, RObject& namesobj)
 inline string str_tolower(string s)
 {
 //	fmt::print("@{}\n", "str_tolower(string)");
-    transform(s.begin(), s.end(), s.begin(), [](unsigned char c){ return tolower(c); });
-    return s;
+	transform(s.begin(), s.end(), s.begin(), [](unsigned char c){ return tolower(c); });
+	return s;
 }
 
 /// __________________________________________________
@@ -772,13 +772,13 @@ bool revalidate(const T t)
 //	fmt::print("@revalidate<NumericVector_or_DataFrame, Coords_or_Waypoints>(const T); T: {}; U: {}\n", demangle(typeid(t)), demangle(typeid(U)));
 	const char* what;
 	if constexpr (std::is_same_v<Coords, U>)
-	    what = "Coords";
+		what = "Coords";
 	if constexpr (std::is_same_v<Waypoints, U>)
 		what = "Waypoints";
 	if (!U{ t }.validate())
-	    warning("Revalidation found invalid %s!", str_tolower(what));
+		warning("Revalidation found invalid %s!", str_tolower(what));
 	else
-	    warning("%s revalidated.", what);
+		warning("%s revalidated.", what);
 	return check_valid(t);
 }
 
@@ -984,7 +984,7 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate
 CharacterVector ll_headers(int width, int fmt)
 {
 //	fmt::print("{1}@{0} width={2}, fmt={3}\n", "ll_headers(int, int)", exportstr, width, fmt);
-	--fmt;  //      to C++ array numbering
+	--fmt;  //	  to C++ array numbering
 	constexpr int spacing[][3] { {15,  17,  18}, {11, 13, 14} };
 	return wrap(vector {
 		fmt::format("{:>{}}{:>{}}", "Latitude", width - spacing[0][fmt], "Longitude", spacing[0][fmt] - 1), // --fmt —> C++ array numbering
