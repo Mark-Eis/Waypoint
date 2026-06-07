@@ -47,13 +47,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // validatecoords
-NumericVector validatecoords(NumericVector x, bool force);
+NumericVector validatecoords(const NumericVector x, const bool force);
 RcppExport SEXP _Waypoint_validatecoords(SEXP xSEXP, SEXP forceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericVector >::type x(xSEXP);
-    Rcpp::traits::input_parameter< bool >::type force(forceSEXP);
+    Rcpp::traits::input_parameter< const NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const bool >::type force(forceSEXP);
     rcpp_result_gen = Rcpp::wrap(validatecoords(x, force));
     return rcpp_result_gen;
 END_RCPP
