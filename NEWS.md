@@ -13,6 +13,8 @@
 * `FamousFive` classes now combine generic and OO techniques in abstract non-template base class with pure
    virtual functions inherited in with three templated derived classes, and instantiated in each `Cordlet`
    class object (#151).
+   
+*  Improved and simlified validation warnings.
 
 *  New `Coords` and `Waypoints` classes each inheriting from abstract base class `CrdWptBase`, which implements
    member functions common to both derived classes or as pure virtual functions where the two derived classes
