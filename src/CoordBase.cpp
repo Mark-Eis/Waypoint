@@ -772,13 +772,13 @@ bool revalidate(const T t)
 //	fmt::print("@revalidate<NumericVector_or_DataFrame, Coords_or_Waypoints>(const T); T: {}; U: {}\n", demangle(typeid(t)), demangle(typeid(U)));
 	const char* what;
 	if constexpr (std::is_same_v<Coords, U>)
-	    what = "coords";
+	    what = "Coords";
 	if constexpr (std::is_same_v<Waypoints, U>)
-		what = "waypoints";
+		what = "Waypoints";
 	if (!U{ t }.validate())
-	    warning("Revalidation found invalid %s!", what);
+	    warning("Revalidation found invalid %s!", str_tolower(what));
 	else
-	    warning("Revalidation of %s all OK", what);
+	    warning("%s revalidated.", what);
 	return check_valid(t);
 }
 
