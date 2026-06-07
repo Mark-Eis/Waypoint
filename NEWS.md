@@ -16,9 +16,9 @@
 
 *  New `Coords` and `Waypoints` classes each inheriting from abstract base class `CrdWptBase`, which implements
    member functions common to both derived classes or as pure virtual functions where the two derived classes
-   differ. Class `Coords` has a single `NumericVector` representing coordinate values and `Waypoints` has two
-   `NumericVector`s representing lattitude and longitude. `Coordlet` class implements low-level formatting,
-   validation and conversion functions required on these `NumericVector`s.
+   differ. Class `Coords` has a single `NumericVector` representing coordinate values, and `Waypoints` has two
+   representing lattitude and longitude. `Coordlet` class implements low-level formatting, validation and
+   conversion functions on these `NumericVector`s.
 
 *  Extensively revised source code, making use of the newer C++17, C++20 and C++23 feature where possible.
 
