@@ -1,4 +1,4 @@
-# Waypoint 1.3.0
+# Waypoint (development version)
 
 # Waypoint 1.3.0
 
