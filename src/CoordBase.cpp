@@ -23,7 +23,7 @@ using std::transform;
 #include "fmt/format.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt. Works, but not always in pkgdown
 #include "fmt/ranges.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt. Works, but not always in pkgdown
 
-#define DEBUG 0
+#define DEBUG 1
 
 
 /// __________________________________________________
@@ -494,7 +494,7 @@ void CrdWptBase::convert_switch_current(NumericVector nv, const CoordType requir
 			break;
 
 		default:
-			stop("convert_switch_current(NumericVector, const CoordType) my bad");
+			stop("CrdWptBase::convert_switch_current(NumericVector, const CoordType) const my bad");
 	}
 }
 
@@ -516,7 +516,7 @@ vector<string> CrdWptBase::format_switch_current(NumericVector nv, const CoordTy
 			return format_dispatch<degminsec>(nv, required_type);
 
 		default:
-			stop("format_switch_current(NumericVector, const CoordType) my bad");
+			stop("CrdWptBase::format_switch_current(NumericVector, const CoordType) const my bad");
 	}
 }
 
@@ -539,7 +539,7 @@ const vector<bool> CrdWptBase::validate_switch_current(const NumericVector nv) c
 			return validate_dispatch<degminsec>(nv);
 
 		default:
-			stop("validate_switch_current(const NumericVector) my bad");
+			stop("CrdWptBase::validate_switch_current(const NumericVector) const my bad");
 	}
 }
 
@@ -594,42 +594,69 @@ vector<string> Coords::format(CoordType required_type) const
 {
 //	fmt::print("@Coords::format(CoordType); current type: {}; required type: {}\n", ct, required_type);
 	vector sv_out{ format_switch_current(nv, required_type) };
-	format_suffix(sv_out, required_type);
+	format_suffix_switch(sv_out, required_type);
 	return sv_out;
 }
 
-// template<CoordType required_type>
-// void Coords::format_suffix(vector<string>& out_sv) const
-void Coords::format_suffix(vector<string>& out_sv, CoordType required_type) const
+
+/// __________________________________________________
+/// Switch current CoordType to format suffix
+void Coords::format_suffix_switch(vector<string>& sv_out, const CoordType required_type) const
 {
-//	fmt::print("@Coords:: format_suffix(vector<string> out_sv, CoordType) const; required type: {}\n", required_type);
+//	fmt::print("@Coords::format_suffix_switch(vector<string>&, const CoordType); current: {}; required: {}\n", ct, required_type);
+	using enum CoordType;
+	switch (required_type)
+	{
+		case decdeg:
+			format_suffix<decdeg>(sv_out);
+			break;
+
+		case degmin:
+			format_suffix<degmin>(sv_out);
+			break;
+
+		case degminsec:
+			format_suffix<degminsec>(sv_out);
+			break;
+
+		default:
+			stop("Coords::format_suffix_switch(vector<string>&, const CoordType) const my bad");
+	}
+}
+
+
+template<CoordType required_type>
+void Coords::format_suffix(vector<string>& sv_out) const
+{
+//	fmt::print("@Coords:: format_suffix(vector<string>& sv_out, CoordType) const; required type: {}\n", required_type);
 	const auto latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") };
 	vector<bool>::const_iterator ll_it { latlon.begin() };
 	const auto ll_size { latlon.size() };
 
-//	if (isDecDeg_v<required_type>) {
-	if (required_type == CoordType::decdeg) {
+	if constexpr(isDecDeg_v<required_type>) {
 		const auto lambda1 = [&ll_it](string& outstr, double n){ return outstr + (*ll_it++ ? " lat" : " lon"); };
 		const auto lambda2 = [&ll_it](string& outstr, double n){ return outstr + (*ll_it ? " lat" : " lon"); };
 
 		if (ll_size > 1)
-			transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda1);
+			transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda1);
 		else
-			if (ll_size == 1)
-				transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda2);
+			if (ll_size == 1)	// uniform coords
+				transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda2);
 
-	} else {
+	}
+
+	if constexpr(isDegMin_v<required_type> || isDegMinSec_v<required_type>) {
 		const auto lambda1 = [&ll_it](string& outstr, double n){ return outstr + cardpoint(n < 0, *ll_it++); };
 		const auto lambda2 = [&ll_it](string& outstr, double n){ return outstr + cardpoint(n < 0, *ll_it); };
 		const auto lambda3 = [](string& outstr, double n){ return outstr + cardi_b(n < 0); };
 
 		if (ll_size > 1)
-			transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda1);
+			transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda1);
 		else
-			if (ll_size == 1)	// uniform coords or waypoints
-				transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda2);
-			else					// no latlon info and not decdeg
-				transform(out_sv.begin(), out_sv.end(), nv.begin(), out_sv.begin(), lambda3);
+			if (ll_size == 1)	// uniform coords
+				transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda2);
+			else					// no latlon info
+				transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda3);
 	}
 }
 
