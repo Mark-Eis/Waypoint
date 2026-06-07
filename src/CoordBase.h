@@ -259,9 +259,9 @@ class CrdWptBase {
 class Coords : public CrdWptBase {
 		NumericVector nv;
 		vector<bool> valid { false };
-		void format_suffix_switch(vector<string>&, CoordType) const;
+		vector<string> format_suffix_switch(vector<string>, CoordType) const;
 		template<CoordType>
-		void format_suffix(vector<string>&) const;
+		vector<string> format_suffix(vector<string>) const;
 	public:
 		explicit Coords(NumericVector);
 		Coords(const Coords&) = delete;						// Disallow copying

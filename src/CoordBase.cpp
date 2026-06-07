@@ -594,39 +594,35 @@ vector<string> Coords::format(CoordType required_type) const
 {
 //	fmt::print("@Coords::format(CoordType); current type: {}; required type: {}\n", ct, required_type);
 	vector sv_out{ format_switch_current(nv, required_type) };
-	format_suffix_switch(sv_out, required_type);
-	return sv_out;
+	return format_suffix_switch(sv_out, required_type);
 }
 
 
 /// __________________________________________________
 /// Switch current CoordType to format suffix
-void Coords::format_suffix_switch(vector<string>& sv_out, const CoordType required_type) const
+vector<string> Coords::format_suffix_switch(vector<string> sv_out, const CoordType required_type) const
 {
-//	fmt::print("@Coords::format_suffix_switch(vector<string>&, const CoordType); current: {}; required: {}\n", ct, required_type);
+//	fmt::print("@Coords::format_suffix_switch(vector<string>, const CoordType); current: {}; required: {}\n", ct, required_type);
 	using enum CoordType;
 	switch (required_type)
 	{
 		case decdeg:
-			format_suffix<decdeg>(sv_out);
-			break;
+			return format_suffix<decdeg>(sv_out);
 
 		case degmin:
-			format_suffix<degmin>(sv_out);
-			break;
+			return format_suffix<degmin>(sv_out);
 
 		case degminsec:
-			format_suffix<degminsec>(sv_out);
-			break;
+			return format_suffix<degminsec>(sv_out);
 
 		default:
-			stop("Coords::format_suffix_switch(vector<string>&, const CoordType) const my bad");
+			stop("Coords::format_suffix_switch(vector<string>, const CoordType) const my bad");
 	}
 }
 
 
 template<CoordType required_type>
-void Coords::format_suffix(vector<string>& sv_out) const
+vector<string> Coords::format_suffix(vector<string> sv_out) const
 {
 //	fmt::print("@Coords:: format_suffix(vector<string>& sv_out, CoordType) const; required type: {}\n", required_type);
 	const auto latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") };
@@ -658,6 +654,8 @@ void Coords::format_suffix(vector<string>& sv_out) const
 			else					// no latlon info
 				transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda3);
 	}
+
+	return sv_out;
 }
 
 
