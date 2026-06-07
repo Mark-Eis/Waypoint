@@ -770,9 +770,15 @@ template<NumericVector_or_DataFrame T, Coords_or_Waypoints U>
 bool revalidate(const T t)
 {
 //	fmt::print("@revalidate<NumericVector_or_DataFrame, Coords_or_Waypoints>(const T); T: {}; U: {}\n", demangle(typeid(t)), demangle(typeid(U)));
-	warning("Revalidating %s…!", demangle(typeid(t)));
+	const char* what;
+	if constexpr (std::is_same_v<Coords, U>)
+	    what = "coords";
+	if constexpr (std::is_same_v<Waypoints, U>)
+		what = "waypoints";
 	if (!U{ t }.validate())
-	    warning("Invalid coords or waypoints! [revalidate]");
+	    warning("Revalidation found invalid %s!", what);
+	else
+	    warning("Revalidation of %s all OK", what);
 	return check_valid(t);
 }
 
@@ -922,10 +928,9 @@ DataFrame convertwaypoints(DataFrame x, int fmt)
 		stop("Invalid waypoints!");
 	if(!valid_ll(x))
 		stop("Invalid llcols attribute!");
-	if (newtype != type) {
+	if (newtype != type)
 		Waypoints{ x }.convert(newtype);
-//		x.attr("fmt") = fmt;
-	} else
+	else
 		Rcout << "\t—— fmt out == fmt in! ——\n\n";
 	return x;
 }
