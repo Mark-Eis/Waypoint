@@ -14,15 +14,16 @@
    virtual functions inherited in with three templated derived classes, and instantiated in each `Cordlet`
    class object (#151).
    
-*  Improved and simlified validation warnings.
+*  Improved and simplified validation warnings.
 
 *  New `Coords` and `Waypoints` classes each inheriting from abstract base class `CrdWptBase`, which implements
    member functions common to both derived classes or as pure virtual functions where the two derived classes
    differ. Class `Coords` has a single `NumericVector` representing coordinate values, and `Waypoints` has two
-   representing lattitude and longitude. `Coordlet` class implements low-level formatting, validation and
+   representing latitude and longitude. `Coordlet` class implements low-level formatting, validation and
    conversion functions on these `NumericVector`s.
 
-*  Extensively revised source code, making use of the newer C++17, C++20 and C++23 feature where possible.
+*  Extensively revised source code, making use of the newer C++17, C++20 and C++23 feature where possible for
+   simpler, more understandable and maintainable code .
 
 # Waypoint 1.3.0
 
