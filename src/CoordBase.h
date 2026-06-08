@@ -12,6 +12,33 @@
 
 /// __________________________________________________
 /// __________________________________________________
+/// Development and debugging
+
+
+#define DEBUG 0
+
+#if DEBUG > 0
+
+void _ctrsgn(const std::type_info&, bool = false);
+
+/// __________________________________________________
+/// Check address for unnecessary copying
+inline void* address(const auto& t)
+{
+	return (void*)&t;
+}
+
+/// __________________________________________________
+/// Format string for debugging code
+constexpr auto exportstr { "——Rcpp::export——"sv };
+
+#endif	// if DEBUG > 0
+
+const string demangle(const std::type_info&);
+
+
+/// __________________________________________________
+/// __________________________________________________
 /// Class and Function declarations
 
 /// __________________________________________________
@@ -36,12 +63,6 @@ concept List_or_DataFrame = std::is_same_v<List, T> || std::is_same_v<DataFrame,
 
 /// __________________________________________________
 /// __________________________________________________
-/// Development and debugging
-void _ctrsgn(const std::type_info&, bool = false);
-const string demangle(const std::type_info&);
-
-/// __________________________________________________
-/// __________________________________________________
 /// Formula simplification
 inline double mod1by60(double);
 inline double mod1e2(double);
@@ -51,7 +72,7 @@ inline double polish(double);
 /// __________________________________________________
 /// __________________________________________________
 /// Utility
-template<NumericVector_or_DataFrame T, class U> 
+template<NumericVector_or_DataFrame T, typename U> 
 inline vector<U> get_vec_attr(const T&, const char*);
 template<NumericVector_or_DataFrame T>
 inline int get_fmt_attribute(const T&);
@@ -59,7 +80,7 @@ template<NumericVector_or_DataFrame T>
 int check_logical_attr(T t, const char* attrname);
 template<NumericVector_or_DataFrame T>
 inline void checkinherits(T&, const char*);
-template<class T>
+template<typename T>
 inline bool is_item_in_obj(const T, int);
 inline void stdlenstr(vector<string>&);
 inline void concat_vecstr_elmnts(const vector<string>&, vector<string>&, const string = " ");
@@ -209,7 +230,7 @@ class Coordlet {
 		const vector<bool> latlon;
 
 		template<CoordType>
-		void convert0();
+		void convert();
 		template<CoordType> 
 		vector<string> format() const;
 	public:
@@ -220,8 +241,8 @@ class Coordlet {
 		Coordlet& operator=(Coordlet&&) = delete;				// Disallow moving
 		virtual ~Coordlet() = default;
 //		virtual ~Coordlet() { fmt::print("§Coordlet::~Coordlet(); {}; ", current_type); _ctrsgn(typeid(*this), true); }
-		vector<string> format_switch(CoordType) const;
 		void convert_switch(CoordType);
+		vector<string> format_switch(CoordType) const;
 		const vector<bool> validate() const;
 };
 
@@ -231,15 +252,18 @@ class Coordlet {
 class CrdWptBase {
 	protected:
 		const CoordType ct;
-		void convert_switch_current(NumericVector, const CoordType) const;
-		vector<string> format_switch_current(NumericVector, const CoordType) const;
-		const vector<bool> validate_switch_current(const NumericVector) const;
-		template<CoordType current_type> 
-		vector<string> format_dispatch(NumericVector, const CoordType) const;
+
 		template<CoordType current_type> 
 		inline void convert_dispatch(NumericVector, const CoordType) const;		
+		void convert_switch_current(NumericVector, const CoordType) const;
 		template<CoordType current_type> 
-		const vector<bool> validate_dispatch(const NumericVector) const;
+		inline vector<string> format_dispatch(NumericVector, const CoordType) const;
+		vector<string> format_switch_current(NumericVector, const CoordType) const;
+		template<Coords_or_Waypoints>
+		void format_suffix_switch(vector<string>&, const CoordType) const;
+		template<CoordType current_type> 
+		inline const vector<bool> validate_dispatch(const NumericVector) const;
+		const vector<bool> validate_switch_current(const NumericVector) const;
 	public:
 		explicit CrdWptBase(CoordType _ct) : ct { _ct } {}
 		CrdWptBase(const CrdWptBase&) = delete;						// Disallow copying
@@ -249,8 +273,8 @@ class CrdWptBase {
 		virtual ~CrdWptBase() = 0;
 
 		virtual void convert(CoordType) = 0;
+		virtual vector<string> format(CoordType) = 0;
 		virtual const bool validate() const = 0;
-		virtual vector<string> format(CoordType) const = 0;
 };
 
 
@@ -259,9 +283,6 @@ class CrdWptBase {
 class Coords : public CrdWptBase {
 		NumericVector nv;
 		vector<bool> valid { false };
-		vector<string> format_suffix_switch(vector<string>, CoordType) const;
-		template<CoordType>
-		vector<string> format_suffix(vector<string>) const;
 	public:
 		explicit Coords(NumericVector);
 		Coords(const Coords&) = delete;						// Disallow copying
@@ -269,11 +290,13 @@ class Coords : public CrdWptBase {
 		Coords(Coords&&) = delete;							// Disallow transfer ownership
 		Coords& operator=(Coords&&) = delete;				// Disallow moving
 		~Coords() = default;
-//		virtual ~Coords() { fmt::print("§Coords::~Coords(); {}; ", ct); _ctrsgn(typeid(*this), true); }
+//		~Coords() { fmt::print("§Coords::~Coords(); {}; ", ct); _ctrsgn(typeid(*this), true); }
 
 		void convert(CoordType);
+		vector<string> format(CoordType);
+		template<CoordType>
+		void format_suffix(vector<string>&) const;
 		const bool validate() const;
-		vector<string> format(CoordType) const;
 };
 
 
@@ -285,7 +308,8 @@ class Waypoints : public CrdWptBase {
 		NumericVector nvlon;
 		vector<bool> validlat { false };
 		vector<bool> validlon { false };
-		void format_suffix(vector<string>&, const bool) const;
+		bool latlon_flag { true };
+
 	public:
 		explicit Waypoints(DataFrame);
 		Waypoints(const Waypoints&) = delete;					// Disallow copying
@@ -295,8 +319,10 @@ class Waypoints : public CrdWptBase {
 		~Waypoints();
 
 		void convert(CoordType);
+		vector<string> format(CoordType);
+		template<CoordType>
+		void format_suffix(vector<string>&) const;
 		const bool validate() const;
-		vector<string> format(CoordType) const;
 };
 
 
