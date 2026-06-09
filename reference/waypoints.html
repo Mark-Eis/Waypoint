@@ -15,7 +15,7 @@ series of geographic or GPS waypoints of paired latitude and longitude values.'>
 
     <a class="navbar-brand me-2" href="../index.html">Waypoint</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0.9005</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -152,16 +152,16 @@ and <code><a href="validate.html">validate()</a></code>.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Create "waypoints" object in degrees, minutes and seconds (fmt = 3)</span></span></span>
 <span class="r-in"><span><span class="fu">as_waypoints</span><span class="op">(</span><span class="va">wp1</span>, fmt <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                                Latitude        Longitude</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                           ______________  _______________</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Nelson's Column                           51°30′27.95″ N    0°07′40.53″ W</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Ostravice                                 49°32′46.36″ N   18°23′54.82″ E</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Tally Ho                                  48°06′26.04″ N  122°46′43.22″ W</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Washington Monument                       38°53′22.18″ N   77°02′06.87″ W</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Null Island                                0°00′00.00″ N    0°00′00.00″ E</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Tristan da Cunha                          37°06′42.26″ S   12°17′19.07″ W</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Mawson Peak                               53°06′17.21″ S   73°31′02.22″ E</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   25°14′24.56″ S   57°31′09.21″ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                               Latitude        Longitude</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                          ______________  _______________</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Nelson's Column                          51°30′27.95″ N    0°07′40.53″ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Ostravice                                49°32′46.36″ N   18°23′54.82″ E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tally Ho                                 48°06′26.04″ N  122°46′43.22″ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Washington Monument                      38°53′22.18″ N   77°02′06.87″ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Null Island                               0°00′00.00″ N    0°00′00.00″ E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tristan da Cunha                         37°06′42.26″ S   12°17′19.07″ W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mawson Peak                              53°06′17.21″ S   73°31′02.22″ E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport  25°14′24.56″ S   57°31′09.21″ W</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Show as an ordinary R data frame</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">wp1</span><span class="op">)</span></span></span>
@@ -186,16 +186,16 @@ and <code><a href="validate.html">validate()</a></code>.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Create unnamed "waypoints" object in decimal degrees (default fmt = 1)</span></span></span>
 <span class="r-in"><span><span class="fu">as_waypoints</span><span class="op">(</span><span class="va">wp2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       Latitude     Longitude</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     ___________  ____________</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1    51.507765°    -0.127924°</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2    49.546210°    18.398562°</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3    48.107232°  -122.778671°</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4    38.889494°   -77.035242°</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5     0.000000°     0.000000°</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6   -37.111740°   -12.288630°</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7   -53.104781°    73.517283°</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8   -25.240156°   -57.519227°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      Latitude     Longitude</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    ___________  ____________</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   51.507765°    -0.127924°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   49.546210°    18.398562°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   48.107232°  -122.778671°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   38.889494°   -77.035242°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5    0.000000°     0.000000°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  -37.111740°   -12.288630°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  -53.104781°    73.517283°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  -25.240156°   -57.519227°</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Add waypoint names as row.names</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/row.names.html" class="external-link">row.names</a></span><span class="op">(</span><span class="va">wp2</span><span class="op">)</span> <span class="op">&lt;-</span></span></span>
@@ -203,16 +203,16 @@ and <code><a href="validate.html">validate()</a></code>.</p>
 <span class="r-in"><span>      <span class="st">"Tristan da Cunha"</span>, <span class="st">"Mawson Peak"</span>, <span class="st">"Silvio Pettirossi International Airport"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">wp2</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                             Latitude     Longitude</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                           ___________  ____________</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Nelson's Column                            51.507765°    -0.127924°</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Ostravice                                  49.546210°    18.398562°</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Tally Ho                                   48.107232°  -122.778671°</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Washington Monument                        38.889494°   -77.035242°</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Null Island                                 0.000000°     0.000000°</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Tristan da Cunha                          -37.111740°   -12.288630°</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Mawson Peak                               -53.104781°    73.517283°</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport   -25.240156°   -57.519227°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                            Latitude     Longitude</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                          ___________  ____________</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Nelson's Column                           51.507765°    -0.127924°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Ostravice                                 49.546210°    18.398562°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tally Ho                                  48.107232°  -122.778671°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Washington Monument                       38.889494°   -77.035242°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Null Island                                0.000000°     0.000000°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tristan da Cunha                         -37.111740°   -12.288630°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Mawson Peak                              -53.104781°    73.517283°</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Silvio Pettirossi International Airport  -25.240156°   -57.519227°</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Show as an ordinary R data frame</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">wp2</span><span class="op">)</span></span></span>

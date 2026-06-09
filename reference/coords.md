@@ -146,64 +146,64 @@ as_coords(dm, fmt = 2)
 names(dm) <- rep(c("Nelson's Column", "Ostravice", "Tally Ho", "Washington Monument", "Null Island",
                    "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport"), 2)
 dm
-#> Nelson's Column                           51°30.4659′ (N/E)
-#> Ostravice                                 49°32.7726′ (N/E)
-#> Tally Ho                                  48°06.4339′ (N/E)
-#> Washington Monument                       38°53.3696′ (N/E)
-#> Null Island                                0°00.0000′ (N/E)
-#> Tristan da Cunha                          37°06.7044′ (S/W)
-#> Mawson Peak                               53°06.2869′ (S/W)
-#> Silvio Pettirossi International Airport   25°14.4093′ (S/W)
-#> Nelson's Column                            0°07.6754′ (S/W)
-#> Ostravice                                 18°23.9137′ (N/E)
-#> Tally Ho                                 122°46.7203′ (S/W)
-#> Washington Monument                       77°02.1145′ (S/W)
-#> Null Island                                0°00.0000′ (N/E)
-#> Tristan da Cunha                          12°17.3178′ (S/W)
-#> Mawson Peak                               73°31.0370′ (N/E)
-#> Silvio Pettirossi International Airport   57°31.1536′ (S/W)
+#> Nelson's Column                          51°30.4659′ (N/E)
+#> Ostravice                                49°32.7726′ (N/E)
+#> Tally Ho                                 48°06.4339′ (N/E)
+#> Washington Monument                      38°53.3696′ (N/E)
+#> Null Island                               0°00.0000′ (N/E)
+#> Tristan da Cunha                         37°06.7044′ (S/W)
+#> Mawson Peak                              53°06.2869′ (S/W)
+#> Silvio Pettirossi International Airport  25°14.4093′ (S/W)
+#> Nelson's Column                           0°07.6754′ (S/W)
+#> Ostravice                                18°23.9137′ (N/E)
+#> Tally Ho                                122°46.7203′ (S/W)
+#> Washington Monument                      77°02.1145′ (S/W)
+#> Null Island                               0°00.0000′ (N/E)
+#> Tristan da Cunha                         12°17.3178′ (S/W)
+#> Mawson Peak                              73°31.0370′ (N/E)
+#> Silvio Pettirossi International Airport  57°31.1536′ (S/W)
 
 ## Set all values to represent longitude
 ## ("latlon" attribute set to FALSE, length 1)
 latlon(dm) <- FALSE
 dm
-#> Nelson's Column                           51°30.4659′ E
-#> Ostravice                                 49°32.7726′ E
-#> Tally Ho                                  48°06.4339′ E
-#> Washington Monument                       38°53.3696′ E
-#> Null Island                                0°00.0000′ E
-#> Tristan da Cunha                          37°06.7044′ W
-#> Mawson Peak                               53°06.2869′ W
-#> Silvio Pettirossi International Airport   25°14.4093′ W
-#> Nelson's Column                            0°07.6754′ W
-#> Ostravice                                 18°23.9137′ E
-#> Tally Ho                                 122°46.7203′ W
-#> Washington Monument                       77°02.1145′ W
-#> Null Island                                0°00.0000′ E
-#> Tristan da Cunha                          12°17.3178′ W
-#> Mawson Peak                               73°31.0370′ E
-#> Silvio Pettirossi International Airport   57°31.1536′ W
+#> Nelson's Column                          51°30.4659′ E
+#> Ostravice                                49°32.7726′ E
+#> Tally Ho                                 48°06.4339′ E
+#> Washington Monument                      38°53.3696′ E
+#> Null Island                               0°00.0000′ E
+#> Tristan da Cunha                         37°06.7044′ W
+#> Mawson Peak                              53°06.2869′ W
+#> Silvio Pettirossi International Airport  25°14.4093′ W
+#> Nelson's Column                           0°07.6754′ W
+#> Ostravice                                18°23.9137′ E
+#> Tally Ho                                122°46.7203′ W
+#> Washington Monument                      77°02.1145′ W
+#> Null Island                               0°00.0000′ E
+#> Tristan da Cunha                         12°17.3178′ W
+#> Mawson Peak                              73°31.0370′ E
+#> Silvio Pettirossi International Airport  57°31.1536′ W
 
 ## Set eight values each of latitude and longitude
 ## ("latlon" attribute set to TRUE, n=8, and FALSE, n=8)
-latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
+latlon(dm) <- rep(TRUE:FALSE, each = 8)
 dm
-#> Nelson's Column                           51°30.4659′ N
-#> Ostravice                                 49°32.7726′ N
-#> Tally Ho                                  48°06.4339′ N
-#> Washington Monument                       38°53.3696′ N
-#> Null Island                                0°00.0000′ N
-#> Tristan da Cunha                          37°06.7044′ S
-#> Mawson Peak                               53°06.2869′ S
-#> Silvio Pettirossi International Airport   25°14.4093′ S
-#> Nelson's Column                            0°07.6754′ W
-#> Ostravice                                 18°23.9137′ E
-#> Tally Ho                                 122°46.7203′ W
-#> Washington Monument                       77°02.1145′ W
-#> Null Island                                0°00.0000′ E
-#> Tristan da Cunha                          12°17.3178′ W
-#> Mawson Peak                               73°31.0370′ E
-#> Silvio Pettirossi International Airport   57°31.1536′ W
+#> Nelson's Column                          51°30.4659′ N
+#> Ostravice                                49°32.7726′ N
+#> Tally Ho                                 48°06.4339′ N
+#> Washington Monument                      38°53.3696′ N
+#> Null Island                               0°00.0000′ N
+#> Tristan da Cunha                         37°06.7044′ S
+#> Mawson Peak                              53°06.2869′ S
+#> Silvio Pettirossi International Airport  25°14.4093′ S
+#> Nelson's Column                           0°07.6754′ W
+#> Ostravice                                18°23.9137′ E
+#> Tally Ho                                122°46.7203′ W
+#> Washington Monument                      77°02.1145′ W
+#> Null Island                               0°00.0000′ E
+#> Tristan da Cunha                         12°17.3178′ W
+#> Mawson Peak                              73°31.0370′ E
+#> Silvio Pettirossi International Airport  57°31.1536′ W
 
 ## Show as an ordinary R numeric vector
 as.numeric(dm)

@@ -86,60 +86,60 @@ Other coordsandway:
 ## Named "coords" object in degrees and minutes with
 ## eight values each of latitude and longitude
 dm
-#> Nelson's Column                           51°30.4659′ N
-#> Ostravice                                 49°32.7726′ N
-#> Tally Ho                                  48°06.4339′ N
-#> Washington Monument                       38°53.3696′ N
-#> Null Island                                0°00.0000′ N
-#> Tristan da Cunha                          37°06.7044′ S
-#> Mawson Peak                               53°06.2869′ S
-#> Silvio Pettirossi International Airport   25°14.4093′ S
-#> Nelson's Column                            0°07.6754′ W
-#> Ostravice                                 18°23.9137′ E
-#> Tally Ho                                 122°46.7203′ W
-#> Washington Monument                       77°02.1145′ W
-#> Null Island                                0°00.0000′ E
-#> Tristan da Cunha                          12°17.3178′ W
-#> Mawson Peak                               73°31.0370′ E
-#> Silvio Pettirossi International Airport   57°31.1536′ W
+#> Nelson's Column                          51°30.4659′ N
+#> Ostravice                                49°32.7726′ N
+#> Tally Ho                                 48°06.4339′ N
+#> Washington Monument                      38°53.3696′ N
+#> Null Island                               0°00.0000′ N
+#> Tristan da Cunha                         37°06.7044′ S
+#> Mawson Peak                              53°06.2869′ S
+#> Silvio Pettirossi International Airport  25°14.4093′ S
+#> Nelson's Column                           0°07.6754′ W
+#> Ostravice                                18°23.9137′ E
+#> Tally Ho                                122°46.7203′ W
+#> Washington Monument                      77°02.1145′ W
+#> Null Island                               0°00.0000′ E
+#> Tristan da Cunha                         12°17.3178′ W
+#> Mawson Peak                              73°31.0370′ E
+#> Silvio Pettirossi International Airport  57°31.1536′ W
 
 ## Convert to degrees, minutes and seconds (fmt = 3)
 convert(dm, 3)
-#> Nelson's Column                           51°30′27.95″ N
-#> Ostravice                                 49°32′46.36″ N
-#> Tally Ho                                  48°06′26.03″ N
-#> Washington Monument                       38°53′22.18″ N
-#> Null Island                                0°00′00.00″ N
-#> Tristan da Cunha                          37°06′42.26″ S
-#> Mawson Peak                               53°06′17.21″ S
-#> Silvio Pettirossi International Airport   25°14′24.56″ S
-#> Nelson's Column                            0°07′40.52″ W
-#> Ostravice                                 18°23′54.82″ E
-#> Tally Ho                                 122°46′43.22″ W
-#> Washington Monument                       77°02′06.87″ W
-#> Null Island                                0°00′00.00″ E
-#> Tristan da Cunha                          12°17′19.07″ W
-#> Mawson Peak                               73°31′02.22″ E
-#> Silvio Pettirossi International Airport   57°31′09.22″ W
+#> Nelson's Column                          51°30′27.95″ N
+#> Ostravice                                49°32′46.36″ N
+#> Tally Ho                                 48°06′26.03″ N
+#> Washington Monument                      38°53′22.18″ N
+#> Null Island                               0°00′00.00″ N
+#> Tristan da Cunha                         37°06′42.26″ S
+#> Mawson Peak                              53°06′17.21″ S
+#> Silvio Pettirossi International Airport  25°14′24.56″ S
+#> Nelson's Column                           0°07′40.52″ W
+#> Ostravice                                18°23′54.82″ E
+#> Tally Ho                                122°46′43.22″ W
+#> Washington Monument                      77°02′06.87″ W
+#> Null Island                               0°00′00.00″ E
+#> Tristan da Cunha                         12°17′19.07″ W
+#> Mawson Peak                              73°31′02.22″ E
+#> Silvio Pettirossi International Airport  57°31′09.22″ W
 
 ## Convert to decimal degrees (fmt = 1)
 convert(dm, 1)
-#> Nelson's Column                            51.507765° lat
-#> Ostravice                                  49.546210° lat
-#> Tally Ho                                   48.107232° lat
-#> Washington Monument                        38.889493° lat
-#> Null Island                                 0.000000° lat
-#> Tristan da Cunha                          -37.111740° lat
-#> Mawson Peak                               -53.104782° lat
-#> Silvio Pettirossi International Airport   -25.240155° lat
-#> Nelson's Column                            -0.127923° lon
-#> Ostravice                                  18.398562° lon
-#> Tally Ho                                 -122.778672° lon
-#> Washington Monument                       -77.035242° lon
-#> Null Island                                 0.000000° lon
-#> Tristan da Cunha                          -12.288630° lon
-#> Mawson Peak                                73.517283° lon
-#> Silvio Pettirossi International Airport   -57.519227° lon
+#> Nelson's Column                           51.507765° lat
+#> Ostravice                                 49.546210° lat
+#> Tally Ho                                  48.107232° lat
+#> Washington Monument                       38.889493° lat
+#> Null Island                                0.000000° lat
+#> Tristan da Cunha                         -37.111740° lat
+#> Mawson Peak                              -53.104782° lat
+#> Silvio Pettirossi International Airport  -25.240155° lat
+#> Nelson's Column                           -0.127923° lon
+#> Ostravice                                 18.398562° lon
+#> Tally Ho                                -122.778672° lon
+#> Washington Monument                      -77.035242° lon
+#> Null Island                                0.000000° lon
+#> Tristan da Cunha                         -12.288630° lon
+#> Mawson Peak                               73.517283° lon
+#> Silvio Pettirossi International Airport  -57.519227° lon
 
 ## Show converted values as an ordinary R numeric vector
 as.numeric(dm)
@@ -153,42 +153,42 @@ as.numeric(dm)
 
 ## "waypoints" object in degrees, minutes and seconds
 wp
-#>                                                Latitude        Longitude
-#>                                           ______________  _______________
-#> Nelson's Column                           51°30′27.95″ N    0°07′40.53″ W
-#> Ostravice                                 49°32′46.36″ N   18°23′54.82″ E
-#> Tally Ho                                  48°06′26.04″ N  122°46′43.22″ W
-#> Washington Monument                       38°53′22.18″ N   77°02′06.87″ W
-#> Null Island                                0°00′00.00″ N    0°00′00.00″ E
-#> Tristan da Cunha                          37°06′42.26″ S   12°17′19.07″ W
-#> Mawson Peak                               53°06′17.21″ S   73°31′02.22″ E
-#> Silvio Pettirossi International Airport   25°14′24.56″ S   57°31′09.21″ W
+#>                                               Latitude        Longitude
+#>                                          ______________  _______________
+#> Nelson's Column                          51°30′27.95″ N    0°07′40.53″ W
+#> Ostravice                                49°32′46.36″ N   18°23′54.82″ E
+#> Tally Ho                                 48°06′26.04″ N  122°46′43.22″ W
+#> Washington Monument                      38°53′22.18″ N   77°02′06.87″ W
+#> Null Island                               0°00′00.00″ N    0°00′00.00″ E
+#> Tristan da Cunha                         37°06′42.26″ S   12°17′19.07″ W
+#> Mawson Peak                              53°06′17.21″ S   73°31′02.22″ E
+#> Silvio Pettirossi International Airport  25°14′24.56″ S   57°31′09.21″ W
 
 ## Convert to degrees and minutes (fmt = 2)
 convert(wp, 2)
-#>                                               Latitude       Longitude
-#>                                           _____________  ______________
-#> Nelson's Column                           51°30.4658′ N    0°07.6755′ W
-#> Ostravice                                 49°32.7727′ N   18°23.9137′ E
-#> Tally Ho                                  48°06.4340′ N  122°46.7203′ W
-#> Washington Monument                       38°53.3697′ N   77°02.1145′ W
-#> Null Island                                0°00.0000′ N    0°00.0000′ E
-#> Tristan da Cunha                          37°06.7043′ S   12°17.3178′ W
-#> Mawson Peak                               53°06.2868′ S   73°31.0370′ E
-#> Silvio Pettirossi International Airport   25°14.4093′ S   57°31.1535′ W
+#>                                              Latitude       Longitude
+#>                                          _____________  ______________
+#> Nelson's Column                          51°30.4658′ N    0°07.6755′ W
+#> Ostravice                                49°32.7727′ N   18°23.9137′ E
+#> Tally Ho                                 48°06.4340′ N  122°46.7203′ W
+#> Washington Monument                      38°53.3697′ N   77°02.1145′ W
+#> Null Island                               0°00.0000′ N    0°00.0000′ E
+#> Tristan da Cunha                         37°06.7043′ S   12°17.3178′ W
+#> Mawson Peak                              53°06.2868′ S   73°31.0370′ E
+#> Silvio Pettirossi International Airport  25°14.4093′ S   57°31.1535′ W
 
 ## Convert to decimal degrees (fmt = 1)
 convert(wp, 1)
-#>                                             Latitude     Longitude
-#>                                           ___________  ____________
-#> Nelson's Column                            51.507764°    -0.127925°
-#> Ostravice                                  49.546211°    18.398561°
-#> Tally Ho                                   48.107233°  -122.778672°
-#> Washington Monument                        38.889494°   -77.035242°
-#> Null Island                                 0.000000°     0.000000°
-#> Tristan da Cunha                          -37.111739°   -12.288631°
-#> Mawson Peak                               -53.104781°    73.517283°
-#> Silvio Pettirossi International Airport   -25.240156°   -57.519225°
+#>                                            Latitude     Longitude
+#>                                          ___________  ____________
+#> Nelson's Column                           51.507764°    -0.127925°
+#> Ostravice                                 49.546211°    18.398561°
+#> Tally Ho                                  48.107233°  -122.778672°
+#> Washington Monument                       38.889494°   -77.035242°
+#> Null Island                                0.000000°     0.000000°
+#> Tristan da Cunha                         -37.111739°   -12.288631°
+#> Mawson Peak                              -53.104781°    73.517283°
+#> Silvio Pettirossi International Airport  -25.240156°   -57.519225°
 
 ## Show converted values as an ordinary R data frame
 as.data.frame(wp)
