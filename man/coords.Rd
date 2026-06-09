@@ -100,7 +100,7 @@ dm
 
 ## Set eight values each of latitude and longitude
 ## ("latlon" attribute set to TRUE, n=8, and FALSE, n=8)
-latlon(dm) <- rep(c(TRUE, FALSE), each = 8)
+latlon(dm) <- rep(TRUE:FALSE, each = 8)
 dm
 
 ## Show as an ordinary R numeric vector

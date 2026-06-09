@@ -46,18 +46,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// validatecoords
-NumericVector validatecoords(const NumericVector x, const bool force);
-RcppExport SEXP _Waypoint_validatecoords(SEXP xSEXP, SEXP forceSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const NumericVector >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const bool >::type force(forceSEXP);
-    rcpp_result_gen = Rcpp::wrap(validatecoords(x, force));
-    return rcpp_result_gen;
-END_RCPP
-}
 // formatcoords
 CharacterVector formatcoords(NumericVector x, bool usenames, bool validate, int fmt);
 RcppExport SEXP _Waypoint_formatcoords(SEXP xSEXP, SEXP usenamesSEXP, SEXP validateSEXP, SEXP fmtSEXP) {
@@ -69,6 +57,18 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type validate(validateSEXP);
     Rcpp::traits::input_parameter< int >::type fmt(fmtSEXP);
     rcpp_result_gen = Rcpp::wrap(formatcoords(x, usenames, validate, fmt));
+    return rcpp_result_gen;
+END_RCPP
+}
+// validatecoords
+NumericVector validatecoords(const NumericVector x, const bool force);
+RcppExport SEXP _Waypoint_validatecoords(SEXP xSEXP, SEXP forceSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const bool >::type force(forceSEXP);
+    rcpp_result_gen = Rcpp::wrap(validatecoords(x, force));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -96,18 +96,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// validatewaypoints
-DataFrame validatewaypoints(DataFrame x, bool force);
-RcppExport SEXP _Waypoint_validatewaypoints(SEXP xSEXP, SEXP forceSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< DataFrame >::type x(xSEXP);
-    Rcpp::traits::input_parameter< bool >::type force(forceSEXP);
-    rcpp_result_gen = Rcpp::wrap(validatewaypoints(x, force));
-    return rcpp_result_gen;
-END_RCPP
-}
 // formatwaypoints
 CharacterVector formatwaypoints(DataFrame x, bool usenames, bool validate, int fmt);
 RcppExport SEXP _Waypoint_formatwaypoints(SEXP xSEXP, SEXP usenamesSEXP, SEXP validateSEXP, SEXP fmtSEXP) {
@@ -119,6 +107,18 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type validate(validateSEXP);
     Rcpp::traits::input_parameter< int >::type fmt(fmtSEXP);
     rcpp_result_gen = Rcpp::wrap(formatwaypoints(x, usenames, validate, fmt));
+    return rcpp_result_gen;
+END_RCPP
+}
+// validatewaypoints
+DataFrame validatewaypoints(DataFrame x, bool force);
+RcppExport SEXP _Waypoint_validatewaypoints(SEXP xSEXP, SEXP forceSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< DataFrame >::type x(xSEXP);
+    Rcpp::traits::input_parameter< bool >::type force(forceSEXP);
+    rcpp_result_gen = Rcpp::wrap(validatewaypoints(x, force));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -151,12 +151,12 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Waypoint_as_coords", (DL_FUNC) &_Waypoint_as_coords, 2},
     {"_Waypoint_convertcoords", (DL_FUNC) &_Waypoint_convertcoords, 2},
     {"_Waypoint_latlon", (DL_FUNC) &_Waypoint_latlon, 2},
-    {"_Waypoint_validatecoords", (DL_FUNC) &_Waypoint_validatecoords, 2},
     {"_Waypoint_formatcoords", (DL_FUNC) &_Waypoint_formatcoords, 4},
+    {"_Waypoint_validatecoords", (DL_FUNC) &_Waypoint_validatecoords, 2},
     {"_Waypoint_as_waypoints", (DL_FUNC) &_Waypoint_as_waypoints, 2},
     {"_Waypoint_convertwaypoints", (DL_FUNC) &_Waypoint_convertwaypoints, 2},
-    {"_Waypoint_validatewaypoints", (DL_FUNC) &_Waypoint_validatewaypoints, 2},
     {"_Waypoint_formatwaypoints", (DL_FUNC) &_Waypoint_formatwaypoints, 4},
+    {"_Waypoint_validatewaypoints", (DL_FUNC) &_Waypoint_validatewaypoints, 2},
     {"_Waypoint_ll_headers", (DL_FUNC) &_Waypoint_ll_headers, 2},
     {"_Waypoint_as_coordswaypoints", (DL_FUNC) &_Waypoint_as_coordswaypoints, 2},
     {NULL, NULL, 0}
