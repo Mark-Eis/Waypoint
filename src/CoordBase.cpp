@@ -708,7 +708,7 @@ void Waypoints::format_suffix(vector<string>& sv_out) const
 {
 //	fmt::print("@Waypoints::format_suffix(vector<string> sv_out) const; {}\n", latlon_flag? "lat" : "lon");
 	if constexpr(isDegMin_v<required_type> || isDegMinSec_v<required_type>) {
-		transform(sv_out.begin(), sv_out.end(), (latlon_flag? nvlat : nvlon).begin(), sv_out.begin(), [this](auto& outstr, auto n){
+		transform(sv_out.begin(), sv_out.end(), (latlon_flag? nvlat : nvlon).begin(), sv_out.begin(), [](auto& outstr, auto n){
 			return outstr + cardpoint(n < 0, latlon_flag); }
 		);
 	}
