@@ -18,6 +18,8 @@
 - `coordtype_to_int(CoordType)` adds 1 for consistency with its inverse
   function `get_coordtype(int)`, which subtracts 1 (#167).
 
+- Improved and simplified validation warnings (#166).
+
 - `template<NumericVector_or_DataFrame T, Coords_or_Waypoints U> const T validate(const T t)`,
   absorbed into
   `template<NumericVector_or_DataFrame T, Coords_or_Waypoints U> bool revalidate(const T)`
@@ -29,11 +31,9 @@
 - Introduce enum class `CoordType` type traits (#161).
 
 - `FamousFive` classes now combine generic and OO techniques in abstract
-  non-template base class with pure virtual functions inherited in with
-  three templated derived classes, and instantiated in each `Cordlet`
-  class object (#151).
-
-- Improved and simplified validation warnings.
+  non-template base class with pure virtual functions inherited by three
+  templated derived classes, and instantiated in each `Cordlet` class
+  object (#151).
 
 ## Waypoint 1.3.0
 
