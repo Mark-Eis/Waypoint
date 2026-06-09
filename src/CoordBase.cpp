@@ -321,15 +321,15 @@ void Coordlet<current_type>::convert()
 //	fmt::print("@Coordlet<CoordType::{}>::convert<CoordType::{}>()\n", current_type, required_type);
 
 	if constexpr (isDecDeg_v<required_type>)
-		transform(nv.begin(), nv.end(), nv.begin(), [this](double n){
+		transform(nv.begin(), nv.end(), nv.begin(), [this](auto n){
 				return ff.get_decdeg(n);
 			});
 	if constexpr (isDegMin_v<required_type>)
-		transform(nv.begin(), nv.end(), nv.begin(), [this](double n){
+		transform(nv.begin(), nv.end(), nv.begin(), [this](auto n){
 				return ff.get_deg(n) * 1e2 + ff.get_decmin(n);
 			});
 	if constexpr (isDegMinSec_v<required_type>)
-		transform(nv.begin(), nv.end(), nv.begin(), [this](double n){
+		transform(nv.begin(), nv.end(), nv.begin(), [this](auto n){
 				return ff.get_deg(n) * 1e4 + ff.get_min(n) * 1e2 + ff.get_sec(n);
 			});
 }
@@ -370,16 +370,16 @@ vector<string> Coordlet<current_type>::format() const
 	auto sv_out = vector<string>(nv.size());
 
 	if constexpr (isDecDeg_v<required_type>)
-		transform(nv.begin(), nv.end(), sv_out.begin(), [this](double n){
+		transform(nv.begin(), nv.end(), sv_out.begin(), [this](auto n){
 				return fmt::format("{:>{}.{}f}\u00B0", ff.get_decdeg(n), 11, 6);
 			});
 	if constexpr (isDegMin_v<required_type>)
-		transform(nv.begin(), nv.end(), sv_out.begin(), [this](double n){
+		transform(nv.begin(), nv.end(), sv_out.begin(), [this](auto n){
 				return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
 					   fmt::format("{:0>{}.{}f}\u2032", fabs(ff.get_decmin(n)), 7, 4);
 			});
 	if constexpr (isDegMinSec_v<required_type>)
-		transform(nv.begin(), nv.end(), sv_out.begin(), [this](double n){
+		transform(nv.begin(), nv.end(), sv_out.begin(), [this](auto n){
 				return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
 					   fmt::format("{:0>{}}\u2032", abs(ff.get_min(n)), 2) +
 					   fmt::format("{:0>{}.{}f}\u2033", fabs(ff.get_sec(n)), 5, 2);
@@ -423,13 +423,13 @@ const vector<bool> Coordlet<current_type>::validate() const
 	auto valid = vector<bool>{};
 	valid.assign(nv.size(), {false});
 
-	transform(nv.begin(), nv.end(), valid.begin(), [this, &ll_it, &ll_size](double n){
+	transform(nv.begin(), nv.end(), valid.begin(), [this, &ll_it, &ll_size](auto n){
 		return !((fabs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
 				(fabs(ff.get_decmin(n)) >= 60) ||
 				(fabs(ff.get_sec(n)) >= 60));
 	});
 
-	if (all_of(valid.begin(), valid.end(), [](bool v) { return v;}))
+	if (all_of(valid.begin(), valid.end(), [](auto v) { return v;}))
 		valid.assign({true});
 
 	return valid;
@@ -607,8 +607,8 @@ void Coords::format_suffix(vector<string>& sv_out) const
 	const auto ll_size { latlon.size() };
 
 	if constexpr(isDecDeg_v<required_type>) {
-		const auto lambda1 = [&ll_it](string& outstr, double n){ return outstr + (*ll_it++ ? " lat" : " lon"); };
-		const auto lambda2 = [&ll_it](string& outstr, double n){ return outstr + (*ll_it ? " lat" : " lon"); };
+		const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it++ ? " lat" : " lon"); };
+		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it ? " lat" : " lon"); };
 
 		if (ll_size > 1)
 			transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda1);
@@ -619,9 +619,9 @@ void Coords::format_suffix(vector<string>& sv_out) const
 	}
 
 	if constexpr(isDegMin_v<required_type> || isDegMinSec_v<required_type>) {
-		const auto lambda1 = [&ll_it](string& outstr, double n){ return outstr + cardpoint(n < 0, *ll_it++); };
-		const auto lambda2 = [&ll_it](string& outstr, double n){ return outstr + cardpoint(n < 0, *ll_it); };
-		const auto lambda3 = [](string& outstr, double n){ return outstr + cardi_b(n < 0); };
+		const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it++); };
+		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it); };
+		const auto lambda3 = [](auto& outstr, auto n){ return outstr + cardi_b(n < 0); };
 
 		if (ll_size > 1)
 			transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda1);
@@ -640,7 +640,7 @@ const bool Coords::validate() const
 //	fmt::print("@Coords::validate(); current type: {}\n", ct);
 	auto valid = validate_switch_current(nv);
 	static_cast<NumericVector>(nv).attr("valid") = valid;
-	return ( std::all_of(valid.begin(), valid.end(), [](bool i){ return i; } )
+	return ( std::all_of(valid.begin(), valid.end(), [](auto i){ return i; } )
 	);
 }
 
@@ -708,7 +708,7 @@ void Waypoints::format_suffix(vector<string>& sv_out) const
 {
 //	fmt::print("@Waypoints::format_suffix(vector<string> sv_out) const; {}\n", latlon_flag? "lat" : "lon");
 	if constexpr(isDegMin_v<required_type> || isDegMinSec_v<required_type>) {
-		transform(sv_out.begin(), sv_out.end(), (latlon_flag? nvlat : nvlon).begin(), sv_out.begin(), [this](string& outstr, double n){
+		transform(sv_out.begin(), sv_out.end(), (latlon_flag? nvlat : nvlon).begin(), sv_out.begin(), [this](auto& outstr, auto n){
 			return outstr + cardpoint(n < 0, latlon_flag); }
 		);
 	}
@@ -727,8 +727,8 @@ const bool Waypoints::validate() const
 	static_cast<DataFrame>(df).attr("validlon") = validlon;
 
 	return (
-		std::all_of(validlat.begin(), validlat.end(), [](bool i){ return i; }) &&
-		std::all_of(validlon.begin(), validlon.end(), [](bool i){ return i; })
+		std::all_of(validlat.begin(), validlat.end(), [](auto i){ return i; }) &&
+		std::all_of(validlon.begin(), validlon.end(), [](auto i){ return i; })
 	);
 }
 
@@ -792,7 +792,7 @@ bool valid_ll(const DataFrame df)
 	bool valid = false;
 	vector llcols { get_vec_attr<DataFrame, int>(df, "llcols") };
 	if (2 == llcols.size()) {
-		transform(llcols.begin(), llcols.end(), llcols.begin(), [](int x){ return --x; });
+		transform(llcols.begin(), llcols.end(), llcols.begin(), [](auto x){ return --x; });
 		if (is_item_in_obj(df, llcols[0]) && is_item_in_obj(df, llcols[1]) && llcols[0] != llcols[1])
 			if (is<NumericVector>(df[llcols[0]]) && is<NumericVector>(df[llcols[1]]))
 				valid = true;
