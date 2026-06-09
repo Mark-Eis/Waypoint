@@ -225,7 +225,7 @@ struct FamousFive<CoordType::degminsec> final : FamousFive0 {
 template<CoordType current_type>
 class Coordlet {
 
-		FamousFive<current_type> ff;
+		FamousFive<current_type> ff {};
 		NumericVector nv;
 		const vector<bool> latlon;
 
@@ -273,7 +273,7 @@ class CrdWptBase {
 		virtual ~CrdWptBase() = 0;
 
 		virtual void convert(CoordType) = 0;
-		virtual vector<string> format(CoordType) = 0;
+		virtual vector<string> format(CoordType) const = 0;
 		virtual const bool validate() const = 0;
 };
 
@@ -293,7 +293,7 @@ class Coords : public CrdWptBase {
 //		~Coords() { fmt::print("§Coords::~Coords(); {}; ", ct); _ctrsgn(typeid(*this), true); }
 
 		void convert(CoordType);
-		vector<string> format(CoordType);
+		vector<string> format(CoordType) const;
 		template<CoordType>
 		void format_suffix(vector<string>&) const;
 		const bool validate() const;
@@ -308,9 +308,10 @@ class Waypoints : public CrdWptBase {
 		NumericVector nvlon;
 		vector<bool> validlat { false };
 		vector<bool> validlon { false };
-		bool latlon_flag { true };
 
 	public:
+		static bool latlon_flag;
+
 		explicit Waypoints(DataFrame);
 		Waypoints(const Waypoints&) = delete;					// Disallow copying
 		Waypoints& operator=(const Waypoints&) = delete;			//  ——— ditto ———
@@ -319,7 +320,7 @@ class Waypoints : public CrdWptBase {
 		~Waypoints();
 
 		void convert(CoordType);
-		vector<string> format(CoordType);
+		vector<string> format(CoordType) const;
 		template<CoordType>
 		void format_suffix(vector<string>&) const;
 		const bool validate() const;

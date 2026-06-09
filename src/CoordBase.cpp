@@ -588,7 +588,7 @@ void Coords::convert(CoordType newtype)
 
 /// __________________________________________________
 /// Format call entry point -- public
-vector<string> Coords::format(CoordType required_type)
+vector<string> Coords::format(CoordType required_type) const
 {
 //	fmt::print("@Coords::format(CoordType); current type: {}; required type: {}\n", ct, required_type);
 	vector sv_out{ format_switch_current(nv, required_type) };
@@ -685,7 +685,7 @@ void Waypoints::convert(CoordType newtype)
 
 /// __________________________________________________
 /// Format call entry point -- public
-vector<string> Waypoints::format(CoordType required_type)
+vector<string> Waypoints::format(CoordType required_type) const
 {
 //	fmt::print("@Waypoints::format(CoordType); current type: {}; required type: {}\n", ct, required_type);
 
@@ -731,6 +731,8 @@ const bool Waypoints::validate() const
 		std::all_of(validlon.begin(), validlon.end(), [](auto i){ return i; })
 	);
 }
+
+bool Waypoints::latlon_flag = true;
 
 /// __________________________________________________
 /// __________________________________________________
