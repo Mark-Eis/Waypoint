@@ -6,8 +6,7 @@
 #define COORDBASE_H_
 
 #define FMT_HEADER_ONLY
-// #include "fmt/base.h"		// …fmt/*.h copied to …/R/Packages/Waypoint/src.  Works, but not in pkgdown
-#include "/Users/frzmce/Library/CloudStorage/OneDrive-UniversityofBristol/Documents/R/Packages/Waypoint/src/fmt/format.h"
+#include "fmt/base.h"		// …fmt/*.h copied to …/R/Packages/Waypoint/src.
 #include <concepts>
 
 /// __________________________________________________
