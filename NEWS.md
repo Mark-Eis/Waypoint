@@ -1,29 +1,29 @@
 # Waypoint (development version)
 
-*  `coordtype_to_int(CoordType)` adds 1 for consistency with its inverse function `get_coordtype(int)`,
-   which subtracts 1 (#167).
+* New `Coords` and `Waypoints` classes each inheriting from abstract base class `CrdWptBase`, which implements
+  member functions common to both derived classes or as pure virtual functions where the two derived classes
+  differ. Class `Coords` has a single `NumericVector` representing coordinate values, and `Waypoints` has two
+  representing latitude and longitude. `Coordlet` class implements low-level formatting, validation and
+  conversion functions on these `NumericVector`s (#163, #164, #165, #168, #171, #172).
 
-*  `template<NumericVector_or_DataFrame T, Coords_or_Waypoints U> const T validate(const T t)`, absorbed
-   into `template<NumericVector_or_DataFrame T, Coords_or_Waypoints U> bool revalidate(const T)` (#166).
+* Extensively revised source code, making use of the newer C++17, C++20 and C++23 features where possible for
+  simpler, more understandable and more easily maintainable code (#150, #169, #170).
 
-*  `prefixvecstr(vector<string>&, const vector<T>&)` simply overloaded rather than templated (#162).
+* `coordtype_to_int(CoordType)` adds 1 for consistency with its inverse function `get_coordtype(int)`,
+  which subtracts 1 (#167).
 
-*  Introduce enum class `CoordType` type traits (#161).
+* `template<NumericVector_or_DataFrame T, Coords_or_Waypoints U> const T validate(const T t)`, absorbed
+  into `template<NumericVector_or_DataFrame T, Coords_or_Waypoints U> bool revalidate(const T)` (#166).
 
-*  `FamousFive` classes now combine generic and OO techniques in abstract non-template base class with pure
-   virtual functions inherited in with three templated derived classes, and instantiated in each `Cordlet`
-   class object (#151).
+* `prefixvecstr(vector<string>&, const vector<T>&)` simply overloaded rather than templated (#162).
+
+* Introduce enum class `CoordType` type traits (#161).
+
+* `FamousFive` classes now combine generic and OO techniques in abstract non-template base class with pure
+  virtual functions inherited in with three templated derived classes, and instantiated in each `Cordlet`
+  class object (#151).
    
-*  Improved and simplified validation warnings.
-
-*  New `Coords` and `Waypoints` classes each inheriting from abstract base class `CrdWptBase`, which implements
-   member functions common to both derived classes or as pure virtual functions where the two derived classes
-   differ. Class `Coords` has a single `NumericVector` representing coordinate values, and `Waypoints` has two
-   representing latitude and longitude. `Coordlet` class implements low-level formatting, validation and
-   conversion functions on these `NumericVector`s (#163, #164, #165, #168, #171, #172).
-
-*  Extensively revised source code, making use of the newer C++17, C++20 and C++23 feature where possible for
-   simpler, more understandable and maintainable code (#150, #169, #170).
+* Improved and simplified validation warnings.
 
 # Waypoint 1.3.0
 
