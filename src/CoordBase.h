@@ -41,6 +41,42 @@ const string demangle(const std::type_info&);
 /// Class and Function declarations
 
 /// __________________________________________________
+/// __________________________________________________
+/// New Business — to be named !!!!!!!!!!!!!!
+/// __________________________________________________
+
+template<typename T>
+struct DecDegVec : public vector<T> {};
+
+template<typename T>
+struct DegMinVec : public vector<T> {};
+
+template<typename T>
+struct DegMinSecVec : public vector<T> {};
+
+using DecDegVecDouble = DecDegVec<double>;
+using DegMinVecDouble = DegMinVec<double>;
+using DegMinSecVecDouble = DegMinSecVec<double>;
+
+// Concept —— Rather feeble concept, but should work for now!
+template <typename T>
+concept DVecType = 
+	std::is_same_v<DecDegVecDouble, T> || std::is_same_v<const DecDegVecDouble, T> ||
+	std::is_same_v<DegMinVecDouble, T> || std::is_same_v<const DegMinVecDouble, T> ||
+	std::is_same_v<DegMinSecVecDouble, T> || std::is_same_v<const DegMinSecVecDouble, T>;
+
+using DecDegVecString = DecDegVec<String>;
+using DegMinVecString = DegMinVec<String>;
+using DegMinSecVecString = DegMinSecVec<String>;
+
+// Concept —— Rather feeble concept, but should work for now!
+template <typename T>
+concept SVecType = 
+	std::is_same_v<DecDegVecString, T> || std::is_same_v<const DecDegVecString, T> ||
+	std::is_same_v<DegMinVecString, T> || std::is_same_v<const DegMinVecString, T> ||
+	std::is_same_v<DegMinSecVecString, T> || std::is_same_v<const DegMinSecVecString, T>;
+
+/// __________________________________________________
 /// Class forward declarations
 enum class CoordType : char;
 template<CoordType current_type>
@@ -219,6 +255,59 @@ struct FamousFive<CoordType::degminsec> final : FamousFive0 {
 
 
 /// __________________________________________________
+/// New Business  !!!!!!!!!!!!!!
+/// __________________________________________________
+/// FamousFiveNew -- Templated and OO
+
+/// __________________________________________________
+/// Abstract base class with pure virtual functions	
+struct FamousFiveNew0 {
+	virtual int get_deg(double x) const = 0;
+	virtual double get_decdeg(double x) const = 0;
+	virtual int get_min(double x) const = 0;
+	virtual double get_decmin(double x) const = 0;
+	virtual double get_sec(double x) const = 0;
+};
+
+/// __________________________________________________
+/// Default empty derived struct for SFINAE	
+template<DVecType type>
+struct FamousFiveNew final : FamousFiveNew0 {};
+
+/// __________________________________________________
+/// Specialised derived struct for decimal degrees	
+template<>
+struct FamousFiveNew<DecDegVecDouble> final : FamousFiveNew0 {
+	int get_deg(double x) const { return int(x); }
+	double get_decdeg(double x) const { return x; }
+	int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
+	double get_decmin(double x) const { return polish(mod1by60(x)); }
+	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
+};
+
+/// __________________________________________________
+/// Specialised derived struct for degrees and minutes
+template<>
+struct FamousFiveNew<DegMinVecDouble> final : FamousFiveNew0 {
+	int get_deg(double x) const { return int(x / 1e2); }
+	double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
+	int get_min(double x) const { return int(x) % int(1e2); }
+	double get_decmin(double x) const { return polish(mod1e2(x)); }
+	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
+};
+
+/// __________________________________________________
+/// Specialised derived struct for degrees, minutes and seconds
+template<>
+struct FamousFiveNew<DegMinSecVecDouble> final : FamousFiveNew0 {
+	int get_deg(double x) const { return int(x / 1e4); }
+	double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
+	int get_min(double x) const { return (int(x) % int(1e4)) / 1e2; }
+	double get_decmin(double x) const { return int(fmod(x, 1e4) / 1e2) + mod1e2(x) / 60; }
+	double get_sec(double x) const { return mod1e2(x); }
+};
+
+/// __________________________________________________
 /// __________________________________________________
 /// Coordlet class
 template<CoordType current_type>
@@ -240,6 +329,37 @@ class Coordlet {
 		Coordlet& operator=(Coordlet&&) = delete;				// Disallow moving
 		virtual ~Coordlet() = default;
 //		virtual ~Coordlet() { fmt::print("§Coordlet::~Coordlet(); {}; ", current_type); _ctrsgn(typeid(*this), true); }
+		void convert_switch(CoordType);
+		vector<string> format_switch(CoordType) const;
+		const vector<bool> validate() const;
+};
+
+
+
+/// __________________________________________________
+/// New Business —— !!!!!!!!!!!!!!
+/// __________________________________________________
+/// CoordletNew class
+template<DVecType T>
+class CoordletNew {
+
+		FamousFiveNew<T> ff {};
+		T dv;
+		const vector<bool> latlon;
+
+		template<CoordType>
+		void convert();
+
+		template<SVecType U> 
+		U format() const;
+	public:
+		explicit CoordletNew(NumericVector);
+		CoordletNew(const CoordletNew&) = delete;						// Disallow copying
+		CoordletNew& operator=(const CoordletNew&) = delete;			//  ——— ditto ———
+		CoordletNew(CoordletNew&&) = delete;							// Disallow transfer ownership
+		CoordletNew& operator=(CoordletNew&&) = delete;				// Disallow moving
+		virtual ~CoordletNew() = default;
+//		virtual ~CoordletNew() { fmt::print("§CoordletNew::~CoordletNew(); {}; ", current_type); _ctrsgn(typeid(*this), true); }
 		void convert_switch(CoordType);
 		vector<string> format_switch(CoordType) const;
 		const vector<bool> validate() const;

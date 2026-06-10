@@ -300,6 +300,65 @@ inline string cardi_b(bool negative)
 }
 
 /// __________________________________________________
+/// New Business —— !!!!!!!!!!!!!!
+/// __________________________________________________
+/// CoordletNew class
+
+/// __________________________________________________
+/// Format template<DVecType T> T dv as vector<string>
+template<DVecType T> template<SVecType U>
+U CoordletNew<T>::format() const
+{
+	fmt::print("@CoordsNew<DVecType {}>::format0<SVecType {}>() const\n", demangle(typeid(dv)), "U");
+	auto svt_out = U(dv.size());
+
+	using std::is_same_v;
+	if constexpr (is_same_v<DecDegVecString, U>)
+		transform(dv.begin(), dv.end(), svt_out.begin(), [this](auto n){
+				return fmt::format("{:>{}.{}f}\u00B0", ff.get_decdeg(n), 11, 6);
+			});
+	if constexpr (is_same_v<DegMinVecString, U>)
+		transform(dv.begin(), dv.end(), svt_out.begin(), [this](auto n){
+				return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
+					   fmt::format("{:0>{}.{}f}\u2032", fabs(ff.get_decmin(n)), 7, 4);
+			});
+	if constexpr (is_same_v<DegMinSecVecString, U>)
+		transform(dv.begin(), dv.end(), svt_out.begin(), [this](auto n){
+				return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
+					   fmt::format("{:0>{}}\u2032", abs(ff.get_min(n)), 2) +
+					   fmt::format("{:0>{}.{}f}\u2033", fabs(ff.get_sec(n)), 5, 2);
+			});
+
+	return svt_out;
+}
+
+
+/// __________________________________________________
+/// Switch CoordType required for CoordletNew<T>::format() const
+template<DVecType T>
+vector<string> CoordletNew<T>::format_switch(CoordType required_type) const
+{
+//	fmt::print("@CoordletNew<CoordType::{}>::format_switch(CoordType); required: {}\n", current_type, required_type);
+
+	using enum CoordType;
+	switch (required_type)
+	{
+		case decdeg:
+			return format<DecDegVecString>();
+
+		case degmin:
+			return format<DegMinVecString>();
+
+		case degminsec:
+			return format<DegMinSecVecString>();
+
+		default:
+			stop("CoordletNew<CoordType>::format_switch(CoordType) my bad");
+	}
+}
+
+
+/// __________________________________________________
 /// __________________________________________________
 /// Coordlet class
 
