@@ -225,7 +225,6 @@ struct FamousFive<CoordType::degminsec> final : FamousFive0 {
 /// Coordlet class
 // template<CoordType current_type>
 class Coordlet {
-
 		unique_ptr<FamousFive0> ff;
 		NumericVector nv;
 		const vector<bool> latlon;
@@ -243,6 +242,7 @@ class Coordlet {
 		Coordlet& operator=(Coordlet&&) = delete;				// Disallow moving
 		virtual ~Coordlet() = default;
 //		virtual ~Coordlet() { fmt::print("§Coordlet::~Coordlet() "); _ctrsgn(typeid(*this), true); }
+
 		void convert_switch(CoordType);
 		vector<string> format_switch(CoordType) const;
 		const vector<bool> validate() const;

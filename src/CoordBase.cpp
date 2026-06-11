@@ -328,7 +328,7 @@ Coordlet::Coordlet(NumericVector _nv) :				// Needs to know CoordType in another
 /// Switch CoordType for ff in Coordlet constructor
 unique_ptr<FamousFive0> Coordlet::switch_ff(NumericVector nv)
 {
-//	fmt::print("@§Coordlet::switch_ff()\n");
+//	fmt::print("@§Coordlet::switch_ff(NumericVector)\n");
 	using enum CoordType;
 
 	switch (get_coordtype(nv))
@@ -343,7 +343,7 @@ unique_ptr<FamousFive0> Coordlet::switch_ff(NumericVector nv)
 			return unique_ptr<FamousFive0>(new FamousFive<CoordType::degminsec>);
 
 		default:
-			stop("Coordlet::switch_ff() my bad");
+			stop("Coordlet::switch_ff(NumericVector) my bad");
 	}
 	
 }
