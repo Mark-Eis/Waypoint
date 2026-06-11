@@ -346,17 +346,14 @@ unique_ptr<FamousFive0> Coordlet::switch_ff(NumericVector nv)
 /// __________________________________________________
 /// Convert Coordlet::nv to a new CoordType
 template<CoordType required_type>
-void Coordlet::convert()
-{
-//	Default: empty function
-}
+void Coordlet::convert() {} //	Default: empty function
 
 /// __________________________________________________
 /// Specialisation for CoordType::decdeg
 template<>
 void Coordlet::convert<CoordType::decdeg>()
 {
-	fmt::print("@Coordlet::convert<CoordType::decdeg>()\n");
+//	fmt::print("@Coordlet::convert<CoordType::decdeg>()\n");
 	transform(nv.begin(), nv.end(), nv.begin(), [this](auto n){
 			return ff->get_decdeg(n);
 		});
@@ -367,7 +364,7 @@ void Coordlet::convert<CoordType::decdeg>()
 template<>
 void Coordlet::convert<CoordType::degmin>()
 {
-	fmt::print("@Coordlet::convert<CoordType::degmin>()\n");
+//	fmt::print("@Coordlet::convert<CoordType::degmin>()\n");
 	transform(nv.begin(), nv.end(), nv.begin(), [this](auto n){
 			return ff->get_deg(n) * 1e2 + ff->get_decmin(n);
 		});
@@ -378,7 +375,7 @@ void Coordlet::convert<CoordType::degmin>()
 template<>
 void Coordlet::convert<CoordType::degminsec>()
 {
-	fmt::print("@Coordlet::convert<CoordType::degminsec>()\n");
+//	fmt::print("@Coordlet::convert<CoordType::degminsec>()\n");
 	transform(nv.begin(), nv.end(), nv.begin(), [this](auto n){
 			return ff->get_deg(n) * 1e4 + ff->get_min(n) * 1e2 + ff->get_sec(n);
 		});
@@ -415,24 +412,51 @@ void Coordlet::convert_switch(CoordType required_type)
 template<CoordType required_type>
 vector<string> Coordlet::format() const
 {
-//	fmt::print("@Coordlet::format<CoordType::{}>() const\n", required_type);
-	auto sv_out = vector<string>(nv.size());
+//	Default: minimal function;
+	return vector<string>(nv.size());
+}
 
-	if constexpr (isDecDeg_v<required_type>)
-		transform(nv.begin(), nv.end(), sv_out.begin(), [this](auto n){
-				return fmt::format("{:>{}.{}f}\u00B0", ff->get_decdeg(n), 11, 6);
-			});
-	if constexpr (isDegMin_v<required_type>)
-		transform(nv.begin(), nv.end(), sv_out.begin(), [this](auto n){
-				return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) +
-					   fmt::format("{:0>{}.{}f}\u2032", fabs(ff->get_decmin(n)), 7, 4);
-			});
-	if constexpr (isDegMinSec_v<required_type>)
-		transform(nv.begin(), nv.end(), sv_out.begin(), [this](auto n){
-				return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) +
-					   fmt::format("{:0>{}}\u2032", abs(ff->get_min(n)), 2) +
-					   fmt::format("{:0>{}.{}f}\u2033", fabs(ff->get_sec(n)), 5, 2);
-			});
+/// __________________________________________________
+/// Specialisation for CoordType::decdeg
+template<>
+vector<string> Coordlet::format<CoordType::decdeg>() const
+{
+//	fmt::print("@Coordlet::format<CoordType::decdeg>() const\n");
+	auto sv_out = vector<string>(nv.size());
+	transform(nv.begin(), nv.end(), sv_out.begin(), [this](auto n){
+			return fmt::format("{:>{}.{}f}\u00B0", ff->get_decdeg(n), 11, 6);
+		});
+
+	return sv_out;
+}
+
+/// __________________________________________________
+///  Specialisation for CoordType::degmin
+template<>
+vector<string> Coordlet::format<CoordType::degmin>() const
+{
+//	fmt::print("@Coordlet::format<CoordType::degmin>() const\n");
+	auto sv_out = vector<string>(nv.size());
+	transform(nv.begin(), nv.end(), sv_out.begin(), [this](auto n){
+			return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) +
+				   fmt::format("{:0>{}.{}f}\u2032", fabs(ff->get_decmin(n)), 7, 4);
+		});
+
+	return sv_out;
+}
+
+/// __________________________________________________
+///  Specialisation for CoordType::degminsec
+template<>
+vector<string> Coordlet::format<CoordType::degminsec>() const
+{
+//	fmt::print("@Coordlet::format<CoordType::degminsec>() const\n");
+	auto sv_out = vector<string>(nv.size());
+	transform(nv.begin(), nv.end(), sv_out.begin(), [this](auto n){
+			return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) +
+				   fmt::format("{:0>{}}\u2032", abs(ff->get_min(n)), 2) +
+				   fmt::format("{:0>{}.{}f}\u2033", fabs(ff->get_sec(n)), 5, 2);
+		});
 
 	return sv_out;
 }
