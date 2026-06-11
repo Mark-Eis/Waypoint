@@ -16,6 +16,7 @@ using std::string;
 using std::string_view;
 using namespace std::string_view_literals;
 using std::transform;
+using std::unique_ptr;
 
 #include "CoordBase.h"
 

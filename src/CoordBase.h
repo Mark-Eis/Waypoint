@@ -9,8 +9,6 @@
 #include "fmt/base.h"		// …fmt/*.h copied to …/R/Packages/Waypoint/src.
 #include <concepts>
 
-using std::unique_ptr;
-
 /// __________________________________________________
 /// __________________________________________________
 /// Development and debugging
