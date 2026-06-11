@@ -6,6 +6,7 @@
 
 #include <Rcpp.h>
 #include <cxxabi.h>
+#include <memory>
 #include <array>
 
 using namespace Rcpp;
