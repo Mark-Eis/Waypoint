@@ -600,12 +600,12 @@ void Coords::format_suffix(vector<string>& sv_out) const
 	else
 		if (ll_size == 1)	// uniform coords
 			transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda2);
-		else					// no latlon info
+		else				// no latlon info
 			transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda3);
 }
 
 /// __________________________________________________
-/// Specialisation for CoordType::decdeg -- Add suffix of "lat", "Lon"
+/// Specialisation for CoordType::decdeg -- Add suffix of "lat", "lon"
 template<>
 void Coords::format_suffix<CoordType::decdeg>(vector<string>& sv_out) const
 {
@@ -693,16 +693,22 @@ vector<string> Waypoints::format(CoordType required_type) const
 }
 
 /// __________________________________________________
-/// Add suffix of "(N/E)", "(S/W)" if needed
+/// Add suffix of  "N", "S", "E", "W" if CoordType::degmin or CoordType::degminsec
 template<CoordType required_type>
 void Waypoints::format_suffix(vector<string>& sv_out) const
 {
-//	fmt::print("@Waypoints::format_suffix(vector<string> sv_out) const; {}\n", latlon_flag? "lat" : "lon");
-	if constexpr(isDegMin_v<required_type> || isDegMinSec_v<required_type>) {
-		transform(sv_out.begin(), sv_out.end(), (latlon_flag? nvlat : nvlon).begin(), sv_out.begin(), [](auto& outstr, auto n){
-			return outstr + cardpoint(n < 0, latlon_flag); }
-		);
-	}
+//	fmt::print("@Waypoints::format_suffix<CoordType>(vector<string> sv_out) const; {}\n", latlon_flag? "lat" : "lon");
+	transform(sv_out.begin(), sv_out.end(), (latlon_flag? nvlat : nvlon).begin(), sv_out.begin(), [](auto& outstr, auto n){
+		return outstr + cardpoint(n < 0, latlon_flag); }
+	);
+}
+
+/// __________________________________________________
+/// Specialisation for CoordType::decdeg -- Do nothing
+template<>
+void Waypoints::format_suffix<CoordType::decdeg>(vector<string>& sv_out) const
+{
+//	fmt::print("@Waypoints::format_suffix<CoordType::decdeg>(vector<string> sv_out) const; {}\n", latlon_flag? "lat" : "lon");
 }
 
 /// __________________________________________________
