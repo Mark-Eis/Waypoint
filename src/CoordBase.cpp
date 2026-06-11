@@ -329,13 +329,13 @@ unique_ptr<FamousFive0> Coordlet::switch_ff(NumericVector nv)
 	switch (get_coordtype(nv))
 	{
 		case decdeg:
-			return unique_ptr<FamousFive0>(new FamousFive<CoordType::decdeg>);
+			return unique_ptr<FamousFive0>(new FamousFive<decdeg>);
 
 		case degmin:
-			return unique_ptr<FamousFive0>(new FamousFive<CoordType::degmin>);
+			return unique_ptr<FamousFive0>(new FamousFive<degmin>);
 
 		case degminsec:
-			return unique_ptr<FamousFive0>(new FamousFive<CoordType::degminsec>);
+			return unique_ptr<FamousFive0>(new FamousFive<degminsec>);
 
 		default:
 			stop("Coordlet::switch_ff(NumericVector) my bad");
@@ -348,20 +348,40 @@ unique_ptr<FamousFive0> Coordlet::switch_ff(NumericVector nv)
 template<CoordType required_type>
 void Coordlet::convert()
 {
-//	fmt::print("@Coordlet::convert<CoordType::{}>()\n", required_type);
+//	Default: empty function
+}
 
-	if constexpr (isDecDeg_v<required_type>)
-		transform(nv.begin(), nv.end(), nv.begin(), [this](auto n){
-				return ff->get_decdeg(n);
-			});
-	if constexpr (isDegMin_v<required_type>)
-		transform(nv.begin(), nv.end(), nv.begin(), [this](auto n){
-				return ff->get_deg(n) * 1e2 + ff->get_decmin(n);
-			});
-	if constexpr (isDegMinSec_v<required_type>)
-		transform(nv.begin(), nv.end(), nv.begin(), [this](auto n){
-				return ff->get_deg(n) * 1e4 + ff->get_min(n) * 1e2 + ff->get_sec(n);
-			});
+/// __________________________________________________
+/// Specialisation for CoordType::decdeg
+template<>
+void Coordlet::convert<CoordType::decdeg>()
+{
+	fmt::print("@Coordlet::convert<CoordType::decdeg>()\n");
+	transform(nv.begin(), nv.end(), nv.begin(), [this](auto n){
+			return ff->get_decdeg(n);
+		});
+}
+
+/// __________________________________________________
+///  Specialisation for CoordType::degmin
+template<>
+void Coordlet::convert<CoordType::degmin>()
+{
+	fmt::print("@Coordlet::convert<CoordType::degmin>()\n");
+	transform(nv.begin(), nv.end(), nv.begin(), [this](auto n){
+			return ff->get_deg(n) * 1e2 + ff->get_decmin(n);
+		});
+}
+
+/// __________________________________________________
+///  Specialisation for CoordType::degminsec
+template<>
+void Coordlet::convert<CoordType::degminsec>()
+{
+	fmt::print("@Coordlet::convert<CoordType::degminsec>()\n");
+	transform(nv.begin(), nv.end(), nv.begin(), [this](auto n){
+			return ff->get_deg(n) * 1e4 + ff->get_min(n) * 1e2 + ff->get_sec(n);
+		});
 }
 
 /// __________________________________________________
