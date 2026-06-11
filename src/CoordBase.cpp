@@ -582,40 +582,46 @@ vector<string> Coords::format(CoordType required_type) const
 }
 
 /// __________________________________________________
-/// Add suffix of "lat", "Lon"; "N", "S", "E", "W"; or "(N/E)", "(S/W)" —— templated with type traits
+/// Add suffix of "N", "S", "E", "W"; or "(N/E)", "(S/W)"
 template<CoordType required_type>
 void Coords::format_suffix(vector<string>& sv_out) const
 {
-//	fmt::print("@Coords::format_suffix(vector<string>& sv_out, CoordType) const; required type: {}\n", required_type);
+//	fmt::print("@Coords::format_suffix<CoordType>(vector<string>& sv_out, CoordType) const; required type: {}\n", required_type);
 	const auto latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") };
 	vector<bool>::const_iterator ll_it { latlon.begin() };
 	const auto ll_size { latlon.size() };
 
-	if constexpr(isDecDeg_v<required_type>) {
-		const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it++ ? " lat" : " lon"); };
-		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it ? " lat" : " lon"); };
+	const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it++); };
+	const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it); };
+	const auto lambda3 = [](auto& outstr, auto n){ return outstr + cardi_b(n < 0); };
 
-		if (ll_size > 1)
-			transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda1);
-		else
-			if (ll_size == 1)	// uniform coords
-				transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda2);
+	if (ll_size > 1)
+		transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda1);
+	else
+		if (ll_size == 1)	// uniform coords
+			transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda2);
+		else					// no latlon info
+			transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda3);
+}
 
-	}
+/// __________________________________________________
+/// Specialisation for CoordType::decdeg -- Add suffix of "lat", "Lon"
+template<>
+void Coords::format_suffix<CoordType::decdeg>(vector<string>& sv_out) const
+{
+//	fmt::print("@Coords::format_suffix<CoordType::decdeg>(vector<string>& sv_out, CoordType) const\n");
+	const auto latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") };
+	vector<bool>::const_iterator ll_it { latlon.begin() };
+	const auto ll_size { latlon.size() };
 
-	if constexpr(isDegMin_v<required_type> || isDegMinSec_v<required_type>) {
-		const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it++); };
-		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it); };
-		const auto lambda3 = [](auto& outstr, auto n){ return outstr + cardi_b(n < 0); };
+	const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it++ ? " lat" : " lon"); };
+	const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it ? " lat" : " lon"); };
 
-		if (ll_size > 1)
-			transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda1);
-		else
-			if (ll_size == 1)	// uniform coords
-				transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda2);
-			else					// no latlon info
-				transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda3);
-	}
+	if (ll_size > 1)
+		transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda1);
+	else
+		if (ll_size == 1)	// uniform coords
+			transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda2);
 }
 
 /// __________________________________________________
