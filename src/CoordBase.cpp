@@ -101,10 +101,9 @@ inline vector<U> get_vec_attr(const T& t, const char* attrname)
 
 /// __________________________________________________
 /// Return "fmt" attribute as int
-template<NumericVector_or_DataFrame T>
-inline int get_fmt_attribute(const T& t)
+inline int get_fmt_attribute(const NumericVector_or_DataFrame auto& t)
 {
-//	fmt::print("@{} fmt={}\n", "get_fmt_attribute<T>(const T&)", as<int>(t.attr("fmt")));
+//	fmt::print("@get_fmt_attribute<T>(const NumericVector_or_DataFrame auto&); t: {}; fmt={}\n", demangle(typeid(t)), as<int>(t.attr("fmt")));
 	return as<int>(t.attr("fmt"));
 }
 
@@ -124,23 +123,21 @@ int check_logical_attr(T t, const char* attrname)
 
 /// __________________________________________________
 /// Does object inherit given class?
-template<NumericVector_or_DataFrame T>
-inline void checkinherits(T& t, const char* classname)
+inline void checkinherits(const NumericVector_or_DataFrame auto& t, const char* classname)
 {
-//	fmt::print("@{} T {} classname \"{}\"\n", "checkinherits<T>(T&, const char*)", demangle(typeid(t)), classname);
+//	fmt::print("@checkinherits(const NumericVector_or_DataFrame auto&, const char*); t: {}; classname \"{}\"\n", demangle(typeid(t)), classname);
 	if (!t.inherits(classname)) stop("Argument must be a \"%s\" object", classname);
 }
 
 /// __________________________________________________
-/// Is item number present in object? (Using C++ numbering)
-template<typename T>
-inline bool is_item_in_obj(const T t, int item)
+/// Is item number present in data.frame? (Using C++ numbering)
+inline bool is_item_in_df(const DataFrame df, int item_no)
 {
-//	fmt::print("@{} T {} item={}\n", "is_item_in_obj<T>(T, int)", demangle(typeid(t)), item);
-	if (NA_INTEGER == item)
+//	fmt::print("@is_item_in_df(const DataFrame, int); item no. {}\n", item_no);
+	if (NA_INTEGER == item_no)
 		return false;
 	else
-		return !(item < 0) && item < t.size();
+		return !(item_no < 0) && item_no < df.size();
 }
 
 /// __________________________________________________
@@ -196,20 +193,19 @@ inline string str_tolower(string s)
 }
 
 /// __________________________________________________
-/// Find position of name within object names
-template<List_or_DataFrame T>
-int nameinobj(const T t, const char* name)
+/// Find position of name within data.frame names
+int name_pos_in_df(const DataFrame df, const char* name)
 {
-//	fmt::print("@{} name={}\n", "nameinobj<T>(const T, const char*)", name);
-	vector names{ get_vec_attr<T, string>(t, "names") };
+//	fmt::print("@name_pos_in_df(const DataFrame, const char*); name={}\n", name);
+	vector names{ get_vec_attr<DataFrame, string>(df, "names") };
 	if (!names.size())
 		return -1;
 	typedef decltype(names.size()) Tmp;
 	Tmp i = 0;
 	for (auto str : names ) {
-//		fmt::print("@{} testing {}\n", "nameinobj<T>(const T, const char*)", str);
+		// fmt::print("@@name_pos_in_df(const DataFrame, const char*); testing: {}\n", str);
 		if (!str_tolower(str).compare(name)) {
-//			fmt::print("@{} found {}\n", "nameinobj<T>(const T, const char*)", str);
+			// fmt::print("@@@name_pos_in_df(const DataFrame, const char*); found: {}\n", str);
 			break;
 		}
 		i++;
@@ -227,7 +223,7 @@ RObject getnames(const DataFrame df)
 	vector namescolvec{ get_vec_attr<DataFrame, int>(df, "namescol") };
 	if (1 == namescolvec.size()) {
 		int namescol = namescolvec[0] - 1;
-		if (is_item_in_obj(df, namescol))
+		if (is_item_in_df(df, namescol))
 			return df[namescol];
 		else
 			stop("Invalid \"namescol\" attribute! (item not in object)");
@@ -269,10 +265,9 @@ inline const CoordType get_coordtype(int i)
 
 /// __________________________________________________
 /// Convert "fmt" attribute to CoordType enum
-template<NumericVector_or_DataFrame T>
-inline const CoordType get_coordtype(const T& t)
+inline const CoordType get_coordtype(const NumericVector_or_DataFrame auto& t)
 {
-//	fmt::print("@{} t {}\n", "get_coordtype<T>(const T&)", demangle(typeid(t)));
+//	fmt::print("@get_coordtype(const NumericVector_or_DataFrame auto&); t: {}\n", demangle(typeid(t)));
 	return get_coordtype(get_fmt_attribute(t));
 }
 
@@ -740,7 +735,7 @@ bool valid_ll(const DataFrame df)
 	vector llcols { get_vec_attr<DataFrame, int>(df, "llcols") };
 	if (2 == llcols.size()) {
 		transform(llcols.begin(), llcols.end(), llcols.begin(), [](auto x){ return --x; });
-		if (is_item_in_obj(df, llcols[0]) && is_item_in_obj(df, llcols[1]) && llcols[0] != llcols[1])
+		if (is_item_in_df(df, llcols[0]) && is_item_in_df(df, llcols[1]) && llcols[0] != llcols[1])
 			if (is<NumericVector>(df[llcols[0]]) && is<NumericVector>(df[llcols[1]]))
 				valid = true;
 	}
@@ -848,7 +843,7 @@ DataFrame as_waypoints(DataFrame object, int fmt = 1)
 	object.attr("fmt") = fmt;
 	int namescol = 0;
 	if (!object.hasAttribute("namescol")) {
-		namescol = nameinobj(object, "name");
+		namescol = name_pos_in_df(object, "name");
 		if (++namescol)
 			object.attr("namescol") = namescol;
 	}

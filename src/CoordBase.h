@@ -52,13 +52,10 @@ class Waypoints;
 
 /// __________________________________________________
 /// Concept
-template <typename T>
+template<typename T>
 concept NumericVector_or_DataFrame = 
 	std::is_same_v<NumericVector, T> || std::is_same_v<const NumericVector, T> ||
 	std::is_same_v<DataFrame, T> || std::is_same_v<const DataFrame, T>;
-
-template <typename T>
-concept List_or_DataFrame = std::is_same_v<List, T> || std::is_same_v<DataFrame, T>;
 
 
 /// __________________________________________________
@@ -74,21 +71,17 @@ inline double polish(double);
 /// Utility
 template<NumericVector_or_DataFrame T, typename U> 
 inline vector<U> get_vec_attr(const T&, const char*);
-template<NumericVector_or_DataFrame T>
-inline int get_fmt_attribute(const T&);
+inline int get_fmt_attribute(const NumericVector_or_DataFrame auto&);
 template<NumericVector_or_DataFrame T>
 int check_logical_attr(T t, const char* attrname);
-template<NumericVector_or_DataFrame T>
-inline void checkinherits(T&, const char*);
-template<typename T>
-inline bool is_item_in_obj(const T, int);
+inline void checkinherits(const NumericVector_or_DataFrame auto&, const char*);
+inline bool is_item_in_df(const DataFrame, int);
 inline void stdlenstr(vector<string>&);
 inline void concat_vecstr_elmnts(const vector<string>&, vector<string>&, const string = " ");
 inline void concat_vecstr_elmnts(const vector<int>&, vector<string>&, const string = " ");
 inline bool prefixwithnames(vector<string>&, RObject&);
 inline string str_tolower(string);
-template<List_or_DataFrame T>
-int nameinobj(const T, const char*);
+int name_pos_in_df(const DataFrame, const char*);
 RObject getnames(const DataFrame);
 
 /// __________________________________________________
@@ -96,7 +89,7 @@ RObject getnames(const DataFrame);
 /// CoordType enum
 enum class CoordType : char { decdeg, degmin, degminsec };
 
-template <>
+template<>
 struct fmt::formatter<CoordType>: formatter<string_view>
 {
 	auto format(CoordType, format_context&) const
@@ -109,10 +102,10 @@ struct fmt::formatter<CoordType>: formatter<string_view>
 
 /// __________________________________________________
 /// CoordType::decdeg
-template <auto T>
+template<auto T>
 struct isDecDeg : public std::false_type {};
 
-template <>
+template<>
 struct isDecDeg<CoordType::decdeg> : public std::true_type {};
 
 template<auto T>
@@ -120,10 +113,10 @@ constexpr bool isDecDeg_v = isDecDeg<T>::value;
 
 /// __________________________________________________
 /// CoordType::degmin
-template <auto T>
+template<auto T>
 struct isDegMin : public std::false_type {};
 
-template <>
+template<>
 struct isDegMin<CoordType::degmin> : public std::true_type {};
 
 template<auto T>
@@ -131,10 +124,10 @@ constexpr bool isDegMin_v = isDegMin<T>::value;
 
 /// __________________________________________________
 /// CoordType::degminsec
-template <auto T>
+template<auto T>
 struct isDegMinSec : public std::false_type {};
 
-template <>
+template<>
 struct isDegMinSec<CoordType::degminsec> : public std::true_type {};
 
 template<auto T>
@@ -143,8 +136,7 @@ constexpr bool isDegMinSec_v = isDegMinSec<T>::value;
 /// __________________________________________________
 /// CoordType access functions
 inline const CoordType get_coordtype(int);
-template<NumericVector_or_DataFrame T>
-inline const CoordType get_coordtype(const T&);
+inline const CoordType get_coordtype(const NumericVector_or_DataFrame auto&);
 inline int coordtype_to_int(CoordType);
 
 inline string cardpoint(bool, bool);
@@ -153,7 +145,7 @@ inline string cardi_b(bool);
 
 /// __________________________________________________
 /// Concept
-template <typename T>
+template<typename T>
 concept Coords_or_Waypoints =
 	requires (T t) {
 		t.convert(CoordType::decdeg);
