@@ -9,6 +9,8 @@
 #include "fmt/base.h"		// …fmt/*.h copied to …/R/Packages/Waypoint/src.
 #include <concepts>
 
+using std::unique_ptr;
+
 /// __________________________________________________
 /// __________________________________________________
 /// Development and debugging
@@ -43,7 +45,6 @@ const string demangle(const std::type_info&);
 /// __________________________________________________
 /// Class forward declarations
 enum class CoordType : char;
-template<CoordType current_type>
 class Coordlet;
 class CrdWptBase;
 class Coords;
@@ -177,6 +178,7 @@ struct FamousFive0 {
 	virtual int get_min(double x) const = 0;
 	virtual double get_decmin(double x) const = 0;
 	virtual double get_sec(double x) const = 0;
+	virtual ~FamousFive0() = 0;
 };
 
 /// __________________________________________________
@@ -221,10 +223,10 @@ struct FamousFive<CoordType::degminsec> final : FamousFive0 {
 /// __________________________________________________
 /// __________________________________________________
 /// Coordlet class
-template<CoordType current_type>
+// template<CoordType current_type>
 class Coordlet {
 
-		FamousFive<current_type> ff {};
+		unique_ptr<FamousFive0> ff;
 		NumericVector nv;
 		const vector<bool> latlon;
 
@@ -232,6 +234,7 @@ class Coordlet {
 		void convert();
 		template<CoordType> 
 		vector<string> format() const;
+		unique_ptr<FamousFive0> switch_ff(NumericVector);
 	public:
 		explicit Coordlet(NumericVector);
 		Coordlet(const Coordlet&) = delete;						// Disallow copying
@@ -239,7 +242,7 @@ class Coordlet {
 		Coordlet(Coordlet&&) = delete;							// Disallow transfer ownership
 		Coordlet& operator=(Coordlet&&) = delete;				// Disallow moving
 		virtual ~Coordlet() = default;
-//		virtual ~Coordlet() { fmt::print("§Coordlet::~Coordlet(); {}; ", current_type); _ctrsgn(typeid(*this), true); }
+//		virtual ~Coordlet() { fmt::print("§Coordlet::~Coordlet() "); _ctrsgn(typeid(*this), true); }
 		void convert_switch(CoordType);
 		vector<string> format_switch(CoordType) const;
 		const vector<bool> validate() const;
@@ -252,19 +255,10 @@ class CrdWptBase {
 	protected:
 		const CoordType ct;
 
-		template<CoordType current_type> 
-		inline void convert_dispatch(NumericVector, const CoordType) const;		
-		void convert_switch_current(NumericVector, const CoordType) const;
-		template<CoordType current_type> 
-		inline vector<string> format_dispatch(NumericVector, const CoordType) const;
-		vector<string> format_switch_current(NumericVector, const CoordType) const;
 		template<Coords_or_Waypoints>
 		void format_suffix_switch(vector<string>&, const CoordType) const;
-		template<CoordType current_type> 
-		inline const vector<bool> validate_dispatch(const NumericVector) const;
-		const vector<bool> validate_switch_current(const NumericVector) const;
 	public:
-		explicit CrdWptBase(CoordType _ct) : ct { _ct } {}
+		explicit CrdWptBase(CoordType);
 		CrdWptBase(const CrdWptBase&) = delete;						// Disallow copying
 		CrdWptBase& operator=(const CrdWptBase&) = delete;			//  ——— ditto ———
 		CrdWptBase(CrdWptBase&&) = delete;							// Disallow transfer ownership

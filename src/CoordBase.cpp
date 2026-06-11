@@ -301,45 +301,79 @@ inline string cardi_b(bool negative)
 
 /// __________________________________________________
 /// __________________________________________________
+/// FamousFive0 class
+
+/// __________________________________________________
+/// Destructor
+FamousFive0::~FamousFive0()
+{
+//	fmt::print("§FamousFive0::~FamousFive0() "); _ctrsgn(typeid(*this), true);
+}
+
+/// __________________________________________________
+/// __________________________________________________
 /// Coordlet class
 
 /// __________________________________________________
 /// Constructor of Coordlet
-template<CoordType current_type>
-Coordlet<current_type>::Coordlet(NumericVector nv) :
-	nv{ nv },
+Coordlet::Coordlet(NumericVector _nv) :				// Needs to know CoordType in another way to intialise ff
+	ff { switch_ff(_nv) },
+	nv{ _nv },
 	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") }
 {
-//	fmt::print("§Coordlet<CoordType::{}>::Coordlet(NumericVector, bool); ", current_type);  _ctrsgn(typeid(*this));
+//	fmt::print("§Coordlet::Coordlet(NumericVector, bool) ");  _ctrsgn(typeid(*this));
+}
+
+/// __________________________________________________
+/// Switch CoordType for ff in Coordlet constructor
+unique_ptr<FamousFive0> Coordlet::switch_ff(NumericVector nv)
+{
+//	fmt::print("@§Coordlet::switch_ff()\n");
+	using enum CoordType;
+
+	switch (get_coordtype(nv))
+	{
+		case decdeg:
+			return unique_ptr<FamousFive0>(new FamousFive<CoordType::decdeg>);
+
+		case degmin:
+			return unique_ptr<FamousFive0>(new FamousFive<CoordType::degmin>);
+
+		case degminsec:
+			return unique_ptr<FamousFive0>(new FamousFive<CoordType::degminsec>);
+
+		default:
+			stop("Coordlet::switch_ff() my bad");
+	}
+	
 }
 
 /// __________________________________________________
 /// Convert Coordlet::nv to a new CoordType
-template<CoordType current_type> template<CoordType required_type>
-void Coordlet<current_type>::convert()
+template<CoordType required_type>
+void Coordlet::convert()
 {
-//	fmt::print("@Coordlet<CoordType::{}>::convert<CoordType::{}>()\n", current_type, required_type);
+//	fmt::print("@Coordlet::convert<CoordType::{}>()\n", required_type);
 
 	if constexpr (isDecDeg_v<required_type>)
 		transform(nv.begin(), nv.end(), nv.begin(), [this](auto n){
-				return ff.get_decdeg(n);
+				return ff->get_decdeg(n);
 			});
 	if constexpr (isDegMin_v<required_type>)
 		transform(nv.begin(), nv.end(), nv.begin(), [this](auto n){
-				return ff.get_deg(n) * 1e2 + ff.get_decmin(n);
+				return ff->get_deg(n) * 1e2 + ff->get_decmin(n);
 			});
 	if constexpr (isDegMinSec_v<required_type>)
 		transform(nv.begin(), nv.end(), nv.begin(), [this](auto n){
-				return ff.get_deg(n) * 1e4 + ff.get_min(n) * 1e2 + ff.get_sec(n);
+				return ff->get_deg(n) * 1e4 + ff->get_min(n) * 1e2 + ff->get_sec(n);
 			});
 }
 
 /// __________________________________________________
 /// Switch CoordType required for Coordlet<CoordType>::convert()
-template<CoordType current_type>
-void Coordlet<current_type>::convert_switch(CoordType required_type)
+void Coordlet::convert_switch(CoordType required_type)
 {
-//	fmt::print("@Coordlet<CoordType::{}>::convert_switch(CoordType); required_type: {}\n", current_type, required_type);
+//	fmt::print("@Coordlet::convert_switch(CoordType); required_type: {}\n", required_type);
 
 	using enum CoordType;
 	switch (required_type)
@@ -363,26 +397,26 @@ void Coordlet<current_type>::convert_switch(CoordType required_type)
 
 /// __________________________________________________
 /// Format Coordlet::nv as vector<string> of CoordType
-template<CoordType current_type> template<CoordType required_type>
-vector<string> Coordlet<current_type>::format() const
+template<CoordType required_type>
+vector<string> Coordlet::format() const
 {
-//	fmt::print("@Coordlet<CoordType::{}>::format<CoordType::{}>() const\n", current_type, required_type);
+//	fmt::print("@Coordlet::format<CoordType::{}>() const\n", required_type);
 	auto sv_out = vector<string>(nv.size());
 
 	if constexpr (isDecDeg_v<required_type>)
 		transform(nv.begin(), nv.end(), sv_out.begin(), [this](auto n){
-				return fmt::format("{:>{}.{}f}\u00B0", ff.get_decdeg(n), 11, 6);
+				return fmt::format("{:>{}.{}f}\u00B0", ff->get_decdeg(n), 11, 6);
 			});
 	if constexpr (isDegMin_v<required_type>)
 		transform(nv.begin(), nv.end(), sv_out.begin(), [this](auto n){
-				return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
-					   fmt::format("{:0>{}.{}f}\u2032", fabs(ff.get_decmin(n)), 7, 4);
+				return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) +
+					   fmt::format("{:0>{}.{}f}\u2032", fabs(ff->get_decmin(n)), 7, 4);
 			});
 	if constexpr (isDegMinSec_v<required_type>)
 		transform(nv.begin(), nv.end(), sv_out.begin(), [this](auto n){
-				return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
-					   fmt::format("{:0>{}}\u2032", abs(ff.get_min(n)), 2) +
-					   fmt::format("{:0>{}.{}f}\u2033", fabs(ff.get_sec(n)), 5, 2);
+				return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) +
+					   fmt::format("{:0>{}}\u2032", abs(ff->get_min(n)), 2) +
+					   fmt::format("{:0>{}.{}f}\u2033", fabs(ff->get_sec(n)), 5, 2);
 			});
 
 	return sv_out;
@@ -390,10 +424,9 @@ vector<string> Coordlet<current_type>::format() const
 
 /// __________________________________________________
 /// Switch CoordType required for Coordlet<CoordType>::format()
-template<CoordType current_type>
-vector<string> Coordlet<current_type>::format_switch(CoordType required_type) const
+vector<string> Coordlet::format_switch(CoordType required_type) const
 {
-//	fmt::print("@Coordlet<CoordType::{}>::format_switch(CoordType); required: {}\n", current_type, required_type);
+//	fmt::print("@Coordlet::format_switch(CoordType); required: {}\n", required_type);
 
 	using enum CoordType;
 	switch (required_type)
@@ -414,19 +447,18 @@ vector<string> Coordlet<current_type>::format_switch(CoordType required_type) co
 
 /// __________________________________________________
 /// Validate Coordlet::nv
-template<CoordType current_type>
-const vector<bool> Coordlet<current_type>::validate() const
+const vector<bool> Coordlet::validate() const
 {
-//	fmt::print("@Coordlet<CoordType::{}>::validate(); latlon: {}\n", current_type, fmt::join(latlon, ", "));
+//	fmt::print("@Coordlet::validate(); latlon: {}\n", fmt::join(latlon, ", "));
 	vector<bool>::const_iterator ll_it{ latlon.begin() };
 	auto ll_size { latlon.size() };
 	auto valid = vector<bool>{};
 	valid.assign(nv.size(), {false});
 
 	transform(nv.begin(), nv.end(), valid.begin(), [this, &ll_it, &ll_size](auto n){
-		return !((fabs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
-				(fabs(ff.get_decmin(n)) >= 60) ||
-				(fabs(ff.get_sec(n)) >= 60));
+		return !((fabs(ff->get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
+				(fabs(ff->get_decmin(n)) >= 60) ||
+				(fabs(ff->get_sec(n)) >= 60));
 	});
 
 	if (all_of(valid.begin(), valid.end(), [](auto v) { return v;}))
@@ -440,72 +472,17 @@ const vector<bool> Coordlet<current_type>::validate() const
 /// CrdWptBase class
 
 /// __________________________________________________
+/// Constructor
+CrdWptBase::CrdWptBase(CoordType _ct) : ct { _ct }
+{
+//	fmt::print("§CrdWptBase::CrdWptBase(CoordType); {} ", ct); _ctrsgn(typeid(*this));
+}
+
+/// __________________________________________________
 /// Destructor
-CrdWptBase::~CrdWptBase() {}
-
-/// __________________________________________________
-/// Dispatch nv to Coordlet<CoordType>::convert_switch()
-template<CoordType current_type> 
-inline void CrdWptBase::convert_dispatch(NumericVector nv, const CoordType new_type) const
+CrdWptBase::~CrdWptBase()
 {
-//	fmt::print("@CrdWptBase::convert_dispatch<CoordType::{}>(NumericVector, const CoordType); new type: {}\n", current_type, new_type);
-	Coordlet<current_type>{ nv }.convert_switch(new_type);
-}
-
-/// __________________________________________________
-/// Switch current CoordType to convert nv
-void CrdWptBase::convert_switch_current(NumericVector nv, const CoordType required_type) const
-{
-//	fmt::print("@CrdWptBase::convert_switch_current(NumericVector, const CoordType); current_type: {}; required_type: {}\n", ct, required_type);
-	using enum CoordType;
-	switch (ct)
-	{
-		case decdeg:
-			convert_dispatch<decdeg>(nv, required_type);
-			break;
-
-		case degmin:
-			convert_dispatch<degmin>(nv, required_type);
-			break;
-
-		case degminsec:
-			convert_dispatch<degminsec>(nv, required_type);
-			break;
-
-		default:
-			stop("CrdWptBase::convert_switch_current(NumericVector, const CoordType) const my bad");
-	}
-}
-
-/// __________________________________________________
-/// Dispatch nv to Coordlet<CoordType>::format_switch()
-template<CoordType current_type> 
-inline vector<string> CrdWptBase::format_dispatch(NumericVector nv, const CoordType required_type) const
-{
-//	fmt::print("@CrdWptBase::format_dispatch<CoordType::{}>(NumericVector, const CoordType); required: {}\n", current_type, required_type);
-	return Coordlet<current_type>{ nv }.format_switch(required_type);
-}
-
-/// __________________________________________________
-/// Switch current CoordType to format nv
-vector<string> CrdWptBase::format_switch_current(NumericVector nv, const CoordType required_type) const
-{
-//	fmt::print("@CrdWptBase::format_switch_current(NumericVector, const CoordType, bool); current: {}; required: {}\n", ct, required_type);
-	using enum CoordType;
-	switch (ct)
-	{
-		case decdeg:
-			return format_dispatch<decdeg>(nv, required_type);
-
-		case degmin:
-			return format_dispatch<degmin>(nv, required_type);
-
-		case degminsec:
-			return format_dispatch<degminsec>(nv, required_type);
-
-		default:
-			stop("CrdWptBase::format_switch_current(NumericVector, const CoordType) const my bad");
-	}
+//	fmt::print("§CrdWptBase::~CrdWptBase(); {} ", ct); _ctrsgn(typeid(*this), true);
 }
 
 /// __________________________________________________
@@ -536,37 +513,6 @@ void CrdWptBase::format_suffix_switch(vector<string>& sv_out, const CoordType re
 }
 
 /// __________________________________________________
-/// Dispatch nv to Coordlet<CoordType>::validate()
-template<CoordType current_type> 
-inline const vector<bool> CrdWptBase::validate_dispatch(const NumericVector nv) const
-{
-//	fmt::print("@CrdWptBase::validate_dispatch<CoordType::{}>(const NumericVector)\n", current_type);
-	return Coordlet<current_type>{ nv }.validate();
-}
-
-/// __________________________________________________
-/// Switch current CoordType to validate nv
-const vector<bool> CrdWptBase::validate_switch_current(const NumericVector nv) const
-{
-//	fmt::print("@CrdWptBase::validate_switch_current(const NumericVector); current_type: {}\n", ct);
-	using enum CoordType;
-	switch (ct)
-	{
-		case decdeg:
-			return validate_dispatch<decdeg>(nv);
-
-		case degmin:
-			return validate_dispatch<degmin>(nv);
-
-		case degminsec:
-			return validate_dispatch<degminsec>(nv);
-
-		default:
-			stop("CrdWptBase::validate_switch_current(const NumericVector) const my bad");
-	}
-}
-
-/// __________________________________________________
 /// __________________________________________________
 /// Coords class
 
@@ -582,7 +528,7 @@ Coords::Coords(NumericVector nv) : CrdWptBase { get_coordtype(nv) }, nv{ nv }
 void Coords::convert(CoordType newtype)
 {
 //	fmt::print("@Coords::convert(CoordType); current type: {}; new type: {}\n", ct, newtype);
-	convert_switch_current(nv, newtype);
+	Coordlet{ nv }.convert_switch(newtype);
 	nv.attr("fmt") = coordtype_to_int(newtype);
 }
 
@@ -591,7 +537,7 @@ void Coords::convert(CoordType newtype)
 vector<string> Coords::format(CoordType required_type) const
 {
 //	fmt::print("@Coords::format(CoordType); current type: {}; required type: {}\n", ct, required_type);
-	vector sv_out{ format_switch_current(nv, required_type) };
+	vector sv_out{ Coordlet{ nv }.format_switch(required_type) };
 	format_suffix_switch<Coords>(sv_out, required_type);
 	return sv_out;
 }
@@ -638,7 +584,8 @@ void Coords::format_suffix(vector<string>& sv_out) const
 const bool Coords::validate() const
 {
 //	fmt::print("@Coords::validate(); current type: {}\n", ct);
-	auto valid = validate_switch_current(nv);
+	auto valid = Coordlet{ nv }.validate();
+
 	static_cast<NumericVector>(nv).attr("valid") = valid;
 	return ( std::all_of(valid.begin(), valid.end(), [](auto i){ return i; } )
 	);
@@ -678,8 +625,8 @@ Waypoints::~Waypoints()
 void Waypoints::convert(CoordType newtype)
 {
 //	fmt::print("@ Waypoints::convert(CoordType); current type: {}; new type: {}\n", ct, newtype);
-	convert_switch_current(nvlat, newtype);
-	convert_switch_current(nvlon, newtype);
+	Coordlet{ nvlat }.convert_switch(newtype);
+	Coordlet{ nvlon }.convert_switch(newtype);
 	df.attr("fmt") = coordtype_to_int(newtype);
 }
 
@@ -688,9 +635,8 @@ void Waypoints::convert(CoordType newtype)
 vector<string> Waypoints::format(CoordType required_type) const
 {
 //	fmt::print("@Waypoints::format(CoordType); current type: {}; required type: {}\n", ct, required_type);
-
-	vector sv_lat{ format_switch_current(nvlat, required_type) };
-	vector sv_lon{ format_switch_current(nvlon, required_type) };
+	vector sv_lat{ Coordlet{ nvlat }.format_switch(required_type) };
+	vector sv_lon{ Coordlet{ nvlon }.format_switch(required_type) };
 
 	format_suffix_switch<Waypoints>(sv_lat, required_type);
 	latlon_flag = false;
@@ -719,9 +665,8 @@ void Waypoints::format_suffix(vector<string>& sv_out) const
 const bool Waypoints::validate() const
 {
 //	fmt::print("@Waypoints::validate(); current type: {}\n", ct);
-
-	auto validlat = validate_switch_current(nvlat);
-	auto validlon = validate_switch_current(nvlon);
+	auto validlat = Coordlet{ nvlat }.validate();
+	auto validlon = Coordlet{ nvlon }.validate();
 
 	static_cast<DataFrame>(df).attr("validlat") = validlat;
 	static_cast<DataFrame>(df).attr("validlon") = validlon;
