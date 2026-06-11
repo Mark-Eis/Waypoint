@@ -17,6 +17,7 @@ using std::string_view;
 using namespace std::string_view_literals;
 using std::transform;
 using std::unique_ptr;
+using std::make_unique;
 
 #include "CoordBase.h"
 
@@ -330,13 +331,13 @@ unique_ptr<FamousFive0> Coordlet::switch_ff(NumericVector nv)
 	switch (get_coordtype(nv))
 	{
 		case decdeg:
-			return unique_ptr<FamousFive0>(new FamousFive<decdeg>);
+			return make_unique<FamousFive<decdeg>>();
 
 		case degmin:
-			return unique_ptr<FamousFive0>(new FamousFive<degmin>);
+			return make_unique<FamousFive<degmin>>();
 
 		case degminsec:
-			return unique_ptr<FamousFive0>(new FamousFive<degminsec>);
+			return make_unique<FamousFive<degminsec>>();
 
 		default:
 			stop("Coordlet::switch_ff(NumericVector) my bad");
