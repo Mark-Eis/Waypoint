@@ -1,10 +1,12 @@
 # Waypoint (development version)
 
+* Shorthand notation for simple, single-type argument concepts (#175).
+
 * New `Coords` and `Waypoints` classes each inheriting from abstract base class `CrdWptBase`, which implements
   member functions common to both derived classes or as pure virtual functions where the two derived classes
   differ. Class `Coords` has a single `NumericVector` representing coordinate values, and `Waypoints` has two
   representing latitude and longitude. `Coordlet` class implements low-level formatting, validation and
-  conversion functions on these `NumericVector`s (#163, #164, #165, #168, #171, #172).
+  conversion functions on these `NumericVector`s (#163–#165, #168, #171–#174).
 
 * Extensively revised source code, making use of the newer C++17, C++20 and C++23 features where possible for
   simpler, more understandable and more easily maintainable code (#150, #169, #170).
