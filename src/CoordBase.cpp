@@ -351,26 +351,24 @@ unique_ptr<FamousFive0> Coordlet::switch_ff(NumericVector nv)
 void Coordlet::convert(CoordType required_type)
 {
 //	fmt::print("@Coordlet::convert(CoordType); required_type: {}\n", required_type);
-
 	using enum CoordType;
+
+	const auto lambdd = [this](auto n){ return ff->get_decdeg(n); };
+	const auto lambdm = [this](auto n){ return ff->get_deg(n) * 1e2 + ff->get_decmin(n); };
+	const auto lambdms = [this](auto n){ return ff->get_deg(n) * 1e4 + ff->get_min(n) * 1e2 + ff->get_sec(n); };
+
 	switch (required_type)
 	{
 		case decdeg:
-			transform(nv.begin(), nv.end(), nv.begin(), [this](auto n){
-					return ff->get_decdeg(n);
-				});
+			transform(nv.begin(), nv.end(), nv.begin(), lambdd);
 			break;
 
 		case degmin:
-			   transform(nv.begin(), nv.end(), nv.begin(), [this](auto n){
-					   return ff->get_deg(n) * 1e2 + ff->get_decmin(n);
-				});
+			transform(nv.begin(), nv.end(), nv.begin(), lambdm);
 			break;
 
 		case degminsec:
-			transform(nv.begin(), nv.end(), nv.begin(), [this](auto n){
-				   return ff->get_deg(n) * 1e4 + ff->get_min(n) * 1e2 + ff->get_sec(n);
-				});
+			transform(nv.begin(), nv.end(), nv.begin(), lambdms);
 			break;
 
 		default:
