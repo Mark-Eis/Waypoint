@@ -452,33 +452,6 @@ CrdWptBase::~CrdWptBase()
 }
 
 /// __________________________________________________
-/// Switch current CoordType to format suffix
-template<Coords_or_Waypoints T>
-void CrdWptBase::format_suffix_switch(vector<string>& sv_out, const CoordType required_type) const
-{
-//	fmt::print("@CrdWptBase::format_suffix_switch<>(vector<string>, const CoordType); current: {}; required: {}\n", ct, required_type);
-	using enum CoordType;
-	const T* T_ptr = dynamic_cast<const T*>(this);
-	switch (required_type)
-	{
-		case decdeg:
-			T_ptr->template format_suffix<decdeg>(sv_out);
-			break;
-
-		case degmin:
-			T_ptr->template format_suffix<degmin>(sv_out);
-			break;
-
-		case degminsec:
-			T_ptr->template format_suffix<degminsec>(sv_out);
-			break;
-
-		default:
-			stop("CrdWptBase::format_suffix_switch<Coords_or_Waypoints>(vector<string>, const CoordType) const my bad");
-	}
-}
-
-/// __________________________________________________
 /// __________________________________________________
 /// Coords class
 
@@ -503,17 +476,20 @@ void Coords::convert(CoordType newtype)
 vector<string> Coords::format(CoordType required_type) const
 {
 //	fmt::print("@Coords::format(CoordType); current type: {}; required type: {}\n", ct, required_type);
+	using enum CoordType;
 	vector sv_out{ Coordlet{ nv }.format(required_type) };
-	format_suffix_switch<Coords>(sv_out, required_type);
+	if (decdeg == required_type)
+		suffix_latlon(sv_out);
+	else
+		suffix_nesw(sv_out);
 	return sv_out;
 }
 
 /// __________________________________________________
-/// Add suffix of "N", "S", "E", "W"; or "(N/E)", "(S/W)"
-template<CoordType required_type>
-void Coords::format_suffix(vector<string>& sv_out) const
+/// Add suffix of "N", "E", "S", "W"; or "(N/E)", "(S/W)"
+void Coords::suffix_nesw(vector<string>& sv_out) const
 {
-//	fmt::print("@Coords::format_suffix<CoordType>(vector<string>& sv_out, CoordType) const; required type: {}\n", required_type);
+//	fmt::print("@Coords::suffix_nesw(vector<string>& sv_out) const\n");
 	const auto latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") };
 	vector<bool>::const_iterator ll_it { latlon.begin() };
 	const auto ll_size { latlon.size() };
@@ -532,11 +508,10 @@ void Coords::format_suffix(vector<string>& sv_out) const
 }
 
 /// __________________________________________________
-/// Specialisation for CoordType::decdeg -- Add suffix of "lat", "lon"
-template<>
-void Coords::format_suffix<CoordType::decdeg>(vector<string>& sv_out) const
+/// Add suffix of "lat", "lon"
+void Coords::suffix_latlon(vector<string>& sv_out) const
 {
-//	fmt::print("@Coords::format_suffix<CoordType::decdeg>(vector<string>& sv_out, CoordType) const\n");
+//	fmt::print("@Coords::suffix_latlon(vector<string>& sv_out) const\n");
 	const auto latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") };
 	vector<bool>::const_iterator ll_it { latlon.begin() };
 	const auto ll_size { latlon.size() };
@@ -607,35 +582,26 @@ void Waypoints::convert(CoordType newtype)
 vector<string> Waypoints::format(CoordType required_type) const
 {
 //	fmt::print("@Waypoints::format(CoordType); current type: {}; required type: {}\n", ct, required_type);
+	using enum CoordType;
+
 	vector sv_lat{ Coordlet{ nvlat }.format(required_type) };
 	vector sv_lon{ Coordlet{ nvlon }.format(required_type) };
-
-	format_suffix_switch<Waypoints>(sv_lat, required_type);
-	latlon_flag = false;
-	format_suffix_switch<Waypoints>(sv_lon, required_type);
-	latlon_flag = true;
-
+	if (decdeg != required_type) {
+		suffix_nesw(sv_lat, true);
+		suffix_nesw(sv_lon, false);
+	}
 	transform(sv_lat.begin(), sv_lat.end(), sv_lon.begin(), sv_lat.begin(), [](auto& latstr, auto& lonstr){return latstr + "  " + lonstr;});
 	return sv_lat;
 }
 
 /// __________________________________________________
 /// Add suffix of  "N", "S", "E", "W" if CoordType::degmin or CoordType::degminsec
-template<CoordType required_type>
-void Waypoints::format_suffix(vector<string>& sv_out) const
+void Waypoints::suffix_nesw(vector<string>& sv_out, bool latlon) const
 {
-//	fmt::print("@Waypoints::format_suffix<CoordType>(vector<string> sv_out) const; {}\n", latlon_flag? "lat" : "lon");
-	transform(sv_out.begin(), sv_out.end(), (latlon_flag? nvlat : nvlon).begin(), sv_out.begin(), [](auto& outstr, auto n){
-		return outstr + cardpoint(n < 0, latlon_flag); }
+//	fmt::print("@Waypoints::suffix_nesw(vector<string> sv_out) const; {}\n", latlon ? "lat" : "lon");
+	transform(sv_out.begin(), sv_out.end(), (latlon ? nvlat : nvlon).begin(), sv_out.begin(), [latlon](auto& outstr, auto n){
+		return outstr + cardpoint(n < 0, latlon); }
 	);
-}
-
-/// __________________________________________________
-/// Specialisation for CoordType::decdeg -- Do nothing
-template<>
-void Waypoints::format_suffix<CoordType::decdeg>(vector<string>& sv_out) const
-{
-//	fmt::print("@Waypoints::format_suffix<CoordType::decdeg>(vector<string> sv_out) const; {}\n", latlon_flag? "lat" : "lon");
 }
 
 /// __________________________________________________
@@ -654,8 +620,6 @@ const bool Waypoints::validate() const
 		std::all_of(validlon.begin(), validlon.end(), [](auto i){ return i; })
 	);
 }
-
-bool Waypoints::latlon_flag = true;
 
 /// __________________________________________________
 /// __________________________________________________

@@ -14,9 +14,9 @@
 /// Development and debugging
 
 
-#define DEBUG 0
+#define DEBUG 1
 
-#if DEBUG > 0
+#if DEBUG > 1
 
 void _ctrsgn(const std::type_info&, bool = false);
 
@@ -204,9 +204,6 @@ class Coordlet {
 class CrdWptBase {
 	protected:
 		const CoordType ct;
-
-		template<Coords_or_Waypoints>
-		void format_suffix_switch(vector<string>&, const CoordType) const;
 	public:
 		explicit CrdWptBase(CoordType);
 		CrdWptBase(const CrdWptBase&) = delete;						// Disallow copying
@@ -226,6 +223,8 @@ class CrdWptBase {
 class Coords : public CrdWptBase {
 		NumericVector nv;
 		vector<bool> valid { false };
+		void suffix_nesw(vector<string>&) const;
+		void suffix_latlon(vector<string>&) const;
 	public:
 		explicit Coords(NumericVector);
 		Coords(const Coords&) = delete;						// Disallow copying
@@ -237,8 +236,6 @@ class Coords : public CrdWptBase {
 
 		void convert(CoordType);
 		vector<string> format(CoordType) const;
-		template<CoordType>
-		void format_suffix(vector<string>&) const;
 		const bool validate() const;
 };
 
@@ -252,8 +249,8 @@ class Waypoints : public CrdWptBase {
 		vector<bool> validlat { false };
 		vector<bool> validlon { false };
 
+		void suffix_nesw(vector<string>&, bool) const;
 	public:
-		static bool latlon_flag;
 
 		explicit Waypoints(DataFrame);
 		Waypoints(const Waypoints&) = delete;					// Disallow copying
@@ -264,8 +261,6 @@ class Waypoints : public CrdWptBase {
 
 		void convert(CoordType);
 		vector<string> format(CoordType) const;
-		template<CoordType>
-		void format_suffix(vector<string>&) const;
 		const bool validate() const;
 };
 
