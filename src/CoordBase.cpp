@@ -347,66 +347,34 @@ unique_ptr<FamousFive0> Coordlet::switch_ff(NumericVector nv)
 }
 
 /// __________________________________________________
-/// Convert Coordlet::nv to a new CoordType
-template<CoordType required_type>
-void Coordlet::convert() {} //	Default: empty function
-
-/// __________________________________________________
-/// Specialisation for CoordType::decdeg
-template<>
-void Coordlet::convert<CoordType::decdeg>()
+/// Switch CoordType to convert format
+void Coordlet::convert(CoordType required_type)
 {
-//	fmt::print("@Coordlet::convert<CoordType::decdeg>()\n");
-	transform(nv.begin(), nv.end(), nv.begin(), [this](auto n){
-			return ff->get_decdeg(n);
-		});
-}
-
-/// __________________________________________________
-///  Specialisation for CoordType::degmin
-template<>
-void Coordlet::convert<CoordType::degmin>()
-{
-//	fmt::print("@Coordlet::convert<CoordType::degmin>()\n");
-	transform(nv.begin(), nv.end(), nv.begin(), [this](auto n){
-			return ff->get_deg(n) * 1e2 + ff->get_decmin(n);
-		});
-}
-
-/// __________________________________________________
-///  Specialisation for CoordType::degminsec
-template<>
-void Coordlet::convert<CoordType::degminsec>()
-{
-//	fmt::print("@Coordlet::convert<CoordType::degminsec>()\n");
-	transform(nv.begin(), nv.end(), nv.begin(), [this](auto n){
-			return ff->get_deg(n) * 1e4 + ff->get_min(n) * 1e2 + ff->get_sec(n);
-		});
-}
-
-/// __________________________________________________
-/// Switch CoordType required for Coordlet<CoordType>::convert()
-void Coordlet::convert_switch(CoordType required_type)
-{
-//	fmt::print("@Coordlet::convert_switch(CoordType); required_type: {}\n", required_type);
+//	fmt::print("@Coordlet::convert(CoordType); required_type: {}\n", required_type);
 
 	using enum CoordType;
 	switch (required_type)
 	{
 		case decdeg:
-			convert<decdeg>();
+			transform(nv.begin(), nv.end(), nv.begin(), [this](auto n){
+					return ff->get_decdeg(n);
+				});
 			break;
 
 		case degmin:
-			convert<degmin>();
+			   transform(nv.begin(), nv.end(), nv.begin(), [this](auto n){
+					   return ff->get_deg(n) * 1e2 + ff->get_decmin(n);
+				});
 			break;
 
 		case degminsec:
-			convert<degminsec>();
+			transform(nv.begin(), nv.end(), nv.begin(), [this](auto n){
+				   return ff->get_deg(n) * 1e4 + ff->get_min(n) * 1e2 + ff->get_sec(n);
+				});
 			break;
 
 		default:
-			stop("Coordlet<CoordType>::convert_switch(CoordType) my bad");
+			stop("Coordlet::convert(CoordType) my bad");
 	}
 }
 
@@ -570,7 +538,7 @@ Coords::Coords(NumericVector nv) : CrdWptBase { get_coordtype(nv) }, nv{ nv }
 void Coords::convert(CoordType newtype)
 {
 //	fmt::print("@Coords::convert(CoordType); current type: {}; new type: {}\n", ct, newtype);
-	Coordlet{ nv }.convert_switch(newtype);
+	Coordlet{ nv }.convert(newtype);
 	nv.attr("fmt") = coordtype_to_int(newtype);
 }
 
@@ -673,8 +641,8 @@ Waypoints::~Waypoints()
 void Waypoints::convert(CoordType newtype)
 {
 //	fmt::print("@ Waypoints::convert(CoordType); current type: {}; new type: {}\n", ct, newtype);
-	Coordlet{ nvlat }.convert_switch(newtype);
-	Coordlet{ nvlon }.convert_switch(newtype);
+	Coordlet{ nvlat }.convert(newtype);
+	Coordlet{ nvlon }.convert(newtype);
 	df.attr("fmt") = coordtype_to_int(newtype);
 }
 
