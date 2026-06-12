@@ -343,7 +343,6 @@ unique_ptr<FamousFive0> Coordlet::switch_ff(NumericVector nv)
 		default:
 			stop("Coordlet::switch_ff(NumericVector) my bad");
 	}
-	
 }
 
 /// __________________________________________________
@@ -377,80 +376,39 @@ void Coordlet::convert(CoordType required_type)
 }
 
 /// __________________________________________________
-/// Format Coordlet::nv as vector<string> of CoordType
-template<CoordType required_type>
-vector<string> Coordlet::format() const
+/// Switch CoordType to format nv
+vector<string> Coordlet::format(CoordType required_type) const
 {
-//	Default: minimal function;
-	return vector<string>(nv.size());
-}
-
-/// __________________________________________________
-/// Specialisation for CoordType::decdeg
-template<>
-vector<string> Coordlet::format<CoordType::decdeg>() const
-{
-//	fmt::print("@Coordlet::format<CoordType::decdeg>() const\n");
+//	fmt::print("@Coordlet::format(CoordType) const; required: {}\n", required_type);
 	auto sv_out = vector<string>(nv.size());
-	transform(nv.begin(), nv.end(), sv_out.begin(), [this](auto n){
-			return fmt::format("{:>{}.{}f}\u00B0", ff->get_decdeg(n), 11, 6);
-		});
 
-	return sv_out;
-}
-
-/// __________________________________________________
-///  Specialisation for CoordType::degmin
-template<>
-vector<string> Coordlet::format<CoordType::degmin>() const
-{
-//	fmt::print("@Coordlet::format<CoordType::degmin>() const\n");
-	auto sv_out = vector<string>(nv.size());
-	transform(nv.begin(), nv.end(), sv_out.begin(), [this](auto n){
-			return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) +
-				   fmt::format("{:0>{}.{}f}\u2032", fabs(ff->get_decmin(n)), 7, 4);
-		});
-
-	return sv_out;
-}
-
-/// __________________________________________________
-///  Specialisation for CoordType::degminsec
-template<>
-vector<string> Coordlet::format<CoordType::degminsec>() const
-{
-//	fmt::print("@Coordlet::format<CoordType::degminsec>() const\n");
-	auto sv_out = vector<string>(nv.size());
-	transform(nv.begin(), nv.end(), sv_out.begin(), [this](auto n){
-			return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) +
-				   fmt::format("{:0>{}}\u2032", abs(ff->get_min(n)), 2) +
-				   fmt::format("{:0>{}.{}f}\u2033", fabs(ff->get_sec(n)), 5, 2);
-		});
-
-	return sv_out;
-}
-
-/// __________________________________________________
-/// Switch CoordType required for Coordlet<CoordType>::format()
-vector<string> Coordlet::format_switch(CoordType required_type) const
-{
-//	fmt::print("@Coordlet::format_switch(CoordType); required: {}\n", required_type);
-
+	const auto lambdd = [this](auto n){ return fmt::format("{:>{}.{}f}\u00B0", ff->get_decdeg(n), 11, 6); };
+	const auto lambdm = [this](auto n){ return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) +
+											   fmt::format("{:0>{}.{}f}\u2032", fabs(ff->get_decmin(n)), 7, 4);
+											};
+	const auto lambdms = [this](auto n){ return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) +
+												fmt::format("{:0>{}}\u2032", abs(ff->get_min(n)), 2) +
+												fmt::format("{:0>{}.{}f}\u2033", fabs(ff->get_sec(n)), 5, 2);
+											};
 	using enum CoordType;
 	switch (required_type)
 	{
 		case decdeg:
-			return format<decdeg>();
+			transform(nv.begin(), nv.end(), sv_out.begin(), lambdd);
+			break;
 
 		case degmin:
-			return format<degmin>();
+			transform(nv.begin(), nv.end(), sv_out.begin(), lambdm);
+			break;
 
 		case degminsec:
-			return format<degminsec>();
+			transform(nv.begin(), nv.end(), sv_out.begin(), lambdms);
+			break;
 
 		default:
-			stop("Coordlet<CoordType>::format_switch(CoordType) my bad");
+			stop("Coordlet<CoordType>::format(CoordType) const my bad");
 	}
+	return sv_out;
 }
 
 /// __________________________________________________
@@ -545,7 +503,7 @@ void Coords::convert(CoordType newtype)
 vector<string> Coords::format(CoordType required_type) const
 {
 //	fmt::print("@Coords::format(CoordType); current type: {}; required type: {}\n", ct, required_type);
-	vector sv_out{ Coordlet{ nv }.format_switch(required_type) };
+	vector sv_out{ Coordlet{ nv }.format(required_type) };
 	format_suffix_switch<Coords>(sv_out, required_type);
 	return sv_out;
 }
@@ -649,8 +607,8 @@ void Waypoints::convert(CoordType newtype)
 vector<string> Waypoints::format(CoordType required_type) const
 {
 //	fmt::print("@Waypoints::format(CoordType); current type: {}; required type: {}\n", ct, required_type);
-	vector sv_lat{ Coordlet{ nvlat }.format_switch(required_type) };
-	vector sv_lon{ Coordlet{ nvlon }.format_switch(required_type) };
+	vector sv_lat{ Coordlet{ nvlat }.format(required_type) };
+	vector sv_lon{ Coordlet{ nvlon }.format(required_type) };
 
 	format_suffix_switch<Waypoints>(sv_lat, required_type);
 	latlon_flag = false;

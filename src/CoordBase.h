@@ -183,8 +183,6 @@ class Coordlet {
 		NumericVector nv;
 		const vector<bool> latlon;
 
-		template<CoordType> 
-		vector<string> format() const;
 		unique_ptr<FamousFive0> switch_ff(NumericVector);
 	public:
 		explicit Coordlet(NumericVector);
@@ -196,7 +194,7 @@ class Coordlet {
 //		virtual ~Coordlet() { fmt::print("§Coordlet::~Coordlet() "); _ctrsgn(typeid(*this), true); }
 
 		void convert(CoordType);
-		vector<string> format_switch(CoordType) const;
+		vector<string> format(CoordType) const;
 		const vector<bool> validate() const;
 };
 
