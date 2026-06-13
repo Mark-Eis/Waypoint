@@ -14,11 +14,11 @@
 /// Development and debugging
 
 
-#define DEBUG 0
+#define DEBUG 1
 
-#if DEBUG > 1
+#if DEBUG > 0
 
-void _ctrsgn(const std::type_info&, bool = false);
+void _ctrsgn(const std::type_info&, bool = true);
 
 /// __________________________________________________
 /// Check address for unnecessary copying
@@ -39,6 +39,61 @@ const string demangle(const std::type_info&);
 /// __________________________________________________
 /// __________________________________________________
 /// Class and Function declarations
+
+/// __________________________________________________
+/// New Business — to be named !!!!!!!!!!!!!!
+/// __________________________________________________
+
+template<typename T>
+struct DecDegVec : public vector<T> {
+	DecDegVec(const DecDegVec& t) : vector<T>{ t }			// copy constructor
+		{ fmt::print("§DecDegVec<T>(vector<T>&)"); _ctrsgn(typeid(*this)); }
+	DecDegVec(const vector<T>& t) : vector<T>{ t }			// copy constructor
+		{ fmt::print("§DecDegVec<T>(vector<T>&)"); _ctrsgn(typeid(*this)); }
+
+//	DecDegVec& operator=(const vector&) = delete;			// copy assignment
+
+	DecDegVec(DecDegVec&& t) : vector<T>{ std::move(t) }		// move constructor
+		{ _ctrsgn(typeid(*this)); fmt::print("\t(DecDegVec&&)\n"); }
+	DecDegVec(vector<T>&& t) : vector<T>{ std::move(t) }		// move constructor
+		{ _ctrsgn(typeid(*this)); fmt::print("\t(vector<T>&&)\n"); }
+
+//	DecDegVec& operator=(vector&&) = default;				// move assignment
+//	DecDegVec& operator=(vector&&) = delete;					// move assignment
+
+// This one worked as the sole constructor!
+//	DecDegVec(vector<T> t) : vector<T>{ std::move(t) }
+//		{  fmt::print("§DecDegVec<T>(vector<T>)"); _ctrsgn(typeid(*this)); }
+	~DecDegVec() { _ctrsgn(typeid(*this), false); }
+};
+
+template<typename T>
+struct DegMinVec : public vector<T> {};
+
+template<typename T>
+struct DegMinSecVec : public vector<T> {};
+
+using DecDegVecDouble = DecDegVec<double>;
+using DegMinVecDouble = DegMinVec<double>;
+using DegMinSecVecDouble = DegMinSecVec<double>;
+
+// Concept —— Rather feeble concept, but should work for now!
+template <typename T>
+concept DVecType = 
+	std::is_same_v<DecDegVecDouble, T> || std::is_same_v<const DecDegVecDouble, T> ||
+	std::is_same_v<DegMinVecDouble, T> || std::is_same_v<const DegMinVecDouble, T> ||
+	std::is_same_v<DegMinSecVecDouble, T> || std::is_same_v<const DegMinSecVecDouble, T>;
+
+using DecDegVecString = DecDegVec<String>;
+using DegMinVecString = DegMinVec<String>;
+using DegMinSecVecString = DegMinSecVec<String>;
+
+// Concept —— Rather feeble concept, but should work for now!
+template <typename T>
+concept SVecType = 
+	std::is_same_v<DecDegVecString, T> || std::is_same_v<const DecDegVecString, T> ||
+	std::is_same_v<DegMinVecString, T> || std::is_same_v<const DegMinVecString, T> ||
+	std::is_same_v<DegMinSecVecString, T> || std::is_same_v<const DegMinSecVecString, T>;
 
 /// __________________________________________________
 /// Class forward declarations
@@ -175,9 +230,70 @@ struct FamousFive<CoordType::degminsec> final : FamousFive0 {
 
 
 /// __________________________________________________
+/// New Business  !!!!!!!!!!!!!!
+/// __________________________________________________
+/// FamousFiveNew -- Templated and OO
+
+/// __________________________________________________
+/// Abstract base class with pure virtual functions	
+struct FamousFiveNew0 {
+	FamousFiveNew0() { _ctrsgn(typeid(*this)); };
+	virtual ~FamousFiveNew0() = 0;
+	virtual int get_deg(double x) const = 0;
+	virtual double get_decdeg(double x) const = 0;
+	virtual int get_min(double x) const = 0;
+	virtual double get_decmin(double x) const = 0;
+	virtual double get_sec(double x) const = 0;
+};
+
+/// __________________________________________________
+/// Default empty derived struct for SFINAE	
+template<DVecType type>
+struct FamousFiveNew final : FamousFiveNew0 {};
+
+/// __________________________________________________
+/// Specialised derived struct for decimal degrees	
+template<>
+struct FamousFiveNew<DecDegVecDouble> final : FamousFiveNew0 {
+	FamousFiveNew<DecDegVecDouble>() { _ctrsgn(typeid(*this)); };
+	~FamousFiveNew<DecDegVecDouble>() { _ctrsgn(typeid(*this), false); };
+	int get_deg(double x) const { return int(x); }
+	double get_decdeg(double x) const { return x; }
+	int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
+	double get_decmin(double x) const { return polish(mod1by60(x)); }
+	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
+};
+
+/// __________________________________________________
+/// Specialised derived struct for degrees and minutes
+template<>
+struct FamousFiveNew<DegMinVecDouble> final : FamousFiveNew0 {
+	FamousFiveNew<DegMinVecDouble>() { _ctrsgn(typeid(*this)); };
+	~FamousFiveNew<DegMinVecDouble>() { _ctrsgn(typeid(*this), false); };
+	int get_deg(double x) const { return int(x / 1e2); }
+	double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
+	int get_min(double x) const { return int(x) % int(1e2); }
+	double get_decmin(double x) const { return polish(mod1e2(x)); }
+	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
+};
+
+/// __________________________________________________
+/// Specialised derived struct for degrees, minutes and seconds
+template<>
+struct FamousFiveNew<DegMinSecVecDouble> final : FamousFiveNew0 {
+	FamousFiveNew<DegMinSecVecDouble>() { _ctrsgn(typeid(*this)); };
+	~FamousFiveNew<DegMinSecVecDouble>() { _ctrsgn(typeid(*this), false); };
+	int get_deg(double x) const { return int(x / 1e4); }
+	double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
+	int get_min(double x) const { return (int(x) % int(1e4)) / 1e2; }
+	double get_decmin(double x) const { return int(fmod(x, 1e4) / 1e2) + mod1e2(x) / 60; }
+	double get_sec(double x) const { return mod1e2(x); }
+};
+
+
+/// __________________________________________________
 /// __________________________________________________
 /// Coordlet class
-// template<CoordType current_type>
 class Coordlet {
 		unique_ptr<FamousFive0> ff;
 		NumericVector nv;
@@ -191,7 +307,31 @@ class Coordlet {
 		Coordlet(Coordlet&&) = delete;							// Disallow transfer ownership
 		Coordlet& operator=(Coordlet&&) = delete;				// Disallow moving
 		virtual ~Coordlet() = default;
-//		virtual ~Coordlet() { fmt::print("§Coordlet::~Coordlet() "); _ctrsgn(typeid(*this), true); }
+//		virtual ~Coordlet() { fmt::print("§~Coordlet()"); _ctrsgn(typeid(*this), false); }
+
+		void convert(CoordType);
+		vector<string> format(CoordType) const;
+		const vector<bool> validate() const;
+};
+
+/// __________________________________________________
+/// New Business —— !!!!!!!!!!!!!!
+/// __________________________________________________
+/// CoordletNew class
+template<DVecType T>
+class CoordletNew {
+		unique_ptr<FamousFiveNew0> ff;
+		T dv;
+//		const vector<bool> latlon;
+
+	public:
+		explicit CoordletNew(T&&);
+		CoordletNew(const CoordletNew&) = delete;						// Disallow copying
+		CoordletNew& operator=(const CoordletNew&) = delete;			//  ——— ditto ———
+		CoordletNew(CoordletNew&&) = delete;							// Disallow transfer ownership
+		CoordletNew& operator=(CoordletNew&&) = delete;					// Disallow moving
+//		virtual ~CoordletNew() = default;
+		virtual ~CoordletNew() { _ctrsgn(typeid(*this), false); }
 
 		void convert(CoordType);
 		vector<string> format(CoordType) const;
@@ -232,7 +372,7 @@ class Coords : public CrdWptBase {
 		Coords(Coords&&) = delete;							// Disallow transfer ownership
 		Coords& operator=(Coords&&) = delete;				// Disallow moving
 		~Coords() = default;
-//		~Coords() { fmt::print("§Coords::~Coords(); {}; ", ct); _ctrsgn(typeid(*this), true); }
+//		~Coords() { fmt::print("§~Coords(); {}; ", ct); _ctrsgn(typeid(*this), false); }
 
 		void convert(CoordType);
 		vector<string> format(CoordType) const;

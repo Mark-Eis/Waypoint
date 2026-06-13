@@ -8,6 +8,7 @@
 #include <cxxabi.h>
 #include <memory>
 #include <array>
+#include <utility>
 
 using namespace Rcpp;
 
@@ -35,12 +36,12 @@ using std::make_unique;
 
 /// __________________________________________________
 /// Report object construction and destruction
-void _ctrsgn(const std::type_info& obj, bool destruct)
+void _ctrsgn(const std::type_info& obj, bool construct)
 { /*
-*/	fmt::print("§§§ {}ing: ", destruct ? "destroy" : "construct");
+*/	fmt::print("{}structing: ", construct ? "§§§Con" : "~§§De");
 	std::fflush(nullptr);
-	string s = obj.name();
-	system(("c++filt -t " + s).data());
+	system(("c++filt -t " + string{ obj.name() }).data());
+	std::fflush(nullptr);
 }
 
 #endif
@@ -305,7 +306,19 @@ inline string cardi_b(bool negative)
 /// Destructor
 FamousFive0::~FamousFive0()
 {
-//	fmt::print("§FamousFive0::~FamousFive0() "); _ctrsgn(typeid(*this), true);
+	fmt::print("§~FamousFive0() "); _ctrsgn(typeid(*this), false);
+}
+
+/// __________________________________________________
+/// New Business  !!!!!!!!!!!!!!
+/// __________________________________________________
+/// FamousFiveNew0 class
+
+/// __________________________________________________
+/// Destructor
+FamousFiveNew0::~FamousFiveNew0()
+{
+	_ctrsgn(typeid(*this), false);
 }
 
 /// __________________________________________________
@@ -319,7 +332,7 @@ Coordlet::Coordlet(NumericVector _nv) :				// Needs to know CoordType in another
 	nv{ _nv },
 	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") }
 {
-//	fmt::print("§Coordlet::Coordlet(NumericVector, bool) ");  _ctrsgn(typeid(*this));
+//	fmt::print("§Coordlet(NumericVector, bool) ");  _ctrsgn(typeid(*this));
 }
 
 /// __________________________________________________
@@ -433,6 +446,22 @@ const vector<bool> Coordlet::validate() const
 	return valid;
 }
 
+
+/// __________________________________________________
+/// New Business —— !!!!!!!!!!!!!!
+/// __________________________________________________
+/// CoordletNew class
+
+/// __________________________________________________
+/// Constructor of CoordletNew
+template<DVecType T>
+CoordletNew<T>::CoordletNew(T&& _dv) : ff { make_unique<FamousFiveNew<T>>() },
+	dv { std::forward<T>(_dv) } // , latlon{ ?? }
+{
+	 _ctrsgn(typeid(*this)); fmt::print("\t(T&&); &_dv[0]: {}, &dv[0]: {}\n", address(_dv[0]), address(dv[0]));  _ctrsgn(typeid(*this));
+}
+
+
 /// __________________________________________________
 /// __________________________________________________
 /// CrdWptBase class
@@ -441,14 +470,14 @@ const vector<bool> Coordlet::validate() const
 /// Constructor
 CrdWptBase::CrdWptBase(CoordType _ct) : ct { _ct }
 {
-//	fmt::print("§CrdWptBase::CrdWptBase(CoordType); {} ", ct); _ctrsgn(typeid(*this));
+//	fmt::print("§CrdWptBase(CoordType); {}", ct); _ctrsgn(typeid(*this));
 }
 
 /// __________________________________________________
 /// Destructor
 CrdWptBase::~CrdWptBase()
 {
-//	fmt::print("§CrdWptBase::~CrdWptBase(); {} ", ct); _ctrsgn(typeid(*this), true);
+//	fmt::print("§~CrdWptBase(); {}", ct); _ctrsgn(typeid(*this), false);
 }
 
 /// __________________________________________________
@@ -459,7 +488,7 @@ CrdWptBase::~CrdWptBase()
 /// Constructor
 Coords::Coords(NumericVector nv) : CrdWptBase { get_coordtype(nv) }, nv{ nv }
 {
-//	fmt::print("§Coords::Coords(NumericVector); {} ", ct); _ctrsgn(typeid(*this));
+//	fmt::print("§Coords(NumericVector); {}", ct); _ctrsgn(typeid(*this));
 }
 
 /// __________________________________________________
@@ -549,7 +578,7 @@ Waypoints::Waypoints(DataFrame df) :
 	nvlat( df[get_vec_attr<DataFrame, int>(df, "llcols")[0] - 1] ), 
 	nvlon( df[get_vec_attr<DataFrame, int>(df, "llcols")[1] - 1] )
 {
-//	fmt::print("§Waypoints::Waypoints(DataFrame); {} ", ct); _ctrsgn(typeid(*this));
+//	fmt::print("§Waypoints(DataFrame); {}", ct); _ctrsgn(typeid(*this));
 	nvlat.attr("fmt") = coordtype_to_int(ct);
 	nvlon.attr("fmt") = coordtype_to_int(ct);
 	nvlat.attr("latlon") = true;
@@ -560,7 +589,7 @@ Waypoints::Waypoints(DataFrame df) :
 /// Destructor
 Waypoints::~Waypoints()
 {
-//	fmt::print("§Waypoints::~Waypoints(); {} ", ct); _ctrsgn(typeid(*this), true);
+//	fmt::print("§~Waypoints(); {}", ct); _ctrsgn(typeid(*this), false);
 	nvlat.attr("latlon") = R_NilValue;
 	nvlon.attr("latlon") = R_NilValue;
 	nvlat.attr("fmt") = R_NilValue;
@@ -694,6 +723,92 @@ bool valid_ll(const DataFrame df)
 /// Exported functions
 
 /// __________________________________________________
+/// Dummy Function for Testing Only 	¡¡¡ ——— Temporary to Be Deleted ——— !!!
+//' @rdname cords
+// [[Rcpp::export(name = "ctors")]]
+NumericVector constructors(NumericVector object)
+{
+	fmt::print("{}@ctors(NumVec); fmt {}\n", exportstr, get_fmt_attribute(object));
+
+	int x {7};
+
+// NumericVector as arg
+	fmt::print("—@@ctors(NumVec); &object {}, object[x] {}, &object[x] {}\n", address(object), object[x], address(object[x]));
+
+// Assign to vector<numeric> from NumericVector —— copies content to new address
+	auto nv { as<vector<double>>(object) };
+	fmt::print("—@@@ctors(NumVec); &nv {}, nv[x] {}, &nv[x] {}\n", address(nv), nv[x], address(nv[x]));
+
+// Copy construct one vector<numeric> from another —— copies content to new address
+	auto nv2 { nv };
+	fmt::print("—@@@@ctors(NumVec); (new@) &nv2 {}, (copied) nv2[x] {}, &nv2[x] {}\n", address(nv2), nv2[x], address(nv2[x]));
+
+// Move construct one vector<numeric> from another —— content maintains address from nv
+	auto nv3 { std::move(nv) };
+	fmt::print("—@@@@@ctors(NumVec); (new@) &nv3 {}, (moved) nv3[x] {}, &nv3[x] {}\n", address(nv3), nv3[x], address(nv3[x]));
+
+// Check original "movee" nv —— content now undefined
+	fmt::print("—@@@ctors(NumVec); (unchanged) &nv {}, (post move) nv[x] {}, &nv[x] {}\n", address(nv), "undefined!", address(nv[x]));
+
+// Copy construct DecDegVecDouble from vector<numeric> —— copies content to new address
+	DecDegVecDouble dv { nv3 }; 
+	fmt::print("—@@@@@@ctors(NumVec); (new@) &dv {}, dv[x] {}, (copied) &dv[x] {}\n", address(dv), dv[x], address(dv[x]));
+
+// Check original "copyee" nv3 —— content unchanged
+	fmt::print("—@@@@@ctors(NumVec); (unchanged) &nv3 {}, (unmoved) nv3[x] {}, &nv3[x] {}\n", address(nv3), nv3[x], address(nv3[x]));
+
+// Move construct DecDegVecDouble from vector<numeric> —— content maintains address from nv3, nv1
+	DecDegVecDouble dv2 { std::move(nv3) }; 
+	fmt::print("—@@@@@@@ctors(NumVec); (new@) &dv2 {}, dv2[x] {}, &dv2[x] {}\n", address(dv2), dv2[x], address(dv2[x]));
+
+// Check original "movee" nv3 —— content now undefined
+	fmt::print("—@@@@@ctors(NumVec); (unchanged) &nv3 {}, (post move) nv3[x] {}, &nv3[x] {}\n", address(nv3), "undefined", address(nv3[x]));
+
+// Copy construct one DecDegVecDouble from another —— copies content to new address
+	DecDegVecDouble dv3 { dv2 }; 
+	fmt::print("—@@@@@@@@ctors(NumVec); (new@) &dv3 {}, dv3[x] {}, (copied) &dv3[x] {}\n", address(dv3), dv3[x], address(dv3[x]));
+
+// Check original "copyee" dv2 —— content unchanged
+	fmt::print("—@@@@@@@ctors(NumVec); (unchanged) &dv2 {}, (unmoved) dv2[x] {}, &dv2[x] {}\n", address(dv2), dv2[x], address(dv2[x]));
+
+// Move construct one DecDegVecDouble from another —— content maintains address from dv2, nv3, nv1
+	DecDegVecDouble dv4 { std::move(dv2) }; 
+	fmt::print("—@@@@@@@@@ctors(NumVec); (new@) &dv4 {}, dv4[x] {}, (post move) &dv4[x] {}\n", address(dv4), dv4[x], address(dv4[x]));
+
+// Check original "movee" dv2 —— content now undefined
+	fmt::print("—@@@@@@@ctors(NumVec); (unchanged) &dv2 {}, dv2[x] {}, &dv2[x] {}\n", address(dv2), "undefined", address(dv2[x]));
+
+	return object;
+}
+
+/// __________________________________________________
+/// Dummy Function for Testing Only 	¡¡¡ ——— Temporary to Be Deleted ——— !!!
+//' @rdname cords
+// [[Rcpp::export(name = "cordelia")]]
+NumericVector movit(NumericVector object)
+{
+	fmt::print("{}@movit(NumericVector); fmt {}\n", exportstr, get_fmt_attribute(object));
+	using enum CoordType;
+
+// NumericVector as arg
+	fmt::print("{}@Imovit(NumVec); &object {}, object[0] {}, &object[0] {}\n", exportstr, address(object), object[0], address(object[0]));
+
+// Assign to vector<numeric> from NumericVector —— copies content to new address
+	auto nv { as<vector<double>>(object) };
+	fmt::print("{}@IImovit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), nv[0], address(nv[0]));
+
+// Move construct DecDegVecDouble from vector<numeric> —— content maintains address from nv
+	DecDegVecDouble dv { std::move(nv) }; 
+	fmt::print("{}@IIImovit(NumVec); &dv {}, dv[0] {}, &dv[0] {}\n", exportstr, address(dv), dv[0], address(dv[0]));
+
+	auto clt = CoordletNew<DecDegVecDouble>{ std::move(dv) };
+/*
+	auto clt2 = CoordletNew<DecDegVecDouble>{ std::move(as<vector<double>>(object)) };
+*/
+	return object;
+}
+
+/// __________________________________________________
 /// Create coords - S3 method as_coords.default()
 //' @rdname coords 
 // [[Rcpp::export(name = "as_coords.default")]]
@@ -747,7 +862,7 @@ NumericVector latlon(NumericVector cd, LogicalVector value)
 // [[Rcpp::export(name = "format.coords")]]
 CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validate = true, int fmt = 0)
 {
-//	fmt::print("{}@formatcoords(NumericVector, bool, bool, int); usenames: {}, validate: {}, fmt: {}\n", exportstr, usenames, validate, fmt);
+	fmt::print("{}@formatcoords(NumericVector, bool, bool, int); usenames: {}, validate: {}, fmt: {}\n", exportstr, usenames, validate, fmt);
 	checkinherits(x, "coords");
 	if(!x.size())
 		stop("x has 0 length!");
