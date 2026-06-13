@@ -51,6 +51,7 @@ struct DecDegVec : public vector<T> {
 	DecDegVec(const vector<T>& t) : vector<T>{ t }			// copy constructor
 		{ fmt::print("§DecDegVec<T>(vector<T>&)"); _ctrsgn(typeid(*this)); }
 
+//	DecDegVec& operator=(const DecDegVec&) = delete;			// copy assignment
 //	DecDegVec& operator=(const vector&) = delete;			// copy assignment
 
 	DecDegVec(DecDegVec&& t) : vector<T>{ std::move(t) }		// move constructor
@@ -58,20 +59,51 @@ struct DecDegVec : public vector<T> {
 	DecDegVec(vector<T>&& t) : vector<T>{ std::move(t) }		// move constructor
 		{ _ctrsgn(typeid(*this)); fmt::print("\t(vector<T>&&)\n"); }
 
-//	DecDegVec& operator=(vector&&) = default;				// move assignment
+//	DecDegVec& operator=(DecDegVec&&) = default;				// move assignment
 //	DecDegVec& operator=(vector&&) = delete;					// move assignment
-
-// This one worked as the sole constructor!
-//	DecDegVec(vector<T> t) : vector<T>{ std::move(t) }
-//		{  fmt::print("§DecDegVec<T>(vector<T>)"); _ctrsgn(typeid(*this)); }
-	~DecDegVec() { _ctrsgn(typeid(*this), false); }
 };
 
-template<typename T>
-struct DegMinVec : public vector<T> {};
+/// __________________________________________________
 
 template<typename T>
-struct DegMinSecVec : public vector<T> {};
+struct DegMinVec : public vector<T> {
+	DegMinVec(const DegMinVec& t) : vector<T>{ t }			// copy constructor
+		{ fmt::print("§DegMinVec<T>(vector<T>&)"); _ctrsgn(typeid(*this)); }
+	DegMinVec(const vector<T>& t) : vector<T>{ t }			// copy constructor
+		{ fmt::print("§DegMinVec<T>(vector<T>&)"); _ctrsgn(typeid(*this)); }
+
+//	DegMinVec& operator=(const DegMinVec&) = delete;			// copy assignment
+//	DegMinVec& operator=(const vector&) = delete;			// copy assignment
+
+	DegMinVec(DegMinVec&& t) : vector<T>{ std::move(t) }		// move constructor
+		{ _ctrsgn(typeid(*this)); fmt::print("\t(DegMinVec&&)\n"); }
+	DegMinVec(vector<T>&& t) : vector<T>{ std::move(t) }		// move constructor
+		{ _ctrsgn(typeid(*this)); fmt::print("\t(vector<T>&&)\n"); }
+
+//	DegMinVec& operator=(DegMinVec&&) = default;				// move assignment
+//	DegMinVec& operator=(vector&&) = delete;					// move assignment
+};
+
+/// __________________________________________________
+
+template<typename T>
+struct DegMinSecVec : public vector<T> {
+	DegMinSecVec(const DegMinSecVec& t) : vector<T>{ t }			// copy constructor
+		{ fmt::print("§DegMinSecVec<T>(vector<T>&)"); _ctrsgn(typeid(*this)); }
+	DegMinSecVec(const vector<T>& t) : vector<T>{ t }			// copy constructor
+		{ fmt::print("§DegMinSecVec<T>(vector<T>&)"); _ctrsgn(typeid(*this)); }
+
+//	DegMinSecVec& operator=(const DegMinSecVec&) = delete;			// copy assignment
+//	DegMinSecVec& operator=(const vector&) = delete;			// copy assignment
+
+	DegMinSecVec(DegMinSecVec&& t) : vector<T>{ std::move(t) }		// move constructor
+		{ _ctrsgn(typeid(*this)); fmt::print("\t(DegMinSecVec&&)\n"); }
+	DegMinSecVec(vector<T>&& t) : vector<T>{ std::move(t) }		// move constructor
+		{ _ctrsgn(typeid(*this)); fmt::print("\t(vector<T>&&)\n"); }
+
+//	DegMinSecVec& operator=(DegMinSecVec&&) = default;				// move assignment
+//	DegMinSecVec& operator=(vector&&) = delete;					// move assignment
+};
 
 using DecDegVecDouble = DecDegVec<double>;
 using DegMinVecDouble = DegMinVec<double>;
@@ -327,8 +359,8 @@ class CoordletNew {
 	public:
 		explicit CoordletNew(T&&);
 		CoordletNew(const CoordletNew&) = delete;						// Disallow copying
-		CoordletNew& operator=(const CoordletNew&) = delete;			//  ——— ditto ———
-		CoordletNew(CoordletNew&&) = delete;							// Disallow transfer ownership
+		CoordletNew& operator=(const CoordletNew&) = delete;				//  ——— ditto ———
+		CoordletNew(CoordletNew&&) = delete;								// Disallow transfer ownership
 		CoordletNew& operator=(CoordletNew&&) = delete;					// Disallow moving
 //		virtual ~CoordletNew() = default;
 		virtual ~CoordletNew() { _ctrsgn(typeid(*this), false); }
@@ -336,6 +368,7 @@ class CoordletNew {
 		void convert(CoordType);
 		vector<string> format(CoordType) const;
 		const vector<bool> validate() const;
+		void report() const;
 };
 
 
