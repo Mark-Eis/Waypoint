@@ -456,7 +456,8 @@ const vector<bool> Coordlet::validate() const
 /// Constructor of CoordletNew
 template<DVecType T>
 CoordletNew<T>::CoordletNew(T&& _dv) : ff { make_unique<FamousFiveNew<T>>() },
-	dv { std::forward<T>(_dv) } // , latlon{ ?? }
+//	dv { std::forward<T>(_dv) } // , latlon{ ?? }
+	dv { static_cast<T&&>(_dv) } // , latlon{ ?? }
 {
 	 _ctrsgn(typeid(*this)); fmt::print("\t(T&&); &_dv[0]: {}, &dv[0]: {}\n", address(_dv[0]), address(dv[0]));
 }
@@ -814,25 +815,26 @@ NumericVector movit(NumericVector object)
 	clt.report();
 	fmt::print("{}V@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), "undefined", address(nv[0]));
 
-//	auto clt2 = CoordletNew<DecDegVecDouble>{ std::move(as<vector<double>>(object)) };
-//	auto clt2 = CoordletNew<DecDegVecDouble>{ std::move(DecDegVecDouble{ std::move(nv) }) };
-//	unique_ptr<vector<double>> clt_ptr = make_unique(CoordletNew<DecDegVecDouble>{ std::move(DecDegVecDouble{ std::move(nv) }) });
-
-// Construct CoordletNew<DecDegVecDouble> indirectly from vector<double>; using *, new and delete to observe destruction
-	fmt::print("{}VI@movit(NumericVector); Making ptr1\n", exportstr);
-	const auto* ptr1 = new CoordletNew<DecDegVecDouble>{ as<vector<double>>(object) };
-	ptr1->report();
-	delete ptr1;
-
 // Re-assign to vector<double> vn from NumericVector —— copies content of "object" another new address
 	nv = as<vector<double>>(object);
-	fmt::print("{}VII@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), nv[0], address(nv[0]));
+	fmt::print("{}VI@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), nv[0], address(nv[0]));
+
+// Construct CoordletNew<DecDegVecDouble> indirectly from vector<double>; using *, new and delete to observe destruction
+	fmt::print("{}VII@movit(NumericVector); Making ptr1\n", exportstr);
+	const auto* ptr1 = new CoordletNew<DecDegVecDouble>{ std::move(nv) };	// std::move() needed here—no copy elision.
+	ptr1->report();
+	fmt::print("{}VIII@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), "undefined", address(nv[0]));
+	delete ptr1;
+
+// Again, re-assign to vector<double> vn from NumericVector —— copies content of "object" another new address
+	nv = as<vector<double>>(object);
+	fmt::print("{}IX@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), nv[0], address(nv[0]));
 
 // Construct CoordletNew<DecDegVecDouble> directly from DecDegVecDouble; using *, new and delete to observe destruction
-	fmt::print("{}VIII@movit(NumericVector); Making ptr2\n", exportstr);
+	fmt::print("{}X@movit(NumericVector); Making ptr2\n", exportstr);
 	const auto* ptr2 = new CoordletNew<DecDegVecDouble>{ DecDegVecDouble{ std::move(nv) } };
 	ptr2->report();
-	fmt::print("{}IX@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), "undefined", address(nv[0]));
+	fmt::print("{}XI@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), "undefined", address(nv[0]));
 	delete ptr2;
 
 	return object;
