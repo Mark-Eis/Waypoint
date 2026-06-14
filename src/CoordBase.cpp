@@ -585,8 +585,11 @@ CoordsNew<T>::CoordsNew(vector<double> nv) :
 	cdlt { CoordletNew<T>{ std::move(nv) }}
 {
 	 _ctrsgn(typeid(*this));
-	 fmt::print("(NumericVector nv)\n");
+	 fmt::print("(vector<double> nv)\n");
 	 cdlt.report();
+	 format(CoordType::decdeg);
+	 convert(CoordType::decdeg);
+	 validate();
 }
 
 /// __________________________________________________
@@ -946,29 +949,24 @@ NumericVector CoordsNewTest(NumericVector object)
 {
 	fmt::print("{}@CoordsNewTest(NumericVector); fmt {}\n", exportstr, get_fmt_attribute(object));
 	using enum CoordType;
+	CoordType type = get_coordtype(object);
+	fmt::print("{}I@CoordsNewTest(NumericVector); CoordType {}\n", exportstr, type);
 
 	auto nv { as<vector<double>>(object) };
-	fmt::print("{}I@CoordsNewTest(NumericVector); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), nv[0], address(nv[0]));
-	auto nv2 { as<vector<double>>(object) };
-	fmt::print("{}II@CoordsNewTest(NumericVector); &nv2 {}, nv2[0] {}, &nv2[0] {}\n", exportstr, address(nv2), nv2[0], address(nv2[0]));
-	switch (get_coordtype(object))
+	fmt::print("{}II@CoordsNewTest(NumericVector); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), nv[0], address(nv[0]));
+
+	switch (type)
 	{
 		case decdeg:
-			CoordletNew<DecDegVecDouble>{ std::move(nv) }.report();
-			fmt::print("{}III@CoordsNewTest(NumericVector)\n", exportstr);
-			CoordsNew<DecDegVecDouble>{ std::move(nv2) };
+			CoordsNew<DecDegVecDouble>{ std::move(nv) };
 			break;
 
 		case degmin:
-			CoordletNew<DegMinVecDouble>{ std::move(nv) }.report();
-			fmt::print("{}IV@CoordsNewTest(NumericVector)\n", exportstr);
-			CoordsNew<DegMinVecDouble>{ std::move(nv2) };
+			CoordsNew<DegMinVecDouble>{ std::move(nv) };
 			break;
 
 		case degminsec:
-			CoordletNew<DegMinSecVecDouble>{ std::move(nv) }.report();
-			fmt::print("{}V@CoordsNewTest(NumericVector)\n", exportstr);
-			CoordsNew<DegMinSecVecDouble>{ std::move(nv2) };
+			CoordsNew<DegMinSecVecDouble>{ std::move(nv) };
 			break;
 
 		default:
