@@ -79,20 +79,20 @@ struct DegMinVec : public vector<T> {
 };
 
 template<typename T>
-struct DegMinsecVec : public vector<T> {
-	DegMinsecVec(const DegMinsecVec& t) = default;				// copy constructor
-	DegMinsecVec(const vector<T>& t) : vector<T>{ t }			// copy constructor - not defaultable
+struct DegMinSecVec : public vector<T> {
+	DegMinSecVec(const DegMinSecVec& t) = default;				// copy constructor
+	DegMinSecVec(const vector<T>& t) : vector<T>{ t }			// copy constructor - not defaultable
 		{ _ctrsgn(typeid(*this)); fmt::print("\t(const vector<T>&)\n"); }
 
-	DegMinsecVec& operator=(const DegMinsecVec&) = default;		// copy assignment
-//	DegMinsecVec& operator=(const vector&) = delete;				// copy assignment - not defaultable
+	DegMinSecVec& operator=(const DegMinSecVec&) = default;		// copy assignment
+//	DegMinSecVec& operator=(const vector&) = delete;				// copy assignment - not defaultable
 
-	DegMinsecVec(DegMinsecVec&& t) = default;					// move constructor
-	DegMinsecVec(vector<T>&& t) : vector<T>{ std::move(t) }		// move constructor - not defaultable
+	DegMinSecVec(DegMinSecVec&& t) = default;					// move constructor
+	DegMinSecVec(vector<T>&& t) : vector<T>{ std::move(t) }		// move constructor - not defaultable
 		{ _ctrsgn(typeid(*this)); fmt::print("\t(vector<T>&&)\n"); }
 
-	DegMinsecVec& operator=(DegMinsecVec&&) = default;			// move assignment
-//	DegMinsecVec& operator=(vector&&) = delete;					// move assignment - not defaultable
+	DegMinSecVec& operator=(DegMinSecVec&&) = default;			// move assignment
+//	DegMinSecVec& operator=(vector&&) = delete;					// move assignment - not defaultable
 };
 
 
