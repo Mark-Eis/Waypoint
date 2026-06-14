@@ -46,21 +46,23 @@ const string demangle(const std::type_info&);
 
 template<typename T>
 struct DecDegVec : public vector<T> {
-	DecDegVec(const DecDegVec& t) : vector<T>{ t }			// copy constructor
-		{ _ctrsgn(typeid(*this)); fmt::print("\t(const DecDegVec&)\n"); }
-	DecDegVec(const vector<T>& t) : vector<T>{ t }			// copy constructor
+//	DecDegVec(const DecDegVec& t) : vector<T>{ t }			// copy constructor - as default!
+//		{ _ctrsgn(typeid(*this)); fmt::print("\t(const DecDegVec&)\n"); }
+	DecDegVec(const DecDegVec& t) = default;					// copy constructor
+	DecDegVec(const vector<T>& t) : vector<T>{ t }			// copy constructor - may not be defaulted
 		{ _ctrsgn(typeid(*this)); fmt::print("\t(const vector<T>&)\n"); }
 
-//	DecDegVec& operator=(const DecDegVec&) = delete;		// copy assignment
-//	DecDegVec& operator=(const vector&) = delete;			// copy assignment
+	DecDegVec& operator=(const DecDegVec&) = default;		// copy assignment
+//	DecDegVec& operator=(const vector&) = delete;			// copy assignment - may not be defaulted
 
-	DecDegVec(DecDegVec&& t) : vector<T>{ std::move(t) }		// move constructor
-		{ _ctrsgn(typeid(*this)); fmt::print("\t(DecDegVec&&)\n"); }
-	DecDegVec(vector<T>&& t) : vector<T>{ std::move(t) }		// move constructor
+//	DecDegVec(DecDegVec&& t) : vector<T>{ std::move(t) }		// move constructor - as default!
+//		{ _ctrsgn(typeid(*this)); fmt::print("\t(DecDegVec&&)\n"); }
+	DecDegVec(DecDegVec&& t) = default;						// move constructor
+	DecDegVec(vector<T>&& t) : vector<T>{ std::move(t) }		// move constructor - may not be defaulted
 		{ _ctrsgn(typeid(*this)); fmt::print("\t(vector<T>&&)\n"); }
 
-//	DecDegVec& operator=(DecDegVec&&) = default;				// move assignment
-//	DecDegVec& operator=(vector&&) = delete;					// move assignment
+	DecDegVec& operator=(DecDegVec&&) = default;				// move assignment
+//	DecDegVec& operator=(vector&&) = delete;					// move assignment - may not be defaulted
 };
 
 /// __________________________________________________
