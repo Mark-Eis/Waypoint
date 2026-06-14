@@ -47,11 +47,11 @@ const string demangle(const std::type_info&);
 template<typename T>
 struct DecDegVec : public vector<T> {
 	DecDegVec(const DecDegVec& t) : vector<T>{ t }			// copy constructor
-		{ fmt::print("§DecDegVec<T>(vector<T>&)"); _ctrsgn(typeid(*this)); }
+		{ _ctrsgn(typeid(*this)); fmt::print("\t(const DecDegVec&)\n"); }
 	DecDegVec(const vector<T>& t) : vector<T>{ t }			// copy constructor
-		{ fmt::print("§DecDegVec<T>(vector<T>&)"); _ctrsgn(typeid(*this)); }
+		{ _ctrsgn(typeid(*this)); fmt::print("\t(const vector<T>&)\n"); }
 
-//	DecDegVec& operator=(const DecDegVec&) = delete;			// copy assignment
+//	DecDegVec& operator=(const DecDegVec&) = delete;		// copy assignment
 //	DecDegVec& operator=(const vector&) = delete;			// copy assignment
 
 	DecDegVec(DecDegVec&& t) : vector<T>{ std::move(t) }		// move constructor
@@ -68,11 +68,11 @@ struct DecDegVec : public vector<T> {
 template<typename T>
 struct DegMinVec : public vector<T> {
 	DegMinVec(const DegMinVec& t) : vector<T>{ t }			// copy constructor
-		{ fmt::print("§DegMinVec<T>(vector<T>&)"); _ctrsgn(typeid(*this)); }
+		{ _ctrsgn(typeid(*this)); fmt::print("\t(const DegMinVec&)\n"); }
 	DegMinVec(const vector<T>& t) : vector<T>{ t }			// copy constructor
-		{ fmt::print("§DegMinVec<T>(vector<T>&)"); _ctrsgn(typeid(*this)); }
+		{ _ctrsgn(typeid(*this)); fmt::print("\t(const vector<T>&)\n"); }
 
-//	DegMinVec& operator=(const DegMinVec&) = delete;			// copy assignment
+//	DegMinVec& operator=(const DegMinVec&) = delete;		// copy assignment
 //	DegMinVec& operator=(const vector&) = delete;			// copy assignment
 
 	DegMinVec(DegMinVec&& t) : vector<T>{ std::move(t) }		// move constructor
@@ -89,11 +89,11 @@ struct DegMinVec : public vector<T> {
 template<typename T>
 struct DegMinSecVec : public vector<T> {
 	DegMinSecVec(const DegMinSecVec& t) : vector<T>{ t }			// copy constructor
-		{ fmt::print("§DegMinSecVec<T>(vector<T>&)"); _ctrsgn(typeid(*this)); }
+		{ _ctrsgn(typeid(*this)); fmt::print("\t(const DegMinSecVec&)\n"); }
 	DegMinSecVec(const vector<T>& t) : vector<T>{ t }			// copy constructor
-		{ fmt::print("§DegMinSecVec<T>(vector<T>&)"); _ctrsgn(typeid(*this)); }
+		{ _ctrsgn(typeid(*this)); fmt::print("\t(const vector<T>&)\n"); }
 
-//	DegMinSecVec& operator=(const DegMinSecVec&) = delete;			// copy assignment
+//	DegMinSecVec& operator=(const DegMinSecVec&) = delete;		// copy assignment
 //	DegMinSecVec& operator=(const vector&) = delete;			// copy assignment
 
 	DegMinSecVec(DegMinSecVec&& t) : vector<T>{ std::move(t) }		// move constructor
