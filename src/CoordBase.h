@@ -115,7 +115,8 @@ using DecDegVecDouble = DecDegVec<double>;
 using DegMinVecDouble = DegMinVec<double>;
 using DegMinSecVecDouble = DegMinSecVec<double>;
 
-// Concept —— Rather feeble concept, but should work for now!
+/// __________________________________________________
+/// Concept —— Rather feeble, but should work for now!
 template <typename T>
 concept DVecType = 
 	std::is_same_v<DecDegVecDouble, T> || std::is_same_v<const DecDegVecDouble, T> ||
@@ -126,7 +127,8 @@ using DecDegVecString = DecDegVec<String>;
 using DegMinVecString = DegMinVec<String>;
 using DegMinSecVecString = DegMinSecVec<String>;
 
-// Concept —— Rather feeble concept, but should work for now!
+/// __________________________________________________
+/// Concept —— Rather feeble, but should work for now!
 template <typename T>
 concept SVecType = 
 	std::is_same_v<DecDegVecString, T> || std::is_same_v<const DecDegVecString, T> ||
@@ -438,6 +440,12 @@ class CoordsNew : public CrdWptBase {
 		vector<string> format(CoordType) const;
 		const bool validate() const;
 };
+
+
+/// __________________________________________________
+/// Make Coords<DVecType>
+unique_ptr<CrdWptBase> coordsmaker(CoordType, NumericVector);
+
 
 /// __________________________________________________
 /// Waypoints class

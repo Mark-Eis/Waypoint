@@ -634,6 +634,30 @@ const bool CoordsNew<T>::validate() const
 
 
 /// __________________________________________________
+/// Make Coords<DVecType>
+unique_ptr<CrdWptBase> coordsmaker(CoordType type, NumericVector nv)
+{
+	fmt::print("@coordsmaker(CoordType, NumericVector); {}\n", type);
+	using enum CoordType;
+
+	switch (type)
+	{
+		case decdeg:
+			return make_unique<CoordsNew<DecDegVecDouble>>( DecDegVecDouble{ nv } );
+
+		case degmin:
+			return make_unique<CoordsNew<DegMinVecDouble>>( DegMinVecDouble{ nv } );
+
+		case degminsec:
+			return make_unique<CoordsNew<DegMinSecVecDouble>>( DegMinSecVecDouble{ nv } );
+
+		default:
+			stop("coordsmaker(CoordType, NumericVector) my bad");
+	}
+}
+
+
+/// __________________________________________________
 /// __________________________________________________
 /// Waypoints class
 
@@ -967,7 +991,7 @@ NumericVector CoordsNewTest(NumericVector object)
 			break;
 
 		default:
-			stop("CoordsNewTest(NumericVector nv) my bad");
+			stop("CoordsNewTest(NumericVector) my bad");
 	}
 	
 	return object;
