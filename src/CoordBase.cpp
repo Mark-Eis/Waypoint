@@ -952,21 +952,18 @@ NumericVector CoordsNewTest(NumericVector object)
 	CoordType type = get_coordtype(object);
 	fmt::print("{}I@CoordsNewTest(NumericVector); CoordType {}\n", exportstr, type);
 
-	auto nv { as<vector<double>>(object) };
-	fmt::print("{}II@CoordsNewTest(NumericVector); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), nv[0], address(nv[0]));
-
 	switch (type)
 	{
 		case decdeg:
-			CoordsNew<DecDegVecDouble>{ std::move(nv) };
+			CoordsNew<DecDegVecDouble>{ DecDegVecDouble{ object } };
 			break;
 
 		case degmin:
-			CoordsNew<DegMinVecDouble>{ std::move(nv) };
+			CoordsNew<DegMinVecDouble>{ DegMinVecDouble{ object } };
 			break;
 
 		case degminsec:
-			CoordsNew<DegMinSecVecDouble>{ std::move(nv) };
+			CoordsNew<DegMinSecVecDouble>{ DegMinSecVecDouble{ object } };
 			break;
 
 		default:
