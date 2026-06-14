@@ -574,6 +574,62 @@ const bool Coords::validate() const
 	);
 }
 
+
+/// __________________________________________________
+/// New Business  !!!!!!!!!!!!!!
+/// __________________________________________________
+/// CoordsNew class
+template<DVecType T>
+CoordsNew<T>::CoordsNew(vector<double> nv) :
+	CrdWptBase { CoordType::decdeg },							// ¡¡¡—— Deprecated ——!!! (compiler placator)
+	cdlt { CoordletNew<T>{ std::move(nv) }}
+{
+	 _ctrsgn(typeid(*this));
+	 fmt::print("(NumericVector nv)\n");
+	 cdlt.report();
+}
+
+/// __________________________________________________
+/// Convert call entry point -- public
+template<DVecType T>
+void CoordsNew<T>::convert(CoordType newtype)
+{
+	fmt::print("@CoordsNew<T>::convert(CoordType); new type: {}\n", newtype);
+//	Coordlet{ nv }.convert(newtype);
+//	nv.attr("fmt") = coordtype_to_int(newtype);
+}
+
+/// __________________________________________________
+/// Format call entry point -- public
+template<DVecType T>
+vector<string> CoordsNew<T>::format(CoordType required_type) const
+{
+	fmt::print("@CoordsNew<T>::format(CoordType);  required type: {}\n", required_type);
+	using enum CoordType;
+/*	vector sv_out{ Coordlet{ nv }.format(required_type) };
+	if (decdeg == required_type)
+		suffix_latlon(sv_out);
+	else
+		suffix_nesw(sv_out); 
+*/
+	return {"sv_out"};
+}
+
+/// __________________________________________________
+/// Validation call entry point -- public
+template<DVecType T>
+const bool CoordsNew<T>::validate() const
+{
+	fmt::print("@CoordsNew<T>::validate()\n");
+/*	auto valid = Coordlet{ nv }.validate();
+
+	static_cast<NumericVector>(nv).attr("valid") = valid;
+	return ( std::all_of(valid.begin(), valid.end(), [](auto i){ return i; } ));
+*/
+	return true;
+}
+
+
 /// __________________________________________________
 /// __________________________________________________
 /// Waypoints class
@@ -879,6 +935,46 @@ NumericVector movit(NumericVector object)
 	fmt::print("{}XI@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), "undefined", address(nv[0]));
 	delete ptr2;
 	fmt::print("{}XI@movit(NumericVector); ptr2 deleted, clt to be deleted on exit\n", exportstr);
+	return object;
+}
+
+/// __________________________________________________
+/// Dummy Function for Testing Only 	¡¡¡ ——— Temporary to Be Archived ——— !!!
+//' @rdname cords
+// [[Rcpp::export(name = "cordle")]]
+NumericVector CoordsNewTest(NumericVector object)
+{
+	fmt::print("{}@CoordsNewTest(NumericVector); fmt {}\n", exportstr, get_fmt_attribute(object));
+	using enum CoordType;
+
+	auto nv { as<vector<double>>(object) };
+	fmt::print("{}I@CoordsNewTest(NumericVector); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), nv[0], address(nv[0]));
+	auto nv2 { as<vector<double>>(object) };
+	fmt::print("{}II@CoordsNewTest(NumericVector); &nv2 {}, nv2[0] {}, &nv2[0] {}\n", exportstr, address(nv2), nv2[0], address(nv2[0]));
+	switch (get_coordtype(object))
+	{
+		case decdeg:
+			CoordletNew<DecDegVecDouble>{ std::move(nv) }.report();
+			fmt::print("{}III@CoordsNewTest(NumericVector)\n", exportstr);
+			CoordsNew<DecDegVecDouble>{ std::move(nv2) };
+			break;
+
+		case degmin:
+			CoordletNew<DegMinVecDouble>{ std::move(nv) }.report();
+			fmt::print("{}IV@CoordsNewTest(NumericVector)\n", exportstr);
+			CoordsNew<DegMinVecDouble>{ std::move(nv2) };
+			break;
+
+		case degminsec:
+			CoordletNew<DegMinSecVecDouble>{ std::move(nv) }.report();
+			fmt::print("{}V@CoordsNewTest(NumericVector)\n", exportstr);
+			CoordsNew<DegMinSecVecDouble>{ std::move(nv2) };
+			break;
+
+		default:
+			stop("CoordsNewTest(NumericVector nv) my bad");
+	}
+	
 	return object;
 }
 

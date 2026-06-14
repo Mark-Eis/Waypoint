@@ -367,7 +367,7 @@ class CoordletNew {
 /// CrdWptBase class
 class CrdWptBase {
 	protected:
-		const CoordType ct;
+		const CoordType ct;											// ¡¡¡—— Deprecated ——!!!
 	public:
 		explicit CrdWptBase(CoordType);
 		CrdWptBase(const CrdWptBase&) = delete;						// Disallow copying
@@ -403,6 +403,26 @@ class Coords : public CrdWptBase {
 		const bool validate() const;
 };
 
+/// __________________________________________________
+/// New Business  !!!!!!!!!!!!!!
+/// __________________________________________________
+/// CoordsNew class
+template<DVecType T>
+class CoordsNew : public CrdWptBase {
+		const CoordletNew<T> cdlt;
+	public:
+		explicit CoordsNew(vector<double>);
+		CoordsNew(const CoordsNew&) = delete;						// Disallow copying
+		CoordsNew& operator=(const CoordsNew&) = delete;			//  ——— ditto ———
+		CoordsNew(CoordsNew&&) = delete;							// Disallow transfer ownership
+		CoordsNew& operator=(CoordsNew&&) = delete;				// Disallow moving
+//		~CoordsNew() = default;
+		~CoordsNew() { _ctrsgn(typeid(*this), false); }
+
+		void convert(CoordType);
+		vector<string> format(CoordType) const;
+		const bool validate() const;
+};
 
 /// __________________________________________________
 /// Waypoints class
