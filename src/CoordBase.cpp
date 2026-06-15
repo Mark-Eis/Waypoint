@@ -678,7 +678,7 @@ void CoordsNew<T>::report() const
 /// Make Coords<DVecType>
 unique_ptr<CrdWptBase> coordsmaker(CoordType type, NumericVector nv)
 {
-	fmt::print("@coordsmaker(CoordType, NumericVector); {}\n", type);
+	fmt::print("@coordsmaker(CoordType, NumericVector); {}, &nv {}, &nv[1] {}\n", type, address(nv), address(nv[0]));
 	using enum CoordType;
 
 	switch (type)
@@ -1079,6 +1079,8 @@ NumericVector latlon(NumericVector cd, LogicalVector value)
 CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validate = true, int fmt = 0)
 {
 	fmt::print("{}@formatcoords(NumericVector, bool, bool, int); usenames: {}, validate: {}, fmt: {}\n", exportstr, usenames, validate, fmt);
+	fmt::print("{}@Iformatcoords(NumericVector, bool, bool, int); &x {}, &x[1] {}\n", exportstr, address(x), address(x[0]));
+
 	checkinherits(x, "coords");
 	if(!x.size())
 		stop("x has 0 length!");
@@ -1086,8 +1088,10 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validat
 		if (!check_valid(x))
 			warning("Formatting invalid coords!");
 
-	vector sv_out{ Coords{ x }.format(fmt ? get_coordtype(fmt) : get_coordtype(x)) };
+	auto Coords_ptr { unique_ptr<CrdWptBase>{ coordsmaker(get_coordtype(x), x) } };
+	vector sv_out{ Coords_ptr->format(fmt ? get_coordtype(fmt) : get_coordtype(x)) };
 
+	fmt::print("{}I@formatcoords(NumericVector, bool, bool, int); usenames: {}, validate: {}, fmt: {}\n", exportstr, usenames, validate, fmt);
 	vector names{ get_vec_attr<NumericVector, string>(x, "names") };
 	if (names.size() && usenames) {
 		stdlenstr(names);
