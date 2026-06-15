@@ -584,12 +584,7 @@ CoordsNew<T>::CoordsNew(vector<double> nv) :
 	CrdWptBase { CoordType::decdeg },							// ¡¡¡—— Deprecated ——!!! (compiler placator)
 	cdlt { CoordletNew<T>{ std::move(nv) }}
 {
-	 _ctrsgn(typeid(*this));
-	 fmt::print("(vector<double> nv)\n");
-	 cdlt.report();
-	 format(CoordType::decdeg);
-	 convert(CoordType::decdeg);
-	 validate();
+	_ctrsgn(typeid(*this)); fmt::print("\t(vector<double> nv)\n");
 }
 
 /// __________________________________________________
@@ -607,7 +602,7 @@ void CoordsNew<T>::convert(CoordType newtype)
 template<DVecType T>
 vector<string> CoordsNew<T>::format(CoordType required_type) const
 {
-	fmt::print("@CoordsNew<T>::format(CoordType);  required type: {}\n", required_type);
+	fmt::print("@CoordsNew<T>::format(CoordType); required type: {}\n", required_type);
 	using enum CoordType;
 /*	vector sv_out{ Coordlet{ nv }.format(required_type) };
 	if (decdeg == required_type)
@@ -630,6 +625,15 @@ const bool CoordsNew<T>::validate() const
 	return ( std::all_of(valid.begin(), valid.end(), [](auto i){ return i; } ));
 */
 	return true;
+}
+
+/// __________________________________________________
+/// Temporary —— to be deleted
+template<DVecType T>
+void CoordsNew<T>::report() const
+{
+	fmt::print("@CoordsNew<T>::report() const\n");
+	cdlt.report();
 }
 
 
@@ -971,28 +975,14 @@ NumericVector movit(NumericVector object)
 // [[Rcpp::export(name = "cordle")]]
 NumericVector CoordsNewTest(NumericVector object)
 {
-	fmt::print("{}@CoordsNewTest(NumericVector); fmt {}\n", exportstr, get_fmt_attribute(object));
-	using enum CoordType;
 	CoordType type = get_coordtype(object);
-	fmt::print("{}I@CoordsNewTest(NumericVector); CoordType {}\n", exportstr, type);
+	fmt::print("{}@CoordsNewTest(NumericVector); fmt {}, CoordType {}\n", exportstr, get_fmt_attribute(object), type);
 
-	switch (type)
-	{
-		case decdeg:
-			CoordsNew<DecDegVecDouble>{ DecDegVecDouble{ object } };
-			break;
-
-		case degmin:
-			CoordsNew<DegMinVecDouble>{ DegMinVecDouble{ object } };
-			break;
-
-		case degminsec:
-			CoordsNew<DegMinSecVecDouble>{ DegMinSecVecDouble{ object } };
-			break;
-
-		default:
-			stop("CoordsNewTest(NumericVector) my bad");
-	}
+	auto Coords_ptr { unique_ptr<CrdWptBase>{ coordsmaker(type, object) } };
+	Coords_ptr->report();
+	Coords_ptr->format(CoordType::decdeg);
+	Coords_ptr->convert(CoordType::decdeg);
+	Coords_ptr->validate();
 	
 	return object;
 }

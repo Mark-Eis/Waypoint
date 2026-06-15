@@ -376,7 +376,7 @@ class CoordletNew {
 		void convert(CoordType);
 		vector<string> format(CoordType) const;
 		const vector<bool> validate() const;
-		void report() const;
+		void report() const;												// Temporary —— delete
 };
 
 
@@ -396,6 +396,7 @@ class CrdWptBase {
 		virtual void convert(CoordType) = 0;
 		virtual vector<string> format(CoordType) const = 0;
 		virtual const bool validate() const = 0;
+		virtual void report() const = 0;							// Temporary —— delete
 };
 
 
@@ -418,6 +419,7 @@ class Coords : public CrdWptBase {
 		void convert(CoordType);
 		vector<string> format(CoordType) const;
 		const bool validate() const;
+		void report() const {}									// Temporary —— delete
 };
 
 /// __________________________________________________
@@ -429,9 +431,9 @@ class CoordsNew : public CrdWptBase {
 		const CoordletNew<T> cdlt;
 	public:
 		explicit CoordsNew(vector<double>);
-		CoordsNew(const CoordsNew&) = delete;						// Disallow copying
+		CoordsNew(const CoordsNew&) = delete;					// Disallow copying
 		CoordsNew& operator=(const CoordsNew&) = delete;			//  ——— ditto ———
-		CoordsNew(CoordsNew&&) = delete;							// Disallow transfer ownership
+		CoordsNew(CoordsNew&&) = delete;						// Disallow transfer ownership
 		CoordsNew& operator=(CoordsNew&&) = delete;				// Disallow moving
 //		~CoordsNew() = default;
 		~CoordsNew() { _ctrsgn(typeid(*this), false); }
@@ -439,6 +441,7 @@ class CoordsNew : public CrdWptBase {
 		void convert(CoordType);
 		vector<string> format(CoordType) const;
 		const bool validate() const;
+		void report() const;										// Temporary —— delete
 };
 
 
@@ -469,6 +472,7 @@ class Waypoints : public CrdWptBase {
 		void convert(CoordType);
 		vector<string> format(CoordType) const;
 		const bool validate() const;
+		void report() const {}									// Temporary —— delete
 };
 
 
