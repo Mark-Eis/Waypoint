@@ -455,12 +455,12 @@ const vector<bool> Coordlet::validate() const
 /// __________________________________________________
 /// Constructor of CoordletNew
 template<DVecType T>
-CoordletNew<T>::CoordletNew(T&& _dv) :
+CoordletNew<T>::CoordletNew(T&& _dv, const vector<bool> _latlon) :
 	ff { make_unique<FamousFiveNew<T>>() },
 	dv { static_cast<T&&>(_dv) },
-	latlon{ true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false }
+	latlon{ _latlon }
 {
-	 _ctrsgn(typeid(*this)); fmt::print("\t(T&&); &_dv[0]: {}, &dv[0]: {}\n", address(_dv[0]), address(dv[0]));
+	 _ctrsgn(typeid(*this)); fmt::print("\t(T&&, const vector<bool>); &_dv[0]: {}, &dv[0]: {}\n", address(_dv[0]), address(dv[0]));
 }
 
 /// __________________________________________________
@@ -642,11 +642,11 @@ const bool Coords::validate() const
 /// __________________________________________________
 /// CoordsNew class
 template<DVecType T>
-CoordsNew<T>::CoordsNew(vector<double> nv) :
+CoordsNew<T>::CoordsNew(vector<double> nv, const vector<bool> latlon) :
 	CrdWptBase { CoordType::decdeg },							// ¡¡¡—— Deprecated ——!!! (compiler placator)
-	cdlt { CoordletNew<T>{ std::move(nv) }}
+	cdlt { CoordletNew<T>{ std::move(nv), latlon }}
 {
-	_ctrsgn(typeid(*this)); fmt::print("\t(vector<double> nv)\n");
+	_ctrsgn(typeid(*this)); fmt::print("\t(vector<double>, const vector<bool>)\n");
 }
 
 /// __________________________________________________
@@ -710,13 +710,13 @@ unique_ptr<CrdWptBase> coordsmaker(CoordType type, NumericVector nv)
 	switch (type)
 	{
 		case decdeg:
-			return make_unique<CoordsNew<DecDegVecDouble>>( DecDegVecDouble{ nv } );
+			return make_unique<CoordsNew<DecDegVecDouble>>( DecDegVecDouble{ nv }, vector<bool>{});
 
 		case degmin:
-			return make_unique<CoordsNew<DegMinVecDouble>>( DegMinVecDouble{ nv } );
+			return make_unique<CoordsNew<DegMinVecDouble>>( DegMinVecDouble{ nv }, vector<bool>{} );
 
 		case degminsec:
-			return make_unique<CoordsNew<DegMinSecVecDouble>>( DegMinSecVecDouble{ nv } );
+			return make_unique<CoordsNew<DegMinSecVecDouble>>( DegMinSecVecDouble{ nv }, vector<bool>{} );
 
 		default:
 			stop("coordsmaker(CoordType, NumericVector) my bad");
@@ -1012,7 +1012,7 @@ NumericVector movit(NumericVector object)
 
 // Move construct CoordletNew<DecDegVecDouble> from DecDegVecDouble —— moves content  from dv to clt, maintains address
 	fmt::print("{}V@movit(NumericVector); Constructing CoordletNew<DecDegVecDouble> by moving dv\n", exportstr);
-	auto clt = CoordletNew<DecDegVecDouble>{ std::move(dv) };
+	auto clt = CoordletNew<DecDegVecDouble>{ std::move(dv), vector<bool>{} };
 	clt.report();
 	fmt::print("{}VI@movit(NumVec); &dv {}, dv[0] {}, &dv[0] {}\n", exportstr, address(dv), "undefined", address(dv[0]));
 
@@ -1022,7 +1022,7 @@ NumericVector movit(NumericVector object)
 
 // Construct CoordletNew<DecDegVecDouble> indirectly from vector<double>; using *, new and delete to observe destruction
 	fmt::print("{}VIII@movit(NumericVector); Making ptr1\n", exportstr);
-	const auto* ptr1 = new CoordletNew<DecDegVecDouble>{ std::move(nv) };	// std::move() needed here—no copy elision.
+	const auto* ptr1 = new CoordletNew<DecDegVecDouble>{ std::move(nv), vector<bool>{} };	// std::move() needed here—no copy elision.
 	ptr1->report();
 	fmt::print("{}IX@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), "undefined", address(nv[0]));
 	delete ptr1;
@@ -1033,7 +1033,7 @@ NumericVector movit(NumericVector object)
 
 // Construct CoordletNew<DecDegVecDouble> directly from DecDegVecDouble; using *, new and delete to observe destruction
 	fmt::print("{}XI@movit(NumericVector); Making ptr2\n", exportstr);
-	const auto* ptr2 = new CoordletNew<DecDegVecDouble>{ DecDegVecDouble{ std::move(nv) } };
+	const auto* ptr2 = new CoordletNew<DecDegVecDouble>{ DecDegVecDouble{ std::move(nv) }, vector<bool>{} };
 	ptr2->report();
 	fmt::print("{}XI@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), "undefined", address(nv[0]));
 	delete ptr2;

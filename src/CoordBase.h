@@ -365,7 +365,7 @@ class CoordletNew {
 		const vector<bool> latlon;
 
 	public:
-		explicit CoordletNew(T&&);
+		explicit CoordletNew(T&&, const vector<bool>);
 		CoordletNew(const CoordletNew&) = delete;						// Disallow copying
 		CoordletNew& operator=(const CoordletNew&) = delete;				//  ——— ditto ———
 		CoordletNew(CoordletNew&&) = delete;								// Disallow transfer ownership
@@ -430,7 +430,7 @@ template<DVecType T>
 class CoordsNew : public CrdWptBase {
 		const CoordletNew<T> cdlt;
 	public:
-		explicit CoordsNew(vector<double>);
+		explicit CoordsNew(vector<double>, const vector<bool>);
 		CoordsNew(const CoordsNew&) = delete;					// Disallow copying
 		CoordsNew& operator=(const CoordsNew&) = delete;			//  ——— ditto ———
 		CoordsNew(CoordsNew&&) = delete;						// Disallow transfer ownership
