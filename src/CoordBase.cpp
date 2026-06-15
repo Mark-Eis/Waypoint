@@ -462,6 +462,43 @@ CoordletNew<T>::CoordletNew(T&& _dv) : ff { make_unique<FamousFiveNew<T>>() },
 }
 
 /// __________________________________________________
+/// Format dv as vector<string> (SVecType?) for printing
+template<DVecType T>
+vector<string> CoordletNew<T>::format(CoordType required_type) const
+{
+	fmt::print("@CoordletNew<T>::format(CoordType) const; required: {}\n", required_type);
+	auto sv_out = vector<string>(dv.size());
+
+	const auto lambdd = [this](auto n){ return fmt::format("{:>{}.{}f}\u00B0", ff->get_decdeg(n), 11, 6); };
+	const auto lambdm = [this](auto n){ return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) +
+											   fmt::format("{:0>{}.{}f}\u2032", fabs(ff->get_decmin(n)), 7, 4);
+											};
+	const auto lambdms = [this](auto n){ return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) +
+												fmt::format("{:0>{}}\u2032", abs(ff->get_min(n)), 2) +
+												fmt::format("{:0>{}.{}f}\u2033", fabs(ff->get_sec(n)), 5, 2);
+											};
+	using enum CoordType;
+	switch (required_type)
+	{
+		case decdeg:
+			transform(dv.begin(), dv.end(), sv_out.begin(), lambdd);
+			break;
+
+		case degmin:
+			transform(dv.begin(), dv.end(), sv_out.begin(), lambdm);
+			break;
+
+		case degminsec:
+			transform(dv.begin(), dv.end(), sv_out.begin(), lambdms);
+			break;
+
+		default:
+			stop("Coordlet<CoordType>::format(CoordType) const my bad");
+	}
+	return sv_out;
+}
+
+/// __________________________________________________
 /// Temporary —— to be deleted
 template<DVecType T>
 void CoordletNew<T>::report() const
@@ -604,13 +641,13 @@ vector<string> CoordsNew<T>::format(CoordType required_type) const
 {
 	fmt::print("@CoordsNew<T>::format(CoordType); required type: {}\n", required_type);
 	using enum CoordType;
-/*	vector sv_out{ Coordlet{ nv }.format(required_type) };
-	if (decdeg == required_type)
+	vector sv_out{ cdlt.format(required_type) };
+/*	if (decdeg == required_type)
 		suffix_latlon(sv_out);
 	else
 		suffix_nesw(sv_out); 
 */
-	return {"sv_out"};
+	return sv_out;
 }
 
 /// __________________________________________________
