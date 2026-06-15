@@ -123,9 +123,9 @@ concept DVecType =
 	std::is_same_v<DegMinVecDouble, T> || std::is_same_v<const DegMinVecDouble, T> ||
 	std::is_same_v<DegMinSecVecDouble, T> || std::is_same_v<const DegMinSecVecDouble, T>;
 
-using DecDegVecString = DecDegVec<String>;
-using DegMinVecString = DegMinVec<String>;
-using DegMinSecVecString = DegMinSecVec<String>;
+using DecDegVecString = DecDegVec<string>;
+using DegMinVecString = DegMinVec<string>;
+using DegMinSecVecString = DegMinSecVec<string>;
 
 /// __________________________________________________
 /// Concept —— Rather feeble, but should work for now!
@@ -374,6 +374,7 @@ class CoordletNew {
 		virtual ~CoordletNew() { _ctrsgn(typeid(*this), false); }
 
 		void convert(CoordType);
+		unique_ptr<vector<string>> preformat(CoordType) const;
 		vector<string> format(CoordType) const;
 		const vector<bool> validate() const;
 		void report() const;												// Temporary —— delete

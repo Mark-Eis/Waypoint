@@ -501,6 +501,29 @@ vector<string> CoordletNew<T>::format(CoordType required_type) const
 }
 
 /// __________________________________________________
+/// Create SVecType vector for printing
+template<DVecType T>
+unique_ptr<vector<string>> CoordletNew<T>::preformat(CoordType required_type) const
+{
+	fmt::print("@CoordletNew<T>::preformat(CoordType) const; required: {}\n", required_type);
+	using enum CoordType;
+	switch (required_type)
+	{
+		case decdeg:
+			return make_unique<DecDegVecString>();
+
+		case degmin:
+			return make_unique<DegMinVecString>();
+
+		case degminsec:
+			return make_unique<DegMinSecVecString>();
+
+		default:
+			stop("Coordlet<CoordType>::preformat(CoordType) const my bad");
+	}
+}
+
+/// __________________________________________________
 /// Validate CoordletNew::dv
 template<DVecType T>
 const vector<bool> CoordletNew<T>::validate() const
