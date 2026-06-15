@@ -706,17 +706,17 @@ unique_ptr<CrdWptBase> coordsmaker(CoordType type, NumericVector nv)
 {
 	fmt::print("@coordsmaker(CoordType, NumericVector); {}, &nv {}, &nv[1] {}\n", type, address(nv), address(nv[0]));
 	using enum CoordType;
-
+	const auto latlon { get_vec_attr<NumericVector, bool>(nv, "latlon") };
 	switch (type)
 	{
 		case decdeg:
-			return make_unique<CoordsNew<DecDegVecDouble>>( DecDegVecDouble{ nv }, vector<bool>{});
+			return make_unique<CoordsNew<DecDegVecDouble>>( DecDegVecDouble{ nv }, latlon);
 
 		case degmin:
-			return make_unique<CoordsNew<DegMinVecDouble>>( DegMinVecDouble{ nv }, vector<bool>{} );
+			return make_unique<CoordsNew<DegMinVecDouble>>( DegMinVecDouble{ nv }, latlon );
 
 		case degminsec:
-			return make_unique<CoordsNew<DegMinSecVecDouble>>( DegMinSecVecDouble{ nv }, vector<bool>{} );
+			return make_unique<CoordsNew<DegMinSecVecDouble>>( DegMinSecVecDouble{ nv }, latlon );
 
 		default:
 			stop("coordsmaker(CoordType, NumericVector) my bad");
