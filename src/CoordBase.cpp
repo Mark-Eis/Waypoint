@@ -1097,13 +1097,14 @@ NumericVector convertcoords(NumericVector x, int fmt)
 // [[Rcpp::export(name = "`latlon<-`")]]
 NumericVector latlon(NumericVector cd, LogicalVector value)
 {
-//	fmt::print("{}@latlon(NumericVector, LogicalVector)\n", exportstr);
+	fmt::print("{}@latlon(NumericVector, LogicalVector)\n", exportstr);
 	checkinherits(cd, "coords");
 	if (value.size() != cd.size() && value.size() != 1)
 		stop("value must be either length 1 or length(cd)");
 	else
 		cd.attr("latlon") = value;
-	Coords{ cd }.validate();
+	auto valid { coordsmaker(get_coordtype(cd), cd)->validate() };
+	cd.attr("valid") = valid; 
 	return cd;
 }
 
