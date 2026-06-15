@@ -362,7 +362,7 @@ template<DVecType T>
 class CoordletNew {
 		unique_ptr<FamousFiveNew0> ff;
 		T dv;
-//		const vector<bool> latlon;
+		const vector<bool> latlon;
 
 	public:
 		explicit CoordletNew(T&&);

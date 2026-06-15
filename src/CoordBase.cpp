@@ -455,8 +455,10 @@ const vector<bool> Coordlet::validate() const
 /// __________________________________________________
 /// Constructor of CoordletNew
 template<DVecType T>
-CoordletNew<T>::CoordletNew(T&& _dv) : ff { make_unique<FamousFiveNew<T>>() },
-	dv { static_cast<T&&>(_dv) } // , latlon{ ?? }
+CoordletNew<T>::CoordletNew(T&& _dv) :
+	ff { make_unique<FamousFiveNew<T>>() },
+	dv { static_cast<T&&>(_dv) },
+	latlon{ true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false }
 {
 	 _ctrsgn(typeid(*this)); fmt::print("\t(T&&); &_dv[0]: {}, &dv[0]: {}\n", address(_dv[0]), address(dv[0]));
 }
@@ -496,6 +498,29 @@ vector<string> CoordletNew<T>::format(CoordType required_type) const
 			stop("Coordlet<CoordType>::format(CoordType) const my bad");
 	}
 	return sv_out;
+}
+
+/// __________________________________________________
+/// Validate CoordletNew::dv
+template<DVecType T>
+const vector<bool> CoordletNew<T>::validate() const
+{
+	fmt::print("@CoordletNew::validate(); latlon: {}\n", fmt::join(latlon, ", "));
+	vector<bool>::const_iterator ll_it{ latlon.begin() };
+	auto ll_size { latlon.size() };
+	auto valid = vector<bool>{};
+	valid.assign(dv.size(), {false});
+
+	transform(dv.begin(), dv.end(), valid.begin(), [this, &ll_it, &ll_size](auto n){
+		return !((fabs(ff->get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
+				(fabs(ff->get_decmin(n)) >= 60) ||
+				(fabs(ff->get_sec(n)) >= 60));
+	});
+
+	if (all_of(valid.begin(), valid.end(), [](auto v) { return v;}))
+		valid.assign({true});
+
+	return valid;
 }
 
 /// __________________________________________________
@@ -642,7 +667,7 @@ vector<string> CoordsNew<T>::format(CoordType required_type) const
 	fmt::print("@CoordsNew<T>::format(CoordType); required type: {}\n", required_type);
 	using enum CoordType;
 	vector sv_out{ cdlt.format(required_type) };
-/*	if (decdeg == required_type)
+/*	if (decdeg == required_type)										//	¡¡¡—— To be completed ——!!
 		suffix_latlon(sv_out);
 	else
 		suffix_nesw(sv_out); 
@@ -653,15 +678,16 @@ vector<string> CoordsNew<T>::format(CoordType required_type) const
 /// __________________________________________________
 /// Validation call entry point -- public
 template<DVecType T>
-const bool CoordsNew<T>::validate() const
+const bool CoordsNew<T>::validate() const							//	¡¡¡—— NB return type -> const vector<bool> ——!!!
 {
 	fmt::print("@CoordsNew<T>::validate()\n");
-/*	auto valid = Coordlet{ nv }.validate();
+	auto valid { cdlt.validate() };									//	¡¡¡—— Temporary solution ——!!
 
-	static_cast<NumericVector>(nv).attr("valid") = valid;
-	return ( std::all_of(valid.begin(), valid.end(), [](auto i){ return i; } ));
-*/
-	return true;
+//	return cdlt.validate();											//	¡¡¡—— All that's needed! ——!!!
+
+//	static_cast<NumericVector>(nv).attr("valid") = valid;						// -> validatecoords(const NumericVector, const bool = true)
+	return ( std::all_of(valid.begin(), valid.end(), [](auto i){ return i; } ));	// -> responsibility of calling function
+
 }
 
 /// __________________________________________________
@@ -826,10 +852,21 @@ bool revalidate(const T t)
 		what = "Coords";
 	if constexpr (std::is_same_v<Waypoints, U>)
 		what = "Waypoints";
-	if (!U{ t }.validate())
-		warning("Revalidation found invalid %s!", str_tolower(what));
-	else
-		warning("%s revalidated.", what);
+
+	if constexpr (std::is_same_v<Waypoints, U> || std::is_same_v<Coords, U>) {		// ¡¡¡—— Temporary solution ——!!! 
+		if (!U{ t }.validate())
+			warning("Revalidation found invalid %s!", str_tolower(what));
+		else
+			warning("%s revalidated.", what);
+	}
+/*
+	if constexpr (std::is_same_v<CoordsNew, U>) {		// ¡¡¡—— Temporary solution ——!!! 
+		if (!U{ t }.validate())
+			warning("Revalidation found invalid %s!", str_tolower(what));
+		else
+			warning("%s revalidated.", what);
+	}
+*/
 	return check_valid(t);
 }
 
@@ -1009,7 +1046,7 @@ NumericVector movit(NumericVector object)
 /// __________________________________________________
 /// Dummy Function for Testing Only 	¡¡¡ ——— Temporary to Be Archived ——— !!!
 //' @rdname cords
-// [[Rcpp::export(name = "cordle")]]
+// [[Rcpp::export(name = "coordle")]]
 NumericVector CoordsNewTest(NumericVector object)
 {
 	CoordType type = get_coordtype(object);
@@ -1088,10 +1125,10 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validat
 		if (!check_valid(x))
 			warning("Formatting invalid coords!");
 
-	auto Coords_ptr { unique_ptr<CrdWptBase>{ coordsmaker(get_coordtype(x), x) } };
-	vector sv_out{ Coords_ptr->format(fmt ? get_coordtype(fmt) : get_coordtype(x)) };
+	CoordType ct_current { get_coordtype(x) };
+	CoordType ct_required { fmt ? get_coordtype(fmt) : ct_current };
+	vector sv_out{ coordsmaker(ct_current, x)->format(ct_required) };
 
-	fmt::print("{}I@formatcoords(NumericVector, bool, bool, int); usenames: {}, validate: {}, fmt: {}\n", exportstr, usenames, validate, fmt);
 	vector names{ get_vec_attr<NumericVector, string>(x, "names") };
 	if (names.size() && usenames) {
 		stdlenstr(names);
@@ -1106,10 +1143,15 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validat
 // [[Rcpp::export(name = "validate.coords")]]
 NumericVector validatecoords(const NumericVector x, const bool force = true)
 {
-//	fmt::print("{}@validatecoords(const NumericVector, const bool); force: {}\n", exportstr, force);
+	fmt::print("{}@validatecoords(const NumericVector, const bool); force: {}\n", exportstr, force);
 	checkinherits(x, "coords");
-	if (force)									
-		Coords{ x }.validate();
+	if (force)	{			
+		auto valid { coordsmaker(get_coordtype(x), x)->validate() };
+		if (!valid) {
+			warning("Validation of coords failed in Mimiland!");
+			static_cast<NumericVector>(x).attr("valid") = valid;
+		}
+	}
 	if (!check_valid(x))
 		warning("Invalid coords!");
 	return x;
