@@ -815,10 +815,10 @@ const bool Waypoints::validate() const
 /// Check "valid" attribute of NumericVector all true
 bool check_valid(const NumericVector nv)
 {
-//	fmt::print("@check_valid(const NumericVector)\n");
+	fmt::print("@check_valid(const NumericVector)\n");
 	int validated = check_logical_attr(nv, "valid");
 	if (!validated)
-		return revalidate<NumericVector, Coords>(nv);
+		return revalidate<NumericVector>(nv);
 	return validated >> 1;
 }
 
@@ -832,7 +832,7 @@ bool check_valid(const DataFrame df)
 	int lonvalidated = check_logical_attr(df, "validlon");
 
 	if (!(latvalidated & lonvalidated))
-		return revalidate<DataFrame, Waypoints>(df);
+		return revalidate<DataFrame>(df);
 
 	if (!(latvalidated >> 1))
 		warning("Invalid latitude!");
@@ -843,30 +843,28 @@ bool check_valid(const DataFrame df)
 
 /// __________________________________________________
 /// Revalidate "coords" or "waypoints"
-template<NumericVector_or_DataFrame T, Coords_or_Waypoints U>
+template<NumericVector_or_DataFrame T>
 bool revalidate(const T t)
 {
-//	fmt::print("@revalidate<NumericVector_or_DataFrame, Coords_or_Waypoints>(const T); T: {}; U: {}\n", demangle(typeid(t)), demangle(typeid(U)));
-	const char* what;
-	if constexpr (std::is_same_v<Coords, U>)
-		what = "Coords";
-	if constexpr (std::is_same_v<Waypoints, U>)
-		what = "Waypoints";
+	fmt::print("@revalidate<NumericVector_or_DataFrame>(const T); T: {}\n", demangle(typeid(t)));
 
-	if constexpr (std::is_same_v<Waypoints, U> || std::is_same_v<Coords, U>) {		// ¡¡¡—— Temporary solution ——!!! 
-		if (!U{ t }.validate())
-			warning("Revalidation found invalid %s!", str_tolower(what));
+	if constexpr (std::is_same_v<NumericVector, T>) { 
+		auto valid { coordsmaker(get_coordtype(t), t)->validate() };
+		static_cast<NumericVector>(t).attr("valid") = valid; 
+		if (!valid)
+//		if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; })) // enable once CoordsNew.validate() -> vector<bool> 
+			warning("Revalidation found invalid coords!");
 		else
-			warning("%s revalidated.", what);
+			warning("Coords revalidated!");
 	}
-/*
-	if constexpr (std::is_same_v<CoordsNew, U>) {		// ¡¡¡—— Temporary solution ——!!! 
-		if (!U{ t }.validate())
-			warning("Revalidation found invalid %s!", str_tolower(what));
+
+	if constexpr (std::is_same_v<DataFrame, T>) { 
+		if (!Waypoints{ t }.validate())
+			warning("Revalidation found invalid waypoints!");
 		else
-			warning("%s revalidated.", what);
+			warning("Waypoints revalidated!");
 	}
-*/
+
 	return check_valid(t);
 }
 

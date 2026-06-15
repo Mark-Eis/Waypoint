@@ -444,6 +444,23 @@ class CoordsNew : public CrdWptBase {
 		void report() const;										// Temporary —— delete
 };
 
+/// __________________________________________________
+/// Concept —— Rather feeble, but should work for now!
+template <typename T>
+concept ConCoords = 
+	std::is_same_v<CoordsNew<DecDegVecDouble>, T> || std::is_same_v<const CoordsNew<DecDegVecDouble>, T> ||
+	std::is_same_v<CoordsNew<DegMinVecDouble>, T> || std::is_same_v<const CoordsNew<DegMinVecDouble>, T> ||
+	std::is_same_v<CoordsNew<DegMinSecVecDouble>, T> || std::is_same_v<const CoordsNew<DegMinSecVecDouble>, T>;
+
+template<typename T>
+struct is_concoords : std::false_type {};
+
+template<ConCoords T>
+struct is_concoords<T> : std::true_type {};
+
+template<typename T>
+constexpr bool is_concoords_v = is_concoords<T>::value;
+
 
 /// __________________________________________________
 /// Make Coords<DVecType>
@@ -481,7 +498,7 @@ class Waypoints : public CrdWptBase {
 /// Validation
 bool check_valid(const NumericVector);
 bool check_valid(const DataFrame);
-template<NumericVector_or_DataFrame T, Coords_or_Waypoints U>
+template<NumericVector_or_DataFrame T>
 bool revalidate(const T);
 bool valid_ll(const DataFrame);
 
