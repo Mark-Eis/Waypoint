@@ -384,6 +384,7 @@ U CoordletNew<T>::format() const
 		const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it++); };
 		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it); };
 		const auto lambda3 = [](auto& outstr, auto n){ return outstr + cardi_b(n < 0); };
+
 		if (ll_size > 1)
 			transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda1);
 		else
@@ -475,7 +476,6 @@ vector<string> CoordsNew<T>::format(CoordType required_type) const
 {
 	fmt::print("@CoordsNew<T>::format(CoordType); required type: {}\n", required_type);
 	using enum CoordType;
-//	vector sv_out{ cdlt.format(required_type) };
 
 	switch (required_type)
 	{
@@ -491,33 +491,7 @@ vector<string> CoordsNew<T>::format(CoordType required_type) const
 		default:
 			stop("CoordsNew<T>::format(CoordType) my bad");
 	}
-/*
-	if (decdeg == required_type)										//	¡¡¡—— To be completed ——!!
-		suffix_latlon(sv_out);
-	else
-		suffix_nesw(sv_out); 
-
-	return sv_out;
-*/
 }
-
-/*
-/// __________________________________________________
-/// Format call entry point -- public								// Someday…?
-template<DVecType T> template<SVecType U>
-U CoordsNew<T>::format() const
-{
-	fmt::print("@CoordsNew<T>::format<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
-	U sv_out{ cdlt.format() };										//	¡¡¡—— Check for unecessary copying ——!!!
-*//*
-	if (decdeg == required_type)										//	¡¡¡—— To be completed ——!!!
-		suffix_latlon(sv_out);
-	else
-		suffix_nesw(sv_out); 
-*//*
-	return sv_out;
-}
-*/
 
 /// __________________________________________________
 /// Validation call entry point -- public
@@ -1209,10 +1183,6 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validat
 	CoordType ct_current { get_coordtype(x) };
 	CoordType ct_required { fmt ? get_coordtype(fmt) : ct_current };
 	vector sv_out{ coordsmaker(x)->format(ct_required) };
-/*	auto coordsnew{ coordsmaker(x) };
-	auto u_ptr { coordsnew->formatNew(ct_required) };
-	vector sv_out{ *u_ptr };
-*/
 	vector names{ get_vec_attr<NumericVector, string>(x, "names") };
 	if (names.size() && usenames) {
 		stdlenstr(names);
