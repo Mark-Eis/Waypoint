@@ -368,6 +368,49 @@ U CoordletNew<T>::format() const
 }
 
 /// __________________________________________________
+/// Add suffix of "lat", "lon"
+template<DVecType T>
+// void CoordletNew<T>::suffix_latlon(vector<string>& sv_out) const
+void CoordletNew<T>::suffix_latlon(SVecType auto& sv_out) const
+{
+	fmt::print("@CoordletNew::suffix_latlon(vector<string>& sv_out) const\n");
+	vector<bool>::const_iterator ll_it { latlon.begin() };
+	const auto ll_size { latlon.size() };
+
+	const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it++ ? " lat" : " lon"); };
+	const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it ? " lat" : " lon"); };
+
+	if (ll_size > 1)
+		transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda1);
+	else
+		if (ll_size == 1)	// uniform CoordletNew
+			transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda2);
+}
+
+/// __________________________________________________
+/// Add suffix of "N", "E", "S", "W"; or "(N/E)", "(S/W)"
+template<DVecType T>
+// void CoordletNew<T>::suffix_nesw(vector<string>& sv_out) const
+void CoordletNew<T>::suffix_nesw(SVecType auto& sv_out) const
+{
+	fmt::print("@CoordletNew::suffix_nesw(vector<string>& sv_out) const\n");
+	vector<bool>::const_iterator ll_it { latlon.begin() };
+	const auto ll_size { latlon.size() };
+
+	const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it++); };
+	const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it); };
+	const auto lambda3 = [](auto& outstr, auto n){ return outstr + cardi_b(n < 0); };
+
+	if (ll_size > 1)
+		transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda1);
+	else
+		if (ll_size == 1)	// uniform CoordletNew
+			transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda2);
+		else				// no latlon info
+			transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda3);
+}
+
+/// __________________________________________________
 /// Validate CoordletNew::dv
 template<DVecType T>
 const vector<bool> CoordletNew<T>::validate() const
@@ -446,7 +489,25 @@ vector<string> CoordsNew<T>::format(CoordType required_type) const
 {
 	fmt::print("@CoordsNew<T>::format(CoordType); required type: {}\n", required_type);
 	using enum CoordType;
-//	vector sv_out{ cdlt.format(required_type) };
+	vector sv_out{ format_switch(required_type) };
+
+/*
+	if (decdeg == required_type)										//	¡¡¡—— To be completed ——!!
+		suffix_latlon(sv_out);
+	else
+		suffix_nesw(sv_out); 
+
+	return sv_out;
+*/
+}
+
+/// __________________________________________________
+/// Switch format required type
+template<DVecType T>
+vector<string> CoordsNew<T>::format_switch(CoordType required_type) const
+{
+	fmt::print("@CoordsNew<T>::format_switch(CoordType); current type: {}, required type: {}\n", demangle(typeid(T)), required_type);
+	using enum CoordType;
 
 	switch (required_type)
 	{
@@ -462,14 +523,6 @@ vector<string> CoordsNew<T>::format(CoordType required_type) const
 		default:
 			stop("CoordsNew<T>::format(CoordType) my bad");
 	}
-/*
-	if (decdeg == required_type)										//	¡¡¡—— To be completed ——!!
-		suffix_latlon(sv_out);
-	else
-		suffix_nesw(sv_out); 
-
-	return sv_out;
-*/
 }
 
 /*
