@@ -381,6 +381,16 @@ U CoordletNew<T>::format() const
 
 	} else if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>) {
 		fmt::print("@IIICoordletNew<T>::format<U>() const; T: {}, if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>)\n", demangle(typeid(T)));
+		const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it++); };
+		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it); };
+		const auto lambda3 = [](auto& outstr, auto n){ return outstr + cardi_b(n < 0); };
+		if (ll_size > 1)
+			transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda1);
+		else
+			if (ll_size == 1)	// uniform coords
+				transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda2);
+			else				// no latlon info
+				transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda3);
 	}
 
 	return sv_out;
