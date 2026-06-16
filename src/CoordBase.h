@@ -380,8 +380,6 @@ class CoordsNew : public CrdWptBaseNew {
 
 		void convert(CoordType);
 		vector<string> format(CoordType) const;
-//		template<SVecType U>
-//		U format() const;										// Someday…?
 		const vector<bool> validate() const;
 		void report() const;										// Temporary —— delete
 };

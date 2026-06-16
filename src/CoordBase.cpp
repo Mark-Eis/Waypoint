@@ -344,43 +344,39 @@ U CoordletNew<T>::format() const
 {
 	fmt::print("@CoordletNew<T>::format<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
 	U sv_out{ std::move(vector<string>(dv.size())) };
-
-	if constexpr (isDecDegVecString_v<U>)
-		transform(dv.begin(), dv.end(), sv_out.begin(), [this](auto n)
-			{
-				return fmt::format("{:>{}.{}f}\u00B0", ff->get_decdeg(n), 11, 6);
-			});	
-	else if constexpr (isDegMinVecString_v<U>)
-		transform(dv.begin(), dv.end(), sv_out.begin(), [this](auto n)
-			{
-				return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) + 
-					   fmt::format("{:0>{}.{}f}\u2032", fabs(ff->get_decmin(n)), 7, 4);
-			});	
-	else if constexpr (isDegMinSecVecString_v<U>)
-		transform(dv.begin(), dv.end(), sv_out.begin(), [this](auto n)
-			{
-				return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) +
-					   fmt::format("{:0>{}}\u2032", abs(ff->get_min(n)), 2) +
-					   fmt::format("{:0>{}.{}f}\u2033", fabs(ff->get_sec(n)), 5, 2);
-			});	
-
-	fmt::print("@ICoordletNew<T>::format<U>() const; latlon: {}\n", fmt::join(latlon, ", "));
 	vector<bool>::const_iterator ll_it { latlon.begin() };
 	const auto ll_size { latlon.size() };
 
 	if constexpr (isDecDegVecString_v<U>) {
-		fmt::print("@IICoordletNew<T>::format<U>() const; T: {}, if constexpr (isDecDegVecString_v<U>)\n", demangle(typeid(T)));
+		fmt::print("@ICoordletNew<T>::format<U>() const; T: {}, if constexpr (isDecDegVecString_v<U>)\n", demangle(typeid(T)));
+		transform(dv.begin(), dv.end(), sv_out.begin(), [this](auto n)
+			{ return fmt::format("{:>{}.{}f}\u00B0", ff->get_decdeg(n), 11, 6); });	
+
 		const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it++ ? " lat" : " lon"); };
 		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it ? " lat" : " lon"); };
-
 		if (ll_size > 1)
 			transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda1);
 		else
 			if (ll_size == 1)	// uniform coords
 				transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda2);
 
-	} else if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>) {
-		fmt::print("@IIICoordletNew<T>::format<U>() const; T: {}, if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>)\n", demangle(typeid(T)));
+	} else if constexpr (isDegMinVecString_v<U>) {
+		fmt::print("@IICoordletNew<T>::format<U>() const; T: {}, if constexpr (isDegMinVecString_v<U>)\n", demangle(typeid(T)));
+		transform(dv.begin(), dv.end(), sv_out.begin(), [this](auto n)
+			{ return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) + 
+					 fmt::format("{:0>{}.{}f}\u2032", fabs(ff->get_decmin(n)), 7, 4);
+			});	
+	} else if constexpr (isDegMinSecVecString_v<U>) {
+		fmt::print("@IIICoordletNew<T>::format<U>() const; T: {}, if constexpr (isDegMinSecVecString_v <U>)\n", demangle(typeid(T)));
+		transform(dv.begin(), dv.end(), sv_out.begin(), [this](auto n)
+			{ return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) +
+					 fmt::format("{:0>{}}\u2032", abs(ff->get_min(n)), 2) +
+					 fmt::format("{:0>{}.{}f}\u2033", fabs(ff->get_sec(n)), 5, 2);
+			});	
+	}
+
+	if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>) {
+		fmt::print("@IVCoordletNew<T>::format<U>() const; T: {}, if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>)\n", demangle(typeid(T)));
 		const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it++); };
 		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it); };
 		const auto lambda3 = [](auto& outstr, auto n){ return outstr + cardi_b(n < 0); };
