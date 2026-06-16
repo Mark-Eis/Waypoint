@@ -370,6 +370,15 @@ U CoordletNew<T>::format() const
 
 	if constexpr (isDecDegVecString_v<U>) {
 		fmt::print("@IICoordletNew<T>::format<U>() const; T: {}, if constexpr (isDecDegVecString_v<U>)\n", demangle(typeid(T)));
+		const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it++ ? " lat" : " lon"); };
+		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it ? " lat" : " lon"); };
+
+		if (ll_size > 1)
+			transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda1);
+		else
+			if (ll_size == 1)	// uniform coords
+				transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda2);
+
 	} else if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>) {
 		fmt::print("@IIICoordletNew<T>::format<U>() const; T: {}, if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>)\n", demangle(typeid(T)));
 	}
