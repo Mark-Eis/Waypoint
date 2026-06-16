@@ -374,8 +374,8 @@ class CoordletNew {
 		virtual ~CoordletNew() { _ctrsgn(typeid(*this), false); }
 
 		void convert(CoordType);
-		unique_ptr<vector<string>> preformat(CoordType) const;
-		vector<string> format(CoordType) const;
+		template<SVecType U>
+		U format() const;
 		const vector<bool> validate() const;
 		void report() const;												// Temporary —— delete
 };
@@ -397,7 +397,6 @@ class CrdWptBase {
 		virtual void convert(CoordType) = 0;
 		virtual vector<string> format(CoordType) const = 0;
 		virtual const bool validate() const = 0;
-		virtual void report() const = 0;							// Temporary —— delete
 };
 
 
@@ -420,15 +419,33 @@ class Coords : public CrdWptBase {
 		void convert(CoordType);
 		vector<string> format(CoordType) const;
 		const bool validate() const;
-		void report() const {}									// Temporary —— delete
 };
 
 /// __________________________________________________
 /// New Business  !!!!!!!!!!!!!!
+
+
+/// __________________________________________________
+/// CrdWptBaseNew class
+class CrdWptBaseNew {
+	public:
+		explicit CrdWptBaseNew();
+		CrdWptBaseNew(const CrdWptBaseNew&) = delete;						// Disallow copying
+		CrdWptBaseNew& operator=(const CrdWptBaseNew&) = delete;			//  ——— ditto ———
+		CrdWptBaseNew(CrdWptBaseNew&&) = delete;							// Disallow transfer ownership
+		CrdWptBaseNew& operator=(CrdWptBaseNew&&) = delete;				// Disallow moving
+		virtual ~CrdWptBaseNew() = 0;
+
+		virtual void convert(CoordType) = 0;
+		virtual vector<string> format(CoordType) const = 0;
+		virtual const bool validate() const = 0;
+		virtual void report() const = 0;							// Temporary —— delete
+};
+
 /// __________________________________________________
 /// CoordsNew class
 template<DVecType T>
-class CoordsNew : public CrdWptBase {
+class CoordsNew : public CrdWptBaseNew {
 		const CoordletNew<T> cdlt;
 	public:
 		explicit CoordsNew(vector<double>, const vector<bool>);
@@ -441,6 +458,8 @@ class CoordsNew : public CrdWptBase {
 
 		void convert(CoordType);
 		vector<string> format(CoordType) const;
+//		template<SVecType U>
+//		U format() const;										// Someday…?
 		const bool validate() const;
 		void report() const;										// Temporary —— delete
 };
@@ -465,7 +484,7 @@ constexpr bool is_concoords_v = is_concoords<T>::value;
 
 /// __________________________________________________
 /// Make Coords<DVecType>
-unique_ptr<CrdWptBase> coordsmaker(CoordType, NumericVector);
+unique_ptr<CrdWptBaseNew> coordsmaker(CoordType, NumericVector);
 
 
 /// __________________________________________________
@@ -490,7 +509,6 @@ class Waypoints : public CrdWptBase {
 		void convert(CoordType);
 		vector<string> format(CoordType) const;
 		const bool validate() const;
-		void report() const {}									// Temporary —— delete
 };
 
 

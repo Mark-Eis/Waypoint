@@ -465,62 +465,30 @@ CoordletNew<T>::CoordletNew(T&& _dv, const vector<bool> _latlon) :
 
 /// __________________________________________________
 /// Format dv as vector<string> (SVecType?) for printing
-template<DVecType T>
-vector<string> CoordletNew<T>::format(CoordType required_type) const
+template<DVecType T> template<SVecType U>
+U CoordletNew<T>::format() const
 {
-	fmt::print("@CoordletNew<T>::format(CoordType) const; required: {}\n", required_type);
-	auto sv_out = vector<string>(dv.size());
+	fmt::print("@CoordletNew<T>::format<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
+	U sv_out{ std::move(vector<string>(dv.size())) };
 
-	const auto lambdd = [this](auto n){ return fmt::format("{:>{}.{}f}\u00B0", ff->get_decdeg(n), 11, 6); };
-	const auto lambdm = [this](auto n){ return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) +
+	if constexpr (std::is_same_v<DecDegVecString, U>) {
+		const auto lambda = [this](auto n){ return fmt::format("{:>{}.{}f}\u00B0", ff->get_decdeg(n), 11, 6); };
+		transform(dv.begin(), dv.end(), sv_out.begin(), lambda);	
+	}
+	if constexpr (std::is_same_v<DegMinVecString, U>) {
+		const auto lambda = [this](auto n){ return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) +
 											   fmt::format("{:0>{}.{}f}\u2032", fabs(ff->get_decmin(n)), 7, 4);
 											};
-	const auto lambdms = [this](auto n){ return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) +
+		transform(dv.begin(), dv.end(), sv_out.begin(), lambda);	
+	}
+	if constexpr (std::is_same_v<DegMinSecVecString, U>) {
+		const auto lambda = [this](auto n){ return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) +
 												fmt::format("{:0>{}}\u2032", abs(ff->get_min(n)), 2) +
 												fmt::format("{:0>{}.{}f}\u2033", fabs(ff->get_sec(n)), 5, 2);
 											};
-	using enum CoordType;
-	switch (required_type)
-	{
-		case decdeg:
-			transform(dv.begin(), dv.end(), sv_out.begin(), lambdd);
-			break;
-
-		case degmin:
-			transform(dv.begin(), dv.end(), sv_out.begin(), lambdm);
-			break;
-
-		case degminsec:
-			transform(dv.begin(), dv.end(), sv_out.begin(), lambdms);
-			break;
-
-		default:
-			stop("Coordlet<CoordType>::format(CoordType) const my bad");
+		transform(dv.begin(), dv.end(), sv_out.begin(), lambda);	
 	}
 	return sv_out;
-}
-
-/// __________________________________________________
-/// Create SVecType vector for printing
-template<DVecType T>
-unique_ptr<vector<string>> CoordletNew<T>::preformat(CoordType required_type) const
-{
-	fmt::print("@CoordletNew<T>::preformat(CoordType) const; required: {}\n", required_type);
-	using enum CoordType;
-	switch (required_type)
-	{
-		case decdeg:
-			return make_unique<DecDegVecString>();
-
-		case degmin:
-			return make_unique<DegMinVecString>();
-
-		case degminsec:
-			return make_unique<DegMinSecVecString>();
-
-		default:
-			stop("Coordlet<CoordType>::preformat(CoordType) const my bad");
-	}
 }
 
 /// __________________________________________________
@@ -663,10 +631,28 @@ const bool Coords::validate() const
 /// __________________________________________________
 /// New Business  !!!!!!!!!!!!!!
 /// __________________________________________________
+/// CrdWptBaseNew class
+
+/// __________________________________________________
+/// Constructor
+CrdWptBaseNew::CrdWptBaseNew()
+{
+	_ctrsgn(typeid(*this)); fmt::print("\t()\n");
+}
+
+/// __________________________________________________
+/// Destructor
+CrdWptBaseNew::~CrdWptBaseNew()
+{
+	_ctrsgn(typeid(*this), false);
+}
+
+/// __________________________________________________
+/// New Business  !!!!!!!!!!!!!!
+/// __________________________________________________
 /// CoordsNew class
 template<DVecType T>
 CoordsNew<T>::CoordsNew(vector<double> nv, const vector<bool> latlon) :
-	CrdWptBase { CoordType::decdeg },							// ¡¡¡—— Deprecated ——!!! (compiler placator)
 	cdlt { CoordletNew<T>{ std::move(nv), latlon }}
 {
 	_ctrsgn(typeid(*this)); fmt::print("\t(vector<double>, const vector<bool>)\n");
@@ -683,20 +669,55 @@ void CoordsNew<T>::convert(CoordType newtype)
 }
 
 /// __________________________________________________
-/// Format call entry point -- public
+/// Format call entry point -- public			¡¡¡—— Replace with CoordsNew<T>::formatNew(CoordType)  ——!!!
 template<DVecType T>
 vector<string> CoordsNew<T>::format(CoordType required_type) const
 {
 	fmt::print("@CoordsNew<T>::format(CoordType); required type: {}\n", required_type);
 	using enum CoordType;
-	vector sv_out{ cdlt.format(required_type) };
-/*	if (decdeg == required_type)										//	¡¡¡—— To be completed ——!!
+//	vector sv_out{ cdlt.format(required_type) };
+
+	switch (required_type)
+	{
+		case decdeg:
+			return cdlt.template format<DecDegVecString>();
+
+		case degmin:
+			return cdlt.template format<DegMinVecString>();
+
+		case degminsec:
+			return cdlt.template format<DegMinSecVecString>();
+
+		default:
+			stop("CoordsNew<T>::format(CoordType) my bad");
+	}
+/*
+	if (decdeg == required_type)										//	¡¡¡—— To be completed ——!!
 		suffix_latlon(sv_out);
 	else
 		suffix_nesw(sv_out); 
+
+	return sv_out;
 */
+}
+
+/*
+/// __________________________________________________
+/// Format call entry point -- public								// Someday…?
+template<DVecType T> template<SVecType U>
+U CoordsNew<T>::format() const
+{
+	fmt::print("@CoordsNew<T>::format<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
+	U sv_out{ cdlt.format() };										//	¡¡¡—— Check for unecessary copying ——!!!
+*//*
+	if (decdeg == required_type)										//	¡¡¡—— To be completed ——!!!
+		suffix_latlon(sv_out);
+	else
+		suffix_nesw(sv_out); 
+*//*
 	return sv_out;
 }
+*/
 
 /// __________________________________________________
 /// Validation call entry point -- public
@@ -725,7 +746,7 @@ void CoordsNew<T>::report() const
 
 /// __________________________________________________
 /// Make Coords<DVecType>
-unique_ptr<CrdWptBase> coordsmaker(CoordType type, NumericVector nv)
+unique_ptr<CrdWptBaseNew> coordsmaker(CoordType type, NumericVector nv)
 {
 	fmt::print("@coordsmaker(CoordType, NumericVector); {}, &nv {}, &nv[1] {}\n", type, address(nv), address(nv[0]));
 	using enum CoordType;
@@ -1073,9 +1094,8 @@ NumericVector CoordsNewTest(NumericVector object)
 	CoordType type = get_coordtype(object);
 	fmt::print("{}@CoordsNewTest(NumericVector); fmt {}, CoordType {}\n", exportstr, get_fmt_attribute(object), type);
 
-	auto Coords_ptr { unique_ptr<CrdWptBase>{ coordsmaker(type, object) } };
+	auto Coords_ptr { unique_ptr<CrdWptBaseNew>{ coordsmaker(type, object) } };
 	Coords_ptr->report();
-	Coords_ptr->format(CoordType::decdeg);
 	Coords_ptr->convert(CoordType::decdeg);
 	Coords_ptr->validate();
 	
@@ -1150,7 +1170,10 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validat
 	CoordType ct_current { get_coordtype(x) };
 	CoordType ct_required { fmt ? get_coordtype(fmt) : ct_current };
 	vector sv_out{ coordsmaker(ct_current, x)->format(ct_required) };
-
+/*	auto coordsnew{ coordsmaker(ct_current, x) };
+	auto u_ptr { coordsnew->formatNew(ct_required) };
+	vector sv_out{ *u_ptr };
+*/
 	vector names{ get_vec_attr<NumericVector, string>(x, "names") };
 	if (names.size() && usenames) {
 		stdlenstr(names);
