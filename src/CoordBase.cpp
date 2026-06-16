@@ -364,6 +364,16 @@ U CoordletNew<T>::format() const
 					   fmt::format("{:0>{}.{}f}\u2033", fabs(ff->get_sec(n)), 5, 2);
 			});	
 
+	fmt::print("@ICoordletNew<T>::format<U>() const; latlon: {}\n", fmt::join(latlon, ", "));
+	vector<bool>::const_iterator ll_it { latlon.begin() };
+	const auto ll_size { latlon.size() };
+
+	if constexpr (isDecDegVecString_v<U>) {
+		fmt::print("@IICoordletNew<T>::format<U>() const; T: {}, if constexpr (isDecDegVecString_v<U>)\n", demangle(typeid(T)));
+	} else if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>) {
+		fmt::print("@IIICoordletNew<T>::format<U>() const; T: {}, if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>)\n", demangle(typeid(T)));
+	}
+
 	return sv_out;
 }
 
@@ -372,7 +382,7 @@ U CoordletNew<T>::format() const
 template<DVecType T>
 const vector<bool> CoordletNew<T>::validate() const
 {
-	fmt::print("@CoordletNew::validate(); latlon: {}\n", fmt::join(latlon, ", "));
+	fmt::print("@CoordletNew<T>::validate(); latlon: {}\n", fmt::join(latlon, ", "));
 	vector<bool>::const_iterator ll_it{ latlon.begin() };
 	auto ll_size { latlon.size() };
 	auto valid = vector<bool>{};
