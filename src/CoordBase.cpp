@@ -471,17 +471,17 @@ U CoordletNew<T>::format() const
 	fmt::print("@CoordletNew<T>::format<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
 	U sv_out{ std::move(vector<string>(dv.size())) };
 
-	if constexpr (std::is_same_v<DecDegVecString, U>) {
+	if constexpr (isDecDegVecString_v<U>) {
 		const auto lambda = [this](auto n){ return fmt::format("{:>{}.{}f}\u00B0", ff->get_decdeg(n), 11, 6); };
 		transform(dv.begin(), dv.end(), sv_out.begin(), lambda);	
 	}
-	if constexpr (std::is_same_v<DegMinVecString, U>) {
+	if constexpr (isDegMinVecString_v<U>) {
 		const auto lambda = [this](auto n){ return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) +
 											   fmt::format("{:0>{}.{}f}\u2032", fabs(ff->get_decmin(n)), 7, 4);
 											};
 		transform(dv.begin(), dv.end(), sv_out.begin(), lambda);	
 	}
-	if constexpr (std::is_same_v<DegMinSecVecString, U>) {
+	if constexpr (isDegMinSecVecString_v<U>) {
 		const auto lambda = [this](auto n){ return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) +
 												fmt::format("{:0>{}}\u2032", abs(ff->get_min(n)), 2) +
 												fmt::format("{:0>{}.{}f}\u2033", fabs(ff->get_sec(n)), 5, 2);
@@ -669,7 +669,7 @@ void CoordsNew<T>::convert(CoordType newtype)
 }
 
 /// __________________________________________________
-/// Format call entry point -- public			¡¡¡—— Replace with CoordsNew<T>::formatNew(CoordType)  ——!!!
+/// Format call entry point -- public
 template<DVecType T>
 vector<string> CoordsNew<T>::format(CoordType required_type) const
 {

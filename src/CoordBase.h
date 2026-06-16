@@ -111,6 +111,8 @@ struct DegMinSecVec : public vector<T> {
 };
 
 
+/// __________________________________________________
+/// Template aliases
 using DecDegVecDouble = DecDegVec<double>;
 using DegMinVecDouble = DegMinVec<double>;
 using DegMinSecVecDouble = DegMinSecVec<double>;
@@ -123,9 +125,44 @@ concept DVecType =
 	std::is_same_v<DegMinVecDouble, T> || std::is_same_v<const DegMinVecDouble, T> ||
 	std::is_same_v<DegMinSecVecDouble, T> || std::is_same_v<const DegMinSecVecDouble, T>;
 
+/// __________________________________________________
+/// Template aliases
 using DecDegVecString = DecDegVec<string>;
 using DegMinVecString = DegMinVec<string>;
 using DegMinSecVecString = DegMinSecVec<string>;
+
+/// __________________________________________________
+/// Type Traits
+
+/// DecDegVecString
+template <typename T>
+struct isDecDegVecString : public std::false_type {};
+
+template <>
+struct isDecDegVecString<DegMinSecVecString> : public std::true_type {};
+
+template<typename T>
+constexpr bool isDecDegVecString_v = isDecDegVecString<T>::value;
+
+/// DegMinVecString
+template <typename T>
+struct isDegMinVecString : public std::false_type {};
+
+template <>
+struct isDegMinVecString<DegMinSecVecString> : public std::true_type {};
+
+template<typename T>
+constexpr bool isDegMinVecString_v = isDegMinVecString<T>::value;
+
+/// DegMinSecVecString
+template <typename T>
+struct isDegMinSecVecString : public std::false_type {};
+
+template <>
+struct isDegMinSecVecString<DegMinSecVecString> : public std::true_type {};
+
+template<typename T>
+constexpr bool isDegMinSecVecString_v = isDegMinSecVecString<T>::value;
 
 /// __________________________________________________
 /// Concept —— Rather feeble, but should work for now!
@@ -135,6 +172,7 @@ concept SVecType =
 	std::is_same_v<DegMinVecString, T> || std::is_same_v<const DegMinVecString, T> ||
 	std::is_same_v<DegMinSecVecString, T> || std::is_same_v<const DegMinSecVecString, T>;
 
+/// __________________________________________________
 /// __________________________________________________
 /// Class forward declarations
 enum class CoordType : char;
