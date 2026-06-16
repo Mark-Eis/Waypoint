@@ -139,7 +139,7 @@ template <typename T>
 struct isDecDegVecString : public std::false_type {};
 
 template <>
-struct isDecDegVecString<DegMinSecVecString> : public std::true_type {};
+struct isDecDegVecString<DecDegVecString> : public std::true_type {};
 
 template<typename T>
 constexpr bool isDecDegVecString_v = isDecDegVecString<T>::value;
@@ -149,7 +149,7 @@ template <typename T>
 struct isDegMinVecString : public std::false_type {};
 
 template <>
-struct isDegMinVecString<DegMinSecVecString> : public std::true_type {};
+struct isDegMinVecString<DegMinVecString> : public std::true_type {};
 
 template<typename T>
 constexpr bool isDegMinVecString_v = isDegMinVecString<T>::value;
