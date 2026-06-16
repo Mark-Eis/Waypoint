@@ -328,8 +328,8 @@ class CoordletNew {
 	public:
 		explicit CoordletNew(T&&, const vector<bool>);
 		CoordletNew(const CoordletNew&) = delete;						// Disallow copying
-		CoordletNew& operator=(const CoordletNew&) = delete;			//  ——— ditto ———
-		CoordletNew(CoordletNew&&) = delete;							// Disallow transfer ownership
+		CoordletNew& operator=(const CoordletNew&) = delete;				//  ——— ditto ———
+		CoordletNew(CoordletNew&&) = delete;								// Disallow transfer ownership
 		CoordletNew& operator=(CoordletNew&&) = delete;					// Disallow moving
 //		virtual ~CoordletNew() = default;
 		virtual ~CoordletNew() { _ctrsgn(typeid(*this), false); }
@@ -337,10 +337,6 @@ class CoordletNew {
 		void convert(CoordType);
 		template<SVecType U>
 		U format() const;
-//		void suffix_latlon(vector<string>&) const;
-		void suffix_latlon(SVecType auto&) const;
-//		void suffix_nesw(vector<string>&) const;
-		void suffix_nesw(SVecType auto&) const;
 		const vector<bool> validate() const;
 		void report() const;												// Temporary —— delete
 };
@@ -353,8 +349,8 @@ class CoordletNew {
 class CrdWptBaseNew {
 	public:
 		explicit CrdWptBaseNew();
-		CrdWptBaseNew(const CrdWptBaseNew&) = delete;					// Disallow copying
-		CrdWptBaseNew& operator=(const CrdWptBaseNew&) = delete;		//  ——— ditto ———
+		CrdWptBaseNew(const CrdWptBaseNew&) = delete;						// Disallow copying
+		CrdWptBaseNew& operator=(const CrdWptBaseNew&) = delete;			//  ——— ditto ———
 		CrdWptBaseNew(CrdWptBaseNew&&) = delete;							// Disallow transfer ownership
 		CrdWptBaseNew& operator=(CrdWptBaseNew&&) = delete;				// Disallow moving
 		virtual ~CrdWptBaseNew() = 0;
@@ -384,7 +380,6 @@ class CoordsNew : public CrdWptBaseNew {
 
 		void convert(CoordType);
 		vector<string> format(CoordType) const;
-		vector<string> format_switch(CoordType) const;
 //		template<SVecType U>
 //		U format() const;										// Someday…?
 		const bool validate() const;
