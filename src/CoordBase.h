@@ -357,7 +357,7 @@ class CrdWptBaseNew {
 
 		virtual void convert(CoordType) = 0;
 		virtual vector<string> format(CoordType) const = 0;
-		virtual const bool validate() const = 0;
+		virtual const vector<bool> validate() const = 0;
 		virtual void report() const = 0;							// Temporary —— delete
 };
 
@@ -382,7 +382,7 @@ class CoordsNew : public CrdWptBaseNew {
 		vector<string> format(CoordType) const;
 //		template<SVecType U>
 //		U format() const;										// Someday…?
-		const bool validate() const;
+		const vector<bool> validate() const;
 		void report() const;										// Temporary —— delete
 };
 

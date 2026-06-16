@@ -496,16 +496,10 @@ vector<string> CoordsNew<T>::format(CoordType required_type) const
 /// __________________________________________________
 /// Validation call entry point -- public
 template<DVecType T>
-const bool CoordsNew<T>::validate() const							//	¡¡¡—— NB return type -> const vector<bool> ——!!!
+const vector<bool> CoordsNew<T>::validate() const							//	¡¡¡—— NB return type -> const vector<bool> ——!!!
 {
 	fmt::print("@CoordsNew<T>::validate()\n");
-	auto valid { cdlt.validate() };									//	¡¡¡—— Temporary solution ——!!
-
-//	return cdlt.validate();											//	¡¡¡—— All that's needed! ——!!!
-
-//	static_cast<NumericVector>(nv).attr("valid") = valid;						// -> validatecoords(const NumericVector, const bool = true)
-	return ( std::all_of(valid.begin(), valid.end(), [](auto i){ return i; } ));	// -> responsibility of calling function
-
+	return cdlt.validate();
 }
 
 /// __________________________________________________
@@ -907,8 +901,7 @@ bool revalidate(const T t)
 	if constexpr (std::is_same_v<NumericVector, T>) { 
 		auto valid { coordsmaker(t)->validate() };
 		static_cast<NumericVector>(t).attr("valid") = valid; 
-		if (!valid)
-//		if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; })) // enable once CoordsNew.validate() -> vector<bool> 
+		if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; }))
 			warning("Revalidation found invalid coords!");
 		else
 			warning("Coords revalidated!");
@@ -1123,7 +1116,8 @@ NumericVector as_coords(NumericVector object, int fmt = 1)
 {
 //	fmt::print("{}@as_coords(NumericVector, int); fmt={}\n", exportstr, fmt);
 	object.attr("fmt") = fmt;
-	Coords{ object }.validate();
+	auto valid = coordsmaker(object)->validate();
+	object.attr("valid") = valid;
 	object.attr("class") = "coords";
 	return object;
 }
@@ -1201,7 +1195,7 @@ NumericVector validatecoords(const NumericVector x, const bool force = true)
 	checkinherits(x, "coords");
 	if (force)	{			
 		auto valid { coordsmaker(x)->validate() };
-		if (!valid) {
+		if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; })) {
 			warning("Validation of coords failed in Mimiland!");
 			static_cast<NumericVector>(x).attr("valid") = valid;
 		}
