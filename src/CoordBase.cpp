@@ -464,7 +464,7 @@ CoordletNew<T>::CoordletNew(T&& _dv, const vector<bool> _latlon) :
 }
 
 /// __________________________________________________
-/// Format dv as vector<string> (SVecType?) for printing
+/// Format dv as SVecType for printing
 template<DVecType T> template<SVecType U>
 U CoordletNew<T>::format() const
 {
@@ -746,12 +746,12 @@ void CoordsNew<T>::report() const
 
 /// __________________________________________________
 /// Make Coords<DVecType>
-unique_ptr<CrdWptBaseNew> coordsmaker(CoordType type, NumericVector nv)
+unique_ptr<CrdWptBaseNew> coordsmaker(NumericVector nv)
 {
-	fmt::print("@coordsmaker(CoordType, NumericVector); {}, &nv {}, &nv[1] {}\n", type, address(nv), address(nv[0]));
+	fmt::print("@coordsmaker(NumericVector); {}, &nv {}, &nv[0] {}\n", get_coordtype(nv), address(nv), address(nv[0]));
 	using enum CoordType;
 	const auto latlon { get_vec_attr<NumericVector, bool>(nv, "latlon") };
-	switch (type)
+	switch (get_coordtype(nv))
 	{
 		case decdeg:
 			return make_unique<CoordsNew<DecDegVecDouble>>( DecDegVecDouble{ nv }, latlon);
@@ -763,7 +763,7 @@ unique_ptr<CrdWptBaseNew> coordsmaker(CoordType type, NumericVector nv)
 			return make_unique<CoordsNew<DegMinSecVecDouble>>( DegMinSecVecDouble{ nv }, latlon );
 
 		default:
-			stop("coordsmaker(CoordType, NumericVector) my bad");
+			stop("coordsmaker(NumericVector) my bad");
 	}
 }
 
@@ -893,7 +893,7 @@ bool revalidate(const T t)
 	fmt::print("@revalidate<NumericVector_or_DataFrame>(const T); T: {}\n", demangle(typeid(t)));
 
 	if constexpr (std::is_same_v<NumericVector, T>) { 
-		auto valid { coordsmaker(get_coordtype(t), t)->validate() };
+		auto valid { coordsmaker(t)->validate() };
 		static_cast<NumericVector>(t).attr("valid") = valid; 
 		if (!valid)
 //		if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; })) // enable once CoordsNew.validate() -> vector<bool> 
@@ -1094,7 +1094,7 @@ NumericVector CoordsNewTest(NumericVector object)
 	CoordType type = get_coordtype(object);
 	fmt::print("{}@CoordsNewTest(NumericVector); fmt {}, CoordType {}\n", exportstr, get_fmt_attribute(object), type);
 
-	auto Coords_ptr { unique_ptr<CrdWptBaseNew>{ coordsmaker(type, object) } };
+	auto Coords_ptr { unique_ptr<CrdWptBaseNew>{ coordsmaker(object) } };
 	Coords_ptr->report();
 	Coords_ptr->convert(CoordType::decdeg);
 	Coords_ptr->validate();
@@ -1146,7 +1146,7 @@ NumericVector latlon(NumericVector cd, LogicalVector value)
 		stop("value must be either length 1 or length(cd)");
 	else
 		cd.attr("latlon") = value;
-	auto valid { coordsmaker(get_coordtype(cd), cd)->validate() };
+	auto valid { coordsmaker(cd)->validate() };
 	cd.attr("valid") = valid; 
 	return cd;
 }
@@ -1158,7 +1158,7 @@ NumericVector latlon(NumericVector cd, LogicalVector value)
 CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validate = true, int fmt = 0)
 {
 	fmt::print("{}@formatcoords(NumericVector, bool, bool, int); usenames: {}, validate: {}, fmt: {}\n", exportstr, usenames, validate, fmt);
-	fmt::print("{}@Iformatcoords(NumericVector, bool, bool, int); &x {}, &x[1] {}\n", exportstr, address(x), address(x[0]));
+	fmt::print("{}@Iformatcoords(NumericVector, bool, bool, int); &x {}, &x[0] {}\n", exportstr, address(x), address(x[0]));
 
 	checkinherits(x, "coords");
 	if(!x.size())
@@ -1169,8 +1169,8 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validat
 
 	CoordType ct_current { get_coordtype(x) };
 	CoordType ct_required { fmt ? get_coordtype(fmt) : ct_current };
-	vector sv_out{ coordsmaker(ct_current, x)->format(ct_required) };
-/*	auto coordsnew{ coordsmaker(ct_current, x) };
+	vector sv_out{ coordsmaker(x)->format(ct_required) };
+/*	auto coordsnew{ coordsmaker(x) };
 	auto u_ptr { coordsnew->formatNew(ct_required) };
 	vector sv_out{ *u_ptr };
 */
@@ -1191,7 +1191,7 @@ NumericVector validatecoords(const NumericVector x, const bool force = true)
 	fmt::print("{}@validatecoords(const NumericVector, const bool); force: {}\n", exportstr, force);
 	checkinherits(x, "coords");
 	if (force)	{			
-		auto valid { coordsmaker(get_coordtype(x), x)->validate() };
+		auto valid { coordsmaker(x)->validate() };
 		if (!valid) {
 			warning("Validation of coords failed in Mimiland!");
 			static_cast<NumericVector>(x).attr("valid") = valid;

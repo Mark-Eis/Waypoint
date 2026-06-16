@@ -521,8 +521,17 @@ constexpr bool is_concoords_v = is_concoords<T>::value;
 
 
 /// __________________________________________________
+/// Concept —— unique_ptr to CoordsNew<DVecType>
+template <typename T>
+concept unique_ptr_CoordsNew_DVecType = 
+	std::is_same_v<unique_ptr<CoordsNew<DecDegVecDouble>>, T> ||
+	std::is_same_v<unique_ptr<CoordsNew<DegMinVecDouble>>, T> ||
+	std::is_same_v<unique_ptr<CoordsNew<DegMinSecVecDouble>>, T>;
+
+
+/// __________________________________________________
 /// Make Coords<DVecType>
-unique_ptr<CrdWptBaseNew> coordsmaker(CoordType, NumericVector);
+unique_ptr<CrdWptBaseNew> coordsmaker(NumericVector);
 
 
 /// __________________________________________________
