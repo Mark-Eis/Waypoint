@@ -38,10 +38,41 @@ const string demangle(const std::type_info&);
 
 /// __________________________________________________
 /// __________________________________________________
+/// Type Traits
+
+/// NumericVector
+template <typename T>
+struct isNumericVector : public std::false_type {};
+
+template <>
+struct isNumericVector<NumericVector> : public std::true_type {};
+
+template<typename T>
+constexpr bool isNumericVector_v = isNumericVector<T>::value;
+
+/// DataFrame
+template <typename T>
+struct isDataFrame : public std::false_type {};
+
+template <>
+struct isDataFrame<DataFrame> : public std::true_type {};
+
+template<typename T>
+constexpr bool isDataFrame_v = isDataFrame<T>::value;
+
+/// __________________________________________________
+/// Concept
+template<typename T>
+concept NumericVector_or_DataFrame = 
+	isNumericVector_v<T> || isDataFrame_v<T>;
+
+/// __________________________________________________
+/// __________________________________________________
 /// Class and Function declarations
 
 /// __________________________________________________
 /// __________________________________________________
+/// DVecType and SVecType
 
 template<typename T>
 struct DecDegVec : public vector<T> {
@@ -212,13 +243,6 @@ concept SVecType =
 /// Class forward declarations
 enum class CoordType : char;
 class Waypoints;
-
-/// __________________________________________________
-/// Concept
-template<typename T>
-concept NumericVector_or_DataFrame = 
-	std::is_same_v<NumericVector, T> || std::is_same_v<const NumericVector, T> ||
-	std::is_same_v<DataFrame, T> || std::is_same_v<const DataFrame, T>;
 
 
 /// __________________________________________________
