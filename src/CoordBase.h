@@ -46,70 +46,70 @@ const string demangle(const std::type_info&);
 
 template<typename T>
 struct DecDegVec : public vector<T> {
-	DecDegVec(const DecDegVec& t) = default;									// copy constructor
-	DecDegVec(const vector<T>& t) : vector<T>{ t }							// copy constructor - not defaultable
+	DecDegVec(const DecDegVec& t) = default;										// copy constructor
+	DecDegVec(const vector<T>& t) : vector<T>{ t }								// copy constructor - not defaultable
 		{ _ctrsgn(typeid(*this)); fmt::print("\t(const vector<T>&)\n"); }
-	DecDegVec(const NumericVector t) : vector<T>{ as<vector<double>>(t) }	// copy constructor - not defaultable
+	DecDegVec(const NumericVector t) : vector<T>{ as<vector<double>>(t) }		// copy constructor - not defaultable
 		{ _ctrsgn(typeid(*this)); fmt::print("\t(const NumericVector&)\n"); }
 
-	DecDegVec& operator=(const DecDegVec&) = default;						// copy assignment
+	DecDegVec& operator=(const DecDegVec&) = default;							// copy assignment
 	DecDegVec& operator=(const vector<T>&) = delete;							// copy assignment - not defaultable
-	DecDegVec& operator=(const NumericVector) = delete;						// copy assignment - not defaultable
+	DecDegVec& operator=(const NumericVector) = delete;							// copy assignment - not defaultable
 
-	DecDegVec(DecDegVec&& t) = default;										// move constructor
-	DecDegVec(vector<T>&& t) : vector<T>{ std::move(t) }						// move constructor - not defaultable
+	DecDegVec(DecDegVec&& t) = default;											// move constructor
+	DecDegVec(vector<T>&& t) : vector<T>{ std::move(t) }							// move constructor - not defaultable
 		{ _ctrsgn(typeid(*this)); fmt::print("\t(vector<T>&&)\n"); }
-	DecDegVec(NumericVector&& t) = delete;									// move constructor - not defaultable
+	DecDegVec(NumericVector&& t) = delete;										// move constructor - not defaultable
 
-	DecDegVec& operator=(DecDegVec&&) = default;								// move assignment
-	DecDegVec& operator=(vector<T>&&) = delete;								// move assignment - not defaultable
-	DecDegVec& operator=(NumericVector&&) = delete;							// move assignment - not defaultable
+	DecDegVec& operator=(DecDegVec&&) = default;									// move assignment
+	DecDegVec& operator=(vector<T>&&) = delete;									// move assignment - not defaultable
+	DecDegVec& operator=(NumericVector&&) = delete;								// move assignment - not defaultable
 	~DecDegVec() { _ctrsgn(typeid(*this), false); };
 };
 
 template<typename T>
 struct DegMinVec : public vector<T> {
-	DegMinVec(const DegMinVec& t) = default;									// copy constructor
-	DegMinVec(const vector<T>& t) : vector<T>{ t }							// copy constructor - not defaultable
+	DegMinVec(const DegMinVec& t) = default;										// copy constructor
+	DegMinVec(const vector<T>& t) : vector<T>{ t }								// copy constructor - not defaultable
 		{ _ctrsgn(typeid(*this)); fmt::print("\t(const vector<T>&)\n"); }
-	DegMinVec(const NumericVector t) : vector<T>{ as<vector<double>>(t) }	// copy constructor - not defaultable
+	DegMinVec(const NumericVector t) : vector<T>{ as<vector<double>>(t) }		// copy constructor - not defaultable
 		{ _ctrsgn(typeid(*this)); fmt::print("\t(const NumericVector&)\n"); }
 
-	DegMinVec& operator=(const DegMinVec&) = default;						// copy assignment
-	DegMinVec& operator=(const vector<T>&) = delete;						// copy assignment - not defaultable
-	DegMinVec& operator=(const NumericVector) = delete;						// copy assignment - not defaultable
+	DegMinVec& operator=(const DegMinVec&) = default;							// copy assignment
+	DegMinVec& operator=(const vector<T>&) = delete;							// copy assignment - not defaultable
+	DegMinVec& operator=(const NumericVector) = delete;							// copy assignment - not defaultable
 
-	DegMinVec(DegMinVec&& t) = default;										// move constructor
-	DegMinVec(vector<T>&& t) : vector<T>{ std::move(t) }						// move constructor - not defaultable
+	DegMinVec(DegMinVec&& t) = default;											// move constructor
+	DegMinVec(vector<T>&& t) : vector<T>{ std::move(t) }							// move constructor - not defaultable
 		{ _ctrsgn(typeid(*this)); fmt::print("\t(vector<T>&&)\n"); }
-	DegMinVec(NumericVector&& t) = delete;									// move constructor - not defaultable
+	DegMinVec(NumericVector&& t) = delete;										// move constructor - not defaultable
 
-	DegMinVec& operator=(DegMinVec&&) = default;								// move assignment
-	DegMinVec& operator=(vector<T>&&) = delete;								// move assignment - not defaultable
-	DegMinVec& operator=(NumericVector&&) = delete;							// move assignment - not defaultable
+	DegMinVec& operator=(DegMinVec&&) = default;									// move assignment
+	DegMinVec& operator=(vector<T>&&) = delete;									// move assignment - not defaultable
+	DegMinVec& operator=(NumericVector&&) = delete;								// move assignment - not defaultable
 	DegMinVec() { _ctrsgn(typeid(*this), false); };
 };
 
 template<typename T>
 struct DegMinSecVec : public vector<T> {
-	DegMinSecVec(const DegMinSecVec& t) = default;							// copy constructor
-	DegMinSecVec(const vector<T>& t) : vector<T>{ t }						// copy constructor - not defaultable
+	DegMinSecVec(const DegMinSecVec& t) = default;								// copy constructor
+	DegMinSecVec(const vector<T>& t) : vector<T>{ t }							// copy constructor - not defaultable
 		{ _ctrsgn(typeid(*this)); fmt::print("\t(const vector<T>&)\n"); }
 	DegMinSecVec(const NumericVector t) : vector<T>{ as<vector<double>>(t) }	// copy constructor - not defaultable
 		{ _ctrsgn(typeid(*this)); fmt::print("\t(const NumericVector&)\n"); }
 
-	DegMinSecVec& operator=(const DegMinSecVec&) = default;					// copy assignment
-	DegMinSecVec& operator=(const vector<T>&) = delete;						// copy assignment - not defaultable
-	DegMinSecVec& operator=(const NumericVector) = delete;					// copy assignment - not defaultable
+	DegMinSecVec& operator=(const DegMinSecVec&) = default;						// copy assignment
+	DegMinSecVec& operator=(const vector<T>&) = delete;							// copy assignment - not defaultable
+	DegMinSecVec& operator=(const NumericVector) = delete;						// copy assignment - not defaultable
 
-	DegMinSecVec(DegMinSecVec&& t) = default;								// move constructor
-	DegMinSecVec(vector<T>&& t) : vector<T>{ std::move(t) }					// move constructor - not defaultable
+	DegMinSecVec(DegMinSecVec&& t) = default;									// move constructor
+	DegMinSecVec(vector<T>&& t) : vector<T>{ std::move(t) }						// move constructor - not defaultable
 		{ _ctrsgn(typeid(*this)); fmt::print("\t(vector<T>&&)\n"); }
-	DegMinSecVec(NumericVector&& t) = delete;								// move constructor - not defaultable
+	DegMinSecVec(NumericVector&& t) = delete;									// move constructor - not defaultable
 
-	DegMinSecVec& operator=(DegMinSecVec&&) = default;						// move assignment
-	DegMinSecVec& operator=(vector<T>&&) = delete;							// move assignment - not defaultable
-	DegMinSecVec& operator=(NumericVector&&) = delete;						// move assignment - not defaultable
+	DegMinSecVec& operator=(DegMinSecVec&&) = default;							// move assignment
+	DegMinSecVec& operator=(vector<T>&&) = delete;								// move assignment - not defaultable
+	DegMinSecVec& operator=(NumericVector&&) = delete;							// move assignment - not defaultable
 	DegMinSecVec() { _ctrsgn(typeid(*this), false); };
 };
 
@@ -343,7 +343,7 @@ class Coordlet {
 
 	public:
 		explicit Coordlet(T&&, const vector<bool>);
-		Coordlet(const Coordlet&) = delete;						// Disallow copying
+		Coordlet(const Coordlet&) = delete;							// Disallow copying
 		Coordlet& operator=(const Coordlet&) = delete;				//  ——— ditto ———
 		Coordlet(Coordlet&&) = delete;								// Disallow transfer ownership
 		Coordlet& operator=(Coordlet&&) = delete;					// Disallow moving
@@ -355,7 +355,7 @@ class Coordlet {
 		template<SVecType U>
 		U format() const;
 		const vector<bool> validate() const;
-		void report() const;												// Temporary —— delete
+		void report() const;											// Temporary —— delete
 };
 
 
@@ -386,17 +386,17 @@ class Coords : public CrdWptBase {
 		const Coordlet<T> cdlt;
 	public:
 		explicit Coords(vector<double>, const vector<bool>);
-		Coords(const Coords&) = delete;					// Disallow copying
-		Coords& operator=(const Coords&) = delete;			//  ——— ditto ———
-		Coords(Coords&&) = delete;						// Disallow transfer ownership
-		Coords& operator=(Coords&&) = delete;				// Disallow moving
+		Coords(const Coords&) = delete;								// Disallow copying
+		Coords& operator=(const Coords&) = delete;					//  ——— ditto ———
+		Coords(Coords&&) = delete;									// Disallow transfer ownership
+		Coords& operator=(Coords&&) = delete;						// Disallow moving
 //		~Coords() = default;
 		~Coords() { _ctrsgn(typeid(*this), false); }
 
 		const vector<double> convert(CoordType) const;
 		vector<string> format(CoordType) const;
 		const vector<bool> validate() const;
-		void report() const;										// Temporary —— delete
+		void report() const;											// Temporary —— delete
 };
 
 
