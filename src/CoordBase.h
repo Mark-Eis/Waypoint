@@ -493,7 +493,7 @@ bool valid_ll(const DataFrame);
 /// __________________________________________________
 /// Exported functions
 NumericVector as_coords(NumericVector, int);
-NumericVector convertcoords(NumericVector, int);
+NumericVector convertcoords(const NumericVector, int);
 NumericVector latlon(NumericVector, LogicalVector);
 NumericVector validatecoords(const NumericVector, const bool);
 CharacterVector formatcoords(NumericVector, bool, bool, int);

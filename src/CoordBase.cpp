@@ -898,7 +898,7 @@ NumericVector CoordsNewTest(NumericVector object)
 // [[Rcpp::export(name = "as_coords.default")]]
 NumericVector as_coords(NumericVector object, int fmt = 1)
 {
-//	fmt::print("{}@as_coords(NumericVector, int); fmt={}\n", exportstr, fmt);
+	fmt::print("{}@as_coords(NumericVector, int); fmt={}\n", exportstr, fmt);
 	object.attr("fmt") = fmt;
 	auto valid = coordsmaker(object)->validate();
 	object.attr("valid") = valid;
@@ -910,7 +910,7 @@ NumericVector as_coords(NumericVector object, int fmt = 1)
 /// Convert coords - S3 method convert.coords()
 //' @rdname convert
 // [[Rcpp::export(name = "convert.coords")]]
-NumericVector convertcoords(NumericVector x, int fmt)
+NumericVector convertcoords(const NumericVector x, int fmt)
 {
 	checkinherits(x, "coords");
 	CoordType type = get_coordtype(x);
