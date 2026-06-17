@@ -157,9 +157,9 @@ constexpr bool isDegMinSecVecDouble_v = isDegMinSecVecDouble<T>::value;
 /// Concept —— Rather feeble, but should work for now!
 template <typename T>
 concept DVecType = 
-	std::is_same_v<DecDegVecDouble, T> || std::is_same_v<const DecDegVecDouble, T> ||
-	std::is_same_v<DegMinVecDouble, T> || std::is_same_v<const DegMinVecDouble, T> ||
-	std::is_same_v<DegMinSecVecDouble, T> || std::is_same_v<const DegMinSecVecDouble, T>;
+	isDecDegVecDouble_v<T> ||
+	isDegMinVecDouble_v<T> ||
+	isDegMinSecVecDouble_v<T>;
 
 /// __________________________________________________
 /// Template aliases
@@ -204,9 +204,9 @@ constexpr bool isDegMinSecVecString_v = isDegMinSecVecString<T>::value;
 /// Concept —— Rather feeble, but should work for now!
 template <typename T>
 concept SVecType = 
-	std::is_same_v<DecDegVecString, T> || std::is_same_v<const DecDegVecString, T> ||
-	std::is_same_v<DegMinVecString, T> || std::is_same_v<const DegMinVecString, T> ||
-	std::is_same_v<DegMinSecVecString, T> || std::is_same_v<const DegMinSecVecString, T>;
+	isDecDegVecString_v<T> ||
+	isDegMinVecString_v<T> ||
+	isDegMinSecVecString_v<T>;
 
 /// __________________________________________________
 /// __________________________________________________
@@ -272,21 +272,6 @@ inline int coordtype_to_int(CoordType);
 
 inline string cardpoint(bool, bool);
 inline string cardi_b(bool);
-
-
-/// __________________________________________________
-/// Concept
-template<typename T>
-concept Coords_or_Waypoints =
-	requires (T t) {
-		t.convert(CoordType::decdeg);
-		t.convert(CoordType::degmin);
-		t.convert(CoordType::degminsec);
-		t.format(CoordType::decdeg);
-		t.format(CoordType::degmin);
-		t.format(CoordType::degminsec);
-		t.validate();
-	};
 
 
 /// __________________________________________________
@@ -439,17 +424,8 @@ constexpr bool is_concoords_v = is_concoords<T>::value;
 
 
 /// __________________________________________________
-/// Concept —— unique_ptr to CoordsNew<DVecType>
-template <typename T>
-concept unique_ptr_CoordsNew_DVecType = 
-	std::is_same_v<unique_ptr<CoordsNew<DecDegVecDouble>>, T> ||
-	std::is_same_v<unique_ptr<CoordsNew<DegMinVecDouble>>, T> ||
-	std::is_same_v<unique_ptr<CoordsNew<DegMinSecVecDouble>>, T>;
-
-
 /// __________________________________________________
-/// __________________________________________________
-/// Make Coords<DVecType>
+/// Instantiate Coords<DVecType> object with unique_ptr to base
 unique_ptr<CrdWptBaseNew> coordsmaker(NumericVector);
 
 /*
