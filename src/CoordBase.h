@@ -363,15 +363,15 @@ class Coordlet {
 
 /// __________________________________________________
 /// __________________________________________________
-/// CrdWptBaseNew class
-class CrdWptBaseNew {
+/// CrdWptBase class
+class CrdWptBase {
 	public:
-		explicit CrdWptBaseNew();
-		CrdWptBaseNew(const CrdWptBaseNew&) = delete;						// Disallow copying
-		CrdWptBaseNew& operator=(const CrdWptBaseNew&) = delete;			//  ——— ditto ———
-		CrdWptBaseNew(CrdWptBaseNew&&) = delete;							// Disallow transfer ownership
-		CrdWptBaseNew& operator=(CrdWptBaseNew&&) = delete;				// Disallow moving
-		virtual ~CrdWptBaseNew() = 0;
+		explicit CrdWptBase();
+		CrdWptBase(const CrdWptBase&) = delete;						// Disallow copying
+		CrdWptBase& operator=(const CrdWptBase&) = delete;			//  ——— ditto ———
+		CrdWptBase(CrdWptBase&&) = delete;							// Disallow transfer ownership
+		CrdWptBase& operator=(CrdWptBase&&) = delete;				// Disallow moving
+		virtual ~CrdWptBase() = 0;
 
 		virtual const vector<double> convert(CoordType) const = 0;
 		virtual vector<string> format(CoordType) const = 0;
@@ -384,7 +384,7 @@ class CrdWptBaseNew {
 /// __________________________________________________
 /// CoordsNew class
 template<DVecType T>
-class CoordsNew : public CrdWptBaseNew {
+class CoordsNew : public CrdWptBase {
 		const Coordlet<T> cdlt;
 	public:
 		explicit CoordsNew(vector<double>, const vector<bool>);
@@ -424,7 +424,7 @@ constexpr bool is_concoords_v = is_concoords<T>::value;
 /// __________________________________________________
 /// __________________________________________________
 /// Instantiate Coords<DVecType> object with unique_ptr to base
-unique_ptr<CrdWptBaseNew> coordsmaker(NumericVector);
+unique_ptr<CrdWptBase> coordsmaker(NumericVector);
 
 /*
 /// __________________________________________________

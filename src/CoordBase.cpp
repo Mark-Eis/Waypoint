@@ -438,18 +438,18 @@ void Coordlet<T>::report() const
 
 /// __________________________________________________
 /// __________________________________________________
-/// CrdWptBaseNew class
+/// CrdWptBase class
 
 /// __________________________________________________
 /// Constructor
-CrdWptBaseNew::CrdWptBaseNew()
+CrdWptBase::CrdWptBase()
 {
 	_ctrsgn(typeid(*this)); fmt::print("\t()\n");
 }
 
 /// __________________________________________________
 /// Destructor
-CrdWptBaseNew::~CrdWptBaseNew()
+CrdWptBase::~CrdWptBase()
 {
 	_ctrsgn(typeid(*this), false);
 }
@@ -533,7 +533,7 @@ void CoordsNew<T>::report() const
 
 /// __________________________________________________
 /// Make Coords<DVecType>
-unique_ptr<CrdWptBaseNew> coordsmaker(NumericVector nv)
+unique_ptr<CrdWptBase> coordsmaker(NumericVector nv)
 {
 //	fmt::print("@coordsmaker(NumericVector); {}, &nv {}, &nv[0] {}\n", get_coordtype(nv), address(nv), address(nv[0]));
 	using enum CoordType;
@@ -884,7 +884,7 @@ NumericVector CoordsNewTest(NumericVector object)
 	CoordType type = get_coordtype(object);
 	fmt::print("{}@CoordsNewTest(NumericVector); fmt {}, CoordType {}\n", exportstr, get_fmt_attribute(object), type);
 
-	auto Coords_ptr { unique_ptr<CrdWptBaseNew>{ coordsmaker(object) } };
+	auto Coords_ptr { unique_ptr<CrdWptBase>{ coordsmaker(object) } };
 	Coords_ptr->report();
 	Coords_ptr->convert(CoordType::decdeg);
 	Coords_ptr->validate();
