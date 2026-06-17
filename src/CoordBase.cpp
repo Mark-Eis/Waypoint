@@ -338,6 +338,28 @@ CoordletNew<T>::CoordletNew(T&& _dv, const vector<bool> _latlon) :
 }
 
 /// __________________________________________________
+/// Switch CoordType to convert format
+template<DVecType T> template<DVecType U>
+void CoordletNew<T>::convert() const
+{
+	fmt::print("@CoordletNew<T>::convert<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
+	using enum CoordType;
+
+	T dv_out{ std::move(vector<double>(dv.size())) };
+
+	if constexpr (isDecDegVecDouble_v<U>)
+			transform(dv.begin(), dv.end(), dv_out.begin(), [this](auto n){ return ff->get_decdeg(n); });
+
+	else if constexpr (isDegMinVecDouble_v<U>)
+			transform(dv.begin(), dv.end(), dv_out.begin(), [this](auto n){ return ff->get_deg(n) * 1e2 + ff->get_decmin(n); });
+
+	else if constexpr (isDegMinSecVecDouble_v<U>)
+			transform(dv.begin(), dv.end(), dv_out.begin(), [this](auto n){ return ff->get_deg(n) * 1e4 + ff->get_min(n) * 1e2 + ff->get_sec(n); });
+
+	fmt::print("@ICoordletNew<T>::convert<U>() const; T: {}, U: {}; dv_out: {}\n", demangle(typeid(T)), demangle(typeid(U)), fmt::join(dv_out, ", "));
+}
+
+/// __________________________________________________
 /// Format dv as SVecType for printing
 template<DVecType T> template<SVecType U>
 U CoordletNew<T>::format() const
@@ -394,7 +416,7 @@ U CoordletNew<T>::format() const
 }
 
 /// __________________________________________________
-/// Validate CoordletNew::dv
+/// Validate CoordletNew<T>::dv
 template<DVecType T>
 const vector<bool> CoordletNew<T>::validate() const
 {
@@ -456,13 +478,29 @@ CoordsNew<T>::CoordsNew(vector<double> nv, const vector<bool> latlon) :
 }
 
 /// __________________________________________________
-/// Convert call entry point -- public
+/// convert call entry point -- public —— 				 				¡¡¡—— NB experimental, not expected to work ——!!!
 template<DVecType T>
-void CoordsNew<T>::convert(CoordType newtype)
+void CoordsNew<T>::convert(CoordType required_type) const
 {
-	fmt::print("@CoordsNew<T>::convert(CoordType); new type: {}\n", newtype);
-//	Coordlet{ nv }.convert(newtype);
-//	nv.attr("fmt") = coordtype_to_int(newtype);
+	fmt::print("@CoordsNew<T>::convert(CoordType) const; required type: {}\n", required_type);
+	using enum CoordType;
+
+	switch (required_type)
+	{
+		case decdeg:
+			cdlt.template convert<DecDegVecDouble>();
+			break;
+		case degmin:
+			cdlt.template convert<DegMinVecDouble>();
+			break;
+
+		case degminsec:
+			cdlt.template convert<DegMinSecVecDouble>();
+			break;
+
+		default:
+			stop("CoordsNew<T>::convert(CoordType) const my bad");
+	}
 }
 
 /// __________________________________________________
@@ -470,7 +508,7 @@ void CoordsNew<T>::convert(CoordType newtype)
 template<DVecType T>
 vector<string> CoordsNew<T>::format(CoordType required_type) const
 {
-	fmt::print("@CoordsNew<T>::format(CoordType); required type: {}\n", required_type);
+	fmt::print("@CoordsNew<T>::format(CoordType) const; required type: {}\n", required_type);
 	using enum CoordType;
 
 	switch (required_type)
@@ -485,7 +523,7 @@ vector<string> CoordsNew<T>::format(CoordType required_type) const
 			return cdlt.template format<DegMinSecVecString>();
 
 		default:
-			stop("CoordsNew<T>::format(CoordType) my bad");
+			stop("CoordsNew<T>::format(CoordType) const my bad");
 	}
 }
 
@@ -1127,11 +1165,12 @@ NumericVector convertcoords(NumericVector x, int fmt)
 	checkinherits(x, "coords");
 	CoordType type = get_coordtype(x);
 	CoordType newtype = get_coordtype(fmt);
-//	fmt::print("{}@convertcoords(NumericVector, int); from {} to {}\n", exportstr, type, newtype);
+	fmt::print("{}@convertcoords(NumericVector, int); from {} to {}\n", exportstr, type, newtype);
 	if (!check_valid(x))
 		stop("Invalid coords!");
 	if (newtype != type)
-		Coords{ x }.convert(newtype);
+//		Coords{ x }.convert(newtype);
+		coordsmaker(x)->convert(newtype);
 	else
 		Rcout << "\t—— fmt out == fmt in! ——\n\n";
 	return x;

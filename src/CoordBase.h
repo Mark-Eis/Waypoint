@@ -118,6 +118,39 @@ using DegMinVecDouble = DegMinVec<double>;
 using DegMinSecVecDouble = DegMinSecVec<double>;
 
 /// __________________________________________________
+/// Type Traits
+
+/// DecDegVecDouble
+template <typename T>
+struct isDecDegVecDouble : public std::false_type {};
+
+template <>
+struct isDecDegVecDouble<DecDegVecDouble> : public std::true_type {};
+
+template<typename T>
+constexpr bool isDecDegVecDouble_v = isDecDegVecDouble<T>::value;
+
+/// DegMinVecDouble
+template <typename T>
+struct isDegMinVecDouble : public std::false_type {};
+
+template <>
+struct isDegMinVecDouble<DegMinVecDouble> : public std::true_type {};
+
+template<typename T>
+constexpr bool isDegMinVecDouble_v = isDegMinVecDouble<T>::value;
+
+/// DegMinSecVecDouble
+template <typename T>
+struct isDegMinSecVecDouble : public std::false_type {};
+
+template <>
+struct isDegMinSecVecDouble<DegMinSecVecDouble> : public std::true_type {};
+
+template<typename T>
+constexpr bool isDegMinSecVecDouble_v = isDegMinSecVecDouble<T>::value;
+
+/// __________________________________________________
 /// Concept —— Rather feeble, but should work for now!
 template <typename T>
 concept DVecType = 
@@ -334,7 +367,8 @@ class CoordletNew {
 //		virtual ~CoordletNew() = default;
 		virtual ~CoordletNew() { _ctrsgn(typeid(*this), false); }
 
-		void convert(CoordType);
+		template<DVecType U>
+		void convert() const;
 		template<SVecType U>
 		U format() const;
 		const vector<bool> validate() const;
@@ -355,7 +389,7 @@ class CrdWptBaseNew {
 		CrdWptBaseNew& operator=(CrdWptBaseNew&&) = delete;				// Disallow moving
 		virtual ~CrdWptBaseNew() = 0;
 
-		virtual void convert(CoordType) = 0;
+		virtual void convert(CoordType) const = 0;
 		virtual vector<string> format(CoordType) const = 0;
 		virtual const vector<bool> validate() const = 0;
 		virtual void report() const = 0;							// Temporary —— delete
@@ -378,7 +412,7 @@ class CoordsNew : public CrdWptBaseNew {
 //		~CoordsNew() = default;
 		~CoordsNew() { _ctrsgn(typeid(*this), false); }
 
-		void convert(CoordType);
+		void convert(CoordType) const;
 		vector<string> format(CoordType) const;
 		const vector<bool> validate() const;
 		void report() const;										// Temporary —— delete
