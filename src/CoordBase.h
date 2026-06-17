@@ -448,7 +448,7 @@ NumericVector as_coords(NumericVector, int);
 NumericVector convertcoords(const NumericVector, int);
 NumericVector latlon(NumericVector, LogicalVector);
 NumericVector validatecoords(const NumericVector, const bool);
-CharacterVector formatcoords(NumericVector, bool, bool, int);
+CharacterVector formatcoords(const NumericVector, bool, bool, int);
 DataFrame as_waypointsdefault(DataFrame, int);
 DataFrame convertwaypoints(DataFrame, int);
 DataFrame validatewaypoints(DataFrame, bool);

@@ -952,7 +952,7 @@ NumericVector latlon(NumericVector cd, LogicalVector value)
 /// Format coords - S3 method format.coords()
 //' @rdname format
 // [[Rcpp::export(name = "format.coords")]]
-CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validate = true, int fmt = 0)
+CharacterVector formatcoords(const NumericVector x, bool usenames = true, bool validate = true, int fmt = 0)
 {
 	fmt::print("{}@formatcoords(NumericVector, bool, bool, int); usenames: {}, validate: {}, fmt: {}\n", exportstr, usenames, validate, fmt);
 	fmt::print("{}@Iformatcoords(NumericVector, bool, bool, int); &x {}, &x[0] {}\n", exportstr, address(x), address(x[0]));
