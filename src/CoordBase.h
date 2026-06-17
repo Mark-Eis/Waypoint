@@ -276,13 +276,13 @@ inline string cardi_b(bool);
 
 /// __________________________________________________
 /// __________________________________________________
-/// FamousFiveNew -- Templated and OO
+/// FamousFive -- Templated and OO
 
 /// __________________________________________________
 /// Abstract base class with pure virtual functions	
-struct FamousFiveNew0 {
-//	FamousFiveNew0() { _ctrsgn(typeid(*this)); };
-	virtual ~FamousFiveNew0() = 0;
+struct FamousFive0 {
+//	FamousFive0() { _ctrsgn(typeid(*this)); };
+	virtual ~FamousFive0() = 0;
 	virtual int get_deg(double x) const = 0;
 	virtual double get_decdeg(double x) const = 0;
 	virtual int get_min(double x) const = 0;
@@ -293,14 +293,14 @@ struct FamousFiveNew0 {
 /// __________________________________________________
 /// Default empty derived struct for SFINAE	
 template<DVecType type>
-struct FamousFiveNew final : FamousFiveNew0 {};
+struct FamousFive final : FamousFive0 {};
 
 /// __________________________________________________
 /// Specialised derived struct for decimal degrees	
 template<>
-struct FamousFiveNew<DecDegVecDouble> final : FamousFiveNew0 {
-//	FamousFiveNew<DecDegVecDouble>() { _ctrsgn(typeid(*this)); };
-	~FamousFiveNew<DecDegVecDouble>() { _ctrsgn(typeid(*this), false); };
+struct FamousFive<DecDegVecDouble> final : FamousFive0 {
+//	FamousFive<DecDegVecDouble>() { _ctrsgn(typeid(*this)); };
+	~FamousFive<DecDegVecDouble>() { _ctrsgn(typeid(*this), false); };
 	int get_deg(double x) const { return int(x); }
 	double get_decdeg(double x) const { return x; }
 	int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
@@ -311,9 +311,9 @@ struct FamousFiveNew<DecDegVecDouble> final : FamousFiveNew0 {
 /// __________________________________________________
 /// Specialised derived struct for degrees and minutes
 template<>
-struct FamousFiveNew<DegMinVecDouble> final : FamousFiveNew0 {
-//	FamousFiveNew<DegMinVecDouble>() { _ctrsgn(typeid(*this)); };
-	~FamousFiveNew<DegMinVecDouble>() { _ctrsgn(typeid(*this), false); };
+struct FamousFive<DegMinVecDouble> final : FamousFive0 {
+//	FamousFive<DegMinVecDouble>() { _ctrsgn(typeid(*this)); };
+	~FamousFive<DegMinVecDouble>() { _ctrsgn(typeid(*this), false); };
 	int get_deg(double x) const { return int(x / 1e2); }
 	double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
 	int get_min(double x) const { return int(x) % int(1e2); }
@@ -324,9 +324,9 @@ struct FamousFiveNew<DegMinVecDouble> final : FamousFiveNew0 {
 /// __________________________________________________
 /// Specialised derived struct for degrees, minutes and seconds
 template<>
-struct FamousFiveNew<DegMinSecVecDouble> final : FamousFiveNew0 {
-//	FamousFiveNew<DegMinSecVecDouble>() { _ctrsgn(typeid(*this)); };
-	~FamousFiveNew<DegMinSecVecDouble>() { _ctrsgn(typeid(*this), false); };
+struct FamousFive<DegMinSecVecDouble> final : FamousFive0 {
+//	FamousFive<DegMinSecVecDouble>() { _ctrsgn(typeid(*this)); };
+	~FamousFive<DegMinSecVecDouble>() { _ctrsgn(typeid(*this), false); };
 	int get_deg(double x) const { return int(x / 1e4); }
 	double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
 	int get_min(double x) const { return (int(x) % int(1e4)) / 1e2; }
@@ -341,7 +341,7 @@ struct FamousFiveNew<DegMinSecVecDouble> final : FamousFiveNew0 {
 /// CoordletNew class
 template<DVecType T>
 class CoordletNew {
-		unique_ptr<FamousFiveNew0> ff;
+		unique_ptr<FamousFive0> ff;
 		T dv;
 		const vector<bool> latlon;
 

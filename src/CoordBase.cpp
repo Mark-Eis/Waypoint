@@ -300,11 +300,11 @@ inline string cardi_b(bool negative)
 
 /// __________________________________________________
 /// __________________________________________________
-/// FamousFiveNew0 class
+/// FamousFive0 class
 
 /// __________________________________________________
 /// Destructor
-FamousFiveNew0::~FamousFiveNew0()
+FamousFive0::~FamousFive0()
 {
 	_ctrsgn(typeid(*this), false);
 }
@@ -318,7 +318,7 @@ FamousFiveNew0::~FamousFiveNew0()
 /// Constructor of CoordletNew
 template<DVecType T>
 CoordletNew<T>::CoordletNew(T&& _dv, const vector<bool> _latlon) :
-	ff { make_unique<FamousFiveNew<T>>() },
+	ff { make_unique<FamousFive<T>>() },
 	dv { static_cast<T&&>(_dv) },
 	latlon{ _latlon }
 {
