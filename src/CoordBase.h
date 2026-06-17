@@ -402,25 +402,6 @@ class Coords : public CrdWptBase {
 
 /// __________________________________________________
 /// __________________________________________________
-/// Concept —— Rather feeble, but should work for now!
-template <typename T>
-concept ConCoords = 
-	std::is_same_v<Coords<DecDegVecDouble>, T> || std::is_same_v<const Coords<DecDegVecDouble>, T> ||
-	std::is_same_v<Coords<DegMinVecDouble>, T> || std::is_same_v<const Coords<DegMinVecDouble>, T> ||
-	std::is_same_v<Coords<DegMinSecVecDouble>, T> || std::is_same_v<const Coords<DegMinSecVecDouble>, T>;
-
-template<typename T>
-struct is_concoords : std::false_type {};
-
-template<ConCoords T>
-struct is_concoords<T> : std::true_type {};
-
-template<typename T>
-constexpr bool is_concoords_v = is_concoords<T>::value;
-
-
-/// __________________________________________________
-/// __________________________________________________
 /// Instantiate Coords<DVecType> object with unique_ptr to base
 unique_ptr<CrdWptBase> coordsmaker(NumericVector);
 
