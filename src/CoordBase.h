@@ -212,7 +212,6 @@ concept SVecType =
 /// __________________________________________________
 /// Class forward declarations
 enum class CoordType : char;
-class Coordlet;
 class CrdWptBase;
 class Coords;
 class Waypoints;
@@ -336,23 +335,22 @@ struct FamousFive<DegMinSecVecDouble> final : FamousFive0 {
 
 
 /// __________________________________________________
-/// New Business —— !!!!!!!!!!!!!!
 /// __________________________________________________
-/// CoordletNew class
+/// Coordlet class
 template<DVecType T>
-class CoordletNew {
+class Coordlet {
 		unique_ptr<FamousFive0> ff;
 		T dv;
 		const vector<bool> latlon;
 
 	public:
-		explicit CoordletNew(T&&, const vector<bool>);
-		CoordletNew(const CoordletNew&) = delete;						// Disallow copying
-		CoordletNew& operator=(const CoordletNew&) = delete;				//  ——— ditto ———
-		CoordletNew(CoordletNew&&) = delete;								// Disallow transfer ownership
-		CoordletNew& operator=(CoordletNew&&) = delete;					// Disallow moving
-//		virtual ~CoordletNew() = default;
-		virtual ~CoordletNew() { _ctrsgn(typeid(*this), false); }
+		explicit Coordlet(T&&, const vector<bool>);
+		Coordlet(const Coordlet&) = delete;						// Disallow copying
+		Coordlet& operator=(const Coordlet&) = delete;				//  ——— ditto ———
+		Coordlet(Coordlet&&) = delete;								// Disallow transfer ownership
+		Coordlet& operator=(Coordlet&&) = delete;					// Disallow moving
+//		virtual ~Coordlet() = default;
+		virtual ~Coordlet() { _ctrsgn(typeid(*this), false); }
 
 		template<DVecType U>
 		const U convert() const;
@@ -387,7 +385,7 @@ class CrdWptBaseNew {
 /// CoordsNew class
 template<DVecType T>
 class CoordsNew : public CrdWptBaseNew {
-		const CoordletNew<T> cdlt;
+		const Coordlet<T> cdlt;
 	public:
 		explicit CoordsNew(vector<double>, const vector<bool>);
 		CoordsNew(const CoordsNew&) = delete;					// Disallow copying

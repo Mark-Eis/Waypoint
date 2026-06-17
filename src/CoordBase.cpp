@@ -312,12 +312,12 @@ FamousFive0::~FamousFive0()
 /// __________________________________________________
 /// New Business —— !!!!!!!!!!!!!!
 /// __________________________________________________
-/// CoordletNew class
+/// Coordlet class
 
 /// __________________________________________________
-/// Constructor of CoordletNew
+/// Constructor of Coordlet
 template<DVecType T>
-CoordletNew<T>::CoordletNew(T&& _dv, const vector<bool> _latlon) :
+Coordlet<T>::Coordlet(T&& _dv, const vector<bool> _latlon) :
 	ff { make_unique<FamousFive<T>>() },
 	dv { static_cast<T&&>(_dv) },
 	latlon{ _latlon }
@@ -328,9 +328,9 @@ CoordletNew<T>::CoordletNew(T&& _dv, const vector<bool> _latlon) :
 /// __________________________________________________
 /// Switch CoordType to convert format
 template<DVecType T> template<DVecType U>
-const U CoordletNew<T>::convert() const
+const U Coordlet<T>::convert() const
 {
-	fmt::print("@CoordletNew<T>::convert<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
+	fmt::print("@Coordlet<T>::convert<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
 	using enum CoordType;
 
 	U dv_out{ std::move(vector<double>(dv.size())) };
@@ -344,22 +344,22 @@ const U CoordletNew<T>::convert() const
 	else if constexpr (isDegMinSecVecDouble_v<U>)
 			transform(dv.begin(), dv.end(), dv_out.begin(), [this](auto n){ return ff->get_deg(n) * 1e4 + ff->get_min(n) * 1e2 + ff->get_sec(n); });
 
-	fmt::print("@ICoordletNew<T>::convert<U>() const; T: {}, U: {}; dv_out: {}\n", demangle(typeid(T)), demangle(typeid(U)), fmt::join(dv_out, ", "));
+	fmt::print("@ICoordlet<T>::convert<U>() const; T: {}, U: {}; dv_out: {}\n", demangle(typeid(T)), demangle(typeid(U)), fmt::join(dv_out, ", "));
 	return dv_out;
 }
 
 /// __________________________________________________
 /// Format dv as SVecType for printing
 template<DVecType T> template<SVecType U>
-U CoordletNew<T>::format() const
+U Coordlet<T>::format() const
 {
-//	fmt::print("@CoordletNew<T>::format<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
+//	fmt::print("@Coordlet<T>::format<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
 	U sv_out{ std::move(vector<string>(dv.size())) };
 	vector<bool>::const_iterator ll_it { latlon.begin() };
 	const auto ll_size { latlon.size() };
 
 	if constexpr (isDecDegVecString_v<U>) {
-//		fmt::print("@ICoordletNew<T>::format<U>() const; T: {}, if constexpr (isDecDegVecString_v<U>)\n", demangle(typeid(T)));
+//		fmt::print("@ICoordlet<T>::format<U>() const; T: {}, if constexpr (isDecDegVecString_v<U>)\n", demangle(typeid(T)));
 		transform(dv.begin(), dv.end(), sv_out.begin(), [this](auto n)
 			{ return fmt::format("{:>{}.{}f}\u00B0", ff->get_decdeg(n), 11, 6); });	
 
@@ -372,13 +372,13 @@ U CoordletNew<T>::format() const
 				transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda2);
 
 	} else if constexpr (isDegMinVecString_v<U>) {
-//		fmt::print("@IICoordletNew<T>::format<U>() const; T: {}, if constexpr (isDegMinVecString_v<U>)\n", demangle(typeid(T)));
+//		fmt::print("@IICoordlet<T>::format<U>() const; T: {}, if constexpr (isDegMinVecString_v<U>)\n", demangle(typeid(T)));
 		transform(dv.begin(), dv.end(), sv_out.begin(), [this](auto n)
 			{ return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) + 
 					 fmt::format("{:0>{}.{}f}\u2032", fabs(ff->get_decmin(n)), 7, 4);
 			});	
 	} else if constexpr (isDegMinSecVecString_v<U>) {
-//		fmt::print("@IIICoordletNew<T>::format<U>() const; T: {}, if constexpr (isDegMinSecVecString_v <U>)\n", demangle(typeid(T)));
+//		fmt::print("@IIICoordlet<T>::format<U>() const; T: {}, if constexpr (isDegMinSecVecString_v <U>)\n", demangle(typeid(T)));
 		transform(dv.begin(), dv.end(), sv_out.begin(), [this](auto n)
 			{ return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) +
 					 fmt::format("{:0>{}}\u2032", abs(ff->get_min(n)), 2) +
@@ -387,7 +387,7 @@ U CoordletNew<T>::format() const
 	}
 
 	if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>) {
-//		fmt::print("@IVCoordletNew<T>::format<U>() const; T: {}, if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>)\n", demangle(typeid(T)));
+//		fmt::print("@IVCoordlet<T>::format<U>() const; T: {}, if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>)\n", demangle(typeid(T)));
 		const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it++); };
 		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it); };
 		const auto lambda3 = [](auto& outstr, auto n){ return outstr + cardi_b(n < 0); };
@@ -405,11 +405,11 @@ U CoordletNew<T>::format() const
 }
 
 /// __________________________________________________
-/// Validate CoordletNew<T>::dv
+/// Validate Coordlet<T>::dv
 template<DVecType T>
-const vector<bool> CoordletNew<T>::validate() const
+const vector<bool> Coordlet<T>::validate() const
 {
-//	fmt::print("@CoordletNew<T>::validate(); latlon: {}\n", fmt::join(latlon, ", "));
+//	fmt::print("@Coordlet<T>::validate(); latlon: {}\n", fmt::join(latlon, ", "));
 	vector<bool>::const_iterator ll_it{ latlon.begin() };
 	auto ll_size { latlon.size() };
 	auto valid = vector<bool>{};
@@ -430,9 +430,9 @@ const vector<bool> CoordletNew<T>::validate() const
 /// __________________________________________________
 /// Temporary —— to be deleted
 template<DVecType T>
-void CoordletNew<T>::report() const
+void Coordlet<T>::report() const
 {
-//	fmt::print("@CoordletNew<T>::report() const; &dv: {}, dv[0]: {}, &dv[0]: {}\n", address(dv), dv[0], address(dv[0]));
+//	fmt::print("@Coordlet<T>::report() const; &dv: {}, dv[0]: {}, &dv[0]: {}\n", address(dv), dv[0], address(dv[0]));
 }
 
 
@@ -459,7 +459,7 @@ CrdWptBaseNew::~CrdWptBaseNew()
 /// CoordsNew class
 template<DVecType T>
 CoordsNew<T>::CoordsNew(vector<double> nv, const vector<bool> latlon) :
-	cdlt { CoordletNew<T>{ std::move(nv), latlon }}
+	cdlt { Coordlet<T>{ std::move(nv), latlon }}
 {
 	_ctrsgn(typeid(*this)); fmt::print("\t(vector<double>, const vector<bool>)\n");
 }
@@ -844,9 +844,9 @@ NumericVector movit(NumericVector object)
 	fmt::print("{}III@movit(NumVec); &dv {}, dv[0] {}, &dv[0] {}\n", exportstr, address(dv), dv[0], address(dv[0]));
 	fmt::print("{}IV@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), "undefined", address(nv[0]));
 
-// Move construct CoordletNew<DecDegVecDouble> from DecDegVecDouble —— moves content  from dv to clt, maintains address
-	fmt::print("{}V@movit(NumericVector); Constructing CoordletNew<DecDegVecDouble> by moving dv\n", exportstr);
-	auto clt = CoordletNew<DecDegVecDouble>{ std::move(dv), vector<bool>{} };
+// Move construct Coordlet<DecDegVecDouble> from DecDegVecDouble —— moves content  from dv to clt, maintains address
+	fmt::print("{}V@movit(NumericVector); Constructing Coordlet<DecDegVecDouble> by moving dv\n", exportstr);
+	auto clt = Coordlet<DecDegVecDouble>{ std::move(dv), vector<bool>{} };
 	clt.report();
 	fmt::print("{}VI@movit(NumVec); &dv {}, dv[0] {}, &dv[0] {}\n", exportstr, address(dv), "undefined", address(dv[0]));
 
@@ -854,20 +854,20 @@ NumericVector movit(NumericVector object)
 	nv = as<vector<double>>(object);
 	fmt::print("{}VII@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), nv[0], address(nv[0]));
 
-// Construct CoordletNew<DecDegVecDouble> indirectly from vector<double>; using *, new and delete to observe destruction
+// Construct Coordlet<DecDegVecDouble> indirectly from vector<double>; using *, new and delete to observe destruction
 	fmt::print("{}VIII@movit(NumericVector); Making ptr1\n", exportstr);
-	const auto* ptr1 = new CoordletNew<DecDegVecDouble>{ std::move(nv), vector<bool>{} };	// std::move() needed here—no copy elision.
+	const auto* ptr1 = new Coordlet<DecDegVecDouble>{ std::move(nv), vector<bool>{} };	// std::move() needed here—no copy elision.
 	ptr1->report();
 	fmt::print("{}IX@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), "undefined", address(nv[0]));
 	delete ptr1;
 
-// Re-assign to vector<double> vn from NumericVector —— copies "object" content to new address (may re-use &dv[0] from deleted CoordletNew)
+// Re-assign to vector<double> vn from NumericVector —— copies "object" content to new address (may re-use &dv[0] from deleted Coordlet)
 	nv = as<vector<double>>(object);
 	fmt::print("{}X@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), nv[0], address(nv[0]));
 
-// Construct CoordletNew<DecDegVecDouble> directly from DecDegVecDouble; using *, new and delete to observe destruction
+// Construct Coordlet<DecDegVecDouble> directly from DecDegVecDouble; using *, new and delete to observe destruction
 	fmt::print("{}XI@movit(NumericVector); Making ptr2\n", exportstr);
-	const auto* ptr2 = new CoordletNew<DecDegVecDouble>{ DecDegVecDouble{ std::move(nv) }, vector<bool>{} };
+	const auto* ptr2 = new Coordlet<DecDegVecDouble>{ DecDegVecDouble{ std::move(nv) }, vector<bool>{} };
 	ptr2->report();
 	fmt::print("{}XI@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), "undefined", address(nv[0]));
 	delete ptr2;
