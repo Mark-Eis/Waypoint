@@ -681,7 +681,7 @@ bool revalidate(const T t)
 {
 //	fmt::print("@revalidate<NumericVector_or_DataFrame>(const T); T: {}\n", demangle(typeid(t)));
 
-	if constexpr (std::is_same_v<NumericVector, T>) { 
+	if constexpr (isNumericVector_v<T>) { 
 		auto valid { coordsmaker(t)->validate() };
 		static_cast<NumericVector>(t).attr("valid") = valid; 
 		if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; }))
@@ -690,13 +690,13 @@ bool revalidate(const T t)
 			warning("Coords revalidated!");
 	}
 
-/*	if constexpr (std::is_same_v<DataFrame, T>) {							//	¡¡¡—— Needed once WaypointsNew<T> instantiated ——!!!
-		if (!Waypoints{ t }.validate())
+	if constexpr (isDataFrame_v<T>) {							//	¡¡¡—— Needed once WaypointsNew<T> instantiated ——!!!
+/*		if (!Waypoints{ t }.validate())
 			warning("Revalidation found invalid waypoints!");
 		else
 			warning("Waypoints revalidated!");
-	}
 */
+	}
 	return check_valid(t);
 }
 
@@ -721,6 +721,7 @@ bool valid_ll(const DataFrame df)
 /// __________________________________________________
 /// Exported functions
 
+/*
 /// __________________________________________________
 /// Dummy Function for Testing Only 	¡¡¡ ——— Temporary to Be Archived ——— !!!
 //' @rdname cords
@@ -874,6 +875,7 @@ NumericVector movit(NumericVector object)
 	return object;
 }
 
+
 /// __________________________________________________
 /// Dummy Function for Testing Only 	¡¡¡ ——— Temporary to Be Archived ——— !!!
 //' @rdname cords
@@ -890,6 +892,7 @@ NumericVector CoordsTest(NumericVector object)
 	
 	return object;
 }
+*/
 
 /// __________________________________________________
 /// Create coords - S3 method as_coords.default()
