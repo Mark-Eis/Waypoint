@@ -212,8 +212,6 @@ concept SVecType =
 /// __________________________________________________
 /// Class forward declarations
 enum class CoordType : char;
-class CrdWptBase;
-class Coords;
 class Waypoints;
 
 /// __________________________________________________
@@ -382,18 +380,18 @@ class CrdWptBase {
 
 /// __________________________________________________
 /// __________________________________________________
-/// CoordsNew class
+/// Coords class
 template<DVecType T>
-class CoordsNew : public CrdWptBase {
+class Coords : public CrdWptBase {
 		const Coordlet<T> cdlt;
 	public:
-		explicit CoordsNew(vector<double>, const vector<bool>);
-		CoordsNew(const CoordsNew&) = delete;					// Disallow copying
-		CoordsNew& operator=(const CoordsNew&) = delete;			//  ——— ditto ———
-		CoordsNew(CoordsNew&&) = delete;						// Disallow transfer ownership
-		CoordsNew& operator=(CoordsNew&&) = delete;				// Disallow moving
-//		~CoordsNew() = default;
-		~CoordsNew() { _ctrsgn(typeid(*this), false); }
+		explicit Coords(vector<double>, const vector<bool>);
+		Coords(const Coords&) = delete;					// Disallow copying
+		Coords& operator=(const Coords&) = delete;			//  ——— ditto ———
+		Coords(Coords&&) = delete;						// Disallow transfer ownership
+		Coords& operator=(Coords&&) = delete;				// Disallow moving
+//		~Coords() = default;
+		~Coords() { _ctrsgn(typeid(*this), false); }
 
 		const vector<double> convert(CoordType) const;
 		vector<string> format(CoordType) const;
@@ -407,9 +405,9 @@ class CoordsNew : public CrdWptBase {
 /// Concept —— Rather feeble, but should work for now!
 template <typename T>
 concept ConCoords = 
-	std::is_same_v<CoordsNew<DecDegVecDouble>, T> || std::is_same_v<const CoordsNew<DecDegVecDouble>, T> ||
-	std::is_same_v<CoordsNew<DegMinVecDouble>, T> || std::is_same_v<const CoordsNew<DegMinVecDouble>, T> ||
-	std::is_same_v<CoordsNew<DegMinSecVecDouble>, T> || std::is_same_v<const CoordsNew<DegMinSecVecDouble>, T>;
+	std::is_same_v<Coords<DecDegVecDouble>, T> || std::is_same_v<const Coords<DecDegVecDouble>, T> ||
+	std::is_same_v<Coords<DegMinVecDouble>, T> || std::is_same_v<const Coords<DegMinVecDouble>, T> ||
+	std::is_same_v<Coords<DegMinSecVecDouble>, T> || std::is_same_v<const Coords<DegMinSecVecDouble>, T>;
 
 template<typename T>
 struct is_concoords : std::false_type {};

@@ -456,9 +456,9 @@ CrdWptBase::~CrdWptBase()
 
 /// __________________________________________________
 /// __________________________________________________
-/// CoordsNew class
+/// Coords class
 template<DVecType T>
-CoordsNew<T>::CoordsNew(vector<double> nv, const vector<bool> latlon) :
+Coords<T>::Coords(vector<double> nv, const vector<bool> latlon) :
 	cdlt { Coordlet<T>{ std::move(nv), latlon }}
 {
 	_ctrsgn(typeid(*this)); fmt::print("\t(vector<double>, const vector<bool>)\n");
@@ -467,9 +467,9 @@ CoordsNew<T>::CoordsNew(vector<double> nv, const vector<bool> latlon) :
 /// __________________________________________________
 /// convert call entry point -- public —— 				 				¡¡¡—— NB experimental, not expected to work ——!!!
 template<DVecType T>
-const vector<double> CoordsNew<T>::convert(CoordType required_type) const
+const vector<double> Coords<T>::convert(CoordType required_type) const
 {
-	fmt::print("@CoordsNew<T>::convert(CoordType) const; required type: {}\n", required_type);
+	fmt::print("@Coords<T>::convert(CoordType) const; required type: {}\n", required_type);
 	using enum CoordType;
 
 	switch (required_type)
@@ -484,16 +484,16 @@ const vector<double> CoordsNew<T>::convert(CoordType required_type) const
 			return cdlt.template convert<DegMinSecVecDouble>();
 
 		default:
-			stop("CoordsNew<T>::convert(CoordType) const my bad");
+			stop("Coords<T>::convert(CoordType) const my bad");
 	}
 }
 
 /// __________________________________________________
 /// Format call entry point -- public
 template<DVecType T>
-vector<string> CoordsNew<T>::format(CoordType required_type) const
+vector<string> Coords<T>::format(CoordType required_type) const
 {
-//	fmt::print("@CoordsNew<T>::format(CoordType) const; required type: {}\n", required_type);
+//	fmt::print("@Coords<T>::format(CoordType) const; required type: {}\n", required_type);
 	using enum CoordType;
 
 	switch (required_type)
@@ -508,25 +508,25 @@ vector<string> CoordsNew<T>::format(CoordType required_type) const
 			return cdlt.template format<DegMinSecVecString>();
 
 		default:
-			stop("CoordsNew<T>::format(CoordType) const my bad");
+			stop("Coords<T>::format(CoordType) const my bad");
 	}
 }
 
 /// __________________________________________________
 /// Validation call entry point -- public
 template<DVecType T>
-const vector<bool> CoordsNew<T>::validate() const							//	¡¡¡—— NB return type -> const vector<bool> ——!!!
+const vector<bool> Coords<T>::validate() const							//	¡¡¡—— NB return type -> const vector<bool> ——!!!
 {
-//	fmt::print("@CoordsNew<T>::validate()\n");
+//	fmt::print("@Coords<T>::validate()\n");
 	return cdlt.validate();
 }
 
 /// __________________________________________________
 /// Temporary —— to be deleted
 template<DVecType T>
-void CoordsNew<T>::report() const
+void Coords<T>::report() const
 {
-//	fmt::print("@CoordsNew<T>::report() const\n");
+//	fmt::print("@Coords<T>::report() const\n");
 	cdlt.report();
 }
 
@@ -541,13 +541,13 @@ unique_ptr<CrdWptBase> coordsmaker(NumericVector nv)
 	switch (get_coordtype(nv))
 	{
 		case decdeg:
-			return make_unique<CoordsNew<DecDegVecDouble>>( DecDegVecDouble{ nv }, latlon);
+			return make_unique<Coords<DecDegVecDouble>>( DecDegVecDouble{ nv }, latlon);
 
 		case degmin:
-			return make_unique<CoordsNew<DegMinVecDouble>>( DegMinVecDouble{ nv }, latlon );
+			return make_unique<Coords<DegMinVecDouble>>( DegMinVecDouble{ nv }, latlon );
 
 		case degminsec:
-			return make_unique<CoordsNew<DegMinSecVecDouble>>( DegMinSecVecDouble{ nv }, latlon );
+			return make_unique<Coords<DegMinSecVecDouble>>( DegMinSecVecDouble{ nv }, latlon );
 
 		default:
 			stop("coordsmaker(NumericVector) my bad");
@@ -879,10 +879,10 @@ NumericVector movit(NumericVector object)
 /// Dummy Function for Testing Only 	¡¡¡ ——— Temporary to Be Archived ——— !!!
 //' @rdname cords
 // [[Rcpp::export(name = "coordle")]]
-NumericVector CoordsNewTest(NumericVector object)
+NumericVector CoordsTest(NumericVector object)
 {
 	CoordType type = get_coordtype(object);
-	fmt::print("{}@CoordsNewTest(NumericVector); fmt {}, CoordType {}\n", exportstr, get_fmt_attribute(object), type);
+	fmt::print("{}@CoordsTest(NumericVector); fmt {}, CoordType {}\n", exportstr, get_fmt_attribute(object), type);
 
 	auto Coords_ptr { unique_ptr<CrdWptBase>{ coordsmaker(object) } };
 	Coords_ptr->report();
