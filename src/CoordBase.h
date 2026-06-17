@@ -370,7 +370,7 @@ class CoordletNew {
 		virtual ~CoordletNew() { _ctrsgn(typeid(*this), false); }
 
 		template<DVecType U>
-		void convert() const;
+		const U convert() const;
 		template<SVecType U>
 		U format() const;
 		const vector<bool> validate() const;
@@ -390,7 +390,7 @@ class CrdWptBaseNew {
 		CrdWptBaseNew& operator=(CrdWptBaseNew&&) = delete;				// Disallow moving
 		virtual ~CrdWptBaseNew() = 0;
 
-		virtual void convert(CoordType) const = 0;
+		virtual const vector<double> convert(CoordType) const = 0;
 		virtual vector<string> format(CoordType) const = 0;
 		virtual const vector<bool> validate() const = 0;
 		virtual void report() const = 0;							// Temporary —— delete
@@ -412,7 +412,7 @@ class CoordsNew : public CrdWptBaseNew {
 //		~CoordsNew() = default;
 		~CoordsNew() { _ctrsgn(typeid(*this), false); }
 
-		void convert(CoordType) const;
+		const vector<double> convert(CoordType) const;
 		vector<string> format(CoordType) const;
 		const vector<bool> validate() const;
 		void report() const;										// Temporary —— delete

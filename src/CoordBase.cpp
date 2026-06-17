@@ -328,7 +328,7 @@ CoordletNew<T>::CoordletNew(T&& _dv, const vector<bool> _latlon) :
 /// __________________________________________________
 /// Switch CoordType to convert format
 template<DVecType T> template<DVecType U>
-void CoordletNew<T>::convert() const
+const U CoordletNew<T>::convert() const
 {
 	fmt::print("@CoordletNew<T>::convert<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
 	using enum CoordType;
@@ -345,6 +345,7 @@ void CoordletNew<T>::convert() const
 			transform(dv.begin(), dv.end(), dv_out.begin(), [this](auto n){ return ff->get_deg(n) * 1e4 + ff->get_min(n) * 1e2 + ff->get_sec(n); });
 
 	fmt::print("@ICoordletNew<T>::convert<U>() const; T: {}, U: {}; dv_out: {}\n", demangle(typeid(T)), demangle(typeid(U)), fmt::join(dv_out, ", "));
+	return dv_out;
 }
 
 /// __________________________________________________
@@ -466,7 +467,7 @@ CoordsNew<T>::CoordsNew(vector<double> nv, const vector<bool> latlon) :
 /// __________________________________________________
 /// convert call entry point -- public —— 				 				¡¡¡—— NB experimental, not expected to work ——!!!
 template<DVecType T>
-void CoordsNew<T>::convert(CoordType required_type) const
+const vector<double> CoordsNew<T>::convert(CoordType required_type) const
 {
 	fmt::print("@CoordsNew<T>::convert(CoordType) const; required type: {}\n", required_type);
 	using enum CoordType;
@@ -474,15 +475,13 @@ void CoordsNew<T>::convert(CoordType required_type) const
 	switch (required_type)
 	{
 		case decdeg:
-			cdlt.template convert<DecDegVecDouble>();
-			break;
+			return cdlt.template convert<DecDegVecDouble>();
+
 		case degmin:
-			cdlt.template convert<DegMinVecDouble>();
-			break;
+			return cdlt.template convert<DegMinVecDouble>();
 
 		case degminsec:
-			cdlt.template convert<DegMinSecVecDouble>();
-			break;
+			return cdlt.template convert<DegMinSecVecDouble>();
 
 		default:
 			stop("CoordsNew<T>::convert(CoordType) const my bad");
@@ -919,12 +918,18 @@ NumericVector convertcoords(NumericVector x, int fmt)
 	fmt::print("{}@convertcoords(NumericVector, int); from {} to {}\n", exportstr, type, newtype);
 	if (!check_valid(x))
 		stop("Invalid coords!");
-	if (newtype != type)
-//		Coords{ x }.convert(newtype);
-		coordsmaker(x)->convert(newtype);
-	else
-		Rcout << "\t—— fmt out == fmt in! ——\n\n";
-	return x;
+	if (newtype != type) {
+		NumericVector y { wrap(coordsmaker(x)->convert(newtype)) };
+		y.attr("class") = "coords";
+		y.attr("fmt") = fmt;
+		y.attr("valid") = x.attr("valid");
+		y.attr("latlon") = x.attr("latlon");
+		y.names() = x.names();
+		return y;
+	} else { 
+		Rcout << "\t—— fmt out == fmt in: returning original x!——\n\n";
+		return x;														//	¡¡¡—— D'you think that's wise, sir? ——!!!
+	}
 }
 
 /// __________________________________________________
