@@ -61,7 +61,7 @@ template<typename T>
 constexpr bool isDataFrame_v = isDataFrame<T>::value;
 
 /// __________________________________________________
-/// Concept
+/// Concept —— NumericVector_or_DataFrame
 template<typename T>
 concept NumericVector_or_DataFrame = 
 	isNumericVector_v<T> || isDataFrame_v<T>;
@@ -184,7 +184,7 @@ template<typename T>
 constexpr bool isDegMinSecVecDouble_v = isDegMinSecVecDouble<T>::value;
 
 /// __________________________________________________
-/// Concept —— Rather feeble, but should work for now!
+/// Concept —— DVecType
 template <typename T>
 concept DVecType = 
 	isDecDegVecDouble_v<T> ||
@@ -231,7 +231,7 @@ template<typename T>
 constexpr bool isDegMinSecVecString_v = isDegMinSecVecString<T>::value;
 
 /// __________________________________________________
-/// Concept —— Rather feeble, but should work for now!
+/// Concept —— SVecType
 template <typename T>
 concept SVecType = 
 	isDecDegVecString_v<T> ||
