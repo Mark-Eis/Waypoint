@@ -321,7 +321,7 @@ Coordlet<T>::Coordlet(T&& _dv, const vector<bool> _latlon) :
 	dv { static_cast<T&&>(_dv) },
 	latlon{ _latlon }
 {
-	 _ctrsgn(typeid(*this)); fmt::print("\t(T&&, const vector<bool>); &_dv[0]: {}, &dv[0]: {}\n", address(_dv[0]), address(dv[0]));
+//	_ctrsgn(typeid(*this)); fmt::print("\t(T&&, const vector<bool>); &_dv[0]: {}, &dv[0]: {}\n", address(_dv[0]), address(dv[0]));
 }
 
 /// __________________________________________________
@@ -916,7 +916,7 @@ NumericVector convertcoords(const NumericVector x, int fmt)
 	CoordType newtype = get_coordtype(fmt);
 //	fmt::print("{}@convertcoords(NumericVector, int); from {} to {}\n", exportstr, type, newtype);
 	if (!check_valid(x))
-		stop("Invalid coords!");
+		stop("Conversion aborted: invalid coords!\n [Use review() to show invalid elements]");
 	if (newtype != type) {
 		NumericVector y { wrap(coordsmaker(x)->convert(newtype)) };
 		y.attr("class") = "coords";
@@ -986,11 +986,10 @@ NumericVector validatecoords(const NumericVector x, const bool force = true)
 	if (force)	{			
 		auto valid { coordsmaker(x)->validate() };
 		if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; })) {
-			warning("Validation of coords failed in Mimiland!");
+			warning("Validation of coords failed!");
 			static_cast<NumericVector>(x).attr("valid") = valid;
 		}
-	}
-	if (!check_valid(x))
+	} else if (!check_valid(x))
 		warning("Invalid coords!");
 	return x;
 }

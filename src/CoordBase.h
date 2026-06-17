@@ -320,7 +320,7 @@ struct FamousFive final : FamousFive0 {};
 template<>
 struct FamousFive<DecDegVecDouble> final : FamousFive0 {
 //	FamousFive<DecDegVecDouble>() { _ctrsgn(typeid(*this)); };
-	~FamousFive<DecDegVecDouble>() { _ctrsgn(typeid(*this), false); };
+//	~FamousFive<DecDegVecDouble>() { _ctrsgn(typeid(*this), false); };
 	int get_deg(double x) const { return int(x); }
 	double get_decdeg(double x) const { return x; }
 	int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
@@ -333,7 +333,7 @@ struct FamousFive<DecDegVecDouble> final : FamousFive0 {
 template<>
 struct FamousFive<DegMinVecDouble> final : FamousFive0 {
 //	FamousFive<DegMinVecDouble>() { _ctrsgn(typeid(*this)); };
-	~FamousFive<DegMinVecDouble>() { _ctrsgn(typeid(*this), false); };
+//	~FamousFive<DegMinVecDouble>() { _ctrsgn(typeid(*this), false); };
 	int get_deg(double x) const { return int(x / 1e2); }
 	double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
 	int get_min(double x) const { return int(x) % int(1e2); }
@@ -346,7 +346,7 @@ struct FamousFive<DegMinVecDouble> final : FamousFive0 {
 template<>
 struct FamousFive<DegMinSecVecDouble> final : FamousFive0 {
 //	FamousFive<DegMinSecVecDouble>() { _ctrsgn(typeid(*this)); };
-	~FamousFive<DegMinSecVecDouble>() { _ctrsgn(typeid(*this), false); };
+//	~FamousFive<DegMinSecVecDouble>() { _ctrsgn(typeid(*this), false); };
 	int get_deg(double x) const { return int(x / 1e4); }
 	double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
 	int get_min(double x) const { return (int(x) % int(1e4)) / 1e2; }
