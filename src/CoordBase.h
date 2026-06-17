@@ -41,7 +41,6 @@ const string demangle(const std::type_info&);
 /// Class and Function declarations
 
 /// __________________________________________________
-/// New Business — DVecType
 /// __________________________________________________
 
 template<typename T>
