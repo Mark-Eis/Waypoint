@@ -651,7 +651,7 @@ bool check_valid(const NumericVector nv)
 //	fmt::print("@check_valid(const NumericVector)\n");
 	int validated = check_logical_attr(nv, "valid");
 	if (!validated)
-		return revalidate<NumericVector>(nv);
+		return revalidate(nv);
 	return validated >> 1;
 }
 
@@ -665,7 +665,7 @@ bool check_valid(const DataFrame df)
 	int lonvalidated = check_logical_attr(df, "validlon");
 
 	if (!(latvalidated & lonvalidated))
-		return revalidate<DataFrame>(df);
+		return revalidate(df);
 
 	if (!(latvalidated >> 1))
 		warning("Invalid latitude!");
@@ -690,9 +690,9 @@ bool revalidate(const T t)
 			warning("Coords revalidated!");
 	}
 
-	if constexpr (isDataFrame_v<T>) {							//	¡¡¡—— Needed once WaypointsNew<T> instantiated ——!!!
+	if constexpr (isDataFrame_v<T>) {
 /*		if (!Waypoints{ t }.validate())
-			warning("Revalidation found invalid waypoints!");
+			warning("Revalidation found invalid waypoints!");					//	¡¡¡—— Needed once WaypointsNew<T> instantiated ——!!!
 		else
 			warning("Waypoints revalidated!");
 */
