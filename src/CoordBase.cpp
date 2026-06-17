@@ -299,7 +299,6 @@ inline string cardi_b(bool negative)
 }
 
 /// __________________________________________________
-/// New Business  !!!!!!!!!!!!!!
 /// __________________________________________________
 /// FamousFiveNew0 class
 
@@ -353,13 +352,13 @@ void CoordletNew<T>::convert() const
 template<DVecType T> template<SVecType U>
 U CoordletNew<T>::format() const
 {
-	fmt::print("@CoordletNew<T>::format<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
+//	fmt::print("@CoordletNew<T>::format<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
 	U sv_out{ std::move(vector<string>(dv.size())) };
 	vector<bool>::const_iterator ll_it { latlon.begin() };
 	const auto ll_size { latlon.size() };
 
 	if constexpr (isDecDegVecString_v<U>) {
-		fmt::print("@ICoordletNew<T>::format<U>() const; T: {}, if constexpr (isDecDegVecString_v<U>)\n", demangle(typeid(T)));
+//		fmt::print("@ICoordletNew<T>::format<U>() const; T: {}, if constexpr (isDecDegVecString_v<U>)\n", demangle(typeid(T)));
 		transform(dv.begin(), dv.end(), sv_out.begin(), [this](auto n)
 			{ return fmt::format("{:>{}.{}f}\u00B0", ff->get_decdeg(n), 11, 6); });	
 
@@ -372,13 +371,13 @@ U CoordletNew<T>::format() const
 				transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda2);
 
 	} else if constexpr (isDegMinVecString_v<U>) {
-		fmt::print("@IICoordletNew<T>::format<U>() const; T: {}, if constexpr (isDegMinVecString_v<U>)\n", demangle(typeid(T)));
+//		fmt::print("@IICoordletNew<T>::format<U>() const; T: {}, if constexpr (isDegMinVecString_v<U>)\n", demangle(typeid(T)));
 		transform(dv.begin(), dv.end(), sv_out.begin(), [this](auto n)
 			{ return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) + 
 					 fmt::format("{:0>{}.{}f}\u2032", fabs(ff->get_decmin(n)), 7, 4);
 			});	
 	} else if constexpr (isDegMinSecVecString_v<U>) {
-		fmt::print("@IIICoordletNew<T>::format<U>() const; T: {}, if constexpr (isDegMinSecVecString_v <U>)\n", demangle(typeid(T)));
+//		fmt::print("@IIICoordletNew<T>::format<U>() const; T: {}, if constexpr (isDegMinSecVecString_v <U>)\n", demangle(typeid(T)));
 		transform(dv.begin(), dv.end(), sv_out.begin(), [this](auto n)
 			{ return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) +
 					 fmt::format("{:0>{}}\u2032", abs(ff->get_min(n)), 2) +
@@ -387,7 +386,7 @@ U CoordletNew<T>::format() const
 	}
 
 	if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>) {
-		fmt::print("@IVCoordletNew<T>::format<U>() const; T: {}, if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>)\n", demangle(typeid(T)));
+//		fmt::print("@IVCoordletNew<T>::format<U>() const; T: {}, if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>)\n", demangle(typeid(T)));
 		const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it++); };
 		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it); };
 		const auto lambda3 = [](auto& outstr, auto n){ return outstr + cardi_b(n < 0); };
@@ -409,7 +408,7 @@ U CoordletNew<T>::format() const
 template<DVecType T>
 const vector<bool> CoordletNew<T>::validate() const
 {
-	fmt::print("@CoordletNew<T>::validate(); latlon: {}\n", fmt::join(latlon, ", "));
+//	fmt::print("@CoordletNew<T>::validate(); latlon: {}\n", fmt::join(latlon, ", "));
 	vector<bool>::const_iterator ll_it{ latlon.begin() };
 	auto ll_size { latlon.size() };
 	auto valid = vector<bool>{};
@@ -432,12 +431,11 @@ const vector<bool> CoordletNew<T>::validate() const
 template<DVecType T>
 void CoordletNew<T>::report() const
 {
-	fmt::print("@CoordletNew<T>::report() const; &dv: {}, dv[0]: {}, &dv[0]: {}\n", address(dv), dv[0], address(dv[0]));
+//	fmt::print("@CoordletNew<T>::report() const; &dv: {}, dv[0]: {}, &dv[0]: {}\n", address(dv), dv[0], address(dv[0]));
 }
 
 
 /// __________________________________________________
-/// New Business  !!!!!!!!!!!!!!
 /// __________________________________________________
 /// CrdWptBaseNew class
 
@@ -456,7 +454,6 @@ CrdWptBaseNew::~CrdWptBaseNew()
 }
 
 /// __________________________________________________
-/// New Business  !!!!!!!!!!!!!!
 /// __________________________________________________
 /// CoordsNew class
 template<DVecType T>
@@ -497,7 +494,7 @@ void CoordsNew<T>::convert(CoordType required_type) const
 template<DVecType T>
 vector<string> CoordsNew<T>::format(CoordType required_type) const
 {
-	fmt::print("@CoordsNew<T>::format(CoordType) const; required type: {}\n", required_type);
+//	fmt::print("@CoordsNew<T>::format(CoordType) const; required type: {}\n", required_type);
 	using enum CoordType;
 
 	switch (required_type)
@@ -521,7 +518,7 @@ vector<string> CoordsNew<T>::format(CoordType required_type) const
 template<DVecType T>
 const vector<bool> CoordsNew<T>::validate() const							//	¡¡¡—— NB return type -> const vector<bool> ——!!!
 {
-	fmt::print("@CoordsNew<T>::validate()\n");
+//	fmt::print("@CoordsNew<T>::validate()\n");
 	return cdlt.validate();
 }
 
@@ -530,7 +527,7 @@ const vector<bool> CoordsNew<T>::validate() const							//	¡¡¡—— NB retur
 template<DVecType T>
 void CoordsNew<T>::report() const
 {
-	fmt::print("@CoordsNew<T>::report() const\n");
+//	fmt::print("@CoordsNew<T>::report() const\n");
 	cdlt.report();
 }
 
@@ -539,7 +536,7 @@ void CoordsNew<T>::report() const
 /// Make Coords<DVecType>
 unique_ptr<CrdWptBaseNew> coordsmaker(NumericVector nv)
 {
-	fmt::print("@coordsmaker(NumericVector); {}, &nv {}, &nv[0] {}\n", get_coordtype(nv), address(nv), address(nv[0]));
+//	fmt::print("@coordsmaker(NumericVector); {}, &nv {}, &nv[0] {}\n", get_coordtype(nv), address(nv), address(nv[0]));
 	using enum CoordType;
 	const auto latlon { get_vec_attr<NumericVector, bool>(nv, "latlon") };
 	switch (get_coordtype(nv))
@@ -653,7 +650,7 @@ const bool Waypoints::validate() const
 /// Check "valid" attribute of NumericVector all true
 bool check_valid(const NumericVector nv)
 {
-	fmt::print("@check_valid(const NumericVector)\n");
+//	fmt::print("@check_valid(const NumericVector)\n");
 	int validated = check_logical_attr(nv, "valid");
 	if (!validated)
 		return revalidate<NumericVector>(nv);
@@ -684,7 +681,7 @@ bool check_valid(const DataFrame df)
 template<NumericVector_or_DataFrame T>
 bool revalidate(const T t)
 {
-	fmt::print("@revalidate<NumericVector_or_DataFrame>(const T); T: {}\n", demangle(typeid(t)));
+//	fmt::print("@revalidate<NumericVector_or_DataFrame>(const T); T: {}\n", demangle(typeid(t)));
 
 	if constexpr (std::is_same_v<NumericVector, T>) { 
 		auto valid { coordsmaker(t)->validate() };

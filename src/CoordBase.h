@@ -64,6 +64,7 @@ struct DecDegVec : public vector<T> {
 	DecDegVec& operator=(DecDegVec&&) = default;								// move assignment
 	DecDegVec& operator=(vector<T>&&) = delete;								// move assignment - not defaultable
 	DecDegVec& operator=(NumericVector&&) = delete;							// move assignment - not defaultable
+	~DecDegVec() { _ctrsgn(typeid(*this), false); };
 };
 
 template<typename T>
@@ -86,6 +87,7 @@ struct DegMinVec : public vector<T> {
 	DegMinVec& operator=(DegMinVec&&) = default;								// move assignment
 	DegMinVec& operator=(vector<T>&&) = delete;								// move assignment - not defaultable
 	DegMinVec& operator=(NumericVector&&) = delete;							// move assignment - not defaultable
+	DegMinVec() { _ctrsgn(typeid(*this), false); };
 };
 
 template<typename T>
@@ -108,6 +110,7 @@ struct DegMinSecVec : public vector<T> {
 	DegMinSecVec& operator=(DegMinSecVec&&) = default;						// move assignment
 	DegMinSecVec& operator=(vector<T>&&) = delete;							// move assignment - not defaultable
 	DegMinSecVec& operator=(NumericVector&&) = delete;						// move assignment - not defaultable
+	DegMinSecVec() { _ctrsgn(typeid(*this), false); };
 };
 
 
@@ -287,14 +290,13 @@ concept Coords_or_Waypoints =
 
 
 /// __________________________________________________
-/// New Business  !!!!!!!!!!!!!!
 /// __________________________________________________
 /// FamousFiveNew -- Templated and OO
 
 /// __________________________________________________
 /// Abstract base class with pure virtual functions	
 struct FamousFiveNew0 {
-	FamousFiveNew0() { _ctrsgn(typeid(*this)); };
+//	FamousFiveNew0() { _ctrsgn(typeid(*this)); };
 	virtual ~FamousFiveNew0() = 0;
 	virtual int get_deg(double x) const = 0;
 	virtual double get_decdeg(double x) const = 0;
@@ -312,7 +314,7 @@ struct FamousFiveNew final : FamousFiveNew0 {};
 /// Specialised derived struct for decimal degrees	
 template<>
 struct FamousFiveNew<DecDegVecDouble> final : FamousFiveNew0 {
-	FamousFiveNew<DecDegVecDouble>() { _ctrsgn(typeid(*this)); };
+//	FamousFiveNew<DecDegVecDouble>() { _ctrsgn(typeid(*this)); };
 	~FamousFiveNew<DecDegVecDouble>() { _ctrsgn(typeid(*this), false); };
 	int get_deg(double x) const { return int(x); }
 	double get_decdeg(double x) const { return x; }
@@ -325,7 +327,7 @@ struct FamousFiveNew<DecDegVecDouble> final : FamousFiveNew0 {
 /// Specialised derived struct for degrees and minutes
 template<>
 struct FamousFiveNew<DegMinVecDouble> final : FamousFiveNew0 {
-	FamousFiveNew<DegMinVecDouble>() { _ctrsgn(typeid(*this)); };
+//	FamousFiveNew<DegMinVecDouble>() { _ctrsgn(typeid(*this)); };
 	~FamousFiveNew<DegMinVecDouble>() { _ctrsgn(typeid(*this), false); };
 	int get_deg(double x) const { return int(x / 1e2); }
 	double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
@@ -338,7 +340,7 @@ struct FamousFiveNew<DegMinVecDouble> final : FamousFiveNew0 {
 /// Specialised derived struct for degrees, minutes and seconds
 template<>
 struct FamousFiveNew<DegMinSecVecDouble> final : FamousFiveNew0 {
-	FamousFiveNew<DegMinSecVecDouble>() { _ctrsgn(typeid(*this)); };
+//	FamousFiveNew<DegMinSecVecDouble>() { _ctrsgn(typeid(*this)); };
 	~FamousFiveNew<DegMinSecVecDouble>() { _ctrsgn(typeid(*this), false); };
 	int get_deg(double x) const { return int(x / 1e4); }
 	double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
@@ -377,7 +379,6 @@ class CoordletNew {
 
 
 /// __________________________________________________
-/// New Business  !!!!!!!!!!!!!!
 /// __________________________________________________
 /// CrdWptBaseNew class
 class CrdWptBaseNew {
@@ -397,7 +398,6 @@ class CrdWptBaseNew {
 
 
 /// __________________________________________________
-/// New Business  !!!!!!!!!!!!!!
 /// __________________________________________________
 /// CoordsNew class
 template<DVecType T>
@@ -420,7 +420,6 @@ class CoordsNew : public CrdWptBaseNew {
 
 
 /// __________________________________________________
-/// New Business  !!!!!!!!!!!!!!
 /// __________________________________________________
 /// Concept —— Rather feeble, but should work for now!
 template <typename T>
@@ -449,7 +448,6 @@ concept unique_ptr_CoordsNew_DVecType =
 
 
 /// __________________________________________________
-/// New Business  !!!!!!!!!!!!!!
 /// __________________________________________________
 /// Make Coords<DVecType>
 unique_ptr<CrdWptBaseNew> coordsmaker(NumericVector);
