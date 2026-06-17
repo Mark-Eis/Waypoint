@@ -311,17 +311,6 @@ FamousFiveNew0::~FamousFiveNew0()
 }
 
 /// __________________________________________________
-/// __________________________________________________
-/// FamousFive0 class
-
-/// __________________________________________________
-/// Destructor
-FamousFive0::~FamousFive0()
-{
-	fmt::print("§~FamousFive0() "); _ctrsgn(typeid(*this), false);
-}
-
-/// __________________________________________________
 /// New Business —— !!!!!!!!!!!!!!
 /// __________________________________________________
 /// CoordletNew class
@@ -569,242 +558,7 @@ unique_ptr<CrdWptBaseNew> coordsmaker(NumericVector nv)
 	}
 }
 
-
-/// __________________________________________________
-/// Old Hat  !!!!!!!!!!!!!!
-/// __________________________________________________
-/// Coordlet class
-
-/// __________________________________________________
-/// Constructor of Coordlet
-Coordlet::Coordlet(NumericVector _nv) :				// Needs to know CoordType in another way to intialise ff
-	ff { switch_ff(_nv) },
-	nv{ _nv },
-	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") }
-{
-//	fmt::print("§Coordlet(NumericVector, bool) ");  _ctrsgn(typeid(*this));
-}
-
-/// __________________________________________________
-/// Switch CoordType for ff in Coordlet constructor
-unique_ptr<FamousFive0> Coordlet::switch_ff(NumericVector nv)
-{
-//	fmt::print("@§Coordlet::switch_ff(NumericVector)\n");
-	using enum CoordType;
-
-	switch (get_coordtype(nv))
-	{
-		case decdeg:
-			return make_unique<FamousFive<decdeg>>();
-
-		case degmin:
-			return make_unique<FamousFive<degmin>>();
-
-		case degminsec:
-			return make_unique<FamousFive<degminsec>>();
-
-		default:
-			stop("Coordlet::switch_ff(NumericVector) my bad");
-	}
-}
-
-/// __________________________________________________
-/// Switch CoordType to convert format
-void Coordlet::convert(CoordType required_type)
-{
-//	fmt::print("@Coordlet::convert(CoordType); required_type: {}\n", required_type);
-	using enum CoordType;
-
-	const auto lambdd = [this](auto n){ return ff->get_decdeg(n); };
-	const auto lambdm = [this](auto n){ return ff->get_deg(n) * 1e2 + ff->get_decmin(n); };
-	const auto lambdms = [this](auto n){ return ff->get_deg(n) * 1e4 + ff->get_min(n) * 1e2 + ff->get_sec(n); };
-
-	switch (required_type)
-	{
-		case decdeg:
-			transform(nv.begin(), nv.end(), nv.begin(), lambdd);
-			break;
-
-		case degmin:
-			transform(nv.begin(), nv.end(), nv.begin(), lambdm);
-			break;
-
-		case degminsec:
-			transform(nv.begin(), nv.end(), nv.begin(), lambdms);
-			break;
-
-		default:
-			stop("Coordlet::convert(CoordType) my bad");
-	}
-}
-
-/// __________________________________________________
-/// Switch CoordType to format nv
-vector<string> Coordlet::format(CoordType required_type) const
-{
-//	fmt::print("@Coordlet::format(CoordType) const; required: {}\n", required_type);
-	auto sv_out = vector<string>(nv.size());
-
-	const auto lambdd = [this](auto n){ return fmt::format("{:>{}.{}f}\u00B0", ff->get_decdeg(n), 11, 6); };
-	const auto lambdm = [this](auto n){ return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) +
-											   fmt::format("{:0>{}.{}f}\u2032", fabs(ff->get_decmin(n)), 7, 4);
-											};
-	const auto lambdms = [this](auto n){ return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) +
-												fmt::format("{:0>{}}\u2032", abs(ff->get_min(n)), 2) +
-												fmt::format("{:0>{}.{}f}\u2033", fabs(ff->get_sec(n)), 5, 2);
-											};
-	using enum CoordType;
-	switch (required_type)
-	{
-		case decdeg:
-			transform(nv.begin(), nv.end(), sv_out.begin(), lambdd);
-			break;
-
-		case degmin:
-			transform(nv.begin(), nv.end(), sv_out.begin(), lambdm);
-			break;
-
-		case degminsec:
-			transform(nv.begin(), nv.end(), sv_out.begin(), lambdms);
-			break;
-
-		default:
-			stop("Coordlet<CoordType>::format(CoordType) const my bad");
-	}
-	return sv_out;
-}
-
-/// __________________________________________________
-/// Validate Coordlet::nv
-const vector<bool> Coordlet::validate() const
-{
-//	fmt::print("@Coordlet::validate(); latlon: {}\n", fmt::join(latlon, ", "));
-	vector<bool>::const_iterator ll_it{ latlon.begin() };
-	auto ll_size { latlon.size() };
-	auto valid = vector<bool>{};
-	valid.assign(nv.size(), {false});
-
-	transform(nv.begin(), nv.end(), valid.begin(), [this, &ll_it, &ll_size](auto n){
-		return !((fabs(ff->get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
-				(fabs(ff->get_decmin(n)) >= 60) ||
-				(fabs(ff->get_sec(n)) >= 60));
-	});
-
-	if (all_of(valid.begin(), valid.end(), [](auto v) { return v;}))
-		valid.assign({true});
-
-	return valid;
-}
-
-
-/// __________________________________________________
-/// Old Hat  !!!!!!!!!!!!!!
-/// __________________________________________________
-/// CrdWptBase class
-
-/// __________________________________________________
-/// Constructor
-CrdWptBase::CrdWptBase(CoordType _ct) : ct { _ct }
-{
-//	fmt::print("§CrdWptBase(CoordType); {}", ct); _ctrsgn(typeid(*this));
-}
-
-/// __________________________________________________
-/// Destructor
-CrdWptBase::~CrdWptBase()
-{
-//	fmt::print("§~CrdWptBase(); {}", ct); _ctrsgn(typeid(*this), false);
-}
-
-/// __________________________________________________
-/// Old Hat  !!!!!!!!!!!!!!
-/// __________________________________________________
-/// Coords class
-
-/// __________________________________________________
-/// Constructor
-Coords::Coords(NumericVector nv) : CrdWptBase { get_coordtype(nv) }, nv{ nv }
-{
-//	fmt::print("§Coords(NumericVector); {}", ct); _ctrsgn(typeid(*this));
-}
-
-/// __________________________________________________
-/// Convert call entry point -- public
-void Coords::convert(CoordType newtype)
-{
-//	fmt::print("@Coords::convert(CoordType); current type: {}; new type: {}\n", ct, newtype);
-	Coordlet{ nv }.convert(newtype);
-	nv.attr("fmt") = coordtype_to_int(newtype);
-}
-
-/// __________________________________________________
-/// Format call entry point -- public
-vector<string> Coords::format(CoordType required_type) const
-{
-//	fmt::print("@Coords::format(CoordType); current type: {}; required type: {}\n", ct, required_type);
-	using enum CoordType;
-	vector sv_out{ Coordlet{ nv }.format(required_type) };
-	if (decdeg == required_type)
-		suffix_latlon(sv_out);
-	else
-		suffix_nesw(sv_out);
-	return sv_out;
-}
-
-/// __________________________________________________
-/// Add suffix of "N", "E", "S", "W"; or "(N/E)", "(S/W)"
-void Coords::suffix_nesw(vector<string>& sv_out) const
-{
-//	fmt::print("@Coords::suffix_nesw(vector<string>& sv_out) const\n");
-	const auto latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") };
-	vector<bool>::const_iterator ll_it { latlon.begin() };
-	const auto ll_size { latlon.size() };
-
-	const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it++); };
-	const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it); };
-	const auto lambda3 = [](auto& outstr, auto n){ return outstr + cardi_b(n < 0); };
-
-	if (ll_size > 1)
-		transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda1);
-	else
-		if (ll_size == 1)	// uniform coords
-			transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda2);
-		else				// no latlon info
-			transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda3);
-}
-
-/// __________________________________________________
-/// Add suffix of "lat", "lon"
-void Coords::suffix_latlon(vector<string>& sv_out) const
-{
-//	fmt::print("@Coords::suffix_latlon(vector<string>& sv_out) const\n");
-	const auto latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") };
-	vector<bool>::const_iterator ll_it { latlon.begin() };
-	const auto ll_size { latlon.size() };
-
-	const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it++ ? " lat" : " lon"); };
-	const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it ? " lat" : " lon"); };
-
-	if (ll_size > 1)
-		transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda1);
-	else
-		if (ll_size == 1)	// uniform coords
-			transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda2);
-}
-
-/// __________________________________________________
-/// Validation call entry point -- public
-const bool Coords::validate() const
-{
-//	fmt::print("@Coords::validate(); current type: {}\n", ct);
-	auto valid = Coordlet{ nv }.validate();
-
-	static_cast<NumericVector>(nv).attr("valid") = valid;
-	return ( std::all_of(valid.begin(), valid.end(), [](auto i){ return i; } )
-	);
-}
-
-
+/*
 /// __________________________________________________
 /// __________________________________________________
 /// TBC  !!!!!!!!!!!!!!
@@ -889,7 +643,7 @@ const bool Waypoints::validate() const
 		std::all_of(validlon.begin(), validlon.end(), [](auto i){ return i; })
 	);
 }
-
+*/
 /// __________________________________________________
 /// Revised  !!!!!!!!!!!!!!
 /// __________________________________________________
@@ -941,13 +695,13 @@ bool revalidate(const T t)
 			warning("Coords revalidated!");
 	}
 
-	if constexpr (std::is_same_v<DataFrame, T>) { 
+/*	if constexpr (std::is_same_v<DataFrame, T>) {							//	¡¡¡—— Needed once WaypointsNew<T> instantiated ——!!!
 		if (!Waypoints{ t }.validate())
 			warning("Revalidation found invalid waypoints!");
 		else
 			warning("Waypoints revalidated!");
 	}
-
+*/
 	return check_valid(t);
 }
 
@@ -1239,7 +993,7 @@ NumericVector validatecoords(const NumericVector x, const bool force = true)
 		warning("Invalid coords!");
 	return x;
 }
-
+/*
 /// __________________________________________________
 /// Create waypoints - S3 method as_waypoints.default()
 //' @rdname waypoints
@@ -1360,7 +1114,7 @@ NumericVector as_coordswaypoints(DataFrame object, bool which)
 	nv.attr("names") = getnames(object);
 	return nv;
 }
-
+*/
 /// __________________________________________________
 /// __________________________________________________
 

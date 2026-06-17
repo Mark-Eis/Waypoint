@@ -454,132 +454,7 @@ concept unique_ptr_CoordsNew_DVecType =
 /// Make Coords<DVecType>
 unique_ptr<CrdWptBaseNew> coordsmaker(NumericVector);
 
-
-/// __________________________________________________
-/// Old Hat  !!!!!!!!!!!!!!
-/// __________________________________________________
-/// FamousFive -- Templated and OO
-
-/// __________________________________________________
-/// Abstract base class with pure virtual functions	
-struct FamousFive0 {
-	virtual int get_deg(double x) const = 0;
-	virtual double get_decdeg(double x) const = 0;
-	virtual int get_min(double x) const = 0;
-	virtual double get_decmin(double x) const = 0;
-	virtual double get_sec(double x) const = 0;
-	virtual ~FamousFive0() = 0;
-};
-
-/// __________________________________________________
-/// Default empty derived struct for SFINAE	
-template<CoordType type>
-struct FamousFive final : FamousFive0 {};
-
-/// __________________________________________________
-/// Specialised derived struct for decimal degrees	
-template<>
-struct FamousFive<CoordType::decdeg> final : FamousFive0 {
-	int get_deg(double x) const { return int(x); }
-	double get_decdeg(double x) const { return x; }
-	int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
-	double get_decmin(double x) const { return polish(mod1by60(x)); }
-	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
-};
-
-/// __________________________________________________
-/// Specialised derived struct for degrees and minutes
-template<>
-struct FamousFive<CoordType::degmin> final : FamousFive0 {
-	int get_deg(double x) const { return int(x / 1e2); }
-	double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
-	int get_min(double x) const { return int(x) % int(1e2); }
-	double get_decmin(double x) const { return polish(mod1e2(x)); }
-	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
-};
-
-/// __________________________________________________
-/// Specialised derived struct for degrees, minutes and seconds
-template<>
-struct FamousFive<CoordType::degminsec> final : FamousFive0 {
-	int get_deg(double x) const { return int(x / 1e4); }
-	double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
-	int get_min(double x) const { return (int(x) % int(1e4)) / 1e2; }
-	double get_decmin(double x) const { return int(fmod(x, 1e4) / 1e2) + mod1e2(x) / 60; }
-	double get_sec(double x) const { return mod1e2(x); }
-};
-
-
-/// __________________________________________________
-/// Old Hat  !!!!!!!!!!!!!!
-/// __________________________________________________
-/// Coordlet class
-class Coordlet {
-		unique_ptr<FamousFive0> ff;
-		NumericVector nv;
-		const vector<bool> latlon;
-
-		unique_ptr<FamousFive0> switch_ff(NumericVector);
-	public:
-		explicit Coordlet(NumericVector);
-		Coordlet(const Coordlet&) = delete;						// Disallow copying
-		Coordlet& operator=(const Coordlet&) = delete;			//  ——— ditto ———
-		Coordlet(Coordlet&&) = delete;							// Disallow transfer ownership
-		Coordlet& operator=(Coordlet&&) = delete;				// Disallow moving
-		virtual ~Coordlet() = default;
-//		virtual ~Coordlet() { fmt::print("§~Coordlet()"); _ctrsgn(typeid(*this), false); }
-
-		void convert(CoordType);
-		vector<string> format(CoordType) const;
-		const vector<bool> validate() const;
-};
-
-
-/// __________________________________________________
-/// Old Hat  !!!!!!!!!!!!!!
-/// __________________________________________________
-/// CrdWptBase class
-class CrdWptBase {
-	protected:
-		const CoordType ct;											// ¡¡¡—— Deprecated ——!!!
-	public:
-		explicit CrdWptBase(CoordType);
-		CrdWptBase(const CrdWptBase&) = delete;						// Disallow copying
-		CrdWptBase& operator=(const CrdWptBase&) = delete;			//  ——— ditto ———
-		CrdWptBase(CrdWptBase&&) = delete;							// Disallow transfer ownership
-		CrdWptBase& operator=(CrdWptBase&&) = delete;				// Disallow moving
-		virtual ~CrdWptBase() = 0;
-
-		virtual void convert(CoordType) = 0;
-		virtual vector<string> format(CoordType) const = 0;
-		virtual const bool validate() const = 0;
-};
-
-
-/// __________________________________________________
-/// Old Hat  !!!!!!!!!!!!!!
-/// __________________________________________________
-/// Coords class
-class Coords : public CrdWptBase {
-		NumericVector nv;
-		vector<bool> valid { false };
-		void suffix_nesw(vector<string>&) const;
-		void suffix_latlon(vector<string>&) const;
-	public:
-		explicit Coords(NumericVector);
-		Coords(const Coords&) = delete;						// Disallow copying
-		Coords& operator=(const Coords&) = delete;			//  ——— ditto ———
-		Coords(Coords&&) = delete;							// Disallow transfer ownership
-		Coords& operator=(Coords&&) = delete;				// Disallow moving
-		~Coords() = default;
-//		~Coords() { fmt::print("§~Coords(); {}; ", ct); _ctrsgn(typeid(*this), false); }
-
-		void convert(CoordType);
-		vector<string> format(CoordType) const;
-		const bool validate() const;
-};
-
-
+/*
 /// __________________________________________________
 /// TBC  !!!!!!!!!!!!!!
 /// __________________________________________________
@@ -605,7 +480,7 @@ class Waypoints : public CrdWptBase {
 		vector<string> format(CoordType) const;
 		const bool validate() const;
 };
-
+*/
 
 /// __________________________________________________
 /// __________________________________________________
