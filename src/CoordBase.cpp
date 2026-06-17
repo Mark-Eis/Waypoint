@@ -333,7 +333,7 @@ void CoordletNew<T>::convert() const
 	fmt::print("@CoordletNew<T>::convert<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
 	using enum CoordType;
 
-	T dv_out{ std::move(vector<double>(dv.size())) };
+	U dv_out{ std::move(vector<double>(dv.size())) };
 
 	if constexpr (isDecDegVecDouble_v<U>)
 			transform(dv.begin(), dv.end(), dv_out.begin(), [this](auto n){ return ff->get_decdeg(n); });
