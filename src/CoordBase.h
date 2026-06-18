@@ -96,11 +96,11 @@ struct DecDegVec : public vector<T> {
 	DecDegVec(NumericVector&& vt) = delete;											// move constructor - not defaultable
 
 	DecDegVec& operator=(DecDegVec&&) = default;										// move assignment
-	DecDegVec& operator=(vector<T>&& vt)											// move assignment - not defaultable
-    {
+	DecDegVec& operator=(vector<T>&& vt)											// move assignment
+	{
 		vector<T>::operator=(std::move(vt));
 		return *this;
-    }
+	}
 
 	~DecDegVec() {}
 //		{ _ctrsgn(typeid(*this), false); };
@@ -128,11 +128,11 @@ struct DegMinVec : public vector<T> {
 	DegMinVec(NumericVector&& vt) = delete;											// move constructor - not defaultable
 
 	DegMinVec& operator=(DegMinVec&&) = default;										// move assignment
-	DegMinVec& operator=(vector<T>&& vt)											// move assignment - not defaultable
-    {
+	DegMinVec& operator=(vector<T>&& vt)											// move assignment
+	{
 		vector<T>::operator=(std::move(vt));
 		return *this;
-    }
+	}
 
 	~DegMinVec() {}
 //		{ _ctrsgn(typeid(*this), false); };
@@ -160,11 +160,11 @@ struct DegMinSecVec : public vector<T> {
 	DegMinSecVec(NumericVector&& vt) = delete;										// move constructor - not defaultable
 
 	DegMinSecVec& operator=(DegMinSecVec&&) = default;								// move assignment
-	DegMinSecVec& operator=(vector<T>&& vt)											// move assignment - not defaultable
-    {
+	DegMinSecVec& operator=(vector<T>&& vt)											// move assignment
+	{
 		vector<T>::operator=(std::move(vt));
 		return *this;
-    }
+	}
 
 	~DegMinSecVec() {}
 //		{ _ctrsgn(typeid(*this), false); };

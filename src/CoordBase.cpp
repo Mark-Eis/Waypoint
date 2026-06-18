@@ -330,7 +330,6 @@ template<DVecType T> template<DVecType U>
 const U Coordlet<T>::convert() const
 {
 //	fmt::print("@Coordlet<T>::convert<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
-	using enum CoordType;
 
 	U dv_out{ std::move(vector<double>(dv.size())) };
 
