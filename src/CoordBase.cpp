@@ -51,8 +51,11 @@ void _ctrsgn(const std::type_info& obj, bool construct)
 const string demangle(const std::type_info& obj)
 {
 	int status = 0;
-	char* p { abi::__cxa_demangle(obj.name(), NULL, NULL, &status) };
-	string str { fmt::format("\"{}\" (status {})", p, std::to_string(status)) };
+	const auto objname { obj.name() };
+//	char* p { abi::__cxa_demangle(obj.name(), NULL, NULL, &status) };
+	char* p { abi::__cxa_demangle(objname, NULL, NULL, &status) };
+//	string str { fmt::format("\"{}\" (status {})", p, std::to_string(status)) };
+	string str { fmt::format("{}", p) };
 	std::free(p);
 	return str;
 }
@@ -329,7 +332,7 @@ Coordlet<T>::Coordlet(T&& _dv, const vector<bool> _latlon) :
 template<DVecType T> template<DVecType U>
 U Coordlet<T>::convert() const
 {
-	fmt::print("@Coordlet<T>::convert<U>() const; T: {}, U: {}\n", demangle(typeid(T).name()), demangle(typeid(U).name()));
+//	fmt::print("@Coordlet<T>::convert<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
 
 	U dv_out{ std::move(vector<double>(dv.size())) };
 
@@ -342,9 +345,8 @@ U Coordlet<T>::convert() const
 	else if constexpr (isDegMinSecVecDouble_v<U>)
 			transform(dv.begin(), dv.end(), dv_out.begin(), [this](auto n){ return ff->get_deg(n) * 1e4 + ff->get_min(n) * 1e2 + ff->get_sec(n); });
 
-	fmt::print("@ICoordlet<T>::convert<U>() const; {} dv_out[0] {}, &dv_out {}, &dv_out[0] {}, typeid: {}\n",
-		padstr, dv_out[0], address(dv_out), address(dv_out[0]), demangle(typeid(dv_out).name()));
-
+//	fmt::print("@ICoordlet<T>::convert<U>() const; {} dv_out[0] {}, &dv_out {}, &dv_out[0] {}, typeid: {}\n",
+//		padstr, dv_out[0], address(dv_out), address(dv_out[0]), demangle(typeid(dv_out)));
 	return dv_out;
 }
 
@@ -353,7 +355,7 @@ U Coordlet<T>::convert() const
 template<DVecType T> template<SVecType U>
 U Coordlet<T>::format() const
 {
-//	fmt::print("@Coordlet<T>::format<U>() const; T: {}, U: {}\n", demangle(typeid(T).name()), demangle(typeid(U).name()));
+//	fmt::print("@Coordlet<T>::format<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
 	U sv_out{ std::move(vector<string>(dv.size())) };
 	vector<bool>::const_iterator ll_it { latlon.begin() };
 	const auto ll_size { latlon.size() };
@@ -401,6 +403,8 @@ U Coordlet<T>::format() const
 				transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda3);
 	}
 
+//	fmt::print("@VCoordlet<T>::format<U>() const; {} sv_out[0] {}, &sv_out {}, &sv_out[0] {}, typeid: {}\n",
+//		padstr, sv_out[0], address(sv_out), address(sv_out[0]), demangle(typeid(sv_out)));
 	return sv_out;
 }
 
@@ -469,7 +473,7 @@ Coords<T>::Coords(vector<double> nv, const vector<bool> latlon) :
 template<DVecType T>
 const vector<double> Coords<T>::convert(CoordType required_type) const
 {
-	fmt::print("@Coords<T>::convert(CoordType) const; T: {}, required type: {}\n", demangle(typeid(T).name()), required_type);
+//	fmt::print("@Coords<T>::convert(CoordType) const; T: {}, required type: {}\n", demangle(typeid(T)), required_type);
 	using enum CoordType;
 	switch (required_type)
 	{
@@ -917,17 +921,17 @@ NumericVector convertcoords(const NumericVector x, int fmt)
 	checkinherits(x, "coords");
 	CoordType type = get_coordtype(x);
 	CoordType newtype = get_coordtype(fmt);
-	fmt::print("{}@convertcoords(NumericVector, int); from {} to {}\n", exportstr, type, newtype);
+//	fmt::print("{}@convertcoords(NumericVector, int); from {} to {}\n", exportstr, type, newtype);
 	if (!check_valid(x))
 		stop("Conversion aborted: invalid coords!\n [Use review() to show invalid elements]");
 	if (newtype != type) {
 //		NumericVector nv_out { wrap(coordsmaker(x)->convert(newtype)) };		// compiles but makes copy					¡¡¡—— Original ——!!!
 		const auto vd_out { coordsmaker(x)->convert(newtype) };			// Uses copy elision
-		fmt::print("{}@Iconvertcoords(NumericVector, int);  vd_out[0] {}, &vd_out {}, &vd_out[0] {}, typeid: {}\n",
-			exportstr, vd_out[0], address(vd_out), address(vd_out[0]), demangle(typeid(vd_out).name()));
+//		fmt::print("{}@Iconvertcoords(NumericVector, int);  vd_out[0] {}, &vd_out {}, &vd_out[0] {}, typeid: {}\n",
+//			exportstr, vd_out[0], address(vd_out), address(vd_out[0]), demangle(typeid(vd_out)));
 		NumericVector nv_out { wrap(vd_out) };							// compiles but makes copy
-		fmt::print("{}@IIconvertcoords(NumericVector, int); nv_out[0] {}, &nv_out {}, &nv_out[0] {}, typeid: {}\n",
-			exportstr, nv_out[0], address(nv_out), address(nv_out[0]), demangle(typeid(nv_out).name()));
+//		fmt::print("{}@IIconvertcoords(NumericVector, int); nv_out[0] {}, &nv_out {}, &nv_out[0] {}, typeid: {}\n",
+//			exportstr, nv_out[0], address(nv_out), address(nv_out[0]), demangle(typeid(nv_out)));
 		nv_out.attr("class") = "coords";
 		nv_out.attr("fmt") = fmt;
 		nv_out.attr("valid") = x.attr("valid");
@@ -964,7 +968,8 @@ NumericVector latlon(NumericVector cd, LogicalVector value)
 CharacterVector formatcoords(const NumericVector x, bool usenames = true, bool validate = true, int fmt = 0)
 {
 //	fmt::print("{}@formatcoords(NumericVector, bool, bool, int); usenames: {}, validate: {}, fmt: {}\n", exportstr, usenames, validate, fmt);
-//	fmt::print("{}@Iformatcoords(NumericVector, bool, bool, int); &x {}, &x[0] {}\n", exportstr, address(x), address(x[0]));
+//	fmt::print("{}@Iformatcoords(NumericVector, bool, bool, int); x[0] {}, &x {}, &x[0] {}, typeid: {}\n",
+//		exportstr, x[0], address(x), address(x[0]), demangle(typeid(x)));
 
 	checkinherits(x, "coords");
 	if(!x.size())
@@ -972,10 +977,11 @@ CharacterVector formatcoords(const NumericVector x, bool usenames = true, bool v
 	if (validate)
 		if (!check_valid(x))
 			warning("Formatting invalid coords!");
-
 	CoordType ct_current { get_coordtype(x) };
 	CoordType ct_required { fmt ? get_coordtype(fmt) : ct_current };
 	vector sv_out{ coordsmaker(x)->format(ct_required) };
+//	fmt::print("{}@IIformatcoords(NumericVector, bool, bool, int); sv_out[0] {}, &sv_out {}, &sv_out[0] {}, typeid: {}\n",
+//		exportstr, sv_out[0], address(sv_out), address(sv_out[0]), demangle(typeid(sv_out).name()));
 	vector names{ get_vec_attr<NumericVector, string>(x, "names") };
 	if (names.size() && usenames) {
 		stdlenstr(names);
