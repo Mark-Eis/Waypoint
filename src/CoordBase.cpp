@@ -324,7 +324,10 @@ Coordlet<T>::Coordlet(T&& _dv, const vector<bool> _latlon) :
 	dv { static_cast<T&&>(_dv) },
 	latlon{ _latlon }
 {
-//	_ctrsgn(typeid(*this)); fmt::print("\t(T&&, const vector<bool>); &_dv[0]: {}, &dv[0]: {}\n", address(_dv[0]), address(dv[0]));
+#if DEBUG > 0
+	_ctrsgn(typeid(*this)); fmt::print("\t(T&&, const vector<bool>); &_dv[0] {}, dv[0] {}, &dv {}, &dv[0] {}, typeid: {}\n",
+		address(_dv[0]), dv[0], address(dv), address(dv[0]), demangle(typeid(dv)));
+#endif
 }
 
 /// __________________________________________________
@@ -332,7 +335,9 @@ Coordlet<T>::Coordlet(T&& _dv, const vector<bool> _latlon) :
 template<DVecType T> template<DVecType U>
 U Coordlet<T>::convert() const
 {
-//	fmt::print("@Coordlet<T>::convert<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
+#if DEBUG > 0
+	fmt::print("@Coordlet<T>::convert<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
+#endif
 
 	U dv_out{ std::move(vector<double>(dv.size())) };
 
@@ -345,8 +350,10 @@ U Coordlet<T>::convert() const
 	else if constexpr (isDegMinSecVecDouble_v<U>)
 			transform(dv.begin(), dv.end(), dv_out.begin(), [this](auto n){ return ff->get_deg(n) * 1e4 + ff->get_min(n) * 1e2 + ff->get_sec(n); });
 
-//	fmt::print("@ICoordlet<T>::convert<U>() const; {} dv_out[0] {}, &dv_out {}, &dv_out[0] {}, typeid: {}\n",
-//		padstr, dv_out[0], address(dv_out), address(dv_out[0]), demangle(typeid(dv_out)));
+#if DEBUG > 0
+	fmt::print("@ICoordlet<T>::convert<U>() const; {} dv_out[0] {}, &dv_out {}, &dv_out[0] {}, typeid: {}\n",
+		padstr, dv_out[0], address(dv_out), address(dv_out[0]), demangle(typeid(dv_out)));
+#endif
 	return dv_out;
 }
 
@@ -355,13 +362,17 @@ U Coordlet<T>::convert() const
 template<DVecType T> template<SVecType U>
 U Coordlet<T>::format() const
 {
-//	fmt::print("@Coordlet<T>::format<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
+#if DEBUG > 0
+	fmt::print("@Coordlet<T>::format<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
+#endif
 	U sv_out{ std::move(vector<string>(dv.size())) };
 	vector<bool>::const_iterator ll_it { latlon.begin() };
 	const auto ll_size { latlon.size() };
 
 	if constexpr (isDecDegVecString_v<U>) {
-//		fmt::print("@ICoordlet<T>::format<U>() const; T: {}, if constexpr (isDecDegVecString_v<U>)\n", demangle(typeid(T)));
+#if DEBUG > 0
+		fmt::print("@ICoordlet<T>::format<U>() const; T: {}, if constexpr (isDecDegVecString_v<U>)\n", demangle(typeid(T)));
+#endif
 		transform(dv.begin(), dv.end(), sv_out.begin(), [this](auto n)
 			{ return fmt::format("{:>{}.{}f}\u00B0", ff->get_decdeg(n), 11, 6); });	
 
@@ -374,13 +385,17 @@ U Coordlet<T>::format() const
 				transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda2);
 
 	} else if constexpr (isDegMinVecString_v<U>) {
-//		fmt::print("@IICoordlet<T>::format<U>() const; T: {}, if constexpr (isDegMinVecString_v<U>)\n", demangle(typeid(T)));
+#if DEBUG > 0
+		fmt::print("@IICoordlet<T>::format<U>() const; T: {}, if constexpr (isDegMinVecString_v<U>)\n", demangle(typeid(T)));
+#endif
 		transform(dv.begin(), dv.end(), sv_out.begin(), [this](auto n)
 			{ return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) + 
 					 fmt::format("{:0>{}.{}f}\u2032", fabs(ff->get_decmin(n)), 7, 4);
 			});	
 	} else if constexpr (isDegMinSecVecString_v<U>) {
-//		fmt::print("@IIICoordlet<T>::format<U>() const; T: {}, if constexpr (isDegMinSecVecString_v <U>)\n", demangle(typeid(T)));
+#if DEBUG > 0
+		fmt::print("@IIICoordlet<T>::format<U>() const; T: {}, if constexpr (isDegMinSecVecString_v <U>)\n", demangle(typeid(T)));
+#endif
 		transform(dv.begin(), dv.end(), sv_out.begin(), [this](auto n)
 			{ return fmt::format("{:>{}}\u00B0", abs(ff->get_deg(n)), 3) +
 					 fmt::format("{:0>{}}\u2032", abs(ff->get_min(n)), 2) +
@@ -389,7 +404,9 @@ U Coordlet<T>::format() const
 	}
 
 	if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>) {
-//		fmt::print("@IVCoordlet<T>::format<U>() const; T: {}, if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>)\n", demangle(typeid(T)));
+#if DEBUG > 0
+		fmt::print("@IVCoordlet<T>::format<U>() const; T: {}, if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>)\n", demangle(typeid(T)));
+#endif
 		const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it++); };
 		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it); };
 		const auto lambda3 = [](auto& outstr, auto n){ return outstr + cardi_b(n < 0); };
@@ -403,8 +420,10 @@ U Coordlet<T>::format() const
 				transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda3);
 	}
 
-//	fmt::print("@VCoordlet<T>::format<U>() const; {} sv_out[0] {}, &sv_out {}, &sv_out[0] {}, typeid: {}\n",
-//		padstr, sv_out[0], address(sv_out), address(sv_out[0]), demangle(typeid(sv_out)));
+#if DEBUG > 0
+	fmt::print("@VCoordlet<T>::format<U>() const; {} sv_out[0] {}, &sv_out {}, &sv_out[0] {}, typeid: {}\n",
+		padstr, sv_out[0], address(sv_out), address(sv_out[0]), demangle(typeid(sv_out)));
+#endif
 	return sv_out;
 }
 
@@ -413,7 +432,11 @@ U Coordlet<T>::format() const
 template<DVecType T>
 const vector<bool> Coordlet<T>::validate() const
 {
-//	fmt::print("@Coordlet<T>::validate(); latlon: {}\n", fmt::join(latlon, ", "));
+#if DEBUG > 0
+	fmt::print("@Coordlet<T>::validate(); latlon: {}\n", fmt::join(latlon, ", "));
+	fmt::print("@ICoordlet<T>::validate(); {} dv[0] {}, &dv {}, &dv[0] {}, typeid: {}\n",
+		padstr, dv[0], address(dv), address(dv[0]), demangle(typeid(dv)));
+#endif
 	vector<bool>::const_iterator ll_it{ latlon.begin() };
 	auto ll_size { latlon.size() };
 	auto valid = vector<bool>{};
@@ -448,14 +471,18 @@ void Coordlet<T>::report() const
 /// Constructor
 CrdWptBase::CrdWptBase()
 {
-//	_ctrsgn(typeid(*this)); fmt::print("\t()\n");
+#if DEBUG > 0
+	_ctrsgn(typeid(*this)); fmt::print("\t()\n");
+#endif
 }
 
 /// __________________________________________________
 /// Destructor
 CrdWptBase::~CrdWptBase()
 {
-//	_ctrsgn(typeid(*this), false);
+#if DEBUG > 0
+	_ctrsgn(typeid(*this), false);
+#endif
 }
 
 /// __________________________________________________
@@ -465,7 +492,9 @@ template<DVecType T>
 Coords<T>::Coords(vector<double> nv, const vector<bool> latlon) :
 	cdlt { Coordlet<T>{ std::move(nv), latlon }}
 {
-//	_ctrsgn(typeid(*this)); fmt::print("\t(vector<double>, const vector<bool>)\n");
+#if DEBUG > 0
+	_ctrsgn(typeid(*this)); fmt::print("\t(vector<double>, const vector<bool>)\n");
+#endif
 }
 
 /// __________________________________________________
@@ -473,7 +502,9 @@ Coords<T>::Coords(vector<double> nv, const vector<bool> latlon) :
 template<DVecType T>
 const vector<double> Coords<T>::convert(CoordType required_type) const
 {
-//	fmt::print("@Coords<T>::convert(CoordType) const; T: {}, required type: {}\n", demangle(typeid(T)), required_type);
+#if DEBUG > 0
+	fmt::print("@Coords<T>::convert(CoordType) const; T: {}, required type: {}\n", demangle(typeid(T)), required_type);
+#endif
 	using enum CoordType;
 	switch (required_type)
 	{
@@ -496,7 +527,9 @@ const vector<double> Coords<T>::convert(CoordType required_type) const
 template<DVecType T>
 vector<string> Coords<T>::format(CoordType required_type) const
 {
-//	fmt::print("@Coords<T>::format(CoordType) const; required type: {}\n", required_type);
+#if DEBUG > 0
+	fmt::print("@Coords<T>::format(CoordType) const; required type: {}\n", required_type);
+#endif
 	using enum CoordType;
 	switch (required_type)
 	{
@@ -519,7 +552,9 @@ vector<string> Coords<T>::format(CoordType required_type) const
 template<DVecType T>
 const vector<bool> Coords<T>::validate() const							//	¡¡¡—— NB return type -> const vector<bool> ——!!!
 {
-//	fmt::print("@Coords<T>::validate()\n");
+#if DEBUG > 0
+	fmt::print("@Coords<T>::validate()\n");
+#endif
 	return cdlt.validate();
 }
 
@@ -538,7 +573,10 @@ void Coords<T>::report() const
 /// Make Coords<DVecType>
 unique_ptr<CrdWptBase> coordsmaker(NumericVector nv)
 {
-//	fmt::print("@coordsmaker(NumericVector); {}, &nv {}, &nv[0] {}\n", get_coordtype(nv), address(nv), address(nv[0]));
+#if DEBUG > 0
+	fmt::print("@coordsmaker(NumericVector); {} {}, nv[0] {}, &nv {}, &nv[0] {}, typeid: {}\n",
+		padstr, get_coordtype(nv), nv[0], address(nv), address(nv[0]), demangle(typeid(nv)));
+#endif
 	using enum CoordType;
 	const auto latlon { get_vec_attr<NumericVector, bool>(nv, "latlon") };
 	switch (get_coordtype(nv))
@@ -652,7 +690,9 @@ const bool Waypoints::validate() const
 /// Check "valid" attribute of NumericVector all true
 bool check_valid(const NumericVector nv)
 {
-//	fmt::print("@check_valid(const NumericVector)\n");
+#if DEBUG > 0
+	fmt::print("@check_valid(const NumericVector)\n");
+#endif
 	int validated = check_logical_attr(nv, "valid");
 	if (!validated)
 		return revalidate(nv);
@@ -663,7 +703,9 @@ bool check_valid(const NumericVector nv)
 /// Check "lat_valid" and "lon_valid attributes of DataFrame are all true
 bool check_valid(const DataFrame df)
 {
-//	fmt::print("@check_valid(const DataFrame)\n");
+#if DEBUG > 0
+	fmt::print("@check_valid(const DataFrame)\n");
+#endif
 
 	int latvalidated = check_logical_attr(df, "validlat");
 	int lonvalidated = check_logical_attr(df, "validlon");
@@ -683,7 +725,9 @@ bool check_valid(const DataFrame df)
 template<NumericVector_or_DataFrame T>
 bool revalidate(const T t)
 {
-//	fmt::print("@revalidate<NumericVector_or_DataFrame>(const T); T: {}\n", demangle(typeid(t)));
+#if DEBUG > 0
+	fmt::print("@revalidate<NumericVector_or_DataFrame>(const T); T: {}\n", demangle(typeid(t)));
+#endif
 
 	if constexpr (isNumericVector_v<T>) { 
 		auto valid { coordsmaker(t)->validate() };
@@ -708,7 +752,9 @@ bool revalidate(const T t)
 /// Check df has valid "llcols" attribute
 bool valid_ll(const DataFrame df)
 {
-//	fmt::print("@{}\n", "valid_ll(const DataFrame)");
+#if DEBUG > 0
+	fmt::print("@{}\n", "valid_ll(const DataFrame)");
+#endif
 	bool valid = false;
 	vector llcols { get_vec_attr<DataFrame, int>(df, "llcols") };
 	if (2 == llcols.size()) {
@@ -904,7 +950,9 @@ NumericVector CoordsTest(NumericVector object)
 // [[Rcpp::export(name = "as_coords.default")]]
 NumericVector as_coords(NumericVector object, int fmt = 1)
 {
-//	fmt::print("{}@as_coords(NumericVector, int); fmt={}\n", exportstr, fmt);
+#if DEBUG > 0
+	fmt::print("{}@as_coords(NumericVector, int); fmt={}\n", exportstr, fmt);
+#endif
 	object.attr("fmt") = fmt;
 	auto valid = coordsmaker(object)->validate();
 	object.attr("valid") = valid;
@@ -921,17 +969,24 @@ NumericVector convertcoords(const NumericVector x, int fmt)
 	checkinherits(x, "coords");
 	CoordType type = get_coordtype(x);
 	CoordType newtype = get_coordtype(fmt);
-//	fmt::print("{}@convertcoords(NumericVector, int); from {} to {}\n", exportstr, type, newtype);
+#if DEBUG > 0
+	fmt::print("{}@convertcoords(NumericVector, int); from {} to {}\n", exportstr, type, newtype);
+	fmt::print("{}@Iconvertcoords(NumericVector, int); x[0] {}, &x {}, &x[0] {}, typeid: {}\n",
+		exportstr, x[0], address(x), address(x[0]), demangle(typeid(x)));
+#endif
 	if (!check_valid(x))
 		stop("Conversion aborted: invalid coords!\n [Use review() to show invalid elements]");
 	if (newtype != type) {
-//		NumericVector nv_out { wrap(coordsmaker(x)->convert(newtype)) };		// compiles but makes copy					¡¡¡—— Original ——!!!
-		const auto vd_out { coordsmaker(x)->convert(newtype) };			// Uses copy elision
-//		fmt::print("{}@Iconvertcoords(NumericVector, int);  vd_out[0] {}, &vd_out {}, &vd_out[0] {}, typeid: {}\n",
-//			exportstr, vd_out[0], address(vd_out), address(vd_out[0]), demangle(typeid(vd_out)));
-		NumericVector nv_out { wrap(vd_out) };							// compiles but makes copy
-//		fmt::print("{}@IIconvertcoords(NumericVector, int); nv_out[0] {}, &nv_out {}, &nv_out[0] {}, typeid: {}\n",
-//			exportstr, nv_out[0], address(nv_out), address(nv_out[0]), demangle(typeid(nv_out)));
+#if DEBUG > 0
+		const auto vd_out { coordsmaker(x)->convert(newtype) };					// Vector copy elision
+		fmt::print("{}@Iconvertcoords(NumericVector, int);  vd_out[0] {}, &vd_out {}, &vd_out[0] {}, typeid: {}\n",
+			exportstr, vd_out[0], address(vd_out), address(vd_out[0]), demangle(typeid(vd_out)));
+		NumericVector nv_out { wrap(vd_out) };									// Copies output string
+		fmt::print("{}@IIconvertcoords(NumericVector, int); nv_out[0] {}, &nv_out {}, &nv_out[0] {}, typeid: {}\n",
+			exportstr, nv_out[0], address(nv_out), address(nv_out[0]), demangle(typeid(nv_out)));
+#else
+		NumericVector nv_out { wrap(coordsmaker(x)->convert(newtype)) };		// Copies output string
+#endif
 		nv_out.attr("class") = "coords";
 		nv_out.attr("fmt") = fmt;
 		nv_out.attr("valid") = x.attr("valid");
@@ -950,7 +1005,9 @@ NumericVector convertcoords(const NumericVector x, int fmt)
 // [[Rcpp::export(name = "`latlon<-`")]]
 NumericVector latlon(NumericVector cd, LogicalVector value)
 {
-//	fmt::print("{}@latlon(NumericVector, LogicalVector)\n", exportstr);
+#if DEBUG > 0
+	fmt::print("{}@latlon(NumericVector, LogicalVector)\n", exportstr);
+#endif
 	checkinherits(cd, "coords");
 	if (value.size() != cd.size() && value.size() != 1)
 		stop("value must be either length 1 or length(cd)");
@@ -967,10 +1024,11 @@ NumericVector latlon(NumericVector cd, LogicalVector value)
 // [[Rcpp::export(name = "format.coords")]]
 CharacterVector formatcoords(const NumericVector x, bool usenames = true, bool validate = true, int fmt = 0)
 {
-//	fmt::print("{}@formatcoords(NumericVector, bool, bool, int); usenames: {}, validate: {}, fmt: {}\n", exportstr, usenames, validate, fmt);
-//	fmt::print("{}@Iformatcoords(NumericVector, bool, bool, int); x[0] {}, &x {}, &x[0] {}, typeid: {}\n",
-//		exportstr, x[0], address(x), address(x[0]), demangle(typeid(x)));
-
+#if DEBUG > 0
+	fmt::print("{}@formatcoords(NumericVector, bool, bool, int); usenames: {}, validate: {}, fmt: {}\n", exportstr, usenames, validate, fmt);
+	fmt::print("{}@Iformatcoords(NumericVector, bool, bool, int); x[0] {}, &x {}, &x[0] {}, typeid: {}\n",
+		exportstr, x[0], address(x), address(x[0]), demangle(typeid(x)));
+#endif
 	checkinherits(x, "coords");
 	if(!x.size())
 		stop("x has 0 length!");
@@ -980,8 +1038,10 @@ CharacterVector formatcoords(const NumericVector x, bool usenames = true, bool v
 	CoordType ct_current { get_coordtype(x) };
 	CoordType ct_required { fmt ? get_coordtype(fmt) : ct_current };
 	vector sv_out{ coordsmaker(x)->format(ct_required) };
-//	fmt::print("{}@IIformatcoords(NumericVector, bool, bool, int); sv_out[0] {}, &sv_out {}, &sv_out[0] {}, typeid: {}\n",
-//		exportstr, sv_out[0], address(sv_out), address(sv_out[0]), demangle(typeid(sv_out).name()));
+#if DEBUG > 0
+	fmt::print("{}@IIformatcoords(NumericVector, bool, bool, int); sv_out[0] {}, &sv_out {}, &sv_out[0] {}, typeid: {}\n",
+		exportstr, sv_out[0], address(sv_out), address(sv_out[0]), demangle(typeid(sv_out).name()));
+#endif
 	vector names{ get_vec_attr<NumericVector, string>(x, "names") };
 	if (names.size() && usenames) {
 		stdlenstr(names);
@@ -996,7 +1056,11 @@ CharacterVector formatcoords(const NumericVector x, bool usenames = true, bool v
 // [[Rcpp::export(name = "validate.coords")]]
 NumericVector validatecoords(const NumericVector x, const bool force = true)
 {
-//	fmt::print("{}@validatecoords(const NumericVector, const bool); force: {}\n", exportstr, force);
+#if DEBUG > 0
+	fmt::print("{}@validatecoords(const NumericVector, const bool); force: {}\n", exportstr, force);
+	fmt::print("{}@Ivalidatecoords(const NumericVector, const bool); x[0] {}, &x {}, &x[0] {}, typeid: {}\n",
+		exportstr, x[0], address(x), address(x[0]), demangle(typeid(x)));
+#endif
 	checkinherits(x, "coords");
 	if (force)	{			
 		auto valid { coordsmaker(x)->validate() };

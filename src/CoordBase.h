@@ -14,7 +14,7 @@
 /// Development and debugging
 
 
-#define DEBUG 1
+#define DEBUG 0
 
 #if DEBUG > 0
 
@@ -29,7 +29,7 @@ inline void* address(const auto& t)
 
 /// __________________________________________________
 /// Format strings for debugging code
-constexpr auto padstr { "——————————————————"sv };
+constexpr auto padstr { "— — — — — — — — — "sv };
 constexpr auto exportstr { "——Rcpp::export——"sv };
 
 #endif	// if DEBUG > 0
