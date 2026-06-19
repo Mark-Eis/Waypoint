@@ -14,7 +14,7 @@
 /// Development and debugging
 
 
-#define DEBUG 0
+#define DEBUG 1
 
 #if DEBUG > 0
 
@@ -28,7 +28,8 @@ inline void* address(const auto& t)
 }
 
 /// __________________________________________________
-/// Format string for debugging code
+/// Format strings for debugging code
+constexpr auto padstr { "——————————————————"sv };
 constexpr auto exportstr { "——Rcpp::export——"sv };
 
 #endif	// if DEBUG > 0
@@ -401,7 +402,7 @@ class Coordlet {
 //		virtual ~Coordlet() { _ctrsgn(typeid(*this), false); }
 
 		template<DVecType U>
-		const U convert() const;
+		U convert() const;
 		template<SVecType U>
 		U format() const;
 		const vector<bool> validate() const;
