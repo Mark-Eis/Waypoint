@@ -4,10 +4,11 @@
 
 // [[Rcpp::plugins(cpp23)]]
 
+#include <array>
 #include <Rcpp.h>
 #include <cxxabi.h>
 #include <memory>
-#include <array>
+#include <string>
 #include <utility>
 
 using namespace Rcpp;
@@ -771,104 +772,105 @@ bool valid_ll(const DataFrame df)
 /// __________________________________________________
 /// Exported functions
 
-/*
+#if DEBUG > 0
 /// __________________________________________________
 /// Dummy Function for Testing Only 	¡¡¡ ——— Temporary to Be Archived ——— !!!
 //' @rdname cords
 // [[Rcpp::export(name = "ctors")]]
 NumericVector constructors(NumericVector object)
-{
-//	fmt::print("{}@ctors(NumVec); fmt {}\n", exportstr, get_fmt_attribute(object));
+{ 
+	fmt::print("{}@ctors(NumVec); fmt {}\n", exportstr, get_fmt_attribute(object));
 
 	constexpr int x{ 7 };
 	using addr = decltype(address(object));
-	auto prevaddr = addr{ 0x00 };
-//	fmt::print("\t—initialise prevaddr {}\n", prevaddr);
+	auto prevaddr = addr{ 0x00 }; 
+	fmt::print("\t—initialise prevaddr {}\n", prevaddr);
 	bool moved{false};
-	constexpr const char* mov { "moved" };
-	constexpr const char* cpy { "copied" };
 
-// NumericVector "object" arg
-//	fmt::print("{}I@ctors(NumVec); &object {}, object[x] {}, &object[x] {}\n", exportstr, address(object), object[x], address(object[x]));
+	constexpr auto mov { "moved"sv };
+	constexpr auto cpy { "copied"sv };
+
+// NumericVector "object" arg 
+	fmt::print("{}I@ctors(NumVec); &object {}, object[x] {}, &object[x] {}\n", exportstr, address(object), object[x], address(object[x]));
 	prevaddr = address(object[x]);
 	
 // Assign to vector<double> from NumericVector —— copies content of "object" to nv at a new address;
 	auto nv { as<vector<double>>(object) };
-	moved = address(nv[x]) == prevaddr;
-//	fmt::print("{}II@ctors(NumVec); &nv {}, nv[x] {}, ({}) &nv[x] {}\n", exportstr, address(nv), nv[x], moved ? mov : cpy, address(nv[x]));
+	moved = address(nv[x]) == prevaddr; 
+	fmt::print("{}II@ctors(NumVec); &nv {}, nv[x] {}, ({}) &nv[x] {}\n", exportstr, address(nv), nv[x], moved ? mov : cpy, address(nv[x]));
 	prevaddr = address(nv[x]);
 
 // Copy construct one vector<double> from another —— copies content of nv to nv2 at a new address
 	auto nv2 { nv };
-	moved = address(nv2[x]) == prevaddr;
-//	fmt::print("{}III@ctors(NumVec); &nv2 {}, nv2[x] {}, ({}) &nv2[x] {}\n", exportstr, address(nv2), nv2[x], moved ? mov : cpy, address(nv2[x]));
+	moved = address(nv2[x]) == prevaddr; 
+	fmt::print("{}III@ctors(NumVec); &nv2 {}, nv2[x] {}, ({}) &nv2[x] {}\n", exportstr, address(nv2), nv2[x], moved ? mov : cpy, address(nv2[x]));
 
 // Move construct one vector<double> from another —— moves content of nv to nv3, content maintains its address
 	auto nv3 { std::move(nv) };
-	moved = address(nv3[x]) == prevaddr;
-//	fmt::print("{}IV@ctors(NumVec); &nv3 {}, nv3[x] {}, ({}) &nv3[x] {}\n", exportstr, address(nv3), nv3[x], moved ? mov : cpy, address(nv3[x]));
+	moved = address(nv3[x]) == prevaddr; 
+	fmt::print("{}IV@ctors(NumVec); &nv3 {}, nv3[x] {}, ({}) &nv3[x] {}\n", exportstr, address(nv3), nv3[x], moved ? mov : cpy, address(nv3[x]));
 
 // Check original "movee" nv —— content now undefined
-	moved = address(nv[x]) != prevaddr;
-//	fmt::print("{}V@ctors(NumVec); (post move) &nv {}, nv[x] {}, ({}) &nv[x] {}\n", exportstr, address(nv), "undefined!", moved ? mov : "same", address(nv[x]));
+	moved = address(nv[x]) != prevaddr; 
+	fmt::print("{}V@ctors(NumVec); (post move) &nv {}, nv[x] {}, ({}) &nv[x] {}\n", exportstr, address(nv), "undefined!", moved ? mov : "same", address(nv[x]));
 
 // Copy construct DecDegVecDouble from vector<double> —— copies content of nv3 to dv at a new address
 	prevaddr = address(nv3[x]);
 	DecDegVecDouble dv { nv3 }; 
-	moved = address(dv[x]) == prevaddr;
-//	fmt::print("{}VI@ctors(NumVec); &dv {}, dv[x] {}, ({}) &dv[x] {}\n", exportstr, address(dv), dv[x], moved ? mov : cpy, address(dv[x]));
+	moved = address(dv[x]) == prevaddr; 
+	fmt::print("{}VI@ctors(NumVec); &dv {}, dv[x] {}, ({}) &dv[x] {}\n", exportstr, address(dv), dv[x], moved ? mov : cpy, address(dv[x]));
 
 // Check original "copyee" nv3 —— content unchanged
-	moved = address(nv3[x]) != prevaddr;
-//	fmt::print("{}VII@ctors(NumVec); (post copy) &nv3 {}, nv3[x] {}, ({}) &nv3[x] {}\n", exportstr, address(nv3), nv3[x], moved ? mov : "same", address(nv3[x]));
+	moved = address(nv3[x]) != prevaddr; 
+	fmt::print("{}VII@ctors(NumVec); (post copy) &nv3 {}, nv3[x] {}, ({}) &nv3[x] {}\n", exportstr, address(nv3), nv3[x], moved ? mov : "same", address(nv3[x]));
 
 // Move construct DecDegVecDouble from vector<double> —— moves content of nv3 to dv2, content maintains its address
 	DecDegVecDouble dv2 { std::move(nv3) }; 
-	moved = address(dv2[x]) == prevaddr;
-//	fmt::print("{}VIII@ctors(NumVec); &dv2 {}, dv2[x] {}, ({}) &dv2[x] {}\n", exportstr, address(dv2), dv2[x], moved ? mov : cpy, address(dv2[x]));
+	moved = address(dv2[x]) == prevaddr; 
+	fmt::print("{}VIII@ctors(NumVec); &dv2 {}, dv2[x] {}, ({}) &dv2[x] {}\n", exportstr, address(dv2), dv2[x], moved ? mov : cpy, address(dv2[x]));
 
-// Check original "movee" nv3 —— content now undefined
-//	fmt::print("{}IX@ctors(NumVec); (post move) &nv3 {}, nv3[x] {}, ({}) &nv3[x] {}\n", exportstr, address(nv3), "undefined", moved ? mov : "same", address(nv3[x]));
+// Check original "movee" nv3 —— content now undefined 
+	fmt::print("{}IX@ctors(NumVec); (post move) &nv3 {}, nv3[x] {}, ({}) &nv3[x] {}\n", exportstr, address(nv3), "undefined", moved ? mov : "same", address(nv3[x]));
 
 // Copy construct one DecDegVecDouble from another —— copies content of dv2 to dv3 at a new address
 	prevaddr = address(dv2[x]);
 	DecDegVecDouble dv3 { dv2 }; 
-	moved = address(dv3[x]) == prevaddr;
-//	fmt::print("{}X@ctors(NumVec); &dv3 {}, dv3[x] {}, ({}) &dv3[x] {}\n", exportstr, address(dv3), dv3[x], moved ? mov : cpy, address(dv3[x]));
+	moved = address(dv3[x]) == prevaddr; 
+	fmt::print("{}X@ctors(NumVec); &dv3 {}, dv3[x] {}, ({}) &dv3[x] {}\n", exportstr, address(dv3), dv3[x], moved ? mov : cpy, address(dv3[x]));
 
 // Check original "copyee" dv2 —— content unchanged
-	moved = address(dv2[x]) != prevaddr;
-//	fmt::print("{}XI@ctors(NumVec); (post copy) &dv2 {}, dv2[x] {}, ({}) &dv2[x] {}\n", exportstr, address(dv2), dv2[x], moved ? mov : "same", address(dv2[x]));
+	moved = address(dv2[x]) != prevaddr; 
+	fmt::print("{}XI@ctors(NumVec); (post copy) &dv2 {}, dv2[x] {}, ({}) &dv2[x] {}\n", exportstr, address(dv2), dv2[x], moved ? mov : "same", address(dv2[x]));
 
 // Move construct one DecDegVecDouble from another —— moves content of dv2 to dv4, content maintains its address (was in dv2, nv3, nv)
 	DecDegVecDouble dv4 { std::move(dv2) }; 
-	moved = address(dv4[x]) == prevaddr;
-//	fmt::print("{}XII@ctors(NumVec); &dv4 {}, dv4[x] {}, ({}) &dv4[x] {}\n", exportstr, address(dv4), dv4[x], moved ? mov : cpy, address(dv4[x]));
+	moved = address(dv4[x]) == prevaddr; 
+	fmt::print("{}XII@ctors(NumVec); &dv4 {}, dv4[x] {}, ({}) &dv4[x] {}\n", exportstr, address(dv4), dv4[x], moved ? mov : cpy, address(dv4[x]));
 
 // Check original "movee" dv2 —— content now undefined
-	moved = address(dv2[x]) != prevaddr;
-//	fmt::print("{}XIII@ctors(NumVec); (post move) &dv2 {}, dv2[x] {}, ({}) &dv2[x] {}\n", exportstr, address(dv2), "undefined", moved ? mov : "same", address(dv2[x]));
+	moved = address(dv2[x]) != prevaddr; 
+	fmt::print("{}XIII@ctors(NumVec); (post move) &dv2 {}, dv2[x] {}, ({}) &dv2[x] {}\n", exportstr, address(dv2), "undefined", moved ? mov : "same", address(dv2[x]));
 	
 // Copy assign to one DecDegVecDouble from another —— using signature dv3[x] = 123.456789; copies content of dv3 to dv4 at existing address
 	dv3[x] = 123.456789;
-	prevaddr = address(dv3[x]);
-//	fmt::print("{}XIV@ctors(NumVec); (post change dv3[x]) &dv3 {}, dv3[x] {}, &dv3[x] {}\n", exportstr, address(dv3), dv3[x], address(dv3[x]));
+	prevaddr = address(dv3[x]); 
+	fmt::print("{}XIV@ctors(NumVec); (post change dv3[x]) &dv3 {}, dv3[x] {}, &dv3[x] {}\n", exportstr, address(dv3), dv3[x], address(dv3[x]));
 	dv4 = dv3; 
-//	fmt::print("{}XV@ctors(NumVec); (post copy assign) &dv4 {}, dv4[x] {}, &dv4[x] {}\n", exportstr, address(dv4), dv4[x], address(dv4[x]));
+	fmt::print("{}XV@ctors(NumVec); (post copy assign) &dv4 {}, dv4[x] {}, &dv4[x] {}\n", exportstr, address(dv4), dv4[x], address(dv4[x]));
 
 // Check original "copyee" dv3 —— content unchanged
-	moved = address(dv3[x]) != prevaddr;
-//	fmt::print("{}XVI@ctors(NumVec); (post copy assign) &dv3 {}, dv3[x] {}, ({}) &dv3[x] {}\n", exportstr, address(dv3), dv3[x], moved ? mov : "same", address(dv3[x]));
+	moved = address(dv3[x]) != prevaddr; 
+	fmt::print("{}XVI@ctors(NumVec); (post copy assign) &dv3 {}, dv3[x] {}, ({}) &dv3[x] {}\n", exportstr, address(dv3), dv3[x], moved ? mov : "same", address(dv3[x]));
 
 // Move assign to one DecDegVecDouble from another —— moves content of dv4 to dv3, content maintains its address (was in dv2, nv3, nv)
 	prevaddr = address(dv4[x]);
 	dv3 = (std::move(dv4)); 
-	moved = address(dv3[x]) == prevaddr;
-//	fmt::print("{}XVII@ctors(NumVec); (post move assign) &dv3 {}, dv3[x] {}, ({}) &dv3[x] {}\n", exportstr, address(dv3), dv3[x], moved ? mov : cpy, address(dv3[x]));
+	moved = address(dv3[x]) == prevaddr; 
+	fmt::print("{}XVII@ctors(NumVec); (post move assign) &dv3 {}, dv3[x] {}, ({}) &dv3[x] {}\n", exportstr, address(dv3), dv3[x], moved ? mov : cpy, address(dv3[x]));
 
 // Check original "movee" dv4 —— content now undefined
-	moved = address(dv4[x]) != prevaddr;
-//	fmt::print("{}XVIII@ctors(NumVec); (post move assign) &dv4 {}, dv4[x] {}, ({}) &dv4[x] {}\n", exportstr, address(dv4), "undefined", moved ? mov : "same", address(dv4[x]));
+	moved = address(dv4[x]) != prevaddr; 
+	fmt::print("{}XVIII@ctors(NumVec); (post move assign) &dv4 {}, dv4[x] {}, ({}) &dv4[x] {}\n", exportstr, address(dv4), "undefined", moved ? mov : "same", address(dv4[x]));
 
 	return object;
 }
@@ -878,50 +880,50 @@ NumericVector constructors(NumericVector object)
 //' @rdname cords
 // [[Rcpp::export(name = "cordelia")]]
 NumericVector movit(NumericVector object)
-{
-//	fmt::print("{}@movit(NumericVector); fmt {}\n", exportstr, get_fmt_attribute(object));
+{ 
+	fmt::print("{}@movit(NumericVector); fmt {}\n", exportstr, get_fmt_attribute(object));
 	using enum CoordType;
 
-// NumericVector "object" arg
-//	fmt::print("{}I@movit(NumVec); &object {}, object[0] {}, &object[0] {}\n", exportstr, address(object), object[0], address(object[0]));
+// NumericVector "object" arg 
+	fmt::print("{}I@movit(NumVec); &object {}, object[0] {}, &object[0] {}\n", exportstr, address(object), object[0], address(object[0]));
 
 // Assign to vector<double> nv from NumericVector —— copies content of "object" to a new address
-	auto nv { as<vector<double>>(object) };
-//	fmt::print("{}II@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), nv[0], address(nv[0]));
+	auto nv { as<vector<double>>(object) }; 
+	fmt::print("{}II@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), nv[0], address(nv[0]));
 
 // Move construct DecDegVecDouble from vector<double> —— moves content from nv to dv, maintains address
-	DecDegVecDouble dv { std::move(nv) };
-//	fmt::print("{}III@movit(NumVec); &dv {}, dv[0] {}, &dv[0] {}\n", exportstr, address(dv), dv[0], address(dv[0]));
-//	fmt::print("{}IV@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), "undefined", address(nv[0]));
+	DecDegVecDouble dv { std::move(nv) }; 
+	fmt::print("{}III@movit(NumVec); &dv {}, dv[0] {}, &dv[0] {}\n", exportstr, address(dv), dv[0], address(dv[0])); 
+	fmt::print("{}IV@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), "undefined", address(nv[0]));
 
-// Move construct Coordlet<DecDegVecDouble> from DecDegVecDouble —— moves content  from dv to clt, maintains address
-//	fmt::print("{}V@movit(NumericVector); Constructing Coordlet<DecDegVecDouble> by moving dv\n", exportstr);
+// Move construct Coordlet<DecDegVecDouble> from DecDegVecDouble —— moves content  from dv to clt, maintains address 
+	fmt::print("{}V@movit(NumericVector); Constructing Coordlet<DecDegVecDouble> by moving dv\n", exportstr);
 	auto clt = Coordlet<DecDegVecDouble>{ std::move(dv), vector<bool>{} };
-	clt.report();
-//	fmt::print("{}VI@movit(NumVec); &dv {}, dv[0] {}, &dv[0] {}\n", exportstr, address(dv), "undefined", address(dv[0]));
+	clt.report(); 
+	fmt::print("{}VI@movit(NumVec); &dv {}, dv[0] {}, &dv[0] {}\n", exportstr, address(dv), "undefined", address(dv[0]));
 
 // Re-assign to vector<double> nv from NumericVector —— copies "object" content to new address
-	nv = as<vector<double>>(object);
-//	fmt::print("{}VII@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), nv[0], address(nv[0]));
+	nv = as<vector<double>>(object); 
+	fmt::print("{}VII@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), nv[0], address(nv[0]));
 
-// Construct Coordlet<DecDegVecDouble> indirectly from vector<double>; using *, new and delete to observe destruction
-//	fmt::print("{}VIII@movit(NumericVector); Making ptr1\n", exportstr);
+// Construct Coordlet<DecDegVecDouble> indirectly from vector<double>; using *, new and delete to observe destruction 
+	fmt::print("{}VIII@movit(NumericVector); Making ptr1\n", exportstr);
 	const auto* ptr1 = new Coordlet<DecDegVecDouble>{ std::move(nv), vector<bool>{} };	// std::move() needed here—no copy elision.
-	ptr1->report();
-//	fmt::print("{}IX@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), "undefined", address(nv[0]));
+	ptr1->report(); 
+	fmt::print("{}IX@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), "undefined", address(nv[0]));
 	delete ptr1;
 
 // Re-assign to vector<double> vn from NumericVector —— copies "object" content to new address (may re-use &dv[0] from deleted Coordlet)
-	nv = as<vector<double>>(object);
-//	fmt::print("{}X@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), nv[0], address(nv[0]));
+	nv = as<vector<double>>(object); 
+	fmt::print("{}X@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), nv[0], address(nv[0]));
 
-// Construct Coordlet<DecDegVecDouble> directly from DecDegVecDouble; using *, new and delete to observe destruction
-//	fmt::print("{}XI@movit(NumericVector); Making ptr2\n", exportstr);
+// Construct Coordlet<DecDegVecDouble> directly from DecDegVecDouble; using *, new and delete to observe destruction 
+	fmt::print("{}XI@movit(NumericVector); Making ptr2\n", exportstr);
 	const auto* ptr2 = new Coordlet<DecDegVecDouble>{ DecDegVecDouble{ std::move(nv) }, vector<bool>{} };
-	ptr2->report();
-//	fmt::print("{}XI@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), "undefined", address(nv[0]));
-	delete ptr2;
-//	fmt::print("{}XI@movit(NumericVector); ptr2 deleted, clt to be deleted on exit\n", exportstr);
+	ptr2->report(); 
+	fmt::print("{}XI@movit(NumVec); &nv {}, nv[0] {}, &nv[0] {}\n", exportstr, address(nv), "undefined", address(nv[0]));
+	delete ptr2; 
+	fmt::print("{}XI@movit(NumericVector); ptr2 deleted, clt to be deleted on exit\n", exportstr);
 	return object;
 }
 
@@ -932,8 +934,8 @@ NumericVector movit(NumericVector object)
 // [[Rcpp::export(name = "coordle")]]
 NumericVector CoordsTest(NumericVector object)
 {
-	CoordType type = get_coordtype(object);
-//	fmt::print("{}@CoordsTest(NumericVector); fmt {}, CoordType {}\n", exportstr, get_fmt_attribute(object), type);
+	CoordType type = get_coordtype(object); 
+	fmt::print("{}@CoordsTest(NumericVector); fmt {}, CoordType {}\n", exportstr, get_fmt_attribute(object), type);
 
 	auto Coords_ptr { unique_ptr<CrdWptBase>{ coordsmaker(object) } };
 	Coords_ptr->report();
@@ -942,7 +944,7 @@ NumericVector CoordsTest(NumericVector object)
 	
 	return object;
 }
-*/
+#endif
 
 /// __________________________________________________
 /// Create coords - S3 method as_coords.default()
