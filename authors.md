@@ -8,13 +8,13 @@
 ## Citation
 
 Eisler M (2026). *Waypoint: Convert, Validate, Format and Print
-Geographic Coordinates and Waypoints*. R package version 1.3.0.9009,
+Geographic Coordinates and Waypoints*. R package version 1.3.0.9010,
 <https://mark-eis.github.io/Waypoint/>.
 
     @Manual{,
       title = {Waypoint: Convert, Validate, Format and Print Geographic Coordinates and Waypoints},
       author = {Mark Eisler},
       year = {2026},
-      note = {R package version 1.3.0.9009},
+      note = {R package version 1.3.0.9010},
       url = {https://mark-eis.github.io/Waypoint/},
     }
