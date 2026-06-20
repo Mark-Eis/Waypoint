@@ -9,7 +9,7 @@
   conversion functions on these `NumericVector`s (#163–#165, #168, #171–#174).
 
 * Extensively revised source code, making use of the newer C++17, C++20 and C++23 features where possible for
-  simpler, more understandable and more easily maintainable code (#150, #169, #170).
+  simpler, more understandable and more easily maintainable code (#150, #169, #170, #185).
 
 * `coordtype_to_int(CoordType)` adds 1 for consistency with its inverse function `get_coordtype(int)`,
   which subtracts 1 (#167).
