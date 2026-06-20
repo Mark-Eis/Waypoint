@@ -14,6 +14,7 @@ using namespace Rcpp;
 using std::array;
 using std::vector;
 using std::string;
+using namespace std::literals;
 using std::string_view;
 using namespace std::string_view_literals;
 using std::transform;
@@ -200,7 +201,7 @@ inline string str_tolower(string s)
 int name_pos_in_df(const DataFrame df, const string name)
 {
 //	fmt::print("@name_pos_in_df(const DataFrame, const string); name={}\n", name);
-	vector names{ get_vec_attr<DataFrame, string>(df, "names") };
+	vector names{ get_vec_attr<DataFrame, string>(df, "names"s) };
 	if (!names.size())
 		return -1;
 	typedef decltype(names.size()) Tmp;
@@ -223,7 +224,7 @@ int name_pos_in_df(const DataFrame df, const string name)
 RObject getnames(const DataFrame df)
 {
 //	fmt::print("@{}\n", "getnames(const DataFrame)");
-	vector namescolvec{ get_vec_attr<DataFrame, int>(df, "namescol") };
+	vector namescolvec{ get_vec_attr<DataFrame, int>(df, "namescol"s) };
 	if (1 == namescolvec.size()) {
 		int namescol = namescolvec[0] - 1;
 		if (is_item_in_df(df, namescol))
@@ -317,7 +318,7 @@ FamousFive0::~FamousFive0()
 Coordlet::Coordlet(NumericVector _nv) :				// Needs to know CoordType in another way to intialise ff
 	ff { switch_ff(_nv) },
 	nv{ _nv },
-	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") }
+	latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon"s) }
 {
 //	fmt::print("§Coordlet::Coordlet(NumericVector, bool) ");  _ctrsgn(typeid(*this));
 }
@@ -490,7 +491,7 @@ vector<string> Coords::format(CoordType required_type) const
 void Coords::suffix_nesw(vector<string>& sv_out) const
 {
 //	fmt::print("@Coords::suffix_nesw(vector<string>& sv_out) const\n");
-	const auto latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") };
+	const auto latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon"s) };
 	vector<bool>::const_iterator ll_it { latlon.begin() };
 	const auto ll_size { latlon.size() };
 
@@ -512,7 +513,7 @@ void Coords::suffix_nesw(vector<string>& sv_out) const
 void Coords::suffix_latlon(vector<string>& sv_out) const
 {
 //	fmt::print("@Coords::suffix_latlon(vector<string>& sv_out) const\n");
-	const auto latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon") };
+	const auto latlon{ get_vec_attr<NumericVector, bool>(nv, "latlon"s) };
 	vector<bool>::const_iterator ll_it { latlon.begin() };
 	const auto ll_size { latlon.size() };
 
@@ -630,7 +631,7 @@ const bool Waypoints::validate() const
 bool check_valid(const NumericVector nv)
 {
 //	fmt::print("@check_valid(const NumericVector)\n");
-	int validated = check_logical_attr(nv, "valid");
+	int validated = check_logical_attr(nv, "valid"s);
 	if (!validated)
 		return revalidate<NumericVector, Coords>(nv);
 	return validated >> 1;
@@ -642,8 +643,8 @@ bool check_valid(const DataFrame df)
 {
 //	fmt::print("@check_valid(const DataFrame)\n");
 
-	int latvalidated = check_logical_attr(df, "validlat");
-	int lonvalidated = check_logical_attr(df, "validlon");
+	int latvalidated = check_logical_attr(df, "validlat"s);
+	int lonvalidated = check_logical_attr(df, "validlon"s);
 
 	if (!(latvalidated & lonvalidated))
 		return revalidate<DataFrame, Waypoints>(df);
@@ -679,7 +680,7 @@ bool valid_ll(const DataFrame df)
 {
 //	fmt::print("@{}\n", "valid_ll(const DataFrame)");
 	bool valid = false;
-	vector llcols { get_vec_attr<DataFrame, int>(df, "llcols") };
+	vector llcols { get_vec_attr<DataFrame, int>(df, "llcols"s) };
 	if (2 == llcols.size()) {
 		transform(llcols.begin(), llcols.end(), llcols.begin(), [](auto x){ return --x; });
 		if (is_item_in_df(df, llcols[0]) && is_item_in_df(df, llcols[1]) && llcols[0] != llcols[1])
@@ -712,7 +713,7 @@ NumericVector as_coords(NumericVector object, int fmt = 1)
 // [[Rcpp::export(name = "convert.coords")]]
 NumericVector convertcoords(NumericVector x, int fmt)
 {
-	checkinherits(x, "coords");
+	checkinherits(x, "coords"s);
 	CoordType type = get_coordtype(x);
 	CoordType newtype = get_coordtype(fmt);
 //	fmt::print("{}@convertcoords(NumericVector, int); from {} to {}\n", exportstr, type, newtype);
@@ -732,7 +733,7 @@ NumericVector convertcoords(NumericVector x, int fmt)
 NumericVector latlon(NumericVector cd, LogicalVector value)
 {
 //	fmt::print("{}@latlon(NumericVector, LogicalVector)\n", exportstr);
-	checkinherits(cd, "coords");
+	checkinherits(cd, "coords"s);
 	if (value.size() != cd.size() && value.size() != 1)
 		stop("value must be either length 1 or length(cd)");
 	else
@@ -748,7 +749,7 @@ NumericVector latlon(NumericVector cd, LogicalVector value)
 CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validate = true, int fmt = 0)
 {
 //	fmt::print("{}@formatcoords(NumericVector, bool, bool, int); usenames: {}, validate: {}, fmt: {}\n", exportstr, usenames, validate, fmt);
-	checkinherits(x, "coords");
+	checkinherits(x, "coords"s);
 	if(!x.size())
 		stop("x has 0 length!");
 	if (validate)
@@ -757,7 +758,7 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validat
 
 	vector sv_out{ Coords{ x }.format(fmt ? get_coordtype(fmt) : get_coordtype(x)) };
 
-	vector names{ get_vec_attr<NumericVector, string>(x, "names") };
+	vector names{ get_vec_attr<NumericVector, string>(x, "names"s) };
 	if (names.size() && usenames) {
 		stdlenstr(names);
 		concat_vecstr_elmnts(names, sv_out);
@@ -772,7 +773,7 @@ CharacterVector formatcoords(NumericVector x, bool usenames = true, bool validat
 NumericVector validatecoords(const NumericVector x, const bool force = true)
 {
 //	fmt::print("{}@validatecoords(const NumericVector, const bool); force: {}\n", exportstr, force);
-	checkinherits(x, "coords");
+	checkinherits(x, "coords"s);
 	if (force)									
 		Coords{ x }.validate();
 	if (!check_valid(x))
@@ -790,7 +791,7 @@ DataFrame as_waypoints(DataFrame object, int fmt = 1)
 	object.attr("fmt") = fmt;
 	int namescol = 0;
 	if (!object.hasAttribute("namescol")) {
-		namescol = name_pos_in_df(object, "name");
+		namescol = name_pos_in_df(object, "name"s);
 		if (++namescol)
 			object.attr("namescol") = namescol;
 	}
@@ -811,7 +812,7 @@ DataFrame as_waypoints(DataFrame object, int fmt = 1)
 // [[Rcpp::export(name = "convert.waypoints")]]
 DataFrame convertwaypoints(DataFrame x, int fmt)
 {
-	checkinherits(x, "waypoints");
+	checkinherits(x, "waypoints"s);
 	CoordType type = get_coordtype(x);
 	CoordType newtype = get_coordtype(fmt);
 //	fmt::print("{}@convertwaypoints(DataFrame, int); from {} to {}\n", exportstr, type, newtype);
@@ -833,7 +834,7 @@ DataFrame convertwaypoints(DataFrame x, int fmt)
 CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate = true, int fmt = 0)
 {
 //	fmt::print("{}@formatwaypoints(DataFrame, bool, bool, int); usenames: {}, validate: {}, fmt: {}\n", exportstr, usenames, validate, fmt);
-	checkinherits(x, "waypoints");
+	checkinherits(x, "waypoints"s);
 	if(!x.nrows())
 		stop("x has 0 rows!");
 	if(!valid_ll(x))
@@ -858,7 +859,7 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate
 DataFrame validatewaypoints(DataFrame x, bool force = true)
 {
 //	fmt::print("{}@validatewaypoints(DataFrame, bool); force: {}\n", exportstr, force);
-	checkinherits(x, "waypoints");
+	checkinherits(x, "waypoints"s);
 	if(!valid_ll(x))
 		stop("Invalid llcols attribute!");
 	if (force)
@@ -890,8 +891,8 @@ CharacterVector ll_headers(int width, int fmt)
 NumericVector as_coordswaypoints(DataFrame object, bool which)
 {
 //	fmt::print("{}@as_coord(DataFrame); which: {}\n", exportstr, which ? "lat" : "lon");
-	checkinherits(object, "waypoints");
-	NumericVector nv = object[get_vec_attr<DataFrame, int>(object, "llcols")[which ? 0 : 1] - 1];
+	checkinherits(object, "waypoints"s);
+	NumericVector nv = object[get_vec_attr<DataFrame, int>(object, "llcols"s)[which ? 0 : 1] - 1];
 	nv = clone(nv);
 	nv.attr("class") = "coords";
 	nv.attr("fmt") = object.attr("fmt");

@@ -14,9 +14,9 @@
 /// Development and debugging
 
 
-#define DEBUG 0
+#define DEBUG 1
 
-#if DEBUG > 1
+#if DEBUG > 0
 
 void _ctrsgn(const std::type_info&, bool = false);
 
