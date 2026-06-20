@@ -97,7 +97,6 @@ inline double polish(double x)
 
 /// __________________________________________________
 /// Return named attribute as vector<U> or empty vector<U>
-// template<NumVec_or_DataFrame T, typename U> 
 template<NumVec_or_DataFrame T, typename U> 
 inline vector<U> get_vec_attr(const T& t, const string attrname)
 {
