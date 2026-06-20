@@ -53,7 +53,8 @@ const string demangle(const std::type_info& obj)
 {
 	int status = 0;
 	char* p { abi::__cxa_demangle(obj.name(), NULL, NULL, &status) };
-	string str { fmt::format("\"{}\" (status {})", p, std::to_string(status)) };
+//	string str { fmt::format("\"{}\" (status {})", p, std::to_string(status)) };
+	string str { fmt::format("{}", p) };
 	std::free(p);
 	return str;
 }
