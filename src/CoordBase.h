@@ -7,7 +7,7 @@
 
 #define FMT_HEADER_ONLY
 #include "fmt/base.h"		// …fmt/*.h copied to …/R/Packages/Waypoint/src.
-#include <concepts>
+
 
 /// __________________________________________________
 /// __________________________________________________
@@ -49,40 +49,6 @@ class Coords;
 class Waypoints;
 
 /// __________________________________________________
-/// Concept
-template<typename T>
-concept NumericVector_or_DataFrame = 
-	std::is_same_v<NumericVector, T> || std::is_same_v<const NumericVector, T> ||
-	std::is_same_v<DataFrame, T> || std::is_same_v<const DataFrame, T>;
-
-
-/// __________________________________________________
-/// __________________________________________________
-/// Formula simplification
-inline double mod1by60(double);
-inline double mod1e2(double);
-inline double round2(double, int);
-inline double polish(double);
-
-/// __________________________________________________
-/// __________________________________________________
-/// Utility
-template<NumericVector_or_DataFrame T, typename U> 
-inline vector<U> get_vec_attr(const T&, const string);
-inline int get_fmt_attribute(const NumericVector_or_DataFrame auto&);
-template<NumericVector_or_DataFrame T>
-int check_logical_attr(T t, const string attrname);
-inline void checkinherits(const NumericVector_or_DataFrame auto&, const string);
-inline bool is_item_in_df(const DataFrame, int);
-inline void stdlenstr(vector<string>&);
-inline void concat_vecstr_elmnts(const vector<string>&, vector<string>&, const string = " ");
-inline void concat_vecstr_elmnts(const vector<int>&, vector<string>&, const string = " ");
-inline bool prefixwithnames(vector<string>&, RObject&);
-inline string str_tolower(string);
-int name_pos_in_df(const DataFrame, const string);
-RObject getnames(const DataFrame);
-
-/// __________________________________________________
 /// __________________________________________________
 /// CoordType enum
 enum class CoordType : char { decdeg, degmin, degminsec };
@@ -96,14 +62,53 @@ struct fmt::formatter<CoordType>: formatter<string_view>
 
 
 /// __________________________________________________
-/// CoordType access functions
-inline const CoordType get_coordtype(int);
-inline const CoordType get_coordtype(const NumericVector_or_DataFrame auto&);
-inline int coordtype_to_int(CoordType);
+/// __________________________________________________
+/// Type Traits
 
-inline string cardpoint(bool, bool);
-inline string cardi_b(bool);
+/// NumericVector
+template <typename T>
+struct isNumericVector : public std::false_type {};
 
+template <>
+struct isNumericVector<NumericVector> : public std::true_type {};
+
+template<typename T>
+constexpr bool isNumericVector_v = isNumericVector<T>::value;
+
+/// DataFrame
+template <typename T>
+struct isDataFrame : public std::false_type {};
+
+template <>
+struct isDataFrame<DataFrame> : public std::true_type {};
+
+template<typename T>
+constexpr bool isDataFrame_v = isDataFrame<T>::value;
+
+/// __________________________________________________
+/// Concepts
+
+/// Concept —— NumericVector
+template<typename T>
+concept Is_NumericVector = isNumericVector_v<T>;
+
+/// Concept —— DataFrame
+template<typename T>
+concept Is_DataFrame =
+	requires(T t, const string& s, const char *c) {
+		{ t.attr(s) } -> std::same_as<Rcpp::AttributeProxyPolicy<Rcpp::Vector<19>>::AttributeProxy>;
+		{ t.attributeNames() } -> std::same_as<vector<string>>;
+		{ t.hasAttribute(s) } -> std::same_as<bool>;
+		{ t.inherits(c) } -> std::same_as<bool>;
+		{ t.length() } -> std::integral;
+		{ t.names() } -> std::same_as<Rcpp::NamesProxyPolicy<Rcpp::Vector<19>>::NamesProxy>;
+		{ t.nrows() } -> std::integral;
+	};
+
+/// Concept —— Either NumericVector or DataFrame
+template<typename T>
+concept NumVec_or_DataFrame =
+	Is_NumericVector<T> || Is_DataFrame<T>;
 
 /// __________________________________________________
 /// Concept
@@ -118,6 +123,42 @@ concept Coords_or_Waypoints =
 		{ t.format(CoordType::degminsec) } -> std::same_as<vector<string>>;
 		{ t.validate() } -> std::same_as<bool>;
 	};
+
+
+/// __________________________________________________
+/// CoordType access functions
+inline const CoordType get_coordtype(int);
+inline const CoordType get_coordtype(const NumVec_or_DataFrame auto&);
+inline int coordtype_to_int(CoordType);
+
+/// __________________________________________________
+/// __________________________________________________
+/// Formula simplification
+inline double mod1by60(double);
+inline double mod1e2(double);
+inline double round2(double, int);
+inline double polish(double);
+
+/// __________________________________________________
+/// __________________________________________________
+/// Utility
+// template<NumVec_or_DataFrame T, typename U> 
+template<NumVec_or_DataFrame T, typename U> 
+inline vector<U> get_vec_attr(const T&, const string);
+inline int get_fmt_attribute(const NumVec_or_DataFrame auto&);
+template<NumVec_or_DataFrame T>
+int check_logical_attr(T t, const string attrname);
+inline void checkinherits(const NumVec_or_DataFrame auto&, const string);
+inline bool is_item_in_df(const DataFrame, int);
+inline void stdlenstr(vector<string>&);
+inline void concat_vecstr_elmnts(const vector<string>&, vector<string>&, const string = " ");
+inline void concat_vecstr_elmnts(const vector<int>&, vector<string>&, const string = " ");
+inline bool prefixwithnames(vector<string>&, RObject&);
+inline string str_tolower(string);
+int name_pos_in_df(const DataFrame, const string);
+RObject getnames(const DataFrame);
+inline string cardpoint(bool, bool);
+inline string cardi_b(bool);
 
 
 /// __________________________________________________
@@ -270,7 +311,7 @@ class Waypoints : public CrdWptBase {
 /// Validation
 bool check_valid(const NumericVector);
 bool check_valid(const DataFrame);
-template<NumericVector_or_DataFrame T, Coords_or_Waypoints U>
+template<NumVec_or_DataFrame T, Coords_or_Waypoints U>
 bool revalidate(const T);
 bool valid_ll(const DataFrame);
 
