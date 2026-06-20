@@ -248,7 +248,7 @@ RObject getnames(const DataFrame df)
 auto fmt::formatter<CoordType>::format(CoordType ct, format_context& ctx) const
 	-> format_context::iterator
 {
-	constexpr array<const char*, 3> names {"DecDeg", "DegMin", "DegMinSec"};
+	constexpr array names {"DecDeg"sv, "DegMin"sv, "DegMinSec"sv};
 	return formatter<string_view>::format(names[fmt::underlying(ct)], ctx);
 }
 
