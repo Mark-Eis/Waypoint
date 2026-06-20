@@ -14,7 +14,7 @@
 /// Development and debugging
 
 
-#define DEBUG 0
+#define DEBUG 1
 
 #if DEBUG > 0
 
@@ -309,10 +309,17 @@ class Waypoints : public CrdWptBase {
 /// __________________________________________________
 /// __________________________________________________
 /// Validation
+/*
 bool check_valid(const NumericVector);
 bool check_valid(const DataFrame);
 template<NumVec_or_DataFrame T, Coords_or_Waypoints U>
 bool revalidate(const T);
+*/
+bool check_valid(const NumericVector);
+bool check_valid(const DataFrame);
+template<NumVec_or_DataFrame T>
+bool revalidate(const T);
+
 bool valid_ll(const DataFrame);
 
 /// __________________________________________________

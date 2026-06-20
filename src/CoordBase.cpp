@@ -631,10 +631,12 @@ const bool Waypoints::validate() const
 /// Check "valid" attribute of NumericVector all true
 bool check_valid(const NumericVector nv)
 {
-//	fmt::print("@check_valid(const NumericVector)\n");
+#if DEBUG > 0
+	fmt::print("@check_valid(const NumericVector)\n");
+#endif
 	int validated = check_logical_attr(nv, "valid"s);
 	if (!validated)
-		return revalidate<NumericVector, Coords>(nv);
+		return revalidate(nv);
 	return validated >> 1;
 }
 
@@ -642,13 +644,15 @@ bool check_valid(const NumericVector nv)
 /// Check "lat_valid" and "lon_valid attributes of DataFrame are all true
 bool check_valid(const DataFrame df)
 {
-//	fmt::print("@check_valid(const DataFrame)\n");
+#if DEBUG > 0
+	fmt::print("@check_valid(const DataFrame)\n");
+#endif
 
 	int latvalidated = check_logical_attr(df, "validlat"s);
 	int lonvalidated = check_logical_attr(df, "validlon"s);
 
 	if (!(latvalidated & lonvalidated))
-		return revalidate<DataFrame, Waypoints>(df);
+		return revalidate(df);
 
 	if (!(latvalidated >> 1))
 		warning("Invalid latitude!");
@@ -659,19 +663,25 @@ bool check_valid(const DataFrame df)
 
 /// __________________________________________________
 /// Revalidate "coords" or "waypoints"
-template<NumVec_or_DataFrame T, Coords_or_Waypoints U>
+template<NumVec_or_DataFrame T>
 bool revalidate(const T t)
 {
-//	fmt::print("@revalidate<NumVec_or_DataFrame, Coords_or_Waypoints>(const T); T: {}; U: {}\n", demangle(typeid(t)), demangle(typeid(U)));
-	const char* what;
-	if constexpr (std::is_same_v<Coords, U>)
-		what = "Coords";
-	if constexpr (std::is_same_v<Waypoints, U>)
-		what = "Waypoints";
-	if (!U{ t }.validate())
-		warning("Revalidation found invalid %s!", str_tolower(what));
-	else
-		warning("%s revalidated.", what);
+#if DEBUG > 0
+	fmt::print("@revalidate<NumVec_or_DataFrame>(const T); T: {}\n", demangle(typeid(t)));
+#endif
+
+	if constexpr (isNumericVector_v<T>) { 
+		if (!Coords{ t }.validate())
+			warning("Revalidation found invalid coords!");
+		else
+			warning("Coords revalidated!");
+	}
+	if constexpr (isDataFrame_v<T>) {
+		if (!Waypoints{ t }.validate())
+			warning("Revalidation found invalid waypoints!");
+		else
+			warning("Waypoints revalidated!");
+	}
 	return check_valid(t);
 }
 
