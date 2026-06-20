@@ -285,18 +285,18 @@ inline double polish(double);
 /// __________________________________________________
 /// Utility
 template<NumericVector_or_DataFrame T, typename U> 
-inline vector<U> get_vec_attr(const T&, const char*);
+inline vector<U> get_vec_attr(const T&, const string);
 inline int get_fmt_attribute(const NumericVector_or_DataFrame auto&);
 template<NumericVector_or_DataFrame T>
-int check_logical_attr(T t, const char* attrname);
-inline void checkinherits(const NumericVector_or_DataFrame auto&, const char*);
+int check_logical_attr(T t, const string attrname);
+inline void checkinherits(const NumericVector_or_DataFrame auto&, const string);
 inline bool is_item_in_df(const DataFrame, int);
 inline void stdlenstr(vector<string>&);
 inline void concat_vecstr_elmnts(const vector<string>&, vector<string>&, const string = " ");
 inline void concat_vecstr_elmnts(const vector<int>&, vector<string>&, const string = " ");
 inline bool prefixwithnames(vector<string>&, RObject&);
 inline string str_tolower(string);
-int name_pos_in_df(const DataFrame, const char*);
+int name_pos_in_df(const DataFrame, const string);
 RObject getnames(const DataFrame);
 
 /// __________________________________________________
