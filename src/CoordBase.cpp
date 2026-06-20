@@ -96,9 +96,9 @@ inline double polish(double x)
 /// __________________________________________________
 /// Return named attribute as vector<U> or empty vector<U>
 template<NumericVector_or_DataFrame T, typename U> 
-inline vector<U> get_vec_attr(const T& t, const char* attrname)
+inline vector<U> get_vec_attr(const T& t, const string attrname)
 {
-//	fmt::print("@{} attr=\"{}\" {}\n", "get_vec_attr<T, U>(const T&, const char*)", attrname, t.hasAttribute(attrname) ? true : false);
+//	fmt::print("@{} attr=\"{}\" {}\n", "get_vec_attr<T, U>(const T&, const string)", attrname, t.hasAttribute(attrname) ? true : false);
 	return t.hasAttribute(attrname) ? as<vector<U>>(t.attr(attrname)) : vector<U>{};
 }
 
@@ -113,9 +113,9 @@ inline int get_fmt_attribute(const NumericVector_or_DataFrame auto& t)
 /// __________________________________________________
 /// Check whether a NumericVector or DataFrame has a specified logical vector attribute and whether all true
 template<NumericVector_or_DataFrame T>
-int check_logical_attr(T t, const char* attrname)
+int check_logical_attr(T t, const string attrname)
 {
-//	fmt::print("@check_logical_attr<NumericVector_or_DataFrame>(T, const char*); T: {}; attrname {}\n", demangle(typeid(t)), attrname);
+//	fmt::print("@check_logical_attr<NumericVector_or_DataFrame>(T, const string); T: {}; attrname {}\n", demangle(typeid(t)), attrname);
 	const vector vec_attr{ get_vec_attr<T, bool>(t, attrname) };
 	if (vec_attr.size()) {
 		return all_of(vec_attr.begin(), vec_attr.end(), [](bool v) { return v;}) ? 0b11 : 0b01;
@@ -126,10 +126,10 @@ int check_logical_attr(T t, const char* attrname)
 
 /// __________________________________________________
 /// Does object inherit given class?
-inline void checkinherits(const NumericVector_or_DataFrame auto& t, const char* classname)
+inline void checkinherits(const NumericVector_or_DataFrame auto& t, const string classname)
 {
-//	fmt::print("@checkinherits(const NumericVector_or_DataFrame auto&, const char*); t: {}; classname \"{}\"\n", demangle(typeid(t)), classname);
-	if (!t.inherits(classname)) stop("Argument must be a \"%s\" object", classname);
+//	fmt::print("@checkinherits(const NumericVector_or_DataFrame auto&, const string); t: {}; classname \"{}\"\n", demangle(typeid(t)), classname);
+	if (!t.inherits(classname.c_str())) stop("Argument must be a \"%s\" object", classname.c_str());
 }
 
 /// __________________________________________________
@@ -197,18 +197,18 @@ inline string str_tolower(string s)
 
 /// __________________________________________________
 /// Find position of name within data.frame names
-int name_pos_in_df(const DataFrame df, const char* name)
+int name_pos_in_df(const DataFrame df, const string name)
 {
-//	fmt::print("@name_pos_in_df(const DataFrame, const char*); name={}\n", name);
+//	fmt::print("@name_pos_in_df(const DataFrame, const string); name={}\n", name);
 	vector names{ get_vec_attr<DataFrame, string>(df, "names") };
 	if (!names.size())
 		return -1;
 	typedef decltype(names.size()) Tmp;
 	Tmp i = 0;
 	for (auto str : names ) {
-		// fmt::print("@@name_pos_in_df(const DataFrame, const char*); testing: {}\n", str);
+		// fmt::print("@@name_pos_in_df(const DataFrame, const string); testing: {}\n", str);
 		if (!str_tolower(str).compare(name)) {
-			// fmt::print("@@@name_pos_in_df(const DataFrame, const char*); found: {}\n", str);
+			// fmt::print("@@@name_pos_in_df(const DataFrame, const string); found: {}\n", str);
 			break;
 		}
 		i++;
