@@ -2,7 +2,8 @@
 
 ## Waypoint (development version)
 
-- Shorthand notation for simple, single-type argument concepts (#175).
+- Shorthand notation for templated functions with simple, single-type
+  argument concepts (#175).
 
 - New `Coords` and `Waypoints` classes each inheriting from abstract
   base class `CrdWptBase`, which implements member functions common to
