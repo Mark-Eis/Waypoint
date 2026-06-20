@@ -110,13 +110,13 @@ inline string cardi_b(bool);
 template<typename T>
 concept Coords_or_Waypoints =
 	requires (T t) {
-		t.convert(CoordType::decdeg);
-		t.convert(CoordType::degmin);
-		t.convert(CoordType::degminsec);
-		t.format(CoordType::decdeg);
-		t.format(CoordType::degmin);
-		t.format(CoordType::degminsec);
-		t.validate();
+		{ t.convert(CoordType::decdeg) } -> std::same_as<void>;
+		{ t.convert(CoordType::degmin) } -> std::same_as<void>;
+		{ t.convert(CoordType::degminsec) } -> std::same_as<void>;
+		{ t.format(CoordType::decdeg) } -> std::same_as<vector<string>>;
+		{ t.format(CoordType::degmin) } -> std::same_as<vector<string>>;
+		{ t.format(CoordType::degminsec) } -> std::same_as<vector<string>>;
+		{ t.validate() } -> std::same_as<bool>;
 	};
 
 
