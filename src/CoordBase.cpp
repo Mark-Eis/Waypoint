@@ -311,7 +311,9 @@ inline string cardi_b(bool negative)
 /// Destructor
 FamousFive0::~FamousFive0()
 {
-//	_ctrsgn(typeid(*this), false);
+#if DEBUG > 0
+	_ctrsgn(typeid(*this), false);
+#endif
 }
 
 /// __________________________________________________

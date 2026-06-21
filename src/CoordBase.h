@@ -349,7 +349,9 @@ inline string cardi_b(bool);
 /// __________________________________________________
 /// Abstract base class with pure virtual functions	
 struct FamousFive0 {
-//	FamousFive0() { _ctrsgn(typeid(*this)); };
+#if DEBUG > 0
+	FamousFive0() { _ctrsgn(typeid(*this)); };
+#endif
 	virtual ~FamousFive0() = 0;
 	virtual int get_deg(double x) const = 0;
 	virtual double get_decdeg(double x) const = 0;
@@ -367,8 +369,10 @@ struct FamousFive final : FamousFive0 {};
 /// Specialised derived struct for decimal degrees	
 template<>
 struct FamousFive<DecDegVecDouble> final : FamousFive0 {
-//	FamousFive<DecDegVecDouble>() { _ctrsgn(typeid(*this)); };
-//	~FamousFive<DecDegVecDouble>() { _ctrsgn(typeid(*this), false); };
+#if DEBUG > 0
+	FamousFive<DecDegVecDouble>() { _ctrsgn(typeid(*this)); };
+	~FamousFive<DecDegVecDouble>() { _ctrsgn(typeid(*this), false); };
+#endif
 	int get_deg(double x) const { return int(x); }
 	double get_decdeg(double x) const { return x; }
 	int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
@@ -380,8 +384,10 @@ struct FamousFive<DecDegVecDouble> final : FamousFive0 {
 /// Specialised derived struct for degrees and minutes
 template<>
 struct FamousFive<DegMinVecDouble> final : FamousFive0 {
-//	FamousFive<DegMinVecDouble>() { _ctrsgn(typeid(*this)); };
-//	~FamousFive<DegMinVecDouble>() { _ctrsgn(typeid(*this), false); };
+#if DEBUG > 0
+	FamousFive<DegMinVecDouble>() { _ctrsgn(typeid(*this)); };
+	~FamousFive<DegMinVecDouble>() { _ctrsgn(typeid(*this), false); };
+#endif
 	int get_deg(double x) const { return int(x / 1e2); }
 	double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
 	int get_min(double x) const { return int(x) % int(1e2); }
@@ -393,8 +399,10 @@ struct FamousFive<DegMinVecDouble> final : FamousFive0 {
 /// Specialised derived struct for degrees, minutes and seconds
 template<>
 struct FamousFive<DegMinSecVecDouble> final : FamousFive0 {
-//	FamousFive<DegMinSecVecDouble>() { _ctrsgn(typeid(*this)); };
-//	~FamousFive<DegMinSecVecDouble>() { _ctrsgn(typeid(*this), false); };
+#if DEBUG > 0
+	FamousFive<DegMinSecVecDouble>() { _ctrsgn(typeid(*this)); };
+	~FamousFive<DegMinSecVecDouble>() { _ctrsgn(typeid(*this), false); };
+#endif
 	int get_deg(double x) const { return int(x / 1e4); }
 	double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
 	int get_min(double x) const { return (int(x) % int(1e4)) / 1e2; }
@@ -418,9 +426,11 @@ class Coordlet {
 		Coordlet& operator=(const Coordlet&) = delete;				//  ——— ditto ———
 		Coordlet(Coordlet&&) = delete;								// Disallow transfer ownership
 		Coordlet& operator=(Coordlet&&) = delete;					// Disallow moving
+#if DEBUG == 0
 		virtual ~Coordlet() = default;
-//		virtual ~Coordlet() { _ctrsgn(typeid(*this), false); }
-
+#elif DEBUG > 0
+		virtual ~Coordlet() { _ctrsgn(typeid(*this), false); }
+#endif
 		template<DVecType U>
 		U convert() const;
 		template<SVecType U>
@@ -461,8 +471,11 @@ class Coords : public CrdWptBase {
 		Coords& operator=(const Coords&) = delete;					//  ——— ditto ———
 		Coords(Coords&&) = delete;									// Disallow transfer ownership
 		Coords& operator=(Coords&&) = delete;						// Disallow moving
+#if DEBUG == 0
 		~Coords() = default;
-//		~Coords() { _ctrsgn(typeid(*this), false); }
+#elif DEBUG > 0
+		~Coords() { _ctrsgn(typeid(*this), false); }
+#endif
 
 		const vector<double> convert(CoordType) const;
 		vector<string> format(CoordType) const;
