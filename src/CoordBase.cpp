@@ -101,7 +101,7 @@ inline double polish(double x)
 
 /// __________________________________________________
 /// Return named attribute as vector<U> or empty vector<U>
-template<NumericVector_or_DataFrame T, typename U> 
+template<NumVec_or_DataFrame T, typename U> 
 inline vector<U> get_vec_attr(const T& t, const string attrname)
 {
 //	fmt::print("@{} attr=\"{}\" {}\n", "get_vec_attr<T, U>(const T&, const string)", attrname, t.hasAttribute(attrname) ? true : false);
@@ -110,18 +110,18 @@ inline vector<U> get_vec_attr(const T& t, const string attrname)
 
 /// __________________________________________________
 /// Return "fmt" attribute as int
-inline int get_fmt_attribute(const NumericVector_or_DataFrame auto& t)
+inline int get_fmt_attribute(const NumVec_or_DataFrame auto& t)
 {
-//	fmt::print("@get_fmt_attribute<T>(const NumericVector_or_DataFrame auto&); t: {}; fmt={}\n", demangle(typeid(t)), as<int>(t.attr("fmt")));
+//	fmt::print("@get_fmt_attribute<T>(const NumVec_or_DataFrame auto&); t: {}; fmt={}\n", demangle(typeid(t)), as<int>(t.attr("fmt")));
 	return as<int>(t.attr("fmt"));
 }
 
 /// __________________________________________________
 /// Check whether a NumericVector or DataFrame has a specified logical vector attribute and whether all true
-template<NumericVector_or_DataFrame T>
+template<NumVec_or_DataFrame T>
 int check_logical_attr(T t, const string attrname)
 {
-//	fmt::print("@check_logical_attr<NumericVector_or_DataFrame>(T, const string); T: {}; attrname {}\n", demangle(typeid(t)), attrname);
+//	fmt::print("@check_logical_attr<NumVec_or_DataFrame>(T, const string); T: {}; attrname {}\n", demangle(typeid(t)), attrname);
 	const vector vec_attr{ get_vec_attr<T, bool>(t, attrname) };
 	if (vec_attr.size()) {
 		return all_of(vec_attr.begin(), vec_attr.end(), [](bool v) { return v;}) ? 0b11 : 0b01;
@@ -132,9 +132,9 @@ int check_logical_attr(T t, const string attrname)
 
 /// __________________________________________________
 /// Does object inherit given class?
-inline void checkinherits(const NumericVector_or_DataFrame auto& t, const string classname)
+inline void checkinherits(const NumVec_or_DataFrame auto& t, const string classname)
 {
-//	fmt::print("@checkinherits(const NumericVector_or_DataFrame auto&, const string); t: {}; classname \"{}\"\n", demangle(typeid(t)), classname);
+//	fmt::print("@checkinherits(const NumVec_or_DataFrame auto&, const string); t: {}; classname \"{}\"\n", demangle(typeid(t)), classname);
 	if (!t.inherits(classname.c_str())) stop("Argument must be a \"%s\" object", classname.c_str());
 }
 
@@ -274,9 +274,9 @@ inline const CoordType get_coordtype(int i)
 
 /// __________________________________________________
 /// Convert "fmt" attribute to CoordType enum
-inline const CoordType get_coordtype(const NumericVector_or_DataFrame auto& t)
+inline const CoordType get_coordtype(const NumVec_or_DataFrame auto& t)
 {
-//	fmt::print("@get_coordtype(const NumericVector_or_DataFrame auto&); t: {}\n", demangle(typeid(t)));
+//	fmt::print("@get_coordtype(const NumVec_or_DataFrame auto&); t: {}\n", demangle(typeid(t)));
 	return get_coordtype(get_fmt_attribute(t));
 }
 
@@ -724,11 +724,11 @@ bool check_valid(const DataFrame df)
 
 /// __________________________________________________
 /// Revalidate "coords" or "waypoints"
-template<NumericVector_or_DataFrame T>
+template<NumVec_or_DataFrame T>
 bool revalidate(const T t)
 {
 #if DEBUG > 0
-	fmt::print("@revalidate<NumericVector_or_DataFrame>(const T); T: {}\n", demangle(typeid(t)));
+	fmt::print("@revalidate<NumVec_or_DataFrame>(const T); T: {}\n", demangle(typeid(t)));
 #endif
 
 	if constexpr (isNumericVector_v<T>) { 
