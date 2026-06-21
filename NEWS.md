@@ -1,4 +1,4 @@
-# Waypoint (development version)
+# Waypoint 1.3.1
 
 * Extensively revised source code, making use of the newer C++17, C++20 and C++23 features including type
   traits, concepts, shorthand notation for templated functions with simple, single-type argument concepts,
