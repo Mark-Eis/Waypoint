@@ -99,7 +99,7 @@ concept NumVec_or_DataFrame =
 /// DecDegVec
 template<typename T>
 struct DecDegVec : public vector<T> {
-	DecDegVec(const DecDegVec&) = default;											// copy constructor —— maybe should be delete?
+	DecDegVec(const DecDegVec&) = delete;											// copy constructor —— maybe should be delete?
 	DecDegVec(const vector<T>& vt) : vector<T>{ vt }								// copy constructor
 		{
 #if DEBUG > 0
@@ -113,7 +113,7 @@ struct DecDegVec : public vector<T> {
 #endif
 		}
 
-	DecDegVec& operator=(const DecDegVec&) = default;								// copy assignment —— maybe should be delete?
+	DecDegVec& operator=(const DecDegVec&) = delete;								// copy assignment —— maybe should be delete?
 	DecDegVec& operator=(const vector<T>& vt)										// copy assignment
 	{
 #if DEBUG > 0
@@ -155,7 +155,7 @@ struct DecDegVec : public vector<T> {
 /// DegMinVec
 template<typename T>
 struct DegMinVec : public vector<T> {
-	DegMinVec(const DegMinVec&) = default;											// copy constructor —— maybe should be delete?
+	DegMinVec(const DegMinVec&) = delete;											// copy constructor —— maybe should be delete?
 	DegMinVec(const vector<T>& vt) : vector<T>{ vt }								// copy constructor
 	{
 #if DEBUG > 0
@@ -169,7 +169,7 @@ struct DegMinVec : public vector<T> {
 #endif
 	}
 
-	DegMinVec& operator=(const DegMinVec&) = default;								// copy assignment —— maybe should be delete?
+	DegMinVec& operator=(const DegMinVec&) = delete;								// copy assignment —— maybe should be delete?
 	DegMinVec& operator=(const vector<T>& vt)										// copy assignment
 	{
 #if DEBUG > 0
@@ -211,7 +211,7 @@ struct DegMinVec : public vector<T> {
 /// DegMinSecVec
 template<typename T>
 struct DegMinSecVec : public vector<T> {
-	DegMinSecVec(const DegMinSecVec&) = default;										// copy constructor —— maybe should be delete?
+	DegMinSecVec(const DegMinSecVec&) = delete;										// copy constructor —— maybe should be delete?
 	DegMinSecVec(const vector<T>& vt) : vector<T>{ vt }								// copy constructor
 	{
 #if DEBUG > 0
@@ -225,7 +225,7 @@ struct DegMinSecVec : public vector<T> {
 #endif
 	}
 
-	DegMinSecVec& operator=(const DegMinSecVec&) = default;							// copy assignment —— maybe should be delete?
+	DegMinSecVec& operator=(const DegMinSecVec&) = delete;							// copy assignment —— maybe should be delete?
 	DegMinSecVec& operator=(const vector<T>& vt)										// copy assignment
 	{
 #if DEBUG > 0

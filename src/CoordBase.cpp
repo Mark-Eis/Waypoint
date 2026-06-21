@@ -775,7 +775,10 @@ bool valid_ll(const DataFrame df)
 /// __________________________________________________
 /// Exported functions
 
-#if DEBUG > 0
+#if DEBUG < 2
+/*
+#endif
+
 /// __________________________________________________
 /// Dummy Function for Testing Only 	¡¡¡ ——— Temporary to Be Archived ——— !!!
 //' @rdname cords
@@ -947,6 +950,8 @@ NumericVector CoordsTest(NumericVector object)
 	
 	return object;
 }
+#if DEBUG < 2
+*/
 #endif
 
 /// __________________________________________________
