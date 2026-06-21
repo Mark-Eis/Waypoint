@@ -96,58 +96,58 @@ base [`Extract`](https://rdrr.io/r/base/Extract.html),
 ## Named "coords" object in degrees and minutes with
 ## eight values each of latitude and longitude
 dm
-#> Nelson's Column                          51°30.4659′ N
-#> Ostravice                                49°32.7726′ N
-#> Tally Ho                                 48°06.4339′ N
-#> Washington Monument                      38°53.3696′ N
-#> Null Island                               0°00.0000′ N
-#> Tristan da Cunha                         37°06.7044′ S
-#> Mawson Peak                              53°06.2869′ S
-#> Silvio Pettirossi International Airport  25°14.4093′ S
-#> Nelson's Column                           0°07.6754′ W
-#> Ostravice                                18°23.9137′ E
-#> Tally Ho                                122°46.7203′ W
-#> Washington Monument                      77°02.1145′ W
-#> Null Island                               0°00.0000′ E
-#> Tristan da Cunha                         12°17.3178′ W
-#> Mawson Peak                              73°31.0370′ E
-#> Silvio Pettirossi International Airport  57°31.1536′ W
+#> Nelson's Column                           51°30.4659′ N
+#> Ostravice                                 49°32.7726′ N
+#> Tally Ho                                  48°06.4339′ N
+#> Washington Monument                       38°53.3696′ N
+#> Null Island                                0°00.0000′ N
+#> Tristan da Cunha                          37°06.7044′ S
+#> Mawson Peak                               53°06.2869′ S
+#> Silvio Pettirossi International Airport   25°14.4093′ S
+#> Nelson's Column                            0°07.6754′ W
+#> Ostravice                                 18°23.9137′ E
+#> Tally Ho                                 122°46.7203′ W
+#> Washington Monument                       77°02.1145′ W
+#> Null Island                                0°00.0000′ E
+#> Tristan da Cunha                          12°17.3178′ W
+#> Mawson Peak                               73°31.0370′ E
+#> Silvio Pettirossi International Airport   57°31.1536′ W
 
 ## Extract the first eight values
 dm[1:8]
-#> Nelson's Column                          51°30.4659′ N
-#> Ostravice                                49°32.7726′ N
-#> Tally Ho                                 48°06.4339′ N
-#> Washington Monument                      38°53.3696′ N
-#> Null Island                               0°00.0000′ N
-#> Tristan da Cunha                         37°06.7044′ S
-#> Mawson Peak                              53°06.2869′ S
-#> Silvio Pettirossi International Airport  25°14.4093′ S
+#> Nelson's Column                           51°30.4659′ N
+#> Ostravice                                 49°32.7726′ N
+#> Tally Ho                                  48°06.4339′ N
+#> Washington Monument                       38°53.3696′ N
+#> Null Island                                0°00.0000′ N
+#> Tristan da Cunha                          37°06.7044′ S
+#> Mawson Peak                               53°06.2869′ S
+#> Silvio Pettirossi International Airport   25°14.4093′ S
 
 ## Exclude the first eight values
 dm[-8:0]
-#> Nelson's Column                           0°07.6754′ W
-#> Ostravice                                18°23.9137′ E
-#> Tally Ho                                122°46.7203′ W
-#> Washington Monument                      77°02.1145′ W
-#> Null Island                               0°00.0000′ E
-#> Tristan da Cunha                         12°17.3178′ W
-#> Mawson Peak                              73°31.0370′ E
-#> Silvio Pettirossi International Airport  57°31.1536′ W
+#> Nelson's Column                            0°07.6754′ W
+#> Ostravice                                 18°23.9137′ E
+#> Tally Ho                                 122°46.7203′ W
+#> Washington Monument                       77°02.1145′ W
+#> Null Island                                0°00.0000′ E
+#> Tristan da Cunha                          12°17.3178′ W
+#> Mawson Peak                               73°31.0370′ E
+#> Silvio Pettirossi International Airport   57°31.1536′ W
 
 ## Index odd-numbered values
 (index <- as.logical(1:16 %% 2))
 #>  [1]  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE
 #> [13]  TRUE FALSE  TRUE FALSE
 dm[index]
-#> Nelson's Column  51°30.4659′ N
-#> Tally Ho         48°06.4339′ N
-#> Null Island       0°00.0000′ N
-#> Mawson Peak      53°06.2869′ S
-#> Nelson's Column   0°07.6754′ W
-#> Tally Ho        122°46.7203′ W
-#> Null Island       0°00.0000′ E
-#> Mawson Peak      73°31.0370′ E
+#> Nelson's Column   51°30.4659′ N
+#> Tally Ho          48°06.4339′ N
+#> Null Island        0°00.0000′ N
+#> Mawson Peak       53°06.2869′ S
+#> Nelson's Column    0°07.6754′ W
+#> Tally Ho         122°46.7203′ W
+#> Null Island        0°00.0000′ E
+#> Mawson Peak       73°31.0370′ E
 
 ## Extract values without names
 unname(dm)[1:4]
@@ -166,14 +166,14 @@ newpos
 ## Update position using the "coords" object as replacement value
 dm[c(3, 11)] <- newpos
 dm[c(3, 11)]
-#> Tally Ho  49°30.3420′ N
-#> Tally Ho 124°11.5800′ W
+#> Tally Ho   49°30.3420′ N
+#> Tally Ho  124°11.5800′ W
 
 ## Or, as latlon didn't actually change, use simple numeric vector
 dm[c(3, 11)] <- c(4930.342, -12411.580)
 dm[c(3, 11)]
-#> Tally Ho  49°30.3420′ N
-#> Tally Ho 124°11.5800′ W
+#> Tally Ho   49°30.3420′ N
+#> Tally Ho  124°11.5800′ W
 
 rm(dm, index, newpos)
 ```

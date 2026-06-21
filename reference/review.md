@@ -95,7 +95,7 @@ review(dm)
 #> 
 #> $invalids
 #> Warning: Invalid coords!
-#> Nelson's Column  51°60.4659′ N
+#> Nelson's Column   51°60.4659′ N
 #> 
 #> $which_invalid
 #> [1] 1
@@ -116,7 +116,7 @@ review(wp)
 #> 
 #> $Lat$invalids
 #> Warning: Invalid coords!
-#> Mawson Peak  -93.104781° lat
+#> Mawson Peak   -93.104781° lat
 #> 
 #> $Lat$which_invalid
 #> [1] 7
