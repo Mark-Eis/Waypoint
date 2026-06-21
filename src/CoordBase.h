@@ -99,7 +99,7 @@ concept NumVec_or_DataFrame =
 /// DecDegVec
 template<typename T>
 struct DecDegVec : public vector<T> {
-	DecDegVec(const DecDegVec&) = delete;											// copy constructor —— maybe should be delete?
+	DecDegVec(const DecDegVec&) = delete;											// copy constructor
 	DecDegVec(const vector<T>& vt) : vector<T>{ vt }								// copy constructor
 		{
 #if DEBUG > 0
@@ -113,7 +113,7 @@ struct DecDegVec : public vector<T> {
 #endif
 		}
 
-	DecDegVec& operator=(const DecDegVec&) = delete;								// copy assignment —— maybe should be delete?
+	DecDegVec& operator=(const DecDegVec&) = delete;								// copy assignment
 	DecDegVec& operator=(const vector<T>& vt)										// copy assignment
 	{
 #if DEBUG > 0
@@ -124,7 +124,7 @@ struct DecDegVec : public vector<T> {
 	}
 	DecDegVec& operator=(const NumericVector) = delete;								// copy assignment - not defaultable
 
-	DecDegVec(DecDegVec&&) = default;												// move constructor —— maybe should be delete?
+	DecDegVec(DecDegVec&&) = default;												// move constructor
 	DecDegVec(vector<T>&& vt) : vector<T>{ std::move(vt) }							// move constructor
 		{
 #if DEBUG > 0
@@ -133,7 +133,7 @@ struct DecDegVec : public vector<T> {
 		}
 	DecDegVec(NumericVector&& vt) = delete;											// move constructor - not defaultable
 
-	DecDegVec& operator=(DecDegVec&&) = default;										// move assignment —— maybe should be delete?
+	DecDegVec& operator=(DecDegVec&&) = default;										// move assignment
 	DecDegVec& operator=(vector<T>&& vt)											// move assignment
 	{
 #if DEBUG > 0
@@ -155,7 +155,7 @@ struct DecDegVec : public vector<T> {
 /// DegMinVec
 template<typename T>
 struct DegMinVec : public vector<T> {
-	DegMinVec(const DegMinVec&) = delete;											// copy constructor —— maybe should be delete?
+	DegMinVec(const DegMinVec&) = delete;											// copy constructor
 	DegMinVec(const vector<T>& vt) : vector<T>{ vt }								// copy constructor
 	{
 #if DEBUG > 0
@@ -169,7 +169,7 @@ struct DegMinVec : public vector<T> {
 #endif
 	}
 
-	DegMinVec& operator=(const DegMinVec&) = delete;								// copy assignment —— maybe should be delete?
+	DegMinVec& operator=(const DegMinVec&) = delete;								// copy assignment
 	DegMinVec& operator=(const vector<T>& vt)										// copy assignment
 	{
 #if DEBUG > 0
@@ -180,7 +180,7 @@ struct DegMinVec : public vector<T> {
 	}
 	DegMinVec& operator=(const NumericVector) = delete;								// copy assignment - not defaultable
 
-	DegMinVec(DegMinVec&&) = default;												// move constructor —— maybe should be delete?
+	DegMinVec(DegMinVec&&) = default;												// move constructor
 	DegMinVec(vector<T>&& vt) : vector<T>{ std::move(vt) }							// move constructor
 	{
 #if DEBUG > 0
@@ -211,7 +211,7 @@ struct DegMinVec : public vector<T> {
 /// DegMinSecVec
 template<typename T>
 struct DegMinSecVec : public vector<T> {
-	DegMinSecVec(const DegMinSecVec&) = delete;										// copy constructor —— maybe should be delete?
+	DegMinSecVec(const DegMinSecVec&) = delete;										// copy constructor
 	DegMinSecVec(const vector<T>& vt) : vector<T>{ vt }								// copy constructor
 	{
 #if DEBUG > 0
@@ -225,7 +225,7 @@ struct DegMinSecVec : public vector<T> {
 #endif
 	}
 
-	DegMinSecVec& operator=(const DegMinSecVec&) = delete;							// copy assignment —— maybe should be delete?
+	DegMinSecVec& operator=(const DegMinSecVec&) = delete;							// copy assignment
 	DegMinSecVec& operator=(const vector<T>& vt)										// copy assignment
 	{
 #if DEBUG > 0
@@ -236,7 +236,7 @@ struct DegMinSecVec : public vector<T> {
 	}
 	DegMinSecVec& operator=(const NumericVector) = delete;							// copy assignment - not defaultable
 
-	DegMinSecVec(DegMinSecVec&&) = default;											// move constructor —— maybe should be delete?
+	DegMinSecVec(DegMinSecVec&&) = default;											// move constructor
 	DegMinSecVec(vector<T>&& vt) : vector<T>{ std::move(vt) }						// move constructor
 	{
 #if DEBUG > 0
@@ -245,7 +245,7 @@ struct DegMinSecVec : public vector<T> {
 	}
 	DegMinSecVec(NumericVector&& vt) = delete;										// move constructor - not defaultable
 
-	DegMinSecVec& operator=(DegMinSecVec&&) = default;								// move assignment —— maybe should be delete?
+	DegMinSecVec& operator=(DegMinSecVec&&) = default;								// move assignment
 	DegMinSecVec& operator=(vector<T>&& vt)											// move assignment
 	{
 #if DEBUG > 0
