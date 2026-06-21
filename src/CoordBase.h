@@ -14,7 +14,7 @@
 /// Development and debugging
 
 
-#define DEBUG 1
+#define DEBUG 0
 
 #if DEBUG > 0
 
@@ -142,6 +142,7 @@ struct DecDegVec : public vector<T> {
 		vector<T>::operator=(std::move(vt));
 		return *this;
 	}
+	DecDegVec& operator=(NumericVector&& vt)	 = delete;								// move assignment - not defaultable
 
 	~DecDegVec()
 		{
@@ -198,6 +199,7 @@ struct DegMinVec : public vector<T> {
 		vector<T>::operator=(std::move(vt));
 		return *this;
 	}
+	DegMinVec& operator=(NumericVector&& vt)	 = delete;								// move assignment - not defaultable
 
 	~DegMinVec()
 	{
@@ -254,6 +256,7 @@ struct DegMinSecVec : public vector<T> {
 		vector<T>::operator=(std::move(vt));
 		return *this;
 	}
+	DegMinSecVec& operator=(NumericVector&& vt)	 = delete;							// move assignment - not defaultable
 
 	~DegMinSecVec()
 	{
