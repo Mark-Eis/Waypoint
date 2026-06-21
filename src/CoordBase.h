@@ -110,20 +110,6 @@ template<typename T>
 concept NumVec_or_DataFrame =
 	Is_NumericVector<T> || Is_DataFrame<T>;
 
-/// __________________________________________________
-/// Concept
-template<typename T>
-concept Coords_or_Waypoints =
-	requires (T t) {
-		{ t.convert(CoordType::decdeg) } -> std::same_as<void>;
-		{ t.convert(CoordType::degmin) } -> std::same_as<void>;
-		{ t.convert(CoordType::degminsec) } -> std::same_as<void>;
-		{ t.format(CoordType::decdeg) } -> std::same_as<vector<string>>;
-		{ t.format(CoordType::degmin) } -> std::same_as<vector<string>>;
-		{ t.format(CoordType::degminsec) } -> std::same_as<vector<string>>;
-		{ t.validate() } -> std::same_as<bool>;
-	};
-
 
 /// __________________________________________________
 /// CoordType access functions
