@@ -528,6 +528,50 @@ struct Convertidor<T, DegMinSecVecDouble>{
 
 /// __________________________________________________
 /// __________________________________________________
+/// Formateador -- functors for converting formats
+
+/// __________________________________________________
+/// Default struct for SFINAE	
+template<DVecType T, SVecType U>
+struct Formateador{
+	FamousFive<T> ff {};
+	Formateador() {}
+	string operator()(double n) const { stop("Formateador<DVecType, DVecType>::operator()(double) const my bad"); return ""s; }
+};
+
+/// __________________________________________________
+/// Specialised derived struct for decimal degrees	
+template<DVecType T>
+struct Formateador<T, DecDegVecString>{
+	FamousFive<T> ff {};
+	Formateador() {}
+	string operator()(double n) const { return fmt::format("{:>{}.{}f}\u00B0", ff.get_decdeg(n), 11, 6); }
+};
+
+/// __________________________________________________
+/// Specialised derived struct for degrees and minutes
+template<DVecType T>
+struct Formateador<T, DegMinVecString>{
+	FamousFive<T> ff {};
+	Formateador() {}
+	string operator()(double n) const { return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) + 
+					 fmt::format("{:0>{}.{}f}\u2032", fabs(ff.get_decmin(n)), 7, 4); }
+};
+
+/// __________________________________________________
+/// Specialised derived struct for degrees, minutes and seconds
+template<DVecType T>
+struct Formateador<T, DegMinSecVecString>{
+	FamousFive<T> ff {};
+	Formateador() {}
+	string operator()(double n) const { return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
+					 fmt::format("{:0>{}}\u2032", abs(ff.get_min(n)), 2) +
+					 fmt::format("{:0>{}.{}f}\u2033", fabs(ff.get_sec(n)), 5, 2); }
+};
+
+
+/// __________________________________________________
+/// __________________________________________________
 /// Coordlet class
 template<DVecType T>
 class Coordlet {
