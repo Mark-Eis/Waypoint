@@ -485,6 +485,46 @@ struct FamousFive<DegMinSecVecDouble> final : FamousFive0 {
 	double get_sec(double x) const { return mod1e2(x); }
 };
 
+/// __________________________________________________
+/// __________________________________________________
+/// Convertidor -- functors for converting formats
+
+/// __________________________________________________
+/// Default struct for SFINAE	
+template<DVecType T, DVecType U>
+struct Convertidor{
+	FamousFive<T> ff {};
+	Convertidor() {}
+	double operator()(double n) const { stop("Convertidor<DVecType, DVecType>::operator()(double) const my bad"); return -1; }
+};
+
+/// __________________________________________________
+/// Specialised derived struct for decimal degrees	
+template<DVecType T>
+struct Convertidor<T, DecDegVecDouble>{
+	FamousFive<T> ff {};
+	Convertidor() {}
+	double operator()(double n) const { return ff.get_decdeg(n); }
+};
+
+/// __________________________________________________
+/// Specialised derived struct for degrees and minutes
+template<DVecType T>
+struct Convertidor<T, DegMinVecDouble>{
+	FamousFive<T> ff {};
+	Convertidor() {}
+	double operator()(double n) const { return ff.get_deg(n) * 1e2 + ff.get_decmin(n); }
+};
+
+/// __________________________________________________
+/// Specialised derived struct for degrees, minutes and seconds
+template<DVecType T>
+struct Convertidor<T, DegMinSecVecDouble>{
+	FamousFive<T> ff {};
+	Convertidor() {}
+	double operator()(double n) const { return ff.get_deg(n) * 1e4 + ff.get_min(n) * 1e2 + ff.get_sec(n); }
+};
+
 
 /// __________________________________________________
 /// __________________________________________________

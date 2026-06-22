@@ -342,18 +342,8 @@ vector<double> Coordlet<T>::convert() const
 #if DEBUG > 0
 	fmt::print("@Coordlet<T>::convert<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
 #endif
-
 	U dv_out{ std::move(vector<double>(dv.size())) };
-
-	if constexpr (isDecDegVecDouble_v<U>)
-			transform(dv.begin(), dv.end(), dv_out.begin(), [this](auto n){ return ff->get_decdeg(n); });
-
-	else if constexpr (isDegMinVecDouble_v<U>)
-			transform(dv.begin(), dv.end(), dv_out.begin(), [this](auto n){ return ff->get_deg(n) * 1e2 + ff->get_decmin(n); });
-
-	else if constexpr (isDegMinSecVecDouble_v<U>)
-			transform(dv.begin(), dv.end(), dv_out.begin(), [this](auto n){ return ff->get_deg(n) * 1e4 + ff->get_min(n) * 1e2 + ff->get_sec(n); });
-
+	transform(dv.begin(), dv.end(), dv_out.begin(), Convertidor<T, U>());
 #if DEBUG > 0
 	fmt::print("@ICoordlet<T>::convert<U>() const; {} dv_out[0] {}, &dv_out {}, &dv_out[0] {}, typeid: {}\n",
 		padstr, dv_out[0], address(dv_out), address(dv_out[0]), demangle(typeid(dv_out)));
