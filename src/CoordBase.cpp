@@ -337,7 +337,7 @@ Coordlet<T>::Coordlet(T&& _dv, const vector<bool> _latlon) :
 /// __________________________________________________
 /// Switch CoordType to convert format
 template<DVecType T> template<DVecType U>
-U Coordlet<T>::convert() const
+vector<double> Coordlet<T>::convert() const
 {
 #if DEBUG > 0
 	fmt::print("@Coordlet<T>::convert<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
@@ -364,7 +364,7 @@ U Coordlet<T>::convert() const
 /// __________________________________________________
 /// Format dv as SVecType for printing
 template<DVecType T> template<SVecType U>
-U Coordlet<T>::format() const
+vector<string> Coordlet<T>::format() const
 {
 #if DEBUG > 0
 	fmt::print("@Coordlet<T>::format<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
@@ -513,13 +513,13 @@ const vector<double> Coords<T>::convert(CoordType required_type) const
 	switch (required_type)
 	{
 		case decdeg:
-			return { static_cast<DecDegVecDouble&&>( cdlt.template convert<DecDegVecDouble>() ) };
+			return cdlt.template convert<DecDegVecDouble>();
 
 		case degmin:
-			return { static_cast<DegMinVecDouble&&>( cdlt.template convert<DegMinVecDouble>() ) };
+			return cdlt.template convert<DegMinVecDouble>();
 
 		case degminsec:
-			return { static_cast<DegMinSecVecDouble&&>( cdlt.template convert<DegMinSecVecDouble>() ) };
+			return cdlt.template convert<DegMinSecVecDouble>();
 
 		default:
 			stop("Coords<T>::convert(CoordType) const my bad");
@@ -775,7 +775,7 @@ bool valid_ll(const DataFrame df)
 /// __________________________________________________
 /// Exported functions
 
-#if DEBUG < 2
+#if DEBUG < 3
 /*
 #endif
 
@@ -1207,6 +1207,6 @@ NumericVector as_coordswaypoints(DataFrame object, bool which)
 /// __________________________________________________
 /// __________________________________________________
 
-#if DEBUG > 2
+#if DEBUG > 1
 .
 #endif

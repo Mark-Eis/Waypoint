@@ -507,9 +507,9 @@ class Coordlet {
 		virtual ~Coordlet() { _ctrsgn(typeid(*this), false); }
 #endif
 		template<DVecType U>
-		U convert() const;
+		vector<double> convert() const;
 		template<SVecType U>
-		U format() const;
+		vector<string> format() const;
 		const vector<bool> validate() const;
 		void report() const;											// Temporary —— delete
 };
