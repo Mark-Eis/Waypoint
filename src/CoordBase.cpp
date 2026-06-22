@@ -324,7 +324,6 @@ FamousFive0::~FamousFive0()
 /// Constructor of Coordlet
 template<DVecType T>
 Coordlet<T>::Coordlet(T&& _dv, const vector<bool> _latlon) :
-	ff { make_unique<FamousFive<T>>() },
 	dv { static_cast<T&&>(_dv) },
 	latlon{ _latlon }
 {
@@ -410,15 +409,16 @@ const vector<bool> Coordlet<T>::validate() const
 	fmt::print("@ICoordlet<T>::validate(); {} dv[0] {}, &dv {}, &dv[0] {}, typeid: {}\n",
 		padstr, dv[0], address(dv), address(dv[0]), demangle(typeid(dv)));
 #endif
+	FamousFive<T> ff {};
 	vector<bool>::const_iterator ll_it{ latlon.begin() };
 	auto ll_size { latlon.size() };
 	auto valid = vector<bool>{};
 	valid.assign(dv.size(), {false});
 
-	transform(dv.begin(), dv.end(), valid.begin(), [this, &ll_it, &ll_size](auto n){
-		return !((fabs(ff->get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
-				(fabs(ff->get_decmin(n)) >= 60) ||
-				(fabs(ff->get_sec(n)) >= 60));
+	transform(dv.begin(), dv.end(), valid.begin(), [&ff, &ll_it, &ll_size](auto n){
+		return !((fabs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
+				(fabs(ff.get_decmin(n)) >= 60) ||
+				(fabs(ff.get_sec(n)) >= 60));
 	});
 
 	if (all_of(valid.begin(), valid.end(), [](auto v) { return v;}))

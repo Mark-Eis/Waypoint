@@ -575,7 +575,6 @@ struct Formateador<T, DegMinSecVecString>{
 /// Coordlet class
 template<DVecType T>
 class Coordlet {
-		unique_ptr<FamousFive0> ff;
 		T dv;
 		const vector<bool> latlon;
 
