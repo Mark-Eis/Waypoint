@@ -462,11 +462,12 @@ CrdWptBase::~CrdWptBase()
 /// __________________________________________________
 /// Coords class
 template<DVecType T>
-Coords<T>::Coords(vector<double> nv, const vector<bool> latlon) :
-	cdlt { Coordlet<T>{ std::move(nv), latlon }}
+Coords<T>::Coords(T t, const vector<bool> latlon) :
+	cdlt { Coordlet<T>{ std::move(t), latlon }}
 {
 #if DEBUG > 0
-	_ctrsgn(typeid(*this)); fmt::print("\t(vector<double>, const vector<bool>)\n");
+	_ctrsgn(typeid(*this)); fmt::print("\t(T, const vector<bool>)\n");
+	stop("Coords constructed inn Mimiland!");
 #endif
 }
 
@@ -555,13 +556,13 @@ unique_ptr<CrdWptBase> coordsmaker(NumericVector nv)
 	switch (get_coordtype(nv))
 	{
 		case decdeg:
-			return make_unique<Coords<DecDegVecDouble>>( DecDegVecDouble{ nv }, latlon);
+			return make_unique<Coords<DecDegVecDouble>>(nv, latlon);
 
 		case degmin:
-			return make_unique<Coords<DegMinVecDouble>>( DegMinVecDouble{ nv }, latlon );
+			return make_unique<Coords<DegMinVecDouble>>(nv, latlon);
 
 		case degminsec:
-			return make_unique<Coords<DegMinSecVecDouble>>( DegMinSecVecDouble{ nv }, latlon );
+			return make_unique<Coords<DegMinSecVecDouble>>(nv, latlon);
 
 		default:
 			stop("coordsmaker(NumericVector) my bad");
