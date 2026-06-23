@@ -710,7 +710,7 @@ bool revalidate(const NumericVector nv)
 }
 
 /// __________________________________________________
-/// Revalidate "coords" DataFrame
+/// Revalidate "waypoints" DataFrame
 bool revalidate(const DataFrame df)
 {
 #if DEBUG > 0
