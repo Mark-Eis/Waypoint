@@ -346,31 +346,17 @@ inline string cardi_b(bool);
 
 /// __________________________________________________
 /// __________________________________________________
-/// FamousFive -- Templated and OO
-
-/// __________________________________________________
-/// Abstract base class with pure virtual functions	
-struct FamousFive0 {
-#if DEBUG > 0
-	FamousFive0() { _ctrsgn(typeid(*this)); };
-#endif
-	virtual ~FamousFive0() = 0;
-	virtual int get_deg(double x) const = 0;
-	virtual double get_decdeg(double x) const = 0;
-	virtual int get_min(double x) const = 0;
-	virtual double get_decmin(double x) const = 0;
-	virtual double get_sec(double x) const = 0;
-};
+/// FamousFive -- Templated
 
 /// __________________________________________________
 /// Default empty derived struct for SFINAE	
 template<DVecType type>
-struct FamousFive final : FamousFive0 {};
+struct FamousFive {};
 
 /// __________________________________________________
 /// Specialised derived struct for decimal degrees	
 template<>
-struct FamousFive<DecDegVecDouble> final : FamousFive0 {
+struct FamousFive<DecDegVecDouble> {
 #if DEBUG > 0
 	FamousFive<DecDegVecDouble>() { _ctrsgn(typeid(*this)); };
 	~FamousFive<DecDegVecDouble>() { _ctrsgn(typeid(*this), false); };
@@ -385,7 +371,7 @@ struct FamousFive<DecDegVecDouble> final : FamousFive0 {
 /// __________________________________________________
 /// Specialised derived struct for degrees and minutes
 template<>
-struct FamousFive<DegMinVecDouble> final : FamousFive0 {
+struct FamousFive<DegMinVecDouble> {
 #if DEBUG > 0
 	FamousFive<DegMinVecDouble>() { _ctrsgn(typeid(*this)); };
 	~FamousFive<DegMinVecDouble>() { _ctrsgn(typeid(*this), false); };
@@ -400,7 +386,7 @@ struct FamousFive<DegMinVecDouble> final : FamousFive0 {
 /// __________________________________________________
 /// Specialised derived struct for degrees, minutes and seconds
 template<>
-struct FamousFive<DegMinSecVecDouble> final : FamousFive0 {
+struct FamousFive<DegMinSecVecDouble> {
 #if DEBUG > 0
 	FamousFive<DegMinSecVecDouble>() { _ctrsgn(typeid(*this)); };
 	~FamousFive<DegMinSecVecDouble>() { _ctrsgn(typeid(*this), false); };
