@@ -333,7 +333,6 @@ struct fmt::formatter<CoordType>: formatter<string_view>
 		-> format_context::iterator;
 };
 
-
 /// __________________________________________________
 /// CoordType access functions
 inline const CoordType get_coordtype(int);
@@ -349,12 +348,12 @@ inline string cardi_b(bool);
 /// FamousFive -- Templated
 
 /// __________________________________________________
-/// Default empty derived struct for SFINAE	
+/// Default empty struct for SFINAE	
 template<DVecType type>
 struct FamousFive {};
 
 /// __________________________________________________
-/// Specialised derived struct for decimal degrees	
+/// Specialised struct for decimal degrees	
 template<>
 struct FamousFive<DecDegVecDouble> {
 #if DEBUG > 0
@@ -369,7 +368,7 @@ struct FamousFive<DecDegVecDouble> {
 };
 
 /// __________________________________________________
-/// Specialised derived struct for degrees and minutes
+/// Specialised struct for degrees and minutes
 template<>
 struct FamousFive<DegMinVecDouble> {
 #if DEBUG > 0
@@ -384,7 +383,7 @@ struct FamousFive<DegMinVecDouble> {
 };
 
 /// __________________________________________________
-/// Specialised derived struct for degrees, minutes and seconds
+/// Specialised struct for degrees, minutes and seconds
 template<>
 struct FamousFive<DegMinSecVecDouble> {
 #if DEBUG > 0
@@ -403,16 +402,13 @@ struct FamousFive<DegMinSecVecDouble> {
 /// Convertidor -- functors for converting formats
 
 /// __________________________________________________
-/// Default struct for SFINAE	
+/// Default empty struct for SFINAE	
 template<DVecType T, DVecType U>
 struct Convertidor{
-	FamousFive<T> ff {};
-	Convertidor() {}
-	double operator()(double n) const { stop("Convertidor<DVecType, DVecType>::operator()(double) const my bad"); return -1; }
 };
 
 /// __________________________________________________
-/// Specialised derived struct for decimal degrees	
+/// Specialised struct for decimal degrees	
 template<DVecType T>
 struct Convertidor<T, DecDegVecDouble>{
 	FamousFive<T> ff {};
@@ -421,7 +417,7 @@ struct Convertidor<T, DecDegVecDouble>{
 };
 
 /// __________________________________________________
-/// Specialised derived struct for degrees and minutes
+/// Specialised struct for degrees and minutes
 template<DVecType T>
 struct Convertidor<T, DegMinVecDouble>{
 	FamousFive<T> ff {};
@@ -430,7 +426,7 @@ struct Convertidor<T, DegMinVecDouble>{
 };
 
 /// __________________________________________________
-/// Specialised derived struct for degrees, minutes and seconds
+/// Specialised struct for degrees, minutes and seconds
 template<DVecType T>
 struct Convertidor<T, DegMinSecVecDouble>{
 	FamousFive<T> ff {};
@@ -444,16 +440,13 @@ struct Convertidor<T, DegMinSecVecDouble>{
 /// Formateador -- functors for converting formats
 
 /// __________________________________________________
-/// Default struct for SFINAE	
+/// Default empty struct for SFINAE	
 template<DVecType T, SVecType U>
 struct Formateador{
-	FamousFive<T> ff {};
-	Formateador() {}
-	string operator()(double n) const { stop("Formateador<DVecType, DVecType>::operator()(double) const my bad"); return ""s; }
 };
 
 /// __________________________________________________
-/// Specialised derived struct for decimal degrees	
+/// Specialised struct for decimal degrees	
 template<DVecType T>
 struct Formateador<T, DecDegVecString>{
 	FamousFive<T> ff {};
@@ -462,7 +455,7 @@ struct Formateador<T, DecDegVecString>{
 };
 
 /// __________________________________________________
-/// Specialised derived struct for degrees and minutes
+/// Specialised struct for degrees and minutes
 template<DVecType T>
 struct Formateador<T, DegMinVecString>{
 	FamousFive<T> ff {};
@@ -472,7 +465,7 @@ struct Formateador<T, DegMinVecString>{
 };
 
 /// __________________________________________________
-/// Specialised derived struct for degrees, minutes and seconds
+/// Specialised struct for degrees, minutes and seconds
 template<DVecType T>
 struct Formateador<T, DegMinSecVecString>{
 	FamousFive<T> ff {};

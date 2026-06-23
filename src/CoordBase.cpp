@@ -488,7 +488,7 @@ template<DVecType T>
 vector<string> Coords<T>::format(CoordType required_type) const
 {
 #if DEBUG > 0
-	fmt::print("@Coords<T>::format(CoordType) const; required type: {}\n", required_type);
+	fmt::print("@Coords<T>::format(CoordType) const; T: {}, required type: {}\n", demangle(typeid(T)), required_type);
 #endif
 	using enum CoordType;
 	switch (required_type)
@@ -690,9 +690,9 @@ bool revalidate(const NumericVector nv)
 	auto valid { coordsmaker(nv)->validate() };
 	static_cast<NumericVector>(nv).attr("valid") = valid; 
 	if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; }))
-		warning("Revalidation found invalid coords!");
+		warning("Revalidation detected invalid coords!");
 	else
-		warning("Coords have been revalidated!");
+		warning("Coords revalidated!");
 	return check_valid(nv);
 }
 
@@ -706,9 +706,9 @@ bool revalidate(const DataFrame df)
 /*	auto valid { Waypoints(df)->validate() };
 	static_cast<DataFrame>(df).attr("valid") = valid; 
 	if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; }))
-		warning("Revalidation found invalid Waypoints!");
+		warning("Revalidation detected invalid Waypoints!");
 	else
-		warning("Waypoints have been revalidated!");
+		warning("Waypoints revalidated!");
 */
 	return check_valid(df);
 }
@@ -946,7 +946,7 @@ NumericVector convertcoords(const NumericVector x, int fmt)
 		exportstr, x[0], address(x), address(x[0]), demangle(typeid(x)));
 #endif
 	if (!check_valid(x))
-		stop("Conversion aborted: invalid coords!\n [Use review() to show invalid elements]");
+		stop("Invalid coords! Conversion aborted.\n [Use review() to show invalid elements]");
 	if (newtype != type) {
 #if DEBUG > 0
 		const auto vd_out { coordsmaker(x)->convert(newtype) };					// Vector copy elision
@@ -1036,7 +1036,7 @@ NumericVector validatecoords(const NumericVector x, const bool force = true)
 	if (force)	{			
 		auto valid { coordsmaker(x)->validate() };
 		if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; })) {
-			warning("Validation of coords failed!");
+			warning("Coords failed validation!");
 			static_cast<NumericVector>(x).attr("valid") = valid;
 		}
 	} else if (!check_valid(x))
