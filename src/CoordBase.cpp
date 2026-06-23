@@ -694,31 +694,36 @@ bool check_valid(const DataFrame df)
 }
 
 /// __________________________________________________
-/// Revalidate "coords" or "waypoints"
-template<NumVec_or_DataFrame T>
-bool revalidate(const T t)
+/// Revalidate "coords" NumericVector
+bool revalidate(const NumericVector nv)
 {
 #if DEBUG > 0
-	fmt::print("@revalidate<NumVec_or_DataFrame>(const T); T: {}\n", demangle(typeid(t)));
+	fmt::print("@revalidate(const NumericVector)\n");
 #endif
+	auto valid { coordsmaker(nv)->validate() };
+	static_cast<NumericVector>(nv).attr("valid") = valid; 
+	if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; }))
+		warning("Revalidation found invalid coords!");
+	else
+		warning("Coords have been revalidated!");
+	return check_valid(nv);
+}
 
-	if constexpr (isNumericVector_v<T>) { 
-		auto valid { coordsmaker(t)->validate() };
-		static_cast<NumericVector>(t).attr("valid") = valid; 
-		if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; }))
-			warning("Revalidation found invalid coords!");
-		else
-			warning("Coords revalidated!");
-	}
-
-	if constexpr (isDataFrame_v<T>) {
-/*		if (!Waypoints{ t }.validate())
-			warning("Revalidation found invalid waypoints!");					//	¡¡¡—— Needed once WaypointsNew<T> instantiated ——!!!
-		else
-			warning("Waypoints revalidated!");
+/// __________________________________________________
+/// Revalidate "coords" DataFrame
+bool revalidate(const DataFrame df)
+{
+#if DEBUG > 0
+	fmt::print("@revalidate(const DataFrame)\n");
+#endif
+/*	auto valid { Waypoints(df)->validate() };
+	static_cast<DataFrame>(df).attr("valid") = valid; 
+	if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; }))
+		warning("Revalidation found invalid Waypoints!");
+	else
+		warning("Waypoints have been revalidated!");
+	return check_valid(df);
 */
-	}
-	return check_valid(t);
 }
 
 /// __________________________________________________
