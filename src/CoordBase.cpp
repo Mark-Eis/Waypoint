@@ -467,7 +467,6 @@ Coords<T>::Coords(T t, const vector<bool> latlon) :
 {
 #if DEBUG > 0
 	_ctrsgn(typeid(*this)); fmt::print("\t(T, const vector<bool>)\n");
-	stop("Coords constructed inn Mimiland!");
 #endif
 }
 
@@ -723,8 +722,8 @@ bool revalidate(const DataFrame df)
 		warning("Revalidation found invalid Waypoints!");
 	else
 		warning("Waypoints have been revalidated!");
-	return check_valid(df);
 */
+	return check_valid(df);
 }
 
 /// __________________________________________________
