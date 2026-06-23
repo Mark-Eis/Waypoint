@@ -13,7 +13,7 @@
 /// __________________________________________________
 /// Development and debugging
 
-#define DEBUG 1
+#define DEBUG 0
 
 #if DEBUG > 0
 
@@ -95,228 +95,102 @@ concept NumVec_or_DataFrame =
 /// DVecType and SVecType
 
 /// __________________________________________________
-/// DecDegVec
+/// VecTypeBase
 template<typename T>
-struct DecDegVec : public vector<T> {
-	DecDegVec(const DecDegVec&) = delete;											// copy constructor
-	DecDegVec(const vector<T>& vt) : vector<T>{ vt }								// copy constructor
+struct VecTypeBase : public vector<T> {
+	VecTypeBase(const VecTypeBase&) = delete;											// copy constructor
+	VecTypeBase(const vector<T>& vt) : vector<T>{ vt }								// copy constructor
 	{
 #if DEBUG > 0
 		_ctrsgn(typeid(*this)); fmt::print("\t(const vector<T>&)\n"); 
 #endif
 	}
-	DecDegVec(const NumericVector vt) : vector<T>{ as<vector<double>>(vt) }			// copy constructor
+	VecTypeBase(const NumericVector vt) : vector<T>{ as<vector<double>>(vt) }			// copy constructor
 	{
 #if DEBUG > 0
 		_ctrsgn(typeid(*this)); fmt::print("\t(const NumericVector&)\n");
 #endif
 	}
 
-	DecDegVec& operator=(const DecDegVec&) = delete;								// copy assignment
-	DecDegVec& operator=(const vector<T>& vt)										// copy assignment
+	VecTypeBase& operator=(const VecTypeBase&) = delete;								// copy assignment
+	VecTypeBase& operator=(const vector<T>& vt)										// copy assignment
 	{
 #if DEBUG > 0
-		fmt::print("@DecDegVec& operator=(const vector<T>& vt)\n");
+		fmt::print("@VecTypeBase& operator=(const vector<T>& vt)\n");
 #endif
 		vector<T>::operator= (vt);
 		return *this;
 	}
-	DecDegVec& operator=(const NumericVector) = delete;								// copy assignment - not defaultable
+	VecTypeBase& operator=(const NumericVector) = delete;								// copy assignment - not defaultable
 
 #if DEBUG == 0
-	DecDegVec(DecDegVec&&) = default;												// move constructor
+	VecTypeBase(VecTypeBase&&) = default;												// move constructor
 #else 
-	DecDegVec(DecDegVec&& dv) : vector<T>{ std::move(static_cast<vector<T>&&>(dv)) }
+	VecTypeBase(VecTypeBase&& dv) : vector<T>{ std::move(static_cast<vector<T>&&>(dv)) }
 	{
-		_ctrsgn(typeid(*this)); fmt::print("\t(DecDegVec&&)\n");
+		_ctrsgn(typeid(*this)); fmt::print("\t(VecTypeBase&&)\n");
 	}
 #endif
 
-	DecDegVec(vector<T>&& vt) : vector<T>{ std::move(vt) }							// move constructor
+	VecTypeBase(vector<T>&& vt) : vector<T>{ std::move(vt) }							// move constructor
 	{
 #if DEBUG > 0
 		_ctrsgn(typeid(*this)); fmt::print("\t(vector<T>&&)\n");
 #endif
 	}
-	DecDegVec(NumericVector&& vt) = delete;											// move constructor - not defaultable
+	VecTypeBase(NumericVector&& vt) = delete;											// move constructor - not defaultable
 
 #if DEBUG == 0
-	DecDegVec& operator=(DecDegVec&&) = default;										// move assignment
+	VecTypeBase& operator=(VecTypeBase&&) = default;										// move assignment
 #else 
-	DecDegVec& operator=(DecDegVec&& dv)
+	VecTypeBase& operator=(VecTypeBase&& dv)
 	{
-		_ctrsgn(typeid(*this)); fmt::print("\tDecDegVec& operator=(DecDegVec&&)\n");
+		_ctrsgn(typeid(*this)); fmt::print("\tVecTypeBase& operator=(VecTypeBase&&)\n");
 		vector<T>::operator=(std::move(static_cast<vector<T>&&>(dv)));
 		return *this;
 	}
 #endif
 
-	DecDegVec& operator=(vector<T>&& vt)											// move assignment
+	VecTypeBase& operator=(vector<T>&& vt)											// move assignment
 	{
 #if DEBUG > 0
-		fmt::print("@DecDegVec& operator=(vector<T>&& vt)\n");
+		fmt::print("@VecTypeBase& operator=(vector<T>&& vt)\n");
 #endif
 		vector<T>::operator=(std::move(vt));
 		return *this;
 	}
-	DecDegVec& operator=(NumericVector&& vt)	 = delete;								// move assignment - not defaultable
+	VecTypeBase& operator=(NumericVector&& vt)	 = delete;								// move assignment - not defaultable
 
-	~DecDegVec()
-	{
+	virtual ~VecTypeBase() = 0;
+};
+
+template<typename T>
+VecTypeBase<T>::~VecTypeBase()
+{
 #if DEBUG > 0
-		_ctrsgn(typeid(*this), false);
+	_ctrsgn(typeid(*this), false);
 #endif
-	}
+}
+
+/// __________________________________________________
+/// DecDegVec
+template<typename T>
+struct DecDegVec final : public VecTypeBase<T> {
+	using VecTypeBase<T>::VecTypeBase;
 };
 
 /// __________________________________________________
 /// DegMinVec
 template<typename T>
-struct DegMinVec : public vector<T> {
-	DegMinVec(const DegMinVec&) = delete;											// copy constructor
-	DegMinVec(const vector<T>& vt) : vector<T>{ vt }								// copy constructor
-	{
-#if DEBUG > 0
-		_ctrsgn(typeid(*this)); fmt::print("\t(const vector<T>&)\n"); 
-#endif
-	}
-	DegMinVec(const NumericVector vt) : vector<T>{ as<vector<double>>(vt) }			// copy constructor
-	{
-#if DEBUG > 0
-		_ctrsgn(typeid(*this)); fmt::print("\t(const NumericVector&)\n");
-#endif
-	}
-
-	DegMinVec& operator=(const DegMinVec&) = delete;								// copy assignment
-	DegMinVec& operator=(const vector<T>& vt)										// copy assignment
-	{
-#if DEBUG > 0
-		fmt::print("@DegMinVec& operator=(const vector<T>& vt)\n");
-#endif
-		vector<T>::operator= (vt);
-		return *this;
-	}
-	DegMinVec& operator=(const NumericVector) = delete;								// copy assignment - not defaultable
-
-#if DEBUG == 0
-	DegMinVec(DegMinVec&&) = default;												// move constructor
-#else 
-	DegMinVec(DegMinVec&& dv) : vector<T>{ std::move(static_cast<vector<T>&&>(dv)) }
-	{
-		_ctrsgn(typeid(*this)); fmt::print("\t(DegMinVec&&)\n");
-	}
-#endif
-
-	DegMinVec(vector<T>&& vt) : vector<T>{ std::move(vt) }							// move constructor
-	{
-#if DEBUG > 0
-		_ctrsgn(typeid(*this)); fmt::print("\t(vector<T>&&)\n");
-#endif
-	}
-	DegMinVec(NumericVector&& vt) = delete;											// move constructor - not defaultable
-
-#if DEBUG == 0
-	DegMinVec& operator=(DegMinVec&&) = default;										// move assignment
-#else 
-	DegMinVec& operator=(DegMinVec&& dv)
-	{
-		_ctrsgn(typeid(*this)); fmt::print("\tDegMinVec& operator=(DegMinVec&&)\n");
-		vector<T>::operator=(std::move(static_cast<vector<T>&&>(dv)));
-		return *this;
-	}
-#endif
-
-	DegMinVec& operator=(vector<T>&& vt)											// move assignment
-	{
-#if DEBUG > 0
-		fmt::print("@DegMinVec& operator=(vector<T>&& vt)\n");
-#endif
-		vector<T>::operator=(std::move(vt));
-		return *this;
-	}
-	DegMinVec& operator=(NumericVector&& vt)	 = delete;								// move assignment - not defaultable
-
-	~DegMinVec()
-	{
-#if DEBUG > 0
-		_ctrsgn(typeid(*this), false);
-#endif
-	}
+struct DegMinVec final : public VecTypeBase<T> {
+	using VecTypeBase<T>::VecTypeBase;
 };
 
 /// __________________________________________________
 /// DegMinSecVec
 template<typename T>
-struct DegMinSecVec : public vector<T> {
-	DegMinSecVec(const DegMinSecVec&) = delete;										// copy constructor
-	DegMinSecVec(const vector<T>& vt) : vector<T>{ vt }								// copy constructor
-	{
-#if DEBUG > 0
-		_ctrsgn(typeid(*this)); fmt::print("\t(const vector<T>&)\n"); 
-#endif
-	}
-	DegMinSecVec(const NumericVector vt) : vector<T>{ as<vector<double>>(vt) }		// copy constructor
-	{
-#if DEBUG > 0
-		_ctrsgn(typeid(*this)); fmt::print("\t(const NumericVector&)\n");
-#endif
-	}
-
-	DegMinSecVec& operator=(const DegMinSecVec&) = delete;							// copy assignment
-	DegMinSecVec& operator=(const vector<T>& vt)										// copy assignment
-	{
-#if DEBUG > 0
-		fmt::print("@DegMinSecVec& operator=(const vector<T>& vt)\n");
-#endif
-		vector<T>::operator= (vt);
-		return *this;
-	}
-	DegMinSecVec& operator=(const NumericVector) = delete;							// copy assignment - not defaultable
-
-#if DEBUG == 0
-	DegMinSecVec(DegMinSecVec&&) = default;											// move constructor
-#else 
-	DegMinSecVec(DegMinSecVec&& dv) : vector<T>{ std::move(static_cast<vector<T>&&>(dv)) }
-	{
-		_ctrsgn(typeid(*this)); fmt::print("\t(DegMinSecVec&&)\n");
-	}
-#endif
-
-	DegMinSecVec(vector<T>&& vt) : vector<T>{ std::move(vt) }						// move constructor
-	{
-#if DEBUG > 0
-		_ctrsgn(typeid(*this)); fmt::print("\t(vector<T>&&)\n");
-#endif
-	}
-	DegMinSecVec(NumericVector&& vt) = delete;										// move constructor - not defaultable
-
-#if DEBUG == 0
-	DegMinSecVec& operator=(DegMinSecVec&&) = default;								// move assignment
-#else 
-	DegMinSecVec& operator=(DegMinSecVec&& dv)
-	{
-		_ctrsgn(typeid(*this)); fmt::print("\tDegMinSecVec& operator=(DegMinSecVec&&)\n");
-		vector<T>::operator=(std::move(static_cast<vector<T>&&>(dv)));
-		return *this;
-	}
-#endif
-
-	DegMinSecVec& operator=(vector<T>&& vt)											// move assignment
-	{
-#if DEBUG > 0
-		fmt::print("@DegMinSecVec& operator=(vector<T>&& vt)\n");
-#endif
-		vector<T>::operator=(std::move(vt));
-		return *this;
-	}
-	DegMinSecVec& operator=(NumericVector&& vt)	 = delete;							// move assignment - not defaultable
-
-	~DegMinSecVec()
-	{
-#if DEBUG > 0
-		_ctrsgn(typeid(*this), false);
-#endif
-	}
+struct DegMinSecVec final : public VecTypeBase<T> {
+	using VecTypeBase<T>::VecTypeBase;
 };
 
 
