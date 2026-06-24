@@ -578,94 +578,57 @@ const vector<bool> validate(const NumericVector nv)
 }
 
 
-/*
 /// __________________________________________________
-/// __________________________________________________
-/// TBC  !!!!!!!!!!!!!!
 /// __________________________________________________
 /// Waypoints class
 
 /// __________________________________________________
 /// Constructor
-Waypoints::Waypoints(DataFrame df) :
-	CrdWptBase { get_coordtype(df) }, df{ df },
-	nvlat( df[get_vec_attr<DataFrame, int>(df, "llcols"s)[0] - 1] ), 
-	nvlon( df[get_vec_attr<DataFrame, int>(df, "llcols"s)[1] - 1] )
+template<DVecType T>
+Waypoints<T>::Waypoints(vector<double> nv_lat, vector<double> nv_lon) :
+	crdlat{ coordsmaker<T>(std::move(nv_lat), vector<bool>{ true }) },
+	crdlon{ coordsmaker<T>(std::move(nv_lat), vector<bool>{ false }) }
 {
-//	fmt::print("§Waypoints(DataFrame); {}", ct); _ctrsgn(typeid(*this));
-	nvlat.attr("fmt") = coordtype_to_int(ct);
-	nvlon.attr("fmt") = coordtype_to_int(ct);
-	nvlat.attr("latlon") = true;
-	nvlon.attr("latlon") = false;
+#if DEBUG > 0
+	_ctrsgn(typeid(*this)); fmt::print("\t(vector<double>, vector<double>)\n");
+#endif
 }
 
 /// __________________________________________________
-/// Destructor
-Waypoints::~Waypoints()
+/// convert call entry point -- public
+template<DVecType T>
+const array<vector<double>, 2> Waypoints<T>::convert(CoordType newtype) const
 {
-//	fmt::print("§~Waypoints(); {}", ct); _ctrsgn(typeid(*this), false);
-	nvlat.attr("latlon") = R_NilValue;
-	nvlon.attr("latlon") = R_NilValue;
-	nvlat.attr("fmt") = R_NilValue;
-	nvlon.attr("fmt") = R_NilValue;
+#if DEBUG > 0
+	fmt::print("@Waypoints<T>::convert(CoordType) const; T: {}, new type: {}\n", demangle(typeid(T)), newtype);
+#endif
+	return { crdlat.convert(newtype),  crdlon.convert(newtype)};
 }
 
 /// __________________________________________________
-/// Convert call entry point -- public
-void Waypoints::convert(CoordType newtype)
+/// format call entry point -- public
+template<DVecType T>
+const array<vector<string>, 2> Waypoints<T>::format(CoordType required_type) const
 {
-//	fmt::print("@ Waypoints::convert(CoordType); current type: {}; new type: {}\n", ct, newtype);
-	Coordlet{ nvlat }.convert(newtype);
-	Coordlet{ nvlon }.convert(newtype);
-	df.attr("fmt") = coordtype_to_int(newtype);
+#if DEBUG > 0
+	fmt::print("@Waypoints<T>::format(CoordType) const; T: {}, required type: {}\n", demangle(typeid(T)), required_type);
+#endif
+	return { crdlat.format(required_type),  crdlon.format(required_type)};
 }
 
 /// __________________________________________________
-/// Format call entry point -- public
-vector<string> Waypoints::format(CoordType required_type) const
+/// validate call entry point -- public
+template<DVecType T>
+const array<const vector<bool>, 2> Waypoints<T>::validate() const
 {
-//	fmt::print("@Waypoints::format(CoordType); current type: {}; required type: {}\n", ct, required_type);
-	using enum CoordType;
-
-	vector sv_lat{ Coordlet{ nvlat }.format(required_type) };
-	vector sv_lon{ Coordlet{ nvlon }.format(required_type) };
-	if (decdeg != required_type) {
-		suffix_nesw(sv_lat, true);
-		suffix_nesw(sv_lon, false);
-	}
-	transform(sv_lat.begin(), sv_lat.end(), sv_lon.begin(), sv_lat.begin(), [](auto& latstr, auto& lonstr){return latstr + "  " + lonstr;});
-	return sv_lat;
+#if DEBUG > 0
+	fmt::print("@Waypoints<T>::validate(CoordType) const; T: {}\n", demangle(typeid(T)));
+#endif
+	return { crdlat.validate(),  crdlon.validate()};
 }
 
-/// __________________________________________________
-/// Add suffix of  "N", "S", "E", "W" if CoordType::degmin or CoordType::degminsec
-void Waypoints::suffix_nesw(vector<string>& sv_out, bool latlon) const
-{
-//	fmt::print("@Waypoints::suffix_nesw(vector<string> sv_out) const; {}\n", latlon ? "lat" : "lon");
-	transform(sv_out.begin(), sv_out.end(), (latlon ? nvlat : nvlon).begin(), sv_out.begin(), [latlon](auto& outstr, auto n){
-		return outstr + cardpoint(n < 0, latlon); }
-	);
-}
 
 /// __________________________________________________
-/// Validation call entry point -- public
-const bool Waypoints::validate() const
-{
-//	fmt::print("@Waypoints::validate(); current type: {}\n", ct);
-	auto validlat = Coordlet{ nvlat }.validate();
-	auto validlon = Coordlet{ nvlon }.validate();
-
-	static_cast<DataFrame>(df).attr("validlat") = validlat;
-	static_cast<DataFrame>(df).attr("validlon") = validlon;
-
-	return (
-		std::all_of(validlat.begin(), validlat.end(), [](auto i){ return i; }) &&
-		std::all_of(validlon.begin(), validlon.end(), [](auto i){ return i; })
-	);
-}
-*/
-/// __________________________________________________
-/// Revised  !!!!!!!!!!!!!!
 /// __________________________________________________
 /// Validation functions
 

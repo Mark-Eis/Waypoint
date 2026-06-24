@@ -13,7 +13,7 @@
 /// __________________________________________________
 /// Development and debugging
 
-#define DEBUG 0
+#define DEBUG 1
 
 #if DEBUG > 0
 
@@ -287,12 +287,6 @@ concept SVecType =
 	isDecDegVecString_v<T> ||
 	isDegMinVecString_v<T> ||
 	isDegMinSecVecString_v<T>;
-
-/// __________________________________________________
-/// __________________________________________________
-/// Class forward declarations
-enum class CoordType : char;
-class Waypoints;
 
 
 /// __________________________________________________
@@ -586,33 +580,30 @@ vector<double> convert(const NumericVector, CoordType);
 vector<string> format(const NumericVector, CoordType); 
 const vector<bool> validate(const NumericVector); 
 
-/*
+
 /// __________________________________________________
-/// TBC  !!!!!!!!!!!!!!
 /// __________________________________________________
 /// Waypoints class
-class Waypoints : public CrdWptBase {
-		DataFrame df;
-		NumericVector nvlat;
-		NumericVector nvlon;
-		vector<bool> validlat { false };
-		vector<bool> validlon { false };
+template<DVecType T>
+class Waypoints {
+		const Coords<T> crdlat;
+		const Coords<T> crdlon;
 
-		void suffix_nesw(vector<string>&, bool) const;
 	public:
-
-		explicit Waypoints(DataFrame);
+		explicit Waypoints(vector<double>, vector<double>);
 		Waypoints(const Waypoints&) = delete;					// Disallow copying
 		Waypoints& operator=(const Waypoints&) = delete;			//  ——— ditto ———
 		Waypoints(Waypoints&&) = delete;						// Disallow transfer ownership
 		Waypoints& operator=(Waypoints&&) = delete;				// Disallow moving
-		~Waypoints();
-
-		void convert(CoordType);
-		vector<string> format(CoordType) const;
-		const bool validate() const;
+#if DEBUG == 0
+		~Waypoints() = default;
+#elif DEBUG > 0
+		~Waypoints() { _ctrsgn(typeid(*this), false); }
+#endif
+		const array<vector<double>, 2> convert(CoordType) const;
+		const array<vector<string>, 2> format(CoordType) const;
+		const array<const vector<bool>, 2> validate() const;
 };
-*/
 
 /// __________________________________________________
 /// __________________________________________________
