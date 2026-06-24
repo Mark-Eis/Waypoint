@@ -13,7 +13,7 @@
 /// __________________________________________________
 /// Development and debugging
 
-#define DEBUG 0
+#define DEBUG 1
 
 #if DEBUG > 0
 
@@ -516,7 +516,7 @@ class CrdWptBase {
 		CrdWptBase& operator=(CrdWptBase&&) = delete;				// Disallow moving
 		virtual ~CrdWptBase() = 0;
 
-		virtual const vector<double> convert(CoordType) const = 0;
+		virtual vector<double> convert(CoordType) const = 0;
 		virtual vector<string> format(CoordType) const = 0;
 		virtual const vector<bool> validate() const = 0;
 		virtual void report() const = 0;							// Temporary —— delete
@@ -541,12 +541,63 @@ class Coords : public CrdWptBase {
 		~Coords() { _ctrsgn(typeid(*this), false); }
 #endif
 
-		const vector<double> convert(CoordType) const;
-		vector<string> format(CoordType) const;
+		vector<double> convert(CoordType) const;						// Don't make return type const—otherwise makes unnecessary copy
+		vector<string> format(CoordType) const;						// Don't make return type const—otherwise makes unnecessary copy
 		const vector<bool> validate() const;
 		void report() const;											// Temporary —— delete
 };
 
+/// __________________________________________________
+/// Template aliases
+using CoordsDecDeg = Coords<DecDegVecDouble>;
+using CoordsDegMin = Coords<DegMinVecDouble>;
+using CoordsDegMinSec = Coords<DegMinSecVecDouble>;
+
+/// __________________________________________________
+/// Type Traits
+
+/// coordsdecdeg
+template <typename t>
+struct is_coordsdecdeg : public std::false_type {};
+
+template <>
+struct is_coordsdecdeg<CoordsDecDeg> : public std::true_type {};
+
+template<typename t>
+constexpr bool is_coordsdecdeg_v = is_coordsdecdeg<t>::value;
+
+/// coordsdegmin
+template <typename t>
+struct is_coordsdegmin : public std::false_type {};
+
+template <>
+struct is_coordsdegmin<CoordsDegMin> : public std::true_type {};
+
+template<typename t>
+constexpr bool is_coordsdegmin_v = is_coordsdegmin<t>::value;
+
+/// coordsdegminsec
+template <typename t>
+struct is_coordsdegminsec : public std::false_type {};
+
+template <>
+struct is_coordsdegminsec<CoordsDegMinSec> : public std::true_type {};
+
+template<typename t>
+constexpr bool is_coordsdegminsec_v = is_coordsdegminsec<t>::value;
+
+/// __________________________________________________
+/// Concept —— coords_t
+template <typename T>
+concept coords_t = 
+	is_coordsdecdeg_v<T> ||
+	is_coordsdegmin_v<T> ||
+	is_coordsdegminsec_v<T>;
+
+/// __________________________________________________
+/// Instantiate Coords<T> object
+template<DVecType t>
+inline coords_t auto coordsmakerNew(NumericVector);
 
 /// __________________________________________________
 /// __________________________________________________

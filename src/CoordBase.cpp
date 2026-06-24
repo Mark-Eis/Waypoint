@@ -321,7 +321,7 @@ Coordlet<T>::Coordlet(T&& _dv, const vector<bool> _latlon) :
 }
 
 /// __________________________________________________
-/// Switch CoordType to convert format
+/// Convert to another CoordType
 template<DVecType T> template<DVecType U>
 vector<double> Coordlet<T>::convert() const
 {
@@ -454,7 +454,7 @@ Coords<T>::Coords(T t, const vector<bool> latlon) :
 /// __________________________________________________
 /// convert call entry point -- public ——
 template<DVecType T>
-const vector<double> Coords<T>::convert(CoordType required_type) const
+vector<double> Coords<T>::convert(CoordType required_type) const
 {
 #if DEBUG > 0
 	fmt::print("@Coords<T>::convert(CoordType) const; T: {}, required type: {}\n", demangle(typeid(T)), required_type);
@@ -548,6 +548,20 @@ unique_ptr<CrdWptBase> coordsmaker(NumericVector nv)
 			stop("coordsmaker(NumericVector) my bad");
 	}
 }
+
+/// __________________________________________________
+/// Instantiate Coords<T> object
+template<DVecType t>
+inline coords_t auto coordsmakerNew(NumericVector nv)
+{
+#if DEBUG > 0
+	fmt::print("@coordsmakerNew(NumericVector); {} {}, nv[0] {}, &nv {}, &nv[0] {}, typeid: {}\n",
+		padstr, get_coordtype(nv), nv[0], address(nv), address(nv[0]), demangle(typeid(nv)));
+#endif
+	const auto latlon { get_vec_attr<NumericVector, bool>(nv, "latlon"s) };
+	return Coords<t>(nv, latlon);
+}
+
 
 /*
 /// __________________________________________________
@@ -932,16 +946,17 @@ NumericVector as_coords(NumericVector object, int fmt = 1)
 NumericVector convertcoords(const NumericVector x, int fmt)
 {
 	checkinherits(x, "coords"s);
-	CoordType type = get_coordtype(x);
+	CoordType ct_current = get_coordtype(x);
 	CoordType newtype = get_coordtype(fmt);
 #if DEBUG > 0
-	fmt::print("{}@convertcoords(NumericVector, int); from {} to {}\n", exportstr, type, newtype);
+	fmt::print("{}@convertcoords(NumericVector, int); from {} to {}\n", exportstr, ct_current, newtype);
 	fmt::print("{}@Iconvertcoords(NumericVector, int); x[0] {}, &x {}, &x[0] {}, typeid: {}\n",
 		exportstr, x[0], address(x), address(x[0]), demangle(typeid(x)));
 #endif
 	if (!check_valid(x))
 		stop("Invalid coords! Conversion aborted.\n [Use review() to show invalid elements]");
-	if (newtype != type) {
+	if (newtype != ct_current) {
+/*
 #if DEBUG > 0
 		const auto vd_out { coordsmaker(x)->convert(newtype) };					// Vector copy elision
 		fmt::print("{}@Iconvertcoords(NumericVector, int);  vd_out[0] {}, &vd_out {}, &vd_out[0] {}, typeid: {}\n",
@@ -952,6 +967,27 @@ NumericVector convertcoords(const NumericVector x, int fmt)
 #else
 		NumericVector nv_out { wrap(coordsmaker(x)->convert(newtype)) };		// Copies output string
 #endif
+*/
+		using enum CoordType;
+		auto vd_out { vector<double>{}};
+		if (decdeg == ct_current)
+			vd_out = coordsmakerNew<DecDegVecDouble>(x).convert(newtype);
+		else if (degmin == ct_current)
+			vd_out = coordsmakerNew<DegMinVecDouble>(x).convert(newtype);
+		else if (degminsec == ct_current)
+			vd_out = coordsmakerNew<DegMinSecVecDouble>(x).convert(newtype);
+		else
+			stop("formatcoords(const NumericVector, bool, bool, int) mt bad!");
+#if DEBUG > 0
+		fmt::print("{}@Iconvertcoords(NumericVector, int);  vd_out[0] {}, &vd_out {}, &vd_out[0] {}, typeid: {}\n",
+			exportstr, vd_out[0], address(vd_out), address(vd_out[0]), demangle(typeid(vd_out)));
+#endif
+		NumericVector nv_out { wrap(vd_out) };									// Copies output string
+#if DEBUG > 0
+		fmt::print("{}@IIconvertcoords(NumericVector, int); nv_out[0] {}, &nv_out {}, &nv_out[0] {}, typeid: {}\n",
+			exportstr, nv_out[0], address(nv_out), address(nv_out[0]), demangle(typeid(nv_out)));
+#endif
+
 		nv_out.attr("class") = "coords";
 		nv_out.attr("fmt") = fmt;
 		nv_out.attr("valid") = x.attr("valid");
@@ -990,8 +1026,8 @@ NumericVector latlon(NumericVector cd, LogicalVector value)
 CharacterVector formatcoords(const NumericVector x, bool usenames = true, bool validate = true, int fmt = 0)
 {
 #if DEBUG > 0
-	fmt::print("{}@formatcoords(NumericVector, bool, bool, int); usenames: {}, validate: {}, fmt: {}\n", exportstr, usenames, validate, fmt);
-	fmt::print("{}@Iformatcoords(NumericVector, bool, bool, int); x[0] {}, &x {}, &x[0] {}, typeid: {}\n",
+	fmt::print("{}@formatcoords(const NumericVector, bool, bool, int); usenames: {}, validate: {}, fmt: {}\n", exportstr, usenames, validate, fmt);
+	fmt::print("{}@Iformatcoords(const NumericVector, bool, bool, int); x[0] {}, &x {}, &x[0] {}, typeid: {}\n",
 		exportstr, x[0], address(x), address(x[0]), demangle(typeid(x)));
 #endif
 	checkinherits(x, "coords"s);
@@ -1002,7 +1038,19 @@ CharacterVector formatcoords(const NumericVector x, bool usenames = true, bool v
 			warning("Formatting invalid coords!");
 	CoordType ct_current { get_coordtype(x) };
 	CoordType ct_required { fmt ? get_coordtype(fmt) : ct_current };
-	vector sv_out{ coordsmaker(x)->format(ct_required) };
+//	vector sv_out{ coordsmaker(x)->format(ct_required) };
+	
+	using enum CoordType;
+	auto sv_out { vector<string>{}};
+	if (decdeg == ct_current)
+		sv_out = coordsmakerNew<DecDegVecDouble>(x).format(ct_required);
+	else if (degmin == ct_current)
+		sv_out = coordsmakerNew<DegMinVecDouble>(x).format(ct_required);
+	else if (degminsec == ct_current)
+		sv_out = coordsmakerNew<DegMinSecVecDouble>(x).format(ct_required);
+	else
+		stop("formatcoords(const NumericVector, bool, bool, int) mt bad!");
+
 #if DEBUG > 0
 	fmt::print("{}@IIformatcoords(NumericVector, bool, bool, int); sv_out[0] {}, &sv_out {}, &sv_out[0] {}, typeid: {}\n",
 		exportstr, sv_out[0], address(sv_out), address(sv_out[0]), demangle(typeid(sv_out).name()));
