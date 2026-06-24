@@ -99,7 +99,7 @@ concept NumVec_or_DataFrame =
 template<typename T>
 struct VecTypeBase : public vector<T> {
 	VecTypeBase(const VecTypeBase&) = delete;											// copy constructor
-	VecTypeBase(const vector<T>& vt) : vector<T>{ vt }								// copy constructor
+	VecTypeBase(const vector<T>& vt) : vector<T>{ vt }									// copy constructor
 	{
 #if DEBUG > 0
 		_ctrsgn(typeid(*this)); fmt::print("\t(const vector<T>&)\n"); 
@@ -112,8 +112,8 @@ struct VecTypeBase : public vector<T> {
 #endif
 	}
 
-	VecTypeBase& operator=(const VecTypeBase&) = delete;								// copy assignment
-	VecTypeBase& operator=(const vector<T>& vt)										// copy assignment
+	VecTypeBase& operator=(const VecTypeBase&) = delete;									// copy assignment
+	VecTypeBase& operator=(const vector<T>& vt)											// copy assignment
 	{
 #if DEBUG > 0
 		fmt::print("@VecTypeBase& operator=(const vector<T>& vt)\n");
@@ -132,7 +132,7 @@ struct VecTypeBase : public vector<T> {
 	}
 #endif
 
-	VecTypeBase(vector<T>&& vt) : vector<T>{ std::move(vt) }							// move constructor
+	VecTypeBase(vector<T>&& vt) : vector<T>{ std::move(vt) }								// move constructor
 	{
 #if DEBUG > 0
 		_ctrsgn(typeid(*this)); fmt::print("\t(vector<T>&&)\n");
@@ -141,7 +141,7 @@ struct VecTypeBase : public vector<T> {
 	VecTypeBase(NumericVector&& vt) = delete;											// move constructor - not defaultable
 
 #if DEBUG == 0
-	VecTypeBase& operator=(VecTypeBase&&) = default;										// move assignment
+VecTypeBase& operator=(VecTypeBase&&) = default;											// move assignment
 #else 
 	VecTypeBase& operator=(VecTypeBase&& dv)
 	{
