@@ -518,7 +518,6 @@ class Coords {
 		vector<double> convert(CoordType) const;						// Don't make return type const—otherwise makes unnecessary copy
 		vector<string> format(CoordType) const;						// Don't make return type const—otherwise makes unnecessary copy
 		const vector<bool> validate() const;
-		void report() const;											// Temporary —— delete
 };
 
 /// __________________________________________________
@@ -588,7 +587,6 @@ template<DVecType T>
 class Waypoints {
 		const Coords<T> crdlat;
 		const Coords<T> crdlon;
-
 	public:
 		explicit Waypoints(vector<double>, vector<double>);
 		Waypoints(const Waypoints&) = delete;					// Disallow copying
@@ -604,6 +602,58 @@ class Waypoints {
 		const array<vector<string>, 2> format(CoordType) const;
 		const array<const vector<bool>, 2> validate() const;
 };
+
+/// __________________________________________________
+/// Template aliases
+using WaypointsDecDeg = Waypoints<DecDegVecDouble>;
+using WaypointsDegMin = Waypoints<DegMinVecDouble>;
+using WaypointsDegMinSec = Waypoints<DegMinSecVecDouble>;
+
+/// __________________________________________________
+/// Type Traits
+
+/// waypointsdecdeg
+template <typename t>
+struct is_waypointsdecdeg : public std::false_type {};
+
+template <>
+struct is_waypointsdecdeg<WaypointsDecDeg> : public std::true_type {};
+
+template<typename t>
+constexpr bool is_waypointsdecdeg_v = is_waypointsdecdeg<t>::value;
+
+/// waypointsdegmin
+template <typename t>
+struct is_waypointsdegmin : public std::false_type {};
+
+template <>
+struct is_waypointsdegmin<WaypointsDegMin> : public std::true_type {};
+
+template<typename t>
+constexpr bool is_waypointsdegmin_v = is_waypointsdegmin<t>::value;
+
+/// waypointsdegminsec
+template <typename t>
+struct is_waypointsdegminsec : public std::false_type {};
+
+template <>
+struct is_waypointsdegminsec<WaypointsDegMinSec> : public std::true_type {};
+
+template<typename t>
+constexpr bool is_waypointsdegminsec_v = is_waypointsdegminsec<t>::value;
+
+/// __________________________________________________
+/// Concept —— waypoints_t
+template <typename T>
+concept waypoints_t = 
+	is_waypointsdecdeg_v<T> ||
+	is_waypointsdegmin_v<T> ||
+	is_waypointsdegminsec_v<T>;
+
+/// __________________________________________________
+/// Instantiate Waypoints<T> object
+template<DVecType t>
+inline waypoints_t auto waypointsmaker(DataFrame);
 
 /// __________________________________________________
 /// __________________________________________________

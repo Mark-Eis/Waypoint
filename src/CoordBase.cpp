@@ -482,15 +482,6 @@ const vector<bool> Coords<T>::validate() const							//	¡¡¡—— NB return t
 	return cdlt.validate();
 }
 
-/// __________________________________________________
-/// Temporary —— to be deleted
-template<DVecType T>
-void Coords<T>::report() const
-{
-//	fmt::print("@Coords<T>::report() const\n");
-	cdlt.report();
-}
-
 
 /// __________________________________________________
 /// Instantiate Coords<T> object
