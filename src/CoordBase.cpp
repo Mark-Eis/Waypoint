@@ -419,28 +419,6 @@ void Coordlet<T>::report() const
 
 /// __________________________________________________
 /// __________________________________________________
-/// CrdWptBase class
-
-/// __________________________________________________
-/// Constructor
-CrdWptBase::CrdWptBase()
-{
-#if DEBUG > 0
-	_ctrsgn(typeid(*this)); fmt::print("\t()\n");
-#endif
-}
-
-/// __________________________________________________
-/// Destructor
-CrdWptBase::~CrdWptBase()
-{
-#if DEBUG > 0
-	_ctrsgn(typeid(*this), false);
-#endif
-}
-
-/// __________________________________________________
-/// __________________________________________________
 /// Coords class
 template<DVecType T>
 Coords<T>::Coords(T t, const vector<bool> latlon) :
@@ -523,39 +501,12 @@ void Coords<T>::report() const
 
 
 /// __________________________________________________
-/// __________________________________________________
-/// Make Coords<DVecType>
-unique_ptr<CrdWptBase> coordsmaker(NumericVector nv)
+/// Instantiate Coords<T> object
+template<DVecType t>
+inline coords_t auto coordsmaker(NumericVector nv)
 {
 #if DEBUG > 0
 	fmt::print("@coordsmaker(NumericVector); {} {}, nv[0] {}, &nv {}, &nv[0] {}, typeid: {}\n",
-		padstr, get_coordtype(nv), nv[0], address(nv), address(nv[0]), demangle(typeid(nv)));
-#endif
-	using enum CoordType;
-	const auto latlon { get_vec_attr<NumericVector, bool>(nv, "latlon"s) };
-	switch (get_coordtype(nv))
-	{
-		case decdeg:
-			return make_unique<Coords<DecDegVecDouble>>(nv, latlon);
-
-		case degmin:
-			return make_unique<Coords<DegMinVecDouble>>(nv, latlon);
-
-		case degminsec:
-			return make_unique<Coords<DegMinSecVecDouble>>(nv, latlon);
-
-		default:
-			stop("coordsmaker(NumericVector) my bad");
-	}
-}
-
-/// __________________________________________________
-/// Instantiate Coords<T> object
-template<DVecType t>
-inline coords_t auto coordsmakerNew(NumericVector nv)
-{
-#if DEBUG > 0
-	fmt::print("@coordsmakerNew(NumericVector); {} {}, nv[0] {}, &nv {}, &nv[0] {}, typeid: {}\n",
 		padstr, get_coordtype(nv), nv[0], address(nv), address(nv[0]), demangle(typeid(nv)));
 #endif
 	const auto latlon { get_vec_attr<NumericVector, bool>(nv, "latlon"s) };
@@ -573,13 +524,13 @@ vector<double> convert(const NumericVector nv, CoordType newtype)
 	switch (get_coordtype(nv))
 	{
 		case decdeg:
-			return coordsmakerNew<DecDegVecDouble>(nv).convert(newtype);
+			return coordsmaker<DecDegVecDouble>(nv).convert(newtype);
 
 		case degmin:
-			return coordsmakerNew<DegMinVecDouble>(nv).convert(newtype);
+			return coordsmaker<DegMinVecDouble>(nv).convert(newtype);
 
 		case degminsec:
-			return coordsmakerNew<DegMinSecVecDouble>(nv).convert(newtype);
+			return coordsmaker<DegMinSecVecDouble>(nv).convert(newtype);
 
 		default:
 			stop("convert(const NumericVector, CoordType) const my bad");
@@ -597,13 +548,13 @@ vector<string> format(const NumericVector nv, CoordType ct_required)
 	switch (get_coordtype(nv))
 	{
 		case decdeg:
-			return coordsmakerNew<DecDegVecDouble>(nv).format(ct_required);
+			return coordsmaker<DecDegVecDouble>(nv).format(ct_required);
 
 		case degmin:
-			return coordsmakerNew<DegMinVecDouble>(nv).format(ct_required);
+			return coordsmaker<DegMinVecDouble>(nv).format(ct_required);
 
 		case degminsec:
-			return coordsmakerNew<DegMinSecVecDouble>(nv).format(ct_required);
+			return coordsmaker<DegMinSecVecDouble>(nv).format(ct_required);
 
 		default:
 			stop("format(const NumericVector, CoordType) const my bad");
@@ -615,19 +566,19 @@ vector<string> format(const NumericVector nv, CoordType ct_required)
 const vector<bool> validate(const NumericVector nv)
 {
 #if DEBUG > 0
-	fmt::print("@validate(const NumericVector)\n");
+	fmt::print("@validate(const NumericVector); current type: {}\n", get_coordtype(nv));
 #endif
 	using enum CoordType;
 	switch (get_coordtype(nv))
 	{
 		case decdeg:
-			return coordsmakerNew<DecDegVecDouble>(nv).validate();
+			return coordsmaker<DecDegVecDouble>(nv).validate();
 
 		case degmin:
-			return coordsmakerNew<DegMinVecDouble>(nv).validate();
+			return coordsmaker<DegMinVecDouble>(nv).validate();
 
 		case degminsec:
-			return coordsmakerNew<DegMinSecVecDouble>(nv).validate();
+			return coordsmaker<DegMinSecVecDouble>(nv).validate();
 
 		default:
 			stop("validate(const NumericVector) const my bad");
@@ -767,7 +718,7 @@ bool revalidate(const NumericVector nv)
 #if DEBUG > 0
 	fmt::print("@revalidate(const NumericVector)\n");
 #endif
-	auto valid { coordsmaker(nv)->validate() };
+	auto valid { validate(nv) };
 	static_cast<NumericVector>(nv).attr("valid") = valid; 
 	if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; }))
 		warning("Revalidation detected invalid coords!");
@@ -1006,7 +957,7 @@ NumericVector as_coords(NumericVector object, int fmt = 1)
 	fmt::print("{}@as_coords(NumericVector, int); fmt={}\n", exportstr, fmt);
 #endif
 	object.attr("fmt") = fmt;
-	auto valid = coordsmaker(object)->validate();
+	auto valid { validate(object) };
 	object.attr("valid") = valid;
 	object.attr("class") = "coords";
 	return object;
@@ -1065,7 +1016,7 @@ NumericVector latlon(NumericVector cd, LogicalVector value)
 		stop("value must be either length 1 or length(cd)");
 	else
 		cd.attr("latlon") = value;
-	auto valid { coordsmaker(cd)->validate() };
+	auto valid { validate(cd) };
 	cd.attr("valid") = valid; 
 	return cd;
 }

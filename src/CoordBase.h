@@ -13,7 +13,7 @@
 /// __________________________________________________
 /// Development and debugging
 
-#define DEBUG 1
+#define DEBUG 0
 
 #if DEBUG > 0
 
@@ -506,28 +506,9 @@ class Coordlet {
 
 /// __________________________________________________
 /// __________________________________________________
-/// CrdWptBase class
-class CrdWptBase {
-	public:
-		explicit CrdWptBase();
-		CrdWptBase(const CrdWptBase&) = delete;						// Disallow copying
-		CrdWptBase& operator=(const CrdWptBase&) = delete;			//  ——— ditto ———
-		CrdWptBase(CrdWptBase&&) = delete;							// Disallow transfer ownership
-		CrdWptBase& operator=(CrdWptBase&&) = delete;				// Disallow moving
-		virtual ~CrdWptBase() = 0;
-
-		virtual vector<double> convert(CoordType) const = 0;
-		virtual vector<string> format(CoordType) const = 0;
-		virtual const vector<bool> validate() const = 0;
-		virtual void report() const = 0;							// Temporary —— delete
-};
-
-
-/// __________________________________________________
-/// __________________________________________________
 /// Coords class
 template<DVecType T>
-class Coords : public CrdWptBase {
+class Coords {
 		const Coordlet<T> cdlt;
 	public:
 		explicit Coords(T, const vector<bool>);
@@ -597,12 +578,7 @@ concept coords_t =
 /// __________________________________________________
 /// Instantiate Coords<T> object
 template<DVecType t>
-inline coords_t auto coordsmakerNew(NumericVector);
-
-/// __________________________________________________
-/// __________________________________________________
-/// Instantiate Coords<DVecType> object with unique_ptr to base
-unique_ptr<CrdWptBase> coordsmaker(NumericVector);
+inline coords_t auto coordsmaker(NumericVector);
 
 /// __________________________________________________
 /// __________________________________________________
