@@ -500,7 +500,6 @@ class Coordlet {
 		template<SVecType U>
 		vector<string> format() const;
 		const vector<bool> validate() const;
-		void report() const;											// Temporary —— delete
 };
 
 

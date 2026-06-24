@@ -408,14 +408,6 @@ const vector<bool> Coordlet<T>::validate() const
 	return valid;
 }
 
-/// __________________________________________________
-/// Temporary —— to be deleted
-template<DVecType T>
-void Coordlet<T>::report() const
-{
-//	fmt::print("@Coordlet<T>::report() const; &dv: {}, dv[0]: {}, &dv[0]: {}\n", address(dv), dv[0], address(dv[0]));
-}
-
 
 /// __________________________________________________
 /// __________________________________________________
