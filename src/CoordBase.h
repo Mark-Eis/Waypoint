@@ -13,7 +13,7 @@
 /// __________________________________________________
 /// Development and debugging
 
-#define DEBUG 0
+#define DEBUG 1
 
 #if DEBUG > 0
 
@@ -603,6 +603,13 @@ inline coords_t auto coordsmakerNew(NumericVector);
 /// __________________________________________________
 /// Instantiate Coords<DVecType> object with unique_ptr to base
 unique_ptr<CrdWptBase> coordsmaker(NumericVector);
+
+/// __________________________________________________
+/// __________________________________________________
+/// Switches for Coords<DVecType>
+vector<double> convert(const NumericVector, CoordType); 
+vector<string> format(const NumericVector, CoordType); 
+const vector<bool> validate(const NumericVector); 
 
 /*
 /// __________________________________________________
