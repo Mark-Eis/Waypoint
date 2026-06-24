@@ -569,7 +569,7 @@ concept coords_t =
 
 /// __________________________________________________
 /// Instantiate Coords<T> object
-template<DVecType t>
+template<DVecType T>
 inline coords_t auto coordsmaker(NumericVector);
 
 /// __________________________________________________
@@ -652,7 +652,7 @@ concept waypoints_t =
 
 /// __________________________________________________
 /// Instantiate Waypoints<T> object
-template<DVecType t>
+template<DVecType T>
 inline waypoints_t auto waypointsmaker(DataFrame);
 
 /// __________________________________________________

@@ -485,15 +485,15 @@ const vector<bool> Coords<T>::validate() const							//	¡¡¡—— NB return t
 
 /// __________________________________________________
 /// Instantiate Coords<T> object
-template<DVecType t>
+template<DVecType T>
 inline coords_t auto coordsmaker(NumericVector nv)
 {
 #if DEBUG > 0
-	fmt::print("@coordsmaker(NumericVector); {} {}, nv[0] {}, &nv {}, &nv[0] {}, typeid: {}\n",
-		padstr, get_coordtype(nv), nv[0], address(nv), address(nv[0]), demangle(typeid(nv)));
+	fmt::print("@coordsmaker(NumericVector); {} {}, nv[0] {}, &nv {}, &nv[0] {}, DVecType: {}\n",
+		padstr, get_coordtype(nv), nv[0], address(nv), address(nv[0]), demangle(typeid(T)));
 #endif
 	const auto latlon { get_vec_attr<NumericVector, bool>(nv, "latlon"s) };
-	return Coords<t>(nv, latlon);
+	return Coords<T>(nv, latlon);
 }
 
 /// __________________________________________________
@@ -616,6 +616,21 @@ const array<const vector<bool>, 2> Waypoints<T>::validate() const
 	fmt::print("@Waypoints<T>::validate(CoordType) const; T: {}\n", demangle(typeid(T)));
 #endif
 	return { crdlat.validate(),  crdlon.validate()};
+}
+
+
+/// __________________________________________________
+/// Instantiate Waypoints<T> object
+template<DVecType T>
+inline waypoints_t auto waypointsmaker(DataFrame df)
+{
+#if DEBUG > 0
+	fmt::print("@waypointsmaker(DataFrame); DVecType: {}\n", demangle(typeid(T)));
+#endif
+	return Waypoints<T>(
+		Coords<T>{ df[get_vec_attr<DataFrame, int>(df, "llcols")[0] - 1], vector<bool>{ true }}, 
+		Coords<T>{ df[get_vec_attr<DataFrame, int>(df, "llcols")[1] - 1], vector<bool>{ false }}
+	);
 }
 
 
