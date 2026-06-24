@@ -629,7 +629,7 @@ inline waypoints_t auto waypointsmaker(DataFrame df)
 #if DEBUG > 0
 	fmt::print("@waypointsmaker(DataFrame); DVecType: {}\n", demangle(typeid(T)));
 #endif
-	return Waypoints<T>(df[get_vec_attr<DataFrame, int>(df, "llcols")[0] - 1], df[get_vec_attr<DataFrame, int>(df, "llcols")[1] - 1]	);
+	return Waypoints<T>(df[get_vec_attr<DataFrame, int>(df, "llcols")[0] - 1], df[get_vec_attr<DataFrame, int>(df, "llcols")[1] - 1]);
 }
 
 /// __________________________________________________
@@ -1060,14 +1060,15 @@ NumericVector validatecoords(const NumericVector x, const bool force = true)
 	return x;
 }
 
-/*
 /// __________________________________________________
 /// Create waypoints - S3 method as_waypoints.default()
 //' @rdname waypoints
 // [[Rcpp::export(name = "as_waypoints.default")]]
 DataFrame as_waypoints(DataFrame object, int fmt = 1)
 {
-//	fmt::print("{}@as_waypoints(DataFrame, int); fmt={}\n", exportstr, fmt);
+#if DEBUG > 0
+	fmt::print("{}@as_waypoints(DataFrame, int); fmt={}\n", exportstr, fmt);
+#endif
 	object.attr("fmt") = fmt;
 	int namescol = 0;
 	if (!object.hasAttribute("namescol")) {
@@ -1081,11 +1082,13 @@ DataFrame as_waypoints(DataFrame object, int fmt = 1)
 	}
 	if(!valid_ll(object))
 		stop("Invalid llcols attribute!");
-	Waypoints{ object }.validate();
+//	Waypoints{ object }.validate();
+	validate(object);
 	object.attr("class") = CharacterVector{"waypoints", "data.frame"};
 	return object;
 }
 
+/*
 /// __________________________________________________
 /// Convert waypoints type - S3 method convert.waypoints()
 //' @rdname convert
