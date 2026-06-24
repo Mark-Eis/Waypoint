@@ -568,9 +568,9 @@ concept coords_t =
 	is_coordsdegminsec_v<T>;
 
 /// __________________________________________________
-/// Instantiate Coords<T> object
+/// Instantiate Coords<DVecType> object
 template<DVecType T>
-inline coords_t auto coordsmaker(NumericVector);
+inline coords_t auto coordsmaker(NumericVector, vector<bool> = vector<bool>{});
 
 /// __________________________________________________
 /// __________________________________________________
@@ -588,7 +588,7 @@ class Waypoints {
 		const Coords<T> crdlat;
 		const Coords<T> crdlon;
 	public:
-		explicit Waypoints(vector<double>, vector<double>);
+		explicit Waypoints(NumericVector, NumericVector);
 		Waypoints(const Waypoints&) = delete;					// Disallow copying
 		Waypoints& operator=(const Waypoints&) = delete;			//  ——— ditto ———
 		Waypoints(Waypoints&&) = delete;						// Disallow transfer ownership
@@ -651,9 +651,17 @@ concept waypoints_t =
 	is_waypointsdegminsec_v<T>;
 
 /// __________________________________________________
-/// Instantiate Waypoints<T> object
+/// Instantiate Waypoints<DVecType> object
 template<DVecType T>
 inline waypoints_t auto waypointsmaker(DataFrame);
+
+/// __________________________________________________
+/// __________________________________________________
+/// Switches for Waypoints<DVecType>
+const array<vector<double>, 2> convert(const DataFrame, CoordType);
+const array<vector<string>, 2> format(const DataFrame, CoordType);
+const array<const vector<bool>, 2> validate(const DataFrame);
+
 
 /// __________________________________________________
 /// __________________________________________________

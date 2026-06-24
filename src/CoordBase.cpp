@@ -486,13 +486,15 @@ const vector<bool> Coords<T>::validate() const							//	¡¡¡—— NB return t
 /// __________________________________________________
 /// Instantiate Coords<T> object
 template<DVecType T>
-inline coords_t auto coordsmaker(NumericVector nv)
+inline coords_t auto coordsmaker(NumericVector nv, vector<bool> latlon)
 {
 #if DEBUG > 0
-	fmt::print("@coordsmaker(NumericVector); {}, nv[0] {}, &nv {}, &nv[0] {}, DVecType: {}\n",
+	fmt::print("@coordsmaker(NumericVector); {} nv[0] {}, &nv {}, &nv[0] {}, DVecType: {}\n",
 		padstr, nv[0], address(nv), address(nv[0]), demangle(typeid(T)));
 #endif
-	const auto latlon { get_vec_attr<NumericVector, bool>(nv, "latlon"s) };
+//	const auto latlon { get_vec_attr<NumericVector, bool>(nv, "latlon"s) };
+	if (!latlon.size())
+		latlon = get_vec_attr<NumericVector, bool>(nv, "latlon"s);
 	return Coords<T>(nv, latlon);
 }
 
@@ -576,9 +578,9 @@ const vector<bool> validate(const NumericVector nv)
 /// __________________________________________________
 /// Constructor
 template<DVecType T>
-Waypoints<T>::Waypoints(vector<double> nv_lat, vector<double> nv_lon) :
-	crdlat{ coordsmaker<T>(std::move(nv_lat), vector<bool>{ true }) },
-	crdlon{ coordsmaker<T>(std::move(nv_lat), vector<bool>{ false }) }
+Waypoints<T>::Waypoints(NumericVector nv_lat, NumericVector nv_lon) :
+	crdlat{ coordsmaker<T>(nv_lat, vector<bool>{ true }) },
+	crdlon{ coordsmaker<T>(nv_lat, vector<bool>{ false }) }
 {
 #if DEBUG > 0
 	_ctrsgn(typeid(*this)); fmt::print("\t(vector<double>, vector<double>)\n");
@@ -627,10 +629,31 @@ inline waypoints_t auto waypointsmaker(DataFrame df)
 #if DEBUG > 0
 	fmt::print("@waypointsmaker(DataFrame); DVecType: {}\n", demangle(typeid(T)));
 #endif
-	return Waypoints<T>(
-		Coords<T>{ df[get_vec_attr<DataFrame, int>(df, "llcols")[0] - 1], vector<bool>{ true }}, 
-		Coords<T>{ df[get_vec_attr<DataFrame, int>(df, "llcols")[1] - 1], vector<bool>{ false }}
-	);
+	return Waypoints<T>(df[get_vec_attr<DataFrame, int>(df, "llcols")[0] - 1], df[get_vec_attr<DataFrame, int>(df, "llcols")[1] - 1]	);
+}
+
+/// __________________________________________________
+/// Validate "waypoints" DataFrame 
+const array<const vector<bool>, 2> validate(const DataFrame df)
+{
+#if DEBUG > 0
+	fmt::print("@validate(const DataFrame); current type: {}\n", get_coordtype(df));
+#endif
+	using enum CoordType;
+	switch (get_coordtype(df))
+	{
+		case decdeg:
+			return waypointsmaker<DecDegVecDouble>(df).validate();
+
+		case degmin:
+			return waypointsmaker<DegMinVecDouble>(df).validate();
+
+		case degminsec:
+			return waypointsmaker<DegMinSecVecDouble>(df).validate();
+
+		default:
+			stop("validate(const DataFrame) const my bad");
+	}
 }
 
 
