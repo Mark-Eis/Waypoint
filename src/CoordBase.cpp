@@ -352,9 +352,6 @@ vector<string> Coordlet<T>::format() const
 	transform(dv.begin(), dv.end(), sv_out.begin(), Formateador<T, U>());	
 
 	if constexpr (isDecDegVecString_v<U>) {
-#if DEBUG > 0
-		fmt::print("@ICoordlet<T>::format<U>() const; T: {}, if constexpr (isDecDegVecString_v<U>)\n", demangle(typeid(T)));
-#endif
 		const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it++ ? " lat" : " lon"); };
 		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it ? " lat" : " lon"); };
 		if (ll_size > 1)
@@ -364,9 +361,6 @@ vector<string> Coordlet<T>::format() const
 				transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda2);
 
 	} else if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>) {
-#if DEBUG > 0
-		fmt::print("@IVCoordlet<T>::format<U>() const; T: {}, if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>)\n", demangle(typeid(T)));
-#endif
 		const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it++); };
 		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it); };
 		const auto lambda3 = [](auto& outstr, auto n){ return outstr + cardi_b(n < 0); };
@@ -380,7 +374,7 @@ vector<string> Coordlet<T>::format() const
 				transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda3);
 	}
 #if DEBUG > 0
-	fmt::print("@VCoordlet<T>::format<U>() const; {} sv_out[0] {}, &sv_out {}, &sv_out[0] {}, typeid: {}\n",
+	fmt::print("@IICoordlet<T>::format<U>() const; {} sv_out[0] {}, &sv_out {}, &sv_out[0] {}, typeid: {}\n",
 		padstr, sv_out[0], address(sv_out), address(sv_out[0]), demangle(typeid(sv_out)));
 #endif
 	return sv_out;
