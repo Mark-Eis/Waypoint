@@ -489,8 +489,8 @@ template<DVecType T>
 inline coords_t auto coordsmaker(NumericVector nv)
 {
 #if DEBUG > 0
-	fmt::print("@coordsmaker(NumericVector); {} {}, nv[0] {}, &nv {}, &nv[0] {}, DVecType: {}\n",
-		padstr, get_coordtype(nv), nv[0], address(nv), address(nv[0]), demangle(typeid(T)));
+	fmt::print("@coordsmaker(NumericVector); {}, nv[0] {}, &nv {}, &nv[0] {}, DVecType: {}\n",
+		padstr, nv[0], address(nv), address(nv[0]), demangle(typeid(T)));
 #endif
 	const auto latlon { get_vec_attr<NumericVector, bool>(nv, "latlon"s) };
 	return Coords<T>(nv, latlon);
