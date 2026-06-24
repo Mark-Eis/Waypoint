@@ -956,18 +956,6 @@ NumericVector convertcoords(const NumericVector x, int fmt)
 	if (!check_valid(x))
 		stop("Invalid coords! Conversion aborted.\n [Use review() to show invalid elements]");
 	if (newtype != ct_current) {
-/*
-#if DEBUG > 0
-		const auto vd_out { coordsmaker(x)->convert(newtype) };					// Vector copy elision
-		fmt::print("{}@Iconvertcoords(NumericVector, int);  vd_out[0] {}, &vd_out {}, &vd_out[0] {}, typeid: {}\n",
-			exportstr, vd_out[0], address(vd_out), address(vd_out[0]), demangle(typeid(vd_out)));
-		NumericVector nv_out { wrap(vd_out) };									// Copies output string
-		fmt::print("{}@IIconvertcoords(NumericVector, int); nv_out[0] {}, &nv_out {}, &nv_out[0] {}, typeid: {}\n",
-			exportstr, nv_out[0], address(nv_out), address(nv_out[0]), demangle(typeid(nv_out)));
-#else
-		NumericVector nv_out { wrap(coordsmaker(x)->convert(newtype)) };		// Copies output string
-#endif
-*/
 		using enum CoordType;
 		auto vd_out { vector<double>{}};
 		if (decdeg == ct_current)
@@ -977,7 +965,7 @@ NumericVector convertcoords(const NumericVector x, int fmt)
 		else if (degminsec == ct_current)
 			vd_out = coordsmakerNew<DegMinSecVecDouble>(x).convert(newtype);
 		else
-			stop("formatcoords(const NumericVector, bool, bool, int) mt bad!");
+			stop("formatcoords(const NumericVector, bool, bool, int) my bad!");
 #if DEBUG > 0
 		fmt::print("{}@Iconvertcoords(NumericVector, int);  vd_out[0] {}, &vd_out {}, &vd_out[0] {}, typeid: {}\n",
 			exportstr, vd_out[0], address(vd_out), address(vd_out[0]), demangle(typeid(vd_out)));
@@ -1038,7 +1026,6 @@ CharacterVector formatcoords(const NumericVector x, bool usenames = true, bool v
 			warning("Formatting invalid coords!");
 	CoordType ct_current { get_coordtype(x) };
 	CoordType ct_required { fmt ? get_coordtype(fmt) : ct_current };
-//	vector sv_out{ coordsmaker(x)->format(ct_required) };
 	
 	using enum CoordType;
 	auto sv_out { vector<string>{}};
@@ -1049,7 +1036,7 @@ CharacterVector formatcoords(const NumericVector x, bool usenames = true, bool v
 	else if (degminsec == ct_current)
 		sv_out = coordsmakerNew<DegMinSecVecDouble>(x).format(ct_required);
 	else
-		stop("formatcoords(const NumericVector, bool, bool, int) mt bad!");
+		stop("formatcoords(const NumericVector, bool, bool, int) my bad!");
 
 #if DEBUG > 0
 	fmt::print("{}@IIformatcoords(NumericVector, bool, bool, int); sv_out[0] {}, &sv_out {}, &sv_out[0] {}, typeid: {}\n",
@@ -1076,7 +1063,19 @@ NumericVector validatecoords(const NumericVector x, const bool force = true)
 #endif
 	checkinherits(x, "coords"s);
 	if (force)	{			
-		auto valid { coordsmaker(x)->validate() };
+
+		using enum CoordType;
+		CoordType ct { get_coordtype(x) };
+		auto valid { vector<bool>{}};
+		if (decdeg == ct)
+			valid = coordsmakerNew<DecDegVecDouble>(x).validate();
+		else if (degmin == ct)
+			valid = coordsmakerNew<DegMinVecDouble>(x).validate();
+		else if (degminsec == ct)
+			valid = coordsmakerNew<DegMinSecVecDouble>(x).validate();
+		else
+			stop("validatecoords(const NumericVector, const bool) my bad!");
+
 		if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; })) {
 			warning("Coords failed validation!");
 			static_cast<NumericVector>(x).attr("valid") = valid;
