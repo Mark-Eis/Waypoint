@@ -663,20 +663,20 @@ const bisconstvec <bool> validate_switch(const DataFrame df)
 
 /// __________________________________________________
 /// Check "valid" attribute of NumericVector all true
-bool check_valid(const NumericVector nv)
+bool check_valid(const NumericVector nv, bool newbie)
 {
 #if DEBUG > 0
 	fmt::print("@check_valid(const NumericVector)\n");
 #endif
 	int validated = check_logical_attr(nv, "valid"s);
 	if (!validated)
-		return validate(nv, true);
+		return validate(nv, !newbie);
 	return validated >> 1;
 }
 
 /// __________________________________________________
 /// Check "lat_valid" and "lon_valid attributes of DataFrame are all true
-bool check_valid(const DataFrame df)
+bool check_valid(const DataFrame df, bool newbie)
 {
 #if DEBUG > 0
 	fmt::print("@check_valid(const DataFrame)\n");
@@ -685,14 +685,14 @@ bool check_valid(const DataFrame df)
 	int lonvalidated = check_logical_attr(df, "validlon"s);
 
 	if (!(latvalidated & lonvalidated))
-		return validate(df, true);
+		return validate(df, !newbie);
 	if (!(latvalidated >> 1))
 		warning("Invalid latitude!");
 	if (!(lonvalidated >> 1))
 		warning("Invalid longitude!");
 	return latvalidated >> 1 && lonvalidated >> 1;
 }
-
+/*
 /// __________________________________________________
 /// Validate "coords" NumericVector
 bool validate(const NumericVector nv, bool revalidate)
@@ -726,6 +726,63 @@ bool validate(const DataFrame df, bool revalidate)
 		warning("Waypoints revalidated!");
 	return check_valid(df);
 }
+*/
+/*
+/// __________________________________________________
+/// Validate "coords" NumericVector or "waypoints" DataFrame
+bool validate(const NumVec_or_DataFrame auto t, bool revalidate)
+{
+#if DEBUG > 0
+	fmt::print("@validate(const NumVec_or_DataFrame auto); revalidate: {}, t {}\n", revalidate, demangle(typeid(t)));
+#endif
+	if constexpr (isNumericVector_v<decltype(t)>) {
+		auto valid { validate_switch(t) };
+		static_cast<NumericVector>(t).attr("valid") = valid; 
+		if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; }))
+			warning("%salidation detected italid coords!", revalidate ? "Rev" : "V");
+		else if (revalidate)
+			warning("Coords revalidated!");
+	} else if constexpr (isDataFrame_v<decltype(t)>) {
+		auto valarr { validate_switch(t) };
+		static_cast<DataFrame>(t).attr("validlat") = valarr[0];
+		static_cast<DataFrame>(t).attr("validlon") = valarr[1];
+		if (!std::all_of(valarr[0].begin(), valarr[0].end(), [](auto i){ return i; }) ||
+			!std::all_of(valarr[1].begin(), valarr[1].end(), [](auto i){ return i; }))
+			warning("%salidation detected invalid Waypoints!", revalidate ? "Rev" : "V");
+		else if (revalidate)
+			warning("Waypoints revalidated!");
+	}
+	return check_valid(t);
+}
+*/
+
+/// __________________________________________________
+/// Validate "coords" NumericVector or "waypoints" DataFrame
+template<NumVec_or_DataFrame T>
+bool validate(const T t, bool revalidate)
+{
+#if DEBUG > 0
+	fmt::print("@validate(const NumVec_or_DataFrame auto); revalidate: {}, t {}\n", revalidate, demangle(typeid(t)));
+#endif
+	if constexpr (isNumericVector_v<T>) {
+		auto valid { validate_switch(t) };
+		static_cast<NumericVector>(t).attr("valid") = valid; 
+		if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; }))
+			warning("%salidation detected invalid coords!", revalidate ? "Rev" : "V");
+		else if (revalidate)
+			warning("Coords revalidated!");
+	} else if constexpr (isDataFrame_v<T>) {
+		auto valarr { validate_switch(t) };
+		static_cast<DataFrame>(t).attr("validlat") = valarr[0];
+		static_cast<DataFrame>(t).attr("validlon") = valarr[1];
+		if (!std::all_of(valarr[0].begin(), valarr[0].end(), [](auto i){ return i; }) ||
+			!std::all_of(valarr[1].begin(), valarr[1].end(), [](auto i){ return i; }))
+			warning("%salidation detected invalid Waypoints!", revalidate ? "Rev" : "V");
+		else if (revalidate)
+			warning("Waypoints revalidated!");
+	}
+	return check_valid(t);
+}
 
 /// __________________________________________________
 /// Check df has valid "llcols" attribute
@@ -747,7 +804,6 @@ bool valid_ll(const DataFrame df)
 
 
 /// __________________________________________________
-/// In Progress  !!!!!!!!!!!!!!
 /// __________________________________________________
 /// Exported functions
 
@@ -922,8 +978,8 @@ NumericVector as_coords(NumericVector object, int fmt = 1)
 	fmt::print("{}@as_coords(NumericVector, int); fmt={}\n", exportstr, fmt);
 #endif
 	object.attr("fmt") = fmt;
-	auto valid { validate(object) };
-	object.attr("valid") = valid;
+	if (!check_valid(object, true))
+		warning("Creating invalid coords!\n [Use review() to show invalid elements]");
 	object.attr("class") = "coords";
 	return object;
 }

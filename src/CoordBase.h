@@ -13,7 +13,7 @@
 /// __________________________________________________
 /// Development and debugging
 
-#define DEBUG 1
+#define DEBUG 0
 
 #if DEBUG > 0
 
@@ -674,10 +674,16 @@ const bisconstvec<bool> validate_switch(const DataFrame);
 /// __________________________________________________
 /// __________________________________________________
 /// Validation
-bool check_valid(const NumericVector);
-bool check_valid(const DataFrame);
-bool validate(const NumericVector, bool = false);
-bool validate(const DataFrame, bool = false);
+bool check_valid(const NumericVector, bool = false);
+bool check_valid(const DataFrame, bool = false);
+// bool validate(const NumericVector, bool = false);
+// bool validate(const DataFrame, bool = false);
+
+// bool validate(const NumVec_or_DataFrame auto, bool = false);
+
+template<NumVec_or_DataFrame T>
+bool validate(const T, bool = false);
+
 bool valid_ll(const DataFrame);
 
 /// __________________________________________________
