@@ -13,7 +13,7 @@
 /// __________________________________________________
 /// Development and debugging
 
-#define DEBUG 1
+#define DEBUG 0
 
 #if DEBUG > 0
 
@@ -582,9 +582,9 @@ const vector<bool> validate_switch(const NumericVector);
 /// __________________________________________________
 /// __________________________________________________
 /// Type aliases
-template<class T>
+template<typename T>
 using bisvec = array<vector<T>, 2>;
-template<class T>
+template<typename T>
 using bisconstvec = array<const vector<T>, 2>;
 
 /// __________________________________________________
@@ -675,8 +675,7 @@ const bisconstvec<bool> validate_switch(const DataFrame);
 /// Validation
 bool check_valid(const NumericVector, bool = false);
 bool check_valid(const DataFrame, bool = false);
-template<NumVec_or_DataFrame T>
-bool validate(const T, bool = false);
+bool validate(const NumVec_or_DataFrame auto, bool = false);
 bool valid_ll(const DataFrame);
 
 /// __________________________________________________
