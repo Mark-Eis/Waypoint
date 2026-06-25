@@ -575,9 +575,9 @@ inline coords_t auto coordsmaker(NumericVector, vector<bool> = vector<bool>{});
 /// __________________________________________________
 /// __________________________________________________
 /// Switches for Coords<DVecType>
-vector<double> convert(const NumericVector, CoordType); 
-vector<string> format(const NumericVector, CoordType); 
-const vector<bool> validate(const NumericVector); 
+vector<double> convert_switch(const NumericVector, CoordType); 
+vector<string> format_switch(const NumericVector, CoordType); 
+const vector<bool> validate_switch(const NumericVector); 
 
 
 /// __________________________________________________

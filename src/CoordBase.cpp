@@ -500,10 +500,10 @@ inline coords_t auto coordsmaker(NumericVector nv, vector<bool> latlon)
 
 /// __________________________________________________
 /// Convert "coords" NumericVector
-vector<double> convert(const NumericVector nv, CoordType newtype)
+vector<double> convert_switch(const NumericVector nv, CoordType newtype)
 {
 #if DEBUG > 0
-	fmt::print("@convert(const NumericVector, CoordType); current type: {}, new type: {}\n", get_coordtype(nv), newtype);
+	fmt::print("@convert_switch(const NumericVector, CoordType); current type: {}, new type: {}\n", get_coordtype(nv), newtype);
 #endif
 	using enum CoordType;
 	switch (get_coordtype(nv))
@@ -518,16 +518,16 @@ vector<double> convert(const NumericVector nv, CoordType newtype)
 			return coordsmaker<DegMinSecVecDouble>(nv).convert(newtype);
 
 		default:
-			stop("convert(const NumericVector, CoordType) const my bad");
+			stop("convert_switch(const NumericVector, CoordType) const my bad");
 	}
 }
 
 /// __________________________________________________
 /// Format "coords" NumericVector
-vector<string> format(const NumericVector nv, CoordType ct_required)
+vector<string> format_switch(const NumericVector nv, CoordType ct_required)
 {
 #if DEBUG > 0
-	fmt::print("@format(const NumericVector, CoordType); current type: {}, required type: {}\n", get_coordtype(nv), ct_required);
+	fmt::print("@format_switch(const NumericVector, CoordType); current type: {}, required type: {}\n", get_coordtype(nv), ct_required);
 #endif
 	using enum CoordType;
 	switch (get_coordtype(nv))
@@ -542,16 +542,16 @@ vector<string> format(const NumericVector nv, CoordType ct_required)
 			return coordsmaker<DegMinSecVecDouble>(nv).format(ct_required);
 
 		default:
-			stop("format(const NumericVector, CoordType) const my bad");
+			stop("format_switch(const NumericVector, CoordType) const my bad");
 	}
 }
 
 /// __________________________________________________
 /// Validate "coords" NumericVector 
-const vector<bool> validate(const NumericVector nv)
+const vector<bool> validate_switch(const NumericVector nv)
 {
 #if DEBUG > 0
-	fmt::print("@validate(const NumericVector); current type: {}\n", get_coordtype(nv));
+	fmt::print("@validate_switch(const NumericVector); current type: {}\n", get_coordtype(nv));
 #endif
 	using enum CoordType;
 	switch (get_coordtype(nv))
@@ -566,7 +566,7 @@ const vector<bool> validate(const NumericVector nv)
 			return coordsmaker<DegMinSecVecDouble>(nv).validate();
 
 		default:
-			stop("validate(const NumericVector) const my bad");
+			stop("validate_switch(const NumericVector) const my bad");
 	}
 }
 
@@ -702,7 +702,7 @@ bool revalidate(const NumericVector nv)
 #if DEBUG > 0
 	fmt::print("@revalidate(const NumericVector)\n");
 #endif
-	auto valid { validate(nv) };
+	auto valid { validate_switch(nv) };
 	static_cast<NumericVector>(nv).attr("valid") = valid; 
 	if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; }))
 		warning("Revalidation detected invalid coords!");
@@ -924,7 +924,7 @@ NumericVector as_coords(NumericVector object, int fmt = 1)
 	fmt::print("{}@as_coords(NumericVector, int); fmt={}\n", exportstr, fmt);
 #endif
 	object.attr("fmt") = fmt;
-	auto valid { validate(object) };
+	auto valid { validate_switch(object) };
 	object.attr("valid") = valid;
 	object.attr("class") = "coords";
 	return object;
@@ -947,7 +947,7 @@ NumericVector convertcoords(const NumericVector x, int fmt)
 	if (!check_valid(x))
 		stop("Invalid coords! Conversion aborted.\n [Use review() to show invalid elements]");
 	if (newtype != ct_current) {
-		auto vd_out { convert(x, newtype) };
+		auto vd_out { convert_switch(x, newtype) };
 #if DEBUG > 0
 		fmt::print("{}@Iconvertcoords(NumericVector, int);  vd_out[0] {}, &vd_out {}, &vd_out[0] {}, typeid: {}\n",
 			exportstr, vd_out[0], address(vd_out), address(vd_out[0]), demangle(typeid(vd_out)));
@@ -983,7 +983,7 @@ NumericVector latlon(NumericVector cd, LogicalVector value)
 		stop("value must be either length 1 or length(cd)");
 	else
 		cd.attr("latlon") = value;
-	auto valid { validate(cd) };
+	auto valid { validate_switch(cd) };
 	cd.attr("valid") = valid; 
 	return cd;
 }
@@ -1007,7 +1007,7 @@ CharacterVector formatcoords(const NumericVector x, bool usenames = true, bool v
 			warning("Formatting invalid coords!");
 	CoordType ct_current { get_coordtype(x) };
 	CoordType ct_required { fmt ? get_coordtype(fmt) : ct_current };
-	auto sv_out { format(x, ct_required) };
+	auto sv_out { format_switch(x, ct_required) };
 #if DEBUG > 0
 	fmt::print("{}@IIformatcoords(NumericVector, bool, bool, int); sv_out[0] {}, &sv_out {}, &sv_out[0] {}, typeid: {}\n",
 		exportstr, sv_out[0], address(sv_out), address(sv_out[0]), demangle(typeid(sv_out).name()));
@@ -1033,7 +1033,7 @@ NumericVector validatecoords(const NumericVector x, const bool force = true)
 #endif
 	checkinherits(x, "coords"s);
 	if (force)	{			
-		auto valid { validate(x) };
+		auto valid { validate_switch(x) };
 		if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; })) {
 			warning("Coords failed validation!");
 			static_cast<NumericVector>(x).attr("valid") = valid;
