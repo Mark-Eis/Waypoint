@@ -590,7 +590,7 @@ Waypoints<T>::Waypoints(NumericVector nv_lat, NumericVector nv_lon) :
 /// __________________________________________________
 /// convert call entry point -- public
 template<DVecType T>
-const array<vector<double>, 2> Waypoints<T>::convert(CoordType newtype) const
+const bisvec<double> Waypoints<T>::convert(CoordType newtype) const
 {
 #if DEBUG > 0
 	fmt::print("@Waypoints<T>::convert(CoordType) const; T: {}, new type: {}\n", demangle(typeid(T)), newtype);
@@ -601,7 +601,7 @@ const array<vector<double>, 2> Waypoints<T>::convert(CoordType newtype) const
 /// __________________________________________________
 /// format call entry point -- public
 template<DVecType T>
-const array<vector<string>, 2> Waypoints<T>::format(CoordType required_type) const
+const bisvec<string> Waypoints<T>::format(CoordType required_type) const
 {
 #if DEBUG > 0
 	fmt::print("@Waypoints<T>::format(CoordType) const; T: {}, required type: {}\n", demangle(typeid(T)), required_type);
@@ -612,7 +612,7 @@ const array<vector<string>, 2> Waypoints<T>::format(CoordType required_type) con
 /// __________________________________________________
 /// validate call entry point -- public
 template<DVecType T>
-const array<const vector<bool>, 2> Waypoints<T>::validate() const
+const bisconstvec<bool> Waypoints<T>::validate() const
 {
 #if DEBUG > 0
 	fmt::print("@Waypoints<T>::validate(CoordType) const; T: {}\n", demangle(typeid(T)));
@@ -634,7 +634,7 @@ inline waypoints_t auto waypointsmaker(DataFrame df)
 
 /// __________________________________________________
 /// Validate "waypoints" DataFrame 
-const bisvec<bool> validate_switch(const DataFrame df)
+const bisconstvec <bool> validate_switch(const DataFrame df)
 {
 #if DEBUG > 0
 	fmt::print("@validate_switch(const DataFrame); current type: {}\n", get_coordtype(df));
@@ -698,7 +698,7 @@ bool check_valid(const DataFrame df)
 bool validate(const NumericVector nv, bool revalidate)
 {
 #if DEBUG > 0
-	fmt::print("@validate(const NumericVector)\n");
+	fmt::print("@validate(const NumericVector); revalidate: {}\n", revalidate);
 #endif
 	auto valid { validate_switch(nv) };
 	static_cast<NumericVector>(nv).attr("valid") = valid; 
@@ -714,7 +714,7 @@ bool validate(const NumericVector nv, bool revalidate)
 bool validate(const DataFrame df, bool revalidate)
 {
 #if DEBUG > 0
-	fmt::print("@validate(const DataFrame)\n");
+	fmt::print("@validate(const DataFrame); revalidate: {}\n", revalidate);
 #endif
 	auto valarr { validate_switch(df) };
 	static_cast<DataFrame>(df).attr("validlat") = valarr[0];
@@ -1133,10 +1133,14 @@ DataFrame validatewaypoints(DataFrame x, bool force = true)
 	checkinherits(x, "waypoints"s);
 	if(!valid_ll(x))
 		stop("Invalid llcols attribute!");
-	if (force)
-		validate(x, true);
-	if (!check_valid(x))
-		warning("Invalid waypoints!");
+	bool warn { false };
+	if (force)	{			
+		if (!validate(x))
+			warn = true;
+	} else if (!check_valid(x))
+		warn = true;
+	if (warn)
+		warning("[Use review() to show invalid elements]");
 	return x;
 }
 

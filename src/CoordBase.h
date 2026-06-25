@@ -582,6 +582,14 @@ const vector<bool> validate_switch(const NumericVector);
 
 /// __________________________________________________
 /// __________________________________________________
+/// Type aliases
+template<class T>
+using bisvec = array<vector<T>, 2>;
+template<class T>
+using bisconstvec = array<const vector<T>, 2>;
+
+/// __________________________________________________
+/// __________________________________________________
 /// Waypoints class
 template<DVecType T>
 class Waypoints {
@@ -598,9 +606,9 @@ class Waypoints {
 #elif DEBUG > 0
 		~Waypoints() { _ctrsgn(typeid(*this), false); }
 #endif
-		const array<vector<double>, 2> convert(CoordType) const;
-		const array<vector<string>, 2> format(CoordType) const;
-		const array<const vector<bool>, 2> validate() const;
+		const bisvec<double> convert(CoordType) const;
+		const bisvec<string> format(CoordType) const;
+		const bisconstvec<bool> validate() const;
 };
 
 /// __________________________________________________
@@ -658,14 +666,9 @@ inline waypoints_t auto waypointsmaker(DataFrame);
 /// __________________________________________________
 /// __________________________________________________
 /// Switches for Waypoints<DVecType>
-template<class T>
-using bisvec = array<const vector<T>, 2>;
-// const array<vector<double>, 2> convert_switch(const DataFrame, CoordType);
-// const array<vector<string>, 2> format_switch(const DataFrame, CoordType);
-// const array<const vector<bool>, 2> validate_switch(const DataFrame);
 const bisvec<double> convert_switch(const DataFrame, CoordType);
 const bisvec<string> format_switch(const DataFrame, CoordType);
-const bisvec<bool> validate_switch(const DataFrame);
+const bisconstvec<bool> validate_switch(const DataFrame);
 
 
 /// __________________________________________________
