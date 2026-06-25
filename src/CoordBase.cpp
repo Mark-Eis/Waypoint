@@ -634,7 +634,6 @@ inline waypoints_t auto waypointsmaker(DataFrame df)
 
 /// __________________________________________________
 /// Validate "waypoints" DataFrame 
-//const array<const vector<bool>, 2> validate_switch(const DataFrame df)
 const bisvec<bool> validate_switch(const DataFrame df)
 {
 #if DEBUG > 0
@@ -727,7 +726,7 @@ bool revalidate(const DataFrame df, bool newbie)
 		warning("%salidation detected invalid Waypoints!", newbie ? "V" : "Rev");
 	else if (!newbie)
 		warning("Waypoints revalidated!");
-	return true;
+	return check_valid(df);
 }
 
 /// __________________________________________________
