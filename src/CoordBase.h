@@ -303,8 +303,7 @@ inline double polish(double);
 template<NumVec_or_DataFrame T, typename U> 
 inline vector<U> get_vec_attr(const T&, const string);
 inline int get_fmt_attribute(const NumVec_or_DataFrame auto&);
-template<NumVec_or_DataFrame T>
-int check_logical_attr(T t, const string attrname);
+int check_logical_attr(NumVec_or_DataFrame auto, const string);
 inline void checkinherits(const NumVec_or_DataFrame auto&, const string);
 inline bool is_item_in_df(const DataFrame, int);
 inline void stdlenstr(vector<string>&);

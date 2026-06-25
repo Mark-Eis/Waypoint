@@ -118,11 +118,10 @@ inline int get_fmt_attribute(const NumVec_or_DataFrame auto& t)
 
 /// __________________________________________________
 /// Check whether a NumericVector or DataFrame has a specified logical vector attribute and whether all true
-template<NumVec_or_DataFrame T>
-int check_logical_attr(T t, const string attrname)
+int check_logical_attr(NumVec_or_DataFrame auto t, const string attrname)
 {
-//	fmt::print("@check_logical_attr<NumVec_or_DataFrame>(T, const string); T: {}; attrname {}\n", demangle(typeid(t)), attrname);
-	const vector vec_attr{ get_vec_attr<T, bool>(t, attrname) };
+//	fmt::print("@check_logical_attr(NumVec_or_DataFrame auto, const string); T: {}; attrname {}\n", demangle(typeid(t)), attrname);
+	const vector vec_attr{ get_vec_attr<decltype(t), bool>(t, attrname) };
 	if (vec_attr.size()) {
 		return all_of(vec_attr.begin(), vec_attr.end(), [](bool v) { return v;}) ? 0b11 : 0b01;
 	} else {
