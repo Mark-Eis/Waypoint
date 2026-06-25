@@ -654,6 +654,30 @@ const bisconstvec <bool> validate_switch(const DataFrame df)
 	}
 }
 
+/// __________________________________________________
+/// Format "waypoints" DataFrame 
+const bisvec<string> format_switch(const DataFrame df, CoordType ct_required)
+{
+#if DEBUG > 0
+	fmt::print("@format_switch(const DataFrame, CoordType); current type: {}, required type: {}\n", get_coordtype(df), ct_required);
+#endif
+	using enum CoordType;
+	switch (get_coordtype(df))
+	{
+		case decdeg:
+			return waypointsmaker<DecDegVecDouble>(df).format(ct_required);
+
+		case degmin:
+			return waypointsmaker<DegMinVecDouble>(df).format(ct_required);
+
+		case degminsec:
+			return waypointsmaker<DegMinSecVecDouble>(df).format(ct_required);
+
+		default:
+			stop("format_switch(const DataFrame) const my bad");
+	}
+}
+
 
 /// __________________________________________________
 /// __________________________________________________
@@ -1087,6 +1111,7 @@ DataFrame convertwaypoints(DataFrame x, int fmt)
 		Rcout << "\t—— fmt out == fmt in! ——\n\n";
 	return x;
 }
+*/
 
 /// __________________________________________________
 /// Format waypoints - S3 method format.waypoints()
@@ -1105,16 +1130,19 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate
 	if (validate)
 		if (!check_valid(x))
 			warning("Formatting invalid waypoints!");
-	vector sv_out{ Waypoints{ x }.format(fmt ? get_coordtype(fmt) : get_coordtype(x)) };
+	auto svs_out { format_switch(x, fmt ? get_coordtype(fmt) : get_coordtype(x)) };
+	auto& sv_lat { svs_out[0] };
+	auto& sv_lon { svs_out[1] };
+    transform(sv_lat.begin(), sv_lat.end(), sv_lon.begin(), sv_lat.begin(), [](auto& latstr, auto& lonstr){ return latstr + "  " + lonstr; });
 
 	if (usenames) {
 		RObject names = getnames(x);
-		if (!prefixwithnames(sv_out, names))
+		if (!prefixwithnames(sv_lat, names))
 			stop("Invalid \"namescol\" attribute!");
 	}
-	return wrap(sv_out);
+	return wrap(sv_lat);
 }
-*/
+
 /// __________________________________________________
 /// Validate waypoints - S3 method validate.waypoints()
 //' @rdname validate
