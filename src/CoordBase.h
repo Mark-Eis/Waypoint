@@ -673,8 +673,8 @@ const bisvec<bool> validate_switch(const DataFrame);
 /// Validation
 bool check_valid(const NumericVector);
 bool check_valid(const DataFrame);
-bool revalidate(const NumericVector, bool = false);
-bool revalidate(const DataFrame, bool = false);
+bool validate(const NumericVector, bool = false);
+bool validate(const DataFrame, bool = false);
 bool valid_ll(const DataFrame);
 
 /// __________________________________________________
