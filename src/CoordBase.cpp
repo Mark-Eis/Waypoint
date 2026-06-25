@@ -1121,7 +1121,6 @@ DataFrame as_waypoints(DataFrame object, int fmt = 1)
 	}
 	if(!valid_ll(object))
 		stop("Invalid llcols attribute!");
-//	validate(object);
 	if (!check_valid(object, true))
 		warning("[Use review() to show invalid elements]");
 	object.attr("class") = CharacterVector{"waypoints", "data.frame"};
