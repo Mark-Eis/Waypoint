@@ -634,10 +634,10 @@ inline waypoints_t auto waypointsmaker(DataFrame df)
 
 /// __________________________________________________
 /// Validate "waypoints" DataFrame 
-const array<const vector<bool>, 2> validate(const DataFrame df)
+const array<const vector<bool>, 2> validate_switch(const DataFrame df)
 {
 #if DEBUG > 0
-	fmt::print("@validate(const DataFrame); current type: {}\n", get_coordtype(df));
+	fmt::print("@validate_switch(const DataFrame); current type: {}\n", get_coordtype(df));
 #endif
 	using enum CoordType;
 	switch (get_coordtype(df))
@@ -652,7 +652,7 @@ const array<const vector<bool>, 2> validate(const DataFrame df)
 			return waypointsmaker<DegMinSecVecDouble>(df).validate();
 
 		default:
-			stop("validate(const DataFrame) const my bad");
+			stop("validate_switch(const DataFrame) const my bad");
 	}
 }
 
@@ -718,7 +718,7 @@ bool revalidate(const DataFrame df)
 #if DEBUG > 0
 	fmt::print("@revalidate(const DataFrame)\n");
 #endif
-	auto valid { validate(df) };
+	auto valid { validate_switch(df) };
 	stop("Hell or high water!");
 /*	static_cast<DataFrame>(df).attr("valid") = valid; 
 	if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; }))
@@ -910,24 +910,6 @@ NumericVector movit(NumericVector object)
 	fmt::print("{}XI@movit(NumericVector); ptr2 deleted, clt to be deleted on exit\n", exportstr);
 	return object;
 }
-
-
-/// __________________________________________________
-/// Dummy Function for Testing Only 	¡¡¡ ——— Temporary to Be Archived ——— !!!
-//' @rdname cords
-// [[Rcpp::export(name = "coordle")]]
-NumericVector CoordsTest(NumericVector object)
-{
-	CoordType type = get_coordtype(object); 
-	fmt::print("{}@CoordsTest(NumericVector); fmt {}, CoordType {}\n", exportstr, get_fmt_attribute(object), type);
-
-	auto Coords_ptr { unique_ptr<CrdWptBase>{ coordsmaker(object) } };
-	Coords_ptr->report();
-	Coords_ptr->convert(CoordType::decdeg);
-	Coords_ptr->validate();
-	
-	return object;
-}
 #if DEBUG < 2
 */
 #endif
@@ -1085,7 +1067,7 @@ DataFrame as_waypoints(DataFrame object, int fmt = 1)
 	}
 	if(!valid_ll(object))
 		stop("Invalid llcols attribute!");
-	validate(object);
+	validate_switch(object);
 	object.attr("class") = CharacterVector{"waypoints", "data.frame"};
 	return object;
 }
@@ -1155,7 +1137,7 @@ DataFrame validatewaypoints(DataFrame x, bool force = true)
 		stop("Invalid llcols attribute!");
 	if (force)
 //		Waypoints{ x }.validate();
-		validate(x);
+		validate_switch(x);
 	if (!check_valid(x))
 		warning("Invalid waypoints!");
 	return x;

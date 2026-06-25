@@ -658,9 +658,9 @@ inline waypoints_t auto waypointsmaker(DataFrame);
 /// __________________________________________________
 /// __________________________________________________
 /// Switches for Waypoints<DVecType>
-const array<vector<double>, 2> convert(const DataFrame, CoordType);
-const array<vector<string>, 2> format(const DataFrame, CoordType);
-const array<const vector<bool>, 2> validate(const DataFrame);
+const array<vector<double>, 2> convert_switch(const DataFrame, CoordType);
+const array<vector<string>, 2> format_switch(const DataFrame, CoordType);
+const array<const vector<bool>, 2> validate_switch(const DataFrame);
 
 
 /// __________________________________________________
