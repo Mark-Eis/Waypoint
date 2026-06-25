@@ -979,7 +979,7 @@ NumericVector as_coords(NumericVector object, int fmt = 1)
 #endif
 	object.attr("fmt") = fmt;
 	if (!check_valid(object, true))
-		warning("Creating invalid coords!\n [Use review() to show invalid elements]");
+		warning("[Use review() to show invalid elements]");
 	object.attr("class") = "coords";
 	return object;
 }
@@ -1121,7 +1121,9 @@ DataFrame as_waypoints(DataFrame object, int fmt = 1)
 	}
 	if(!valid_ll(object))
 		stop("Invalid llcols attribute!");
-	validate(object);
+//	validate(object);
+	if (!check_valid(object, true))
+		warning("[Use review() to show invalid elements]");
 	object.attr("class") = CharacterVector{"waypoints", "data.frame"};
 	return object;
 }
