@@ -1030,10 +1030,13 @@ NumericVector validatecoords(const NumericVector x, const bool force = true)
 		exportstr, x[0], address(x), address(x[0]), demangle(typeid(x)));
 #endif
 	checkinherits(x, "coords"s);
+	bool warn { false };
 	if (force)	{			
-		if (!validate(x, true))
-			warning("validatecoords(const NumericVector, const bool)—validation failed");
+		if (!validate(x))
+			warn = true;
 	} else if (!check_valid(x))
+		warn = true;
+	if (warn)
 		warning("[Use review() to show invalid elements]");
 	return x;
 }
