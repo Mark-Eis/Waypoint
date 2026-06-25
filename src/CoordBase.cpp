@@ -1131,16 +1131,23 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate
 		if (!check_valid(x))
 			warning("Formatting invalid waypoints!");
 	auto svs_out { format_switch(x, fmt ? get_coordtype(fmt) : get_coordtype(x)) };
-	auto& sv_lat { svs_out[0] };
+	auto& sv_out { svs_out[0] };	// AKA "sv_lat"
 	auto& sv_lon { svs_out[1] };
-    transform(sv_lat.begin(), sv_lat.end(), sv_lon.begin(), sv_lat.begin(), [](auto& latstr, auto& lonstr){ return latstr + "  " + lonstr; });
-
+    transform(sv_out.begin(), sv_out.end(), sv_lon.begin(), sv_out.begin(), [](auto& latstr, auto& lonstr){ return latstr + "  " + lonstr; });
+#if DEBUG > 0
+	fmt::print("{}@Iformatwaypoints(DataFrame, bool, bool, int); sv_out[0] {}, &sv_out {}, &sv_out[0] {}, typeid: {}\n",
+		exportstr, sv_out[0], address(sv_out), address(sv_out[0]), demangle(typeid(sv_out)));
+#endif
 	if (usenames) {
 		RObject names = getnames(x);
-		if (!prefixwithnames(sv_lat, names))
+		if (!prefixwithnames(sv_out, names))
 			stop("Invalid \"namescol\" attribute!");
 	}
-	return wrap(sv_lat);
+#if DEBUG > 0
+	fmt::print("{}@IIformatwaypoints(DataFrame, bool, bool, int); sv_out[0] {}, &sv_out {}, &sv_out[0] {}, typeid: {}\n",
+		exportstr, sv_out[0], address(sv_out), address(sv_out[0]), demangle(typeid(sv_out)));
+#endif
+	return wrap(sv_out);
 }
 
 /// __________________________________________________
