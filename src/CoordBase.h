@@ -13,7 +13,7 @@
 /// __________________________________________________
 /// Development and debugging
 
-#define DEBUG 1
+#define DEBUG 0
 
 #if DEBUG > 0
 
@@ -658,9 +658,14 @@ inline waypoints_t auto waypointsmaker(DataFrame);
 /// __________________________________________________
 /// __________________________________________________
 /// Switches for Waypoints<DVecType>
-const array<vector<double>, 2> convert_switch(const DataFrame, CoordType);
-const array<vector<string>, 2> format_switch(const DataFrame, CoordType);
-const array<const vector<bool>, 2> validate_switch(const DataFrame);
+template<class T>
+using bisvec = array<const vector<T>, 2>;
+// const array<vector<double>, 2> convert_switch(const DataFrame, CoordType);
+// const array<vector<string>, 2> format_switch(const DataFrame, CoordType);
+// const array<const vector<bool>, 2> validate_switch(const DataFrame);
+const bisvec<double> convert_switch(const DataFrame, CoordType);
+const bisvec<string> format_switch(const DataFrame, CoordType);
+const bisvec<bool> validate_switch(const DataFrame);
 
 
 /// __________________________________________________
@@ -668,8 +673,8 @@ const array<const vector<bool>, 2> validate_switch(const DataFrame);
 /// Validation
 bool check_valid(const NumericVector);
 bool check_valid(const DataFrame);
-bool revalidate(const NumericVector);
-bool revalidate(const DataFrame);
+bool revalidate(const NumericVector, bool = false);
+bool revalidate(const DataFrame, bool = false);
 bool valid_ll(const DataFrame);
 
 /// __________________________________________________

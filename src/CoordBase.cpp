@@ -634,7 +634,8 @@ inline waypoints_t auto waypointsmaker(DataFrame df)
 
 /// __________________________________________________
 /// Validate "waypoints" DataFrame 
-const array<const vector<bool>, 2> validate_switch(const DataFrame df)
+//const array<const vector<bool>, 2> validate_switch(const DataFrame df)
+const bisvec<bool> validate_switch(const DataFrame df)
 {
 #if DEBUG > 0
 	fmt::print("@validate_switch(const DataFrame); current type: {}\n", get_coordtype(df));
@@ -697,7 +698,7 @@ bool check_valid(const DataFrame df)
 
 /// __________________________________________________
 /// Revalidate "coords" NumericVector
-bool revalidate(const NumericVector nv)
+bool revalidate(const NumericVector nv, bool newbie)
 {
 #if DEBUG > 0
 	fmt::print("@revalidate(const NumericVector)\n");
@@ -705,28 +706,28 @@ bool revalidate(const NumericVector nv)
 	auto valid { validate_switch(nv) };
 	static_cast<NumericVector>(nv).attr("valid") = valid; 
 	if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; }))
-		warning("Revalidation detected invalid coords!");
-	else
+		warning("%salidation detected invalid coords!", newbie ? "V" : "Rev");
+	else if (!newbie)
 		warning("Coords revalidated!");
 	return check_valid(nv);
 }
 
 /// __________________________________________________
 /// Revalidate "waypoints" DataFrame
-bool revalidate(const DataFrame df)
+bool revalidate(const DataFrame df, bool newbie)
 {
 #if DEBUG > 0
 	fmt::print("@revalidate(const DataFrame)\n");
 #endif
-	auto valid { validate_switch(df) };
-	stop("Hell or high water!");
-/*	static_cast<DataFrame>(df).attr("valid") = valid; 
-	if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; }))
-		warning("Revalidation detected invalid Waypoints!");
-	else
+	auto valarr { validate_switch(df) };
+	static_cast<DataFrame>(df).attr("validlat") = valarr[0];
+	static_cast<DataFrame>(df).attr("validlon") = valarr[1];
+	if (!std::all_of(valarr[0].begin(), valarr[0].end(), [](auto i){ return i; }) ||
+		!std::all_of(valarr[1].begin(), valarr[1].end(), [](auto i){ return i; }))
+		warning("%salidation detected invalid Waypoints!", newbie ? "V" : "Rev");
+	else if (!newbie)
 		warning("Waypoints revalidated!");
-*/
-	return check_valid(df);
+	return true;
 }
 
 /// __________________________________________________
@@ -1067,7 +1068,7 @@ DataFrame as_waypoints(DataFrame object, int fmt = 1)
 	}
 	if(!valid_ll(object))
 		stop("Invalid llcols attribute!");
-	validate_switch(object);
+	revalidate(object, true);
 	object.attr("class") = CharacterVector{"waypoints", "data.frame"};
 	return object;
 }
@@ -1136,8 +1137,7 @@ DataFrame validatewaypoints(DataFrame x, bool force = true)
 	if(!valid_ll(x))
 		stop("Invalid llcols attribute!");
 	if (force)
-//		Waypoints{ x }.validate();
-		validate_switch(x);
+		revalidate(x, true);
 	if (!check_valid(x))
 		warning("Invalid waypoints!");
 	return x;
