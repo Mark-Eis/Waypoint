@@ -971,8 +971,8 @@ NumericVector latlon(NumericVector cd, LogicalVector value)
 		stop("value must be either length 1 or length(cd)");
 	else
 		cd.attr("latlon") = value;
-	auto valid { validate(cd) };
-	cd.attr("valid") = valid; 
+	if (!validate(cd))
+		warning("[Use review() to show invalid elements]");	
 	return cd;
 }
 
