@@ -691,69 +691,6 @@ bool check_valid(const DataFrame df, bool newbie)
 		warning("Invalid longitude!");
 	return latvalidated >> 1 && lonvalidated >> 1;
 }
-/*
-/// __________________________________________________
-/// Validate "coords" NumericVector
-bool validate(const NumericVector nv, bool revalidate)
-{
-#if DEBUG > 0
-	fmt::print("@validate(const NumericVector); revalidate: {}\n", revalidate);
-#endif
-	auto valid { validate_switch(nv) };
-	static_cast<NumericVector>(nv).attr("valid") = valid; 
-	if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; }))
-		warning("%salidation detected invalid coords!", revalidate ? "Rev" : "V");
-	else if (revalidate)
-		warning("Coords revalidated!");
-	return check_valid(nv);
-}
-
-/// __________________________________________________
-/// Validate "waypoints" DataFrame
-bool validate(const DataFrame df, bool revalidate)
-{
-#if DEBUG > 0
-	fmt::print("@validate(const DataFrame); revalidate: {}\n", revalidate);
-#endif
-	auto valarr { validate_switch(df) };
-	static_cast<DataFrame>(df).attr("validlat") = valarr[0];
-	static_cast<DataFrame>(df).attr("validlon") = valarr[1];
-	if (!std::all_of(valarr[0].begin(), valarr[0].end(), [](auto i){ return i; }) ||
-		!std::all_of(valarr[1].begin(), valarr[1].end(), [](auto i){ return i; }))
-		warning("%salidation detected invalid Waypoints!", revalidate ? "Rev" : "V");
-	else if (revalidate)
-		warning("Waypoints revalidated!");
-	return check_valid(df);
-}
-*/
-/*
-/// __________________________________________________
-/// Validate "coords" NumericVector or "waypoints" DataFrame
-bool validate(const NumVec_or_DataFrame auto t, bool revalidate)
-{
-#if DEBUG > 0
-	fmt::print("@validate(const NumVec_or_DataFrame auto); revalidate: {}, t {}\n", revalidate, demangle(typeid(t)));
-#endif
-	if constexpr (isNumericVector_v<decltype(t)>) {
-		auto valid { validate_switch(t) };
-		static_cast<NumericVector>(t).attr("valid") = valid; 
-		if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; }))
-			warning("%salidation detected italid coords!", revalidate ? "Rev" : "V");
-		else if (revalidate)
-			warning("Coords revalidated!");
-	} else if constexpr (isDataFrame_v<decltype(t)>) {
-		auto valarr { validate_switch(t) };
-		static_cast<DataFrame>(t).attr("validlat") = valarr[0];
-		static_cast<DataFrame>(t).attr("validlon") = valarr[1];
-		if (!std::all_of(valarr[0].begin(), valarr[0].end(), [](auto i){ return i; }) ||
-			!std::all_of(valarr[1].begin(), valarr[1].end(), [](auto i){ return i; }))
-			warning("%salidation detected invalid Waypoints!", revalidate ? "Rev" : "V");
-		else if (revalidate)
-			warning("Waypoints revalidated!");
-	}
-	return check_valid(t);
-}
-*/
 
 /// __________________________________________________
 /// Validate "coords" NumericVector or "waypoints" DataFrame
@@ -761,21 +698,20 @@ template<NumVec_or_DataFrame T>
 bool validate(const T t, bool revalidate)
 {
 #if DEBUG > 0
-	fmt::print("@validate(const NumVec_or_DataFrame auto); revalidate: {}, t {}\n", revalidate, demangle(typeid(t)));
+	fmt::print("@validate(const T t, bool revalidate); revalidate: {}, t {}\n", revalidate, demangle(typeid(t)));
 #endif
+	decltype(auto) valid { validate_switch(t) };
 	if constexpr (isNumericVector_v<T>) {
-		auto valid { validate_switch(t) };
 		static_cast<NumericVector>(t).attr("valid") = valid; 
 		if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; }))
 			warning("%salidation detected invalid coords!", revalidate ? "Rev" : "V");
 		else if (revalidate)
 			warning("Coords revalidated!");
 	} else if constexpr (isDataFrame_v<T>) {
-		auto valarr { validate_switch(t) };
-		static_cast<DataFrame>(t).attr("validlat") = valarr[0];
-		static_cast<DataFrame>(t).attr("validlon") = valarr[1];
-		if (!std::all_of(valarr[0].begin(), valarr[0].end(), [](auto i){ return i; }) ||
-			!std::all_of(valarr[1].begin(), valarr[1].end(), [](auto i){ return i; }))
+		static_cast<DataFrame>(t).attr("validlat") = valid[0];
+		static_cast<DataFrame>(t).attr("validlon") = valid[1];
+		if (!std::all_of(valid[0].begin(), valid[0].end(), [](auto i){ return i; }) ||
+			!std::all_of(valid[1].begin(), valid[1].end(), [](auto i){ return i; }))
 			warning("%salidation detected invalid Waypoints!", revalidate ? "Rev" : "V");
 		else if (revalidate)
 			warning("Waypoints revalidated!");
