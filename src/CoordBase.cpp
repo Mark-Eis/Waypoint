@@ -699,22 +699,25 @@ bool validate(const T t, bool revalidate)
 #if DEBUG > 0
 	fmt::print("@validate(const T t, bool revalidate); revalidate: {}, t {}\n", revalidate, demangle(typeid(t)));
 #endif
+	bool iscoords {false};
+	bool warn {false};
 	decltype(auto) valid { validate_switch(t) };
 	if constexpr (isNumericVector_v<T>) {
-		static_cast<NumericVector>(t).attr("valid") = valid; 
+		iscoords = true;
 		if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; }))
-			warning("%salidation detected invalid coords!", revalidate ? "Rev" : "V");
-		else if (revalidate)
-			warning("Coords revalidated!");
+			warn = true;
+		static_cast<NumericVector>(t).attr("valid") = valid; 
 	} else if constexpr (isDataFrame_v<T>) {
-		static_cast<DataFrame>(t).attr("validlat") = valid[0];
-		static_cast<DataFrame>(t).attr("validlon") = valid[1];
 		if (!std::all_of(valid[0].begin(), valid[0].end(), [](auto i){ return i; }) ||
 			!std::all_of(valid[1].begin(), valid[1].end(), [](auto i){ return i; }))
-			warning("%salidation detected invalid Waypoints!", revalidate ? "Rev" : "V");
-		else if (revalidate)
-			warning("Waypoints revalidated!");
+			warn = true;
+		static_cast<DataFrame>(t).attr("validlat") = valid[0];
+		static_cast<DataFrame>(t).attr("validlon") = valid[1];
 	}
+	if (warn)
+		warning("%salidation detected invalid %s!", revalidate ? "Rev" : "V", iscoords ? "coords" : "waypoints");
+	else if (revalidate)
+		warning("%s revalidated!", iscoords ? "Coords" : "Waypoints");
 	return check_valid(t);
 }
 
