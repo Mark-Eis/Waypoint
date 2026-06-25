@@ -690,7 +690,7 @@ bool check_valid(const DataFrame df)
 		warning("Invalid latitude!");
 	if (!(lonvalidated >> 1))
 		warning("Invalid longitude!");
-	return latvalidated >> 1 || lonvalidated >> 1;
+	return latvalidated >> 1 && lonvalidated >> 1;
 }
 
 /// __________________________________________________
