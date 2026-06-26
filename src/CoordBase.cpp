@@ -635,6 +635,30 @@ inline waypoints_t auto waypointsmaker(DataFrame df)
 }
 
 /// __________________________________________________
+/// Convert "waypoints" DataFrame 
+const bisvec<double> convert_switch(const DataFrame df, CoordType newtype)
+{
+#if DEBUG > 0
+	fmt::print("@convert_switch(const DataFrame, CoordType); current type: {}, new type: {}\n", get_coordtype(df), newtype);
+#endif
+	using enum CoordType;
+	switch (get_coordtype(df))
+	{
+		case decdeg:
+			return waypointsmaker<DecDegVecDouble>(df).convert(newtype);
+
+		case degmin:
+			return waypointsmaker<DegMinVecDouble>(df).convert(newtype);
+
+		case degminsec:
+			return waypointsmaker<DegMinSecVecDouble>(df).convert(newtype);
+
+		default:
+			stop("convert_switch(const DataFrame) const my bad");
+	}
+}
+
+/// __________________________________________________
 /// Format "waypoints" DataFrame 
 const bisvec<string> format_switch(const DataFrame df, CoordType ct_required)
 {
