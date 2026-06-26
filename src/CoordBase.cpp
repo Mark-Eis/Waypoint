@@ -635,30 +635,6 @@ inline waypoints_t auto waypointsmaker(DataFrame df)
 }
 
 /// __________________________________________________
-/// Validate "waypoints" DataFrame 
-const bisconstvec <bool> validate_switch(const DataFrame df)
-{
-#if DEBUG > 0
-	fmt::print("@validate_switch(const DataFrame); current type: {}\n", get_coordtype(df));
-#endif
-	using enum CoordType;
-	switch (get_coordtype(df))
-	{
-		case decdeg:
-			return waypointsmaker<DecDegVecDouble>(df).validate();
-
-		case degmin:
-			return waypointsmaker<DegMinVecDouble>(df).validate();
-
-		case degminsec:
-			return waypointsmaker<DegMinSecVecDouble>(df).validate();
-
-		default:
-			stop("validate_switch(const DataFrame) const my bad");
-	}
-}
-
-/// __________________________________________________
 /// Format "waypoints" DataFrame 
 const bisvec<string> format_switch(const DataFrame df, CoordType ct_required)
 {
@@ -679,6 +655,30 @@ const bisvec<string> format_switch(const DataFrame df, CoordType ct_required)
 
 		default:
 			stop("format_switch(const DataFrame) const my bad");
+	}
+}
+
+/// __________________________________________________
+/// Validate "waypoints" DataFrame 
+const bisconstvec <bool> validate_switch(const DataFrame df)
+{
+#if DEBUG > 0
+	fmt::print("@validate_switch(const DataFrame); current type: {}\n", get_coordtype(df));
+#endif
+	using enum CoordType;
+	switch (get_coordtype(df))
+	{
+		case decdeg:
+			return waypointsmaker<DecDegVecDouble>(df).validate();
+
+		case degmin:
+			return waypointsmaker<DegMinVecDouble>(df).validate();
+
+		case degminsec:
+			return waypointsmaker<DegMinSecVecDouble>(df).validate();
+
+		default:
+			stop("validate_switch(const DataFrame) const my bad");
 	}
 }
 
