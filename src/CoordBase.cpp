@@ -379,11 +379,11 @@ vector<string> Coords<T>::format0() const
 /// __________________________________________________
 /// Validate Coords<T>
 template<DVecType T>
-const vector<bool> Coords<T>::validate0() const
+const vector<bool> Coords<T>::validate() const
 {
 #if DEBUG > 0
-	fmt::print("@Coords<T>::validate0(); latlon: {}\n", fmt::join(latlon, ", "));
-	fmt::print("@ICoords<T>::validate0(); {} dv[0] {}, &dv {}, &dv[0] {}, typeid: {}\n",
+	fmt::print("@Coords<T>::validate(); latlon: {}\n", fmt::join(latlon, ", "));
+	fmt::print("@ICoords<T>::validate(); {} dv[0] {}, &dv {}, &dv[0] {}, typeid: {}\n",
 		padstr, dv[0], address(dv), address(dv[0]), demangle(typeid(dv)));
 #endif
 	FamousFive<T> ff {};
@@ -402,7 +402,7 @@ const vector<bool> Coords<T>::validate0() const
 		valid.assign({true});
 
 #if DEBUG > 0
-	fmt::print("@IICoords<T>::validate0(); {}, &valid {}, typeid: {}, \n\t{}\n",
+	fmt::print("@IICoords<T>::validate(); {} &valid {}, typeid: {}, \n\t{}\n",
 		padstr, address(valid), demangle(typeid(valid)), fmt::join(valid, ", "));
 #endif
 	return valid;
@@ -457,7 +457,7 @@ vector<string> Coords<T>::format(CoordType required_type) const
 			stop("Coords<T>::format(CoordType) const my bad");
 	}
 }
-
+/*
 /// __________________________________________________
 /// Validation call entry point -- public
 template<DVecType T>
@@ -468,7 +468,7 @@ const vector<bool> Coords<T>::validate() const							//	¡¡¡—— NB return t
 #endif
 	return validate0();
 }
-
+*/
 
 /// __________________________________________________
 /// Instantiate Coords<T> object
@@ -740,7 +740,7 @@ bool validate(const NumVec_or_DataFrame auto t, bool revalidate)
 	auto valid { validate_switch(t) };
 	if constexpr (isNumericVector_v<t_type>) {
 #if DEBUG > 0
-		fmt::print("@IIvalidate(const NumVec_or_DataFrame auto, bool); {}, &valid {}, typeid: {}, \n\t{}\n",
+		fmt::print("@IIvalidate(const NumVec_or_DataFrame auto, bool); {} &valid {}, typeid: {}, \n\t{}\n",
 			padstr, address(valid), demangle(typeid(valid)), fmt::join(valid, ", "));
 #endif
 		iscoords = true;

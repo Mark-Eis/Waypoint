@@ -480,7 +480,7 @@ class Coords {
 		vector<double> convert0() const;
 		template<SVecType U>
 		vector<string> format0() const;
-		const vector<bool> validate0() const;
+//		const vector<bool> validate0() const;
 	public:
 		explicit Coords(T, const vector<bool>);
 		Coords(const Coords&) = delete;								// Disallow copying
