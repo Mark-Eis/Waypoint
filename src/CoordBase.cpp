@@ -380,7 +380,7 @@ vector<string> Coordlet<T>::format() const
 }
 
 /// __________________________________________________
-/// Validate Coordlet<T>::dv
+/// Validate Coordlet<T>
 template<DVecType T>
 const vector<bool> Coordlet<T>::validate() const
 {
@@ -404,6 +404,10 @@ const vector<bool> Coordlet<T>::validate() const
 	if (all_of(valid.begin(), valid.end(), [](auto v) { return v;}))
 		valid.assign({true});
 
+#if DEBUG > 0
+	fmt::print("@IICoordlet<T>::validate(); {}, &valid {}, typeid: {}, \n\t{}\n",
+		padstr, address(valid), demangle(typeid(valid)), fmt::join(valid, ", "));
+#endif
 	return valid;
 }
 
@@ -720,18 +724,26 @@ bool check_valid(const DataFrame df, bool newbie)
 bool validate(const NumVec_or_DataFrame auto t, bool revalidate)
 {
 #if DEBUG > 0
-	fmt::print("@validate(const NumVec_or_DataFrame auto, bool revalidate); revalidate: {}, t {}\n", revalidate, demangle(typeid(t)));
+	fmt::print("@validate(const NumVec_or_DataFrame auto, bool); revalidate: {}, t {}\n", revalidate, demangle(typeid(t)));
 #endif
 	using t_type = std::remove_const_t<decltype(t)>;
 	bool iscoords {false};
 	bool warn {false};
-	decltype(auto) valid { validate_switch(t) };
+	auto valid { validate_switch(t) };
 	if constexpr (isNumericVector_v<t_type>) {
+#if DEBUG > 0
+		fmt::print("@IIvalidate(const NumVec_or_DataFrame auto, bool); {}, &valid {}, typeid: {}, \n\t{}\n",
+			padstr, address(valid), demangle(typeid(valid)), fmt::join(valid, ", "));
+#endif
 		iscoords = true;
 		if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; }))
 			warn = true;
 		static_cast<NumericVector>(t).attr("valid") = valid; 
 	} else if constexpr (isDataFrame_v<t_type>) {
+#if DEBUG > 0
+		fmt::print("@IIIvalidate(const NumVec_or_DataFrame auto, bool); &valid {}, &valid[0] {}, &valid[1]{}, typeid: {}, \n\t{}, \n\t{}\n",
+			address(valid), address(valid[0]), address(valid[1]), demangle(typeid(valid)), fmt::join(valid[0], ", "), fmt::join(valid[1], ", "));
+#endif
 		if (!std::all_of(valid[0].begin(), valid[0].end(), [](auto i){ return i; }) ||
 			!std::all_of(valid[1].begin(), valid[1].end(), [](auto i){ return i; }))
 			warn = true;
