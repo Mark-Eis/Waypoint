@@ -488,6 +488,38 @@ vector<string> Coords<T>::format0() const
 }
 
 /// __________________________________________________
+/// Validate Coords<T>
+template<DVecType T>
+const vector<bool> Coords<T>::validate0() const
+{
+#if DEBUG > 0
+	fmt::print("@Coords<T>::validate0(); latlon: {}\n", fmt::join(latlon, ", "));
+	fmt::print("@ICoords<T>::validate0(); {} dv[0] {}, &dv {}, &dv[0] {}, typeid: {}\n",
+		padstr, dv[0], address(dv), address(dv[0]), demangle(typeid(dv)));
+#endif
+	FamousFive<T> ff {};
+	vector<bool>::const_iterator ll_it{ latlon.begin() };
+	auto ll_size { latlon.size() };
+	auto valid = vector<bool>{};
+	valid.assign(dv.size(), {false});
+
+	transform(dv.begin(), dv.end(), valid.begin(), [&ff, &ll_it, &ll_size](auto n){
+		return !((fabs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
+				(fabs(ff.get_decmin(n)) >= 60) ||
+				(fabs(ff.get_sec(n)) >= 60));
+	});
+
+	if (all_of(valid.begin(), valid.end(), [](auto v) { return v;}))
+		valid.assign({true});
+
+#if DEBUG > 0
+	fmt::print("@IICoords<T>::validate0(); {}, &valid {}, typeid: {}, \n\t{}\n",
+		padstr, address(valid), demangle(typeid(valid)), fmt::join(valid, ", "));
+#endif
+	return valid;
+}
+
+/// __________________________________________________
 /// convert call entry point -- public ——
 template<DVecType T>
 vector<double> Coords<T>::convert(CoordType required_type) const
@@ -545,7 +577,7 @@ const vector<bool> Coords<T>::validate() const							//	¡¡¡—— NB return t
 #if DEBUG > 0
 	fmt::print("@Coords<T>::validate()\n");
 #endif
-	return cdlt.validate();
+	return validate0();
 }
 
 
