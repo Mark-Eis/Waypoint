@@ -1146,8 +1146,31 @@ DataFrame convertwaypoints(DataFrame x, int fmt)
 		auto vds_out { convert_switch(x, newtype) };
 #if DEBUG > 0
 		fmt::print("{}@Iconvertwaypoints(DataFrame, int);  vds_out[0][0] {}, &vds_out[0] {}, &vds_out[0][0] {}, typeid: {}\n",
-			exportstr, vds_out[0][0], address(vds_out[0]), address(vds_out[0][0]), demangle(typeid(vds_out)));
+			exportstr, vds_out[0][0], address(vds_out[0]), address(vds_out[0][0]), demangle(typeid(vds_out[0])));
+		fmt::print("{}@IIconvertwaypoints(DataFrame, int);  vds_out[1][0] {}, &vds_out[1] {}, &vds_out[1][0] {}, typeid: {}\n",
+			exportstr, vds_out[1][0], address(vds_out[1]), address(vds_out[1][0]), demangle(typeid(vds_out[1])));
 #endif
+		auto llcols { get_vec_attr<decltype(x), int>(x, "llcols") };
+		auto namescol { get_vec_attr<decltype(x), int>(x, "namescol") };
+		auto names { get_vec_attr<decltype(x), string>(x, "names") };
+		auto row_names { get_vec_attr<decltype(x), int>(x, "row.names") };
+		auto validlat { get_vec_attr<decltype(x), bool>(x, "validlat") };
+		auto validlon { get_vec_attr<decltype(x), bool>(x, "validlon") };
+
+		auto llcol_it { x.erase(llcols[0] - 1) };
+		x.insert(llcol_it, vds_out[0]);
+
+		llcol_it = x.erase(llcols[1] - 1);
+		x.insert(llcol_it, vds_out[1]);
+
+		x.attr("names") = names;
+		x.attr("class") = vector{"waypoints", "data.frame"};
+		x.attr("row.names") = row_names;
+		x.attr("fmt") = fmt;
+		x.attr("namescol") = namescol;
+		x.attr("llcols") = llcols;
+		x.attr("validlat") = validlat;
+		x.attr("validlon") = validlon;
 	} else
 		Rcout << "\t—— fmt out == fmt in! ——\n\n";
 	return x;
