@@ -1125,7 +1125,7 @@ DataFrame as_waypoints(DataFrame object, int fmt = 1)
 	return object;
 }
 
-/*
+
 /// __________________________________________________
 /// Convert waypoints type - S3 method convert.waypoints()
 //' @rdname convert
@@ -1133,22 +1133,26 @@ DataFrame as_waypoints(DataFrame object, int fmt = 1)
 DataFrame convertwaypoints(DataFrame x, int fmt)
 {
 	checkinherits(x, "waypoints"s);
-	CoordType type = get_coordtype(x);
+	CoordType ct_current = get_coordtype(x);
 	CoordType newtype = get_coordtype(fmt);
 #if DEBUG > 0
-	fmt::print("{}@convertwaypoints(DataFrame, int); from {} to {}\n", exportstr, type, newtype);
+	fmt::print("{}@convertwaypoints(DataFrame, int); from {} to {}\n", exportstr, ct_current, newtype);
 #endif
 	if (!check_valid(x))
-		stop("Invalid waypoints!");
+		stop("Invalid waypoints! Conversion aborted.\n [Use review() to show invalid elements]");
 	if(!valid_ll(x))
 		stop("Invalid llcols attribute!");
-	if (newtype != type)
-		Waypoints{ x }.convert(newtype);
-	else
+	if (newtype != ct_current) {
+		auto vds_out { convert_switch(x, newtype) };
+#if DEBUG > 0
+		fmt::print("{}@Iconvertwaypoints(DataFrame, int);  vds_out[0][0] {}, &vds_out[0] {}, &vds_out[0][0] {}, typeid: {}\n",
+			exportstr, vds_out[0][0], address(vds_out[0]), address(vds_out[0][0]), demangle(typeid(vds_out)));
+#endif
+	} else
 		Rcout << "\t—— fmt out == fmt in! ——\n\n";
 	return x;
 }
-*/
+
 
 /// __________________________________________________
 /// Format waypoints - S3 method format.waypoints()
