@@ -302,125 +302,14 @@ inline string cardi_b(bool negative)
 	return negative ? " (S/W)" : " (N/E)";
 }
 
-/// __________________________________________________
-/// __________________________________________________
-/// Coordlet class
-
-/// __________________________________________________
-/// Constructor of Coordlet
-template<DVecType T>
-Coordlet<T>::Coordlet(T&& _dv, const vector<bool> _latlon) :
-	dv { static_cast<T&&>(_dv) },
-	latlon{ _latlon }
-{
-#if DEBUG > 0
-	_ctrsgn(typeid(*this)); fmt::print("\t(T&&, const vector<bool>); &_dv[0] {}, dv[0] {}, &dv {}, &dv[0] {}, typeid: {}\n",
-		address(_dv[0]), dv[0], address(dv), address(dv[0]), demangle(typeid(dv)));
-#endif
-}
-
-/// __________________________________________________
-/// Convert to another CoordType
-template<DVecType T> template<DVecType U>
-vector<double> Coordlet<T>::convert() const
-{
-#if DEBUG > 0
-	fmt::print("@Coordlet<T>::convert<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
-#endif
-	U dv_out{ std::move(vector<double>(dv.size())) };
-	transform(dv.begin(), dv.end(), dv_out.begin(), Convertidor<T, U>());
-#if DEBUG > 0
-	fmt::print("@ICoordlet<T>::convert<U>() const; {} dv_out[0] {}, &dv_out {}, &dv_out[0] {}, typeid: {}\n",
-		padstr, dv_out[0], address(dv_out), address(dv_out[0]), demangle(typeid(dv_out)));
-#endif
-	return dv_out;
-}
-
-/// __________________________________________________
-/// Format dv as SVecType for printing
-template<DVecType T> template<SVecType U>
-vector<string> Coordlet<T>::format() const
-{
-#if DEBUG > 0
-	fmt::print("@Coordlet<T>::format<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
-#endif
-	U sv_out{ std::move(vector<string>(dv.size())) };
-	vector<bool>::const_iterator ll_it { latlon.begin() };
-	const auto ll_size { latlon.size() };
-
-	transform(dv.begin(), dv.end(), sv_out.begin(), Formateador<T, U>());	
-
-	if constexpr (isDecDegVecString_v<U>) {
-		const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it++ ? " lat" : " lon"); };
-		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it ? " lat" : " lon"); };
-		if (ll_size > 1)
-			transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda1);
-		else
-			if (ll_size == 1)	// uniform coords
-				transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda2);
-
-	} else if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>) {
-		const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it++); };
-		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it); };
-		const auto lambda3 = [](auto& outstr, auto n){ return outstr + cardi_b(n < 0); };
-
-		if (ll_size > 1)
-			transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda1);
-		else
-			if (ll_size == 1)	// uniform coords
-				transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda2);
-			else				// no latlon info
-				transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda3);
-	}
-#if DEBUG > 0
-	fmt::print("@IICoordlet<T>::format<U>() const; {} sv_out[0] {}, &sv_out {}, &sv_out[0] {}, typeid: {}\n",
-		padstr, sv_out[0], address(sv_out), address(sv_out[0]), demangle(typeid(sv_out)));
-#endif
-	return sv_out;
-}
-
-/// __________________________________________________
-/// Validate Coordlet<T>
-template<DVecType T>
-const vector<bool> Coordlet<T>::validate() const
-{
-#if DEBUG > 0
-	fmt::print("@Coordlet<T>::validate(); latlon: {}\n", fmt::join(latlon, ", "));
-	fmt::print("@ICoordlet<T>::validate(); {} dv[0] {}, &dv {}, &dv[0] {}, typeid: {}\n",
-		padstr, dv[0], address(dv), address(dv[0]), demangle(typeid(dv)));
-#endif
-	FamousFive<T> ff {};
-	vector<bool>::const_iterator ll_it{ latlon.begin() };
-	auto ll_size { latlon.size() };
-	auto valid = vector<bool>{};
-	valid.assign(dv.size(), {false});
-
-	transform(dv.begin(), dv.end(), valid.begin(), [&ff, &ll_it, &ll_size](auto n){
-		return !((fabs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
-				(fabs(ff.get_decmin(n)) >= 60) ||
-				(fabs(ff.get_sec(n)) >= 60));
-	});
-
-	if (all_of(valid.begin(), valid.end(), [](auto v) { return v;}))
-		valid.assign({true});
-
-#if DEBUG > 0
-	fmt::print("@IICoordlet<T>::validate(); {}, &valid {}, typeid: {}, \n\t{}\n",
-		padstr, address(valid), demangle(typeid(valid)), fmt::join(valid, ", "));
-#endif
-	return valid;
-}
-
 
 /// __________________________________________________
 /// __________________________________________________
 /// Coords class
 template<DVecType T>
 Coords<T>::Coords(T t, const vector<bool> latlon) :
-//	dv { std::move(t) },							// ¡¡¡—— will need to be moved once Coordlet deprecated ——!!!
-	dv { (t) },									// ¡¡¡—— just copy for now ——!!!
-	latlon { latlon },
-	cdlt { Coordlet<T>{ std::move(t), latlon }}
+	dv { std::move(t) },							// ¡¡¡—— will need to be moved once Coordlet deprecated ——!!!
+	latlon { latlon } //,
 {
 #if DEBUG > 0
 	_ctrsgn(typeid(*this)); fmt::print("\t(T, const vector<bool>)\n");

@@ -13,7 +13,7 @@
 /// __________________________________________________
 /// Development and debugging
 
-#define DEBUG 1
+#define DEBUG 0
 
 #if DEBUG > 0
 
@@ -98,8 +98,7 @@ concept NumVec_or_DataFrame =
 /// VecTypeBase
 template<typename T>
 struct VecTypeBase : public vector<T> {
-//	VecTypeBase(const VecTypeBase&) = delete;											// copy constructor
-	VecTypeBase(const VecTypeBase&) = default;											// copy constructor	¡¡¡—— should be delete ——!!!
+	VecTypeBase(const VecTypeBase&) = delete;											// copy constructor
 	VecTypeBase(const vector<T>& vt) : vector<T>{ vt }									// copy constructor
 	{
 #if DEBUG > 0
@@ -472,39 +471,11 @@ struct Formateador<T, DegMinSecVecString>{
 
 /// __________________________________________________
 /// __________________________________________________
-/// Coordlet class
-template<DVecType T>
-class Coordlet {
-		T dv;
-		const vector<bool> latlon;
-
-	public:
-		explicit Coordlet(T&&, const vector<bool>);
-		Coordlet(const Coordlet&) = delete;							// Disallow copying
-		Coordlet& operator=(const Coordlet&) = delete;				//  ——— ditto ———
-		Coordlet(Coordlet&&) = delete;								// Disallow transfer ownership
-		Coordlet& operator=(Coordlet&&) = delete;					// Disallow moving
-#if DEBUG == 0
-		virtual ~Coordlet() = default;
-#elif DEBUG > 0
-		virtual ~Coordlet() { _ctrsgn(typeid(*this), false); }
-#endif
-		template<DVecType U>
-		vector<double> convert() const;
-		template<SVecType U>
-		vector<string> format() const;
-		const vector<bool> validate() const;
-};
-
-
-/// __________________________________________________
-/// __________________________________________________
 /// Coords class
 template<DVecType T>
 class Coords {
 		T dv;
 		const vector<bool> latlon;
-		const Coordlet<T> cdlt;
 		template<DVecType U>
 		vector<double> convert0() const;
 		template<SVecType U>
