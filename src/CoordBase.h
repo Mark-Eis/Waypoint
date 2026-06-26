@@ -98,7 +98,8 @@ concept NumVec_or_DataFrame =
 /// VecTypeBase
 template<typename T>
 struct VecTypeBase : public vector<T> {
-	VecTypeBase(const VecTypeBase&) = delete;											// copy constructor
+//	VecTypeBase(const VecTypeBase&) = delete;											// copy constructor
+	VecTypeBase(const VecTypeBase&) = default;											// copy constructor	¡¡¡—— should be delete ——!!!
 	VecTypeBase(const vector<T>& vt) : vector<T>{ vt }									// copy constructor
 	{
 #if DEBUG > 0
@@ -501,7 +502,13 @@ class Coordlet {
 /// Coords class
 template<DVecType T>
 class Coords {
+		T dv;
+		const vector<bool> latlon;
 		const Coordlet<T> cdlt;
+		template<DVecType U>
+		vector<double> convert0() const;
+		template<SVecType U>
+		vector<string> format0() const;
 	public:
 		explicit Coords(T, const vector<bool>);
 		Coords(const Coords&) = delete;								// Disallow copying

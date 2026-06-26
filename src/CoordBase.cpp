@@ -417,11 +417,74 @@ const vector<bool> Coordlet<T>::validate() const
 /// Coords class
 template<DVecType T>
 Coords<T>::Coords(T t, const vector<bool> latlon) :
+//	dv { std::move(t) },							// ¡¡¡—— will need to be moved once Coordlet deprecated ——!!!
+	dv { (t) },									// ¡¡¡—— just copy for now ——!!!
+	latlon { latlon },
 	cdlt { Coordlet<T>{ std::move(t), latlon }}
 {
 #if DEBUG > 0
 	_ctrsgn(typeid(*this)); fmt::print("\t(T, const vector<bool>)\n");
 #endif
+}
+
+/// __________________________________________________
+/// Convert to another CoordType
+template<DVecType T> template<DVecType U>
+vector<double> Coords<T>::convert0() const
+{
+#if DEBUG > 0
+	fmt::print("@Coords<T>::convert0<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
+#endif
+	U dv_out{ std::move(vector<double>(dv.size())) };
+	transform(dv.begin(), dv.end(), dv_out.begin(), Convertidor<T, U>());
+#if DEBUG > 0
+	fmt::print("@ICoords<T>::convert0<U>() const; {} dv_out[0] {}, &dv_out {}, &dv_out[0] {}, typeid: {}\n",
+		padstr, dv_out[0], address(dv_out), address(dv_out[0]), demangle(typeid(dv_out)));
+#endif
+	return dv_out;
+}
+
+/// __________________________________________________
+/// format0 dv as SVecType for printing
+template<DVecType T> template<SVecType U>
+vector<string> Coords<T>::format0() const
+{
+#if DEBUG > 0
+	fmt::print("@Coords<T>::format0<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
+#endif
+	U sv_out{ std::move(vector<string>(dv.size())) };
+	vector<bool>::const_iterator ll_it { latlon.begin() };
+	const auto ll_size { latlon.size() };
+
+	transform(dv.begin(), dv.end(), sv_out.begin(), Formateador<T, U>());	
+
+	if constexpr (isDecDegVecString_v<U>) {
+		const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it++ ? " lat" : " lon"); };
+		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it ? " lat" : " lon"); };
+		if (ll_size > 1)
+			transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda1);
+		else
+			if (ll_size == 1)	// uniform coords
+				transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda2);
+
+	} else if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>) {
+		const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it++); };
+		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it); };
+		const auto lambda3 = [](auto& outstr, auto n){ return outstr + cardi_b(n < 0); };
+
+		if (ll_size > 1)
+			transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda1);
+		else
+			if (ll_size == 1)	// uniform coords
+				transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda2);
+			else				// no latlon info
+				transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda3);
+	}
+#if DEBUG > 0
+	fmt::print("@IICoords<T>::format0<U>() const; {} sv_out[0] {}, &sv_out {}, &sv_out[0] {}, typeid: {}\n",
+		padstr, sv_out[0], address(sv_out), address(sv_out[0]), demangle(typeid(sv_out)));
+#endif
+	return sv_out;
 }
 
 /// __________________________________________________
@@ -436,13 +499,13 @@ vector<double> Coords<T>::convert(CoordType required_type) const
 	switch (required_type)
 	{
 		case decdeg:
-			return cdlt.template convert<DecDegVecDouble>();
+			return convert0<DecDegVecDouble>();
 
 		case degmin:
-			return cdlt.template convert<DegMinVecDouble>();
+			return convert0<DegMinVecDouble>();
 
 		case degminsec:
-			return cdlt.template convert<DegMinSecVecDouble>();
+			return convert0<DegMinSecVecDouble>();
 
 		default:
 			stop("Coords<T>::convert(CoordType) const my bad");
@@ -461,13 +524,13 @@ vector<string> Coords<T>::format(CoordType required_type) const
 	switch (required_type)
 	{
 		case decdeg:
-			return cdlt.template format<DecDegVecString>();
+			return format0<DecDegVecString>();
 
 		case degmin:
-			return cdlt.template format<DegMinVecString>();
+			return format0<DegMinVecString>();
 
 		case degminsec:
-			return cdlt.template format<DegMinSecVecString>();
+			return format0<DegMinSecVecString>();
 
 		default:
 			stop("Coords<T>::format(CoordType) const my bad");
