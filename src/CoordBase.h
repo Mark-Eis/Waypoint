@@ -510,45 +510,14 @@ using CoordsDegMin = Coords<DegMinVecDouble>;
 using CoordsDegMinSec = Coords<DegMinSecVecDouble>;
 
 /// __________________________________________________
-/// Type Traits
-
-/// coordsdecdeg
-template <typename t>
-struct is_coordsdecdeg : public std::false_type {};
-
-template <>
-struct is_coordsdecdeg<CoordsDecDeg> : public std::true_type {};
-
-template<typename t>
-constexpr bool is_coordsdecdeg_v = is_coordsdecdeg<t>::value;
-
-/// coordsdegmin
-template <typename t>
-struct is_coordsdegmin : public std::false_type {};
-
-template <>
-struct is_coordsdegmin<CoordsDegMin> : public std::true_type {};
-
-template<typename t>
-constexpr bool is_coordsdegmin_v = is_coordsdegmin<t>::value;
-
-/// coordsdegminsec
-template <typename t>
-struct is_coordsdegminsec : public std::false_type {};
-
-template <>
-struct is_coordsdegminsec<CoordsDegMinSec> : public std::true_type {};
-
-template<typename t>
-constexpr bool is_coordsdegminsec_v = is_coordsdegminsec<t>::value;
-
-/// __________________________________________________
 /// Concept —— coords_t
-template <typename T>
-concept coords_t = 
-	is_coordsdecdeg_v<T> ||
-	is_coordsdegmin_v<T> ||
-	is_coordsdegminsec_v<T>;
+template<typename T>
+concept coords_t =
+    requires (T t, CoordType ct) {
+        { t.convert(ct) } -> std::same_as<vector<double>>;
+        { t.format(ct) }  -> std::same_as<vector<string>>;
+        { t.validate() } ;
+    };
 
 /// __________________________________________________
 /// Instantiate Coords<DVecType> object
