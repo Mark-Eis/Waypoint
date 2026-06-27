@@ -324,7 +324,7 @@ vector<double> Coords<T>::convert0() const
 #if DEBUG > 0
 	fmt::print("@Coords<T>::convert0<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
 #endif
-	U dv_out{ std::move(vector<double>(dv.size())) };
+	U dv_out(dv.size());
 	transform(dv.begin(), dv.end(), dv_out.begin(), Convertidor<T, U>());
 #if DEBUG > 0
 	fmt::print("@ICoords<T>::convert0<U>() const; {} dv_out[0] {}, &dv_out {}, &dv_out[0] {}, typeid: {}\n",
@@ -341,7 +341,7 @@ vector<string> Coords<T>::format0() const
 #if DEBUG > 0
 	fmt::print("@Coords<T>::format0<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
 #endif
-	U sv_out{ std::move(vector<string>(dv.size())) };
+	U sv_out(dv.size());
 	vector<bool>::const_iterator ll_it { latlon.begin() };
 	const auto ll_size { latlon.size() };
 

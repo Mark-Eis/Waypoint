@@ -98,6 +98,12 @@ concept NumVec_or_DataFrame =
 /// VecTypeBase
 template<typename T>
 struct VecTypeBase : public vector<T> {
+	explicit VecTypeBase( vector<T>::size_type count ) : vector<T>(count)				// ≈ "default"
+	{
+#if DEBUG > 0
+		_ctrsgn(typeid(*this)); fmt::print("\t(size_t)\n"); 
+#endif
+	}
 	VecTypeBase(const VecTypeBase&) = delete;											// copy constructor
 	VecTypeBase(const vector<T>& vt) : vector<T>{ vt }									// copy constructor
 	{
