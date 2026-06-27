@@ -484,9 +484,9 @@ class Coords {
 		const vector<bool> latlon;
 
 		template<DVecType U>
-		vector<double> convert0() const;
+		inline vector<double> convert0() const;
 		template<SVecType U>
-		vector<string> format0() const;
+		inline vector<string> format0() const;
 	public:
 		explicit Coords(T, const vector<bool>);
 		Coords(const Coords&) = delete;								// Disallow copying

@@ -319,7 +319,7 @@ Coords<T>::Coords(T t, const vector<bool> latlon) :
 /// __________________________________________________
 /// Convert dv to another DVecType object —— private
 template<DVecType T> template<DVecType U>
-vector<double> Coords<T>::convert0() const
+inline vector<double> Coords<T>::convert0() const
 {
 #if DEBUG > 0
 	fmt::print("@Coords<T>::convert0<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
@@ -336,7 +336,7 @@ vector<double> Coords<T>::convert0() const
 /// __________________________________________________
 /// Format dv as an SVecType object —— private
 template<DVecType T> template<SVecType U>
-vector<string> Coords<T>::format0() const
+inline vector<string> Coords<T>::format0() const
 {
 #if DEBUG > 0
 	fmt::print("@Coords<T>::format0<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
@@ -379,13 +379,13 @@ vector<string> Coords<T>::format0() const
 /// __________________________________________________
 /// convert call entry point —— public
 template<DVecType T>
-vector<double> Coords<T>::convert(CoordType required_type) const
+vector<double> Coords<T>::convert(CoordType newtype) const
 {
 #if DEBUG > 0
-	fmt::print("@Coords<T>::convert(CoordType) const; T: {}, required type: {}\n", demangle(typeid(T)), required_type);
+	fmt::print("@Coords<T>::convert(CoordType) const; T: {}, new type: {}\n", demangle(typeid(T)), newtype);
 #endif
 	using enum CoordType;
-	switch (required_type)
+	switch (newtype)
 	{
 		case decdeg:
 			return convert0<DecDegVecDouble>();
