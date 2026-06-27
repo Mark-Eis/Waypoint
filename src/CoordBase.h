@@ -303,6 +303,11 @@ concept SVecType =
 	isDegMinVecString_v<T> ||
 	isDegMinSecVecString_v<T>;
 
+/// __________________________________________________
+/// Concept —— vectype
+template <typename T>
+concept vectype = 
+	DVecType<T> || SVecType<T>;
 
 /// __________________________________________________
 /// __________________________________________________
@@ -483,6 +488,17 @@ struct Formateador<T, DegMinSecVecString>{
 					 fmt::format("{:0>{}.{}f}\u2033", fabs(ff.get_sec(n)), 5, 2); }
 };
 
+/// __________________________________________________
+/// Concept —— functador
+template<typename T>
+concept functador =
+    requires (T t, double n) {
+        { t.operator()(n) } -> std::same_as<double>;
+    } ||
+    requires (T t, double n) {
+        { t.operator()(n) } -> std::same_as<string>;
+    };
+
 
 /// __________________________________________________
 /// __________________________________________________
@@ -492,10 +508,8 @@ class Coords {
 		T dv;
 		const vector<bool> latlon;
 
-		template<DVecType U>
-		inline vector<double> convert0() const;
-		template<SVecType U>
-		inline vector<string> format0() const;
+		template<vectype U, functador V>
+		inline U conform() const;
 		void suffix_nesw(vector<string>&) const;
 		void suffix_latlon(vector<string>&) const;
 	public:
