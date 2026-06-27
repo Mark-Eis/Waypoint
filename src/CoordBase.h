@@ -476,6 +476,7 @@ template<DVecType T>
 class Coords {
 		T dv;
 		const vector<bool> latlon;
+
 		template<DVecType U>
 		vector<double> convert0() const;
 		template<SVecType U>
