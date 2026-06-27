@@ -101,7 +101,7 @@ struct VecTypeBase : public vector<T> {
 	explicit VecTypeBase( vector<T>::size_type count ) : vector<T>(count)				// ≈ "default"
 	{
 #if DEBUG > 0
-		_ctrsgn(typeid(*this)); fmt::print("\t(size_t)\n"); 
+		_ctrsgn(typeid(*this)); fmt::print("\t(vector<T>::size_type)\n"); 
 #endif
 	}
 	VecTypeBase(const VecTypeBase&) = delete;											// copy constructor
