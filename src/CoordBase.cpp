@@ -305,10 +305,10 @@ inline string cardi_b(bool negative)
 
 /// __________________________________________________
 /// __________________________________________________
-/// Coords class
+/// Coords class —— Constructor
 template<DVecType T>
 Coords<T>::Coords(T t, const vector<bool> latlon) :
-	dv { std::move(t) },							// ¡¡¡—— will need to be moved once Coordlet deprecated ——!!!
+	dv { std::move(t) },
 	latlon { latlon } //,
 {
 #if DEBUG > 0
@@ -317,7 +317,7 @@ Coords<T>::Coords(T t, const vector<bool> latlon) :
 }
 
 /// __________________________________________________
-/// Convert to another CoordType
+/// Convert dv to another DVecType object —— private
 template<DVecType T> template<DVecType U>
 vector<double> Coords<T>::convert0() const
 {
@@ -334,7 +334,7 @@ vector<double> Coords<T>::convert0() const
 }
 
 /// __________________________________________________
-/// format0 dv as SVecType for printing
+/// Format dv as an SVecType object —— private
 template<DVecType T> template<SVecType U>
 vector<string> Coords<T>::format0() const
 {
@@ -377,7 +377,57 @@ vector<string> Coords<T>::format0() const
 }
 
 /// __________________________________________________
-/// Validate Coords<T>
+/// convert call entry point —— public
+template<DVecType T>
+vector<double> Coords<T>::convert(CoordType required_type) const
+{
+#if DEBUG > 0
+	fmt::print("@Coords<T>::convert(CoordType) const; T: {}, required type: {}\n", demangle(typeid(T)), required_type);
+#endif
+	using enum CoordType;
+	switch (required_type)
+	{
+		case decdeg:
+			return convert0<DecDegVecDouble>();
+
+		case degmin:
+			return convert0<DegMinVecDouble>();
+
+		case degminsec:
+			return convert0<DegMinSecVecDouble>();
+
+		default:
+			stop("Coords<T>::convert(CoordType) const my bad");
+	}
+}
+
+/// __________________________________________________
+/// Format call entry point —— public
+template<DVecType T>
+vector<string> Coords<T>::format(CoordType required_type) const
+{
+#if DEBUG > 0
+	fmt::print("@Coords<T>::format(CoordType) const; T: {}, required type: {}\n", demangle(typeid(T)), required_type);
+#endif
+	using enum CoordType;
+	switch (required_type)
+	{
+		case decdeg:
+			return format0<DecDegVecString>();
+
+		case degmin:
+			return format0<DegMinVecString>();
+
+		case degminsec:
+			return format0<DegMinSecVecString>();
+
+		default:
+			stop("Coords<T>::format(CoordType) const my bad");
+	}
+}
+
+/// __________________________________________________
+/// Validation call entry point —— public
 template<DVecType T>
 const vector<bool> Coords<T>::validate() const
 {
@@ -407,68 +457,6 @@ const vector<bool> Coords<T>::validate() const
 #endif
 	return valid;
 }
-
-/// __________________________________________________
-/// convert call entry point -- public ——
-template<DVecType T>
-vector<double> Coords<T>::convert(CoordType required_type) const
-{
-#if DEBUG > 0
-	fmt::print("@Coords<T>::convert(CoordType) const; T: {}, required type: {}\n", demangle(typeid(T)), required_type);
-#endif
-	using enum CoordType;
-	switch (required_type)
-	{
-		case decdeg:
-			return convert0<DecDegVecDouble>();
-
-		case degmin:
-			return convert0<DegMinVecDouble>();
-
-		case degminsec:
-			return convert0<DegMinSecVecDouble>();
-
-		default:
-			stop("Coords<T>::convert(CoordType) const my bad");
-	}
-}
-
-/// __________________________________________________
-/// Format call entry point -- public
-template<DVecType T>
-vector<string> Coords<T>::format(CoordType required_type) const
-{
-#if DEBUG > 0
-	fmt::print("@Coords<T>::format(CoordType) const; T: {}, required type: {}\n", demangle(typeid(T)), required_type);
-#endif
-	using enum CoordType;
-	switch (required_type)
-	{
-		case decdeg:
-			return format0<DecDegVecString>();
-
-		case degmin:
-			return format0<DegMinVecString>();
-
-		case degminsec:
-			return format0<DegMinSecVecString>();
-
-		default:
-			stop("Coords<T>::format(CoordType) const my bad");
-	}
-}
-/*
-/// __________________________________________________
-/// Validation call entry point -- public
-template<DVecType T>
-const vector<bool> Coords<T>::validate() const							//	¡¡¡—— NB return type -> const vector<bool> ——!!!
-{
-#if DEBUG > 0
-	fmt::print("@Coords<T>::validate()\n");
-#endif
-	return validate0();
-}
-*/
 
 /// __________________________________________________
 /// Instantiate Coords<T> object

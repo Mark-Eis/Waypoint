@@ -480,7 +480,6 @@ class Coords {
 		vector<double> convert0() const;
 		template<SVecType U>
 		vector<string> format0() const;
-//		const vector<bool> validate0() const;
 	public:
 		explicit Coords(T, const vector<bool>);
 		Coords(const Coords&) = delete;								// Disallow copying
@@ -492,9 +491,8 @@ class Coords {
 #elif DEBUG > 0
 		~Coords() { _ctrsgn(typeid(*this), false); }
 #endif
-
-		vector<double> convert(CoordType) const;						// Don't make return type const—otherwise makes unnecessary copy
-		vector<string> format(CoordType) const;						// Don't make return type const—otherwise makes unnecessary copy
+		vector<double> convert(CoordType) const;						// Non-const return type avoids making unnecessary copy
+		vector<string> format(CoordType) const;						// Non-const return type avoids making unnecessary copy
 		const vector<bool> validate() const;
 };
 
