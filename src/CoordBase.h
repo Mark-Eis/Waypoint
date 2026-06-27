@@ -496,6 +496,8 @@ class Coords {
 		inline vector<double> convert0() const;
 		template<SVecType U>
 		inline vector<string> format0() const;
+		void suffix_nesw(vector<string>&) const;
+		void suffix_latlon(vector<string>&) const;
 	public:
 		explicit Coords(T, const vector<bool>);
 		Coords(const Coords&) = delete;								// Disallow copying

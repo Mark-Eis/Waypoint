@@ -347,33 +347,62 @@ inline vector<string> Coords<T>::format0() const
 
 	transform(dv.begin(), dv.end(), sv_out.begin(), Formateador<T, U>());	
 
-	if constexpr (isDecDegVecString_v<U>) {
-		const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it++ ? " lat" : " lon"); };
-		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it ? " lat" : " lon"); };
-		if (ll_size > 1)
-			transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda1);
-		else
-			if (ll_size == 1)	// uniform coords
-				transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda2);
-
-	} else if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>) {
-		const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it++); };
-		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it); };
-		const auto lambda3 = [](auto& outstr, auto n){ return outstr + cardi_b(n < 0); };
-
-		if (ll_size > 1)
-			transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda1);
-		else
-			if (ll_size == 1)	// uniform coords
-				transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda2);
-			else				// no latlon info
-				transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda3);
-	}
+	if constexpr (isDecDegVecString_v<U>)
+		suffix_latlon(sv_out);
+	else if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>)
+		suffix_nesw(sv_out);
+	else
+		stop("Coords<DVecType>::format0<SVecType>() const my bad!");
 #if DEBUG > 0
 	fmt::print("@ICoords<T>::format0<U>() const;\n\t{}\t &sv_out {}, &sv_out[0] {}, sv_out[0] {}, typeid: {}\n",
 		padstr, address(sv_out), address(sv_out[0]), sv_out[0], demangle(typeid(sv_out)));
 #endif
 	return sv_out;
+}
+
+/// __________________________________________________
+/// Add suffix of "N", "E", "S", "W"; or "(N/E)", "(S/W)"
+template<DVecType T>
+void Coords<T>::suffix_nesw(vector<string>& sv_out) const
+{
+#if DEBUG > 0
+	fmt::print("@Coords<T>::suffix_nesw(vector<string>& sv_out) const\n");
+#endif
+	vector<bool>::const_iterator ll_it { latlon.begin() };
+	const auto ll_size { latlon.size() };
+
+	const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it++); };
+	const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it); };
+	const auto lambda3 = [](auto& outstr, auto n){ return outstr + cardi_b(n < 0); };
+
+	if (ll_size > 1)
+		transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda1);
+	else
+		if (ll_size == 1)	// uniform coords
+			transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda2);
+		else				// no latlon info
+			transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda3);
+}
+
+/// __________________________________________________
+/// Add suffix of "lat", "lon"
+template<DVecType T>
+void Coords<T>::suffix_latlon(vector<string>& sv_out) const
+{
+#if DEBUG > 0
+	fmt::print("@Coords<T>::suffix_latlon(vector<string>& sv_out) const\n");
+#endif
+	vector<bool>::const_iterator ll_it { latlon.begin() };
+	const auto ll_size { latlon.size() };
+
+	const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it++ ? " lat" : " lon"); };
+	const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it ? " lat" : " lon"); };
+
+	if (ll_size > 1)
+		transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda1);
+	else
+		if (ll_size == 1)	// uniform coords
+			transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda2);
 }
 
 /// __________________________________________________
