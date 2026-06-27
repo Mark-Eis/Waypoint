@@ -342,9 +342,6 @@ inline vector<string> Coords<T>::format0() const
 	fmt::print("@Coords<T>::format0<U>() const; T: {}, U: {}\n", demangle(typeid(T)), demangle(typeid(U)));
 #endif
 	U sv_out(dv.size());
-	vector<bool>::const_iterator ll_it { latlon.begin() };
-	const auto ll_size { latlon.size() };
-
 	transform(dv.begin(), dv.end(), sv_out.begin(), Formateador<T, U>());	
 
 	if constexpr (isDecDegVecString_v<U>)
