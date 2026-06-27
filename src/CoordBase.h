@@ -101,20 +101,23 @@ struct VecTypeBase : public vector<T> {
 	explicit VecTypeBase( vector<T>::size_type count ) : vector<T>(count)				// ≈ "default"
 	{
 #if DEBUG > 0
-		_ctrsgn(typeid(*this)); fmt::print("\t(vector<T>::size_type)\n"); 
+		_ctrsgn(typeid(*this)); fmt::print("\t(vector<T>::size_type); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
+			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
 #endif
 	}
 	VecTypeBase(const VecTypeBase&) = delete;											// copy constructor
 	VecTypeBase(const vector<T>& vt) : vector<T>{ vt }									// copy constructor
 	{
 #if DEBUG > 0
-		_ctrsgn(typeid(*this)); fmt::print("\t(const vector<T>&)\n"); 
+		_ctrsgn(typeid(*this)); fmt::print("\t(const vector<T>&); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
+			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
 #endif
 	}
 	VecTypeBase(const NumericVector vt) : vector<T>{ as<vector<double>>(vt) }			// copy constructor
 	{
 #if DEBUG > 0
-		_ctrsgn(typeid(*this)); fmt::print("\t(const NumericVector&)\n");
+		_ctrsgn(typeid(*this)); fmt::print("\t(const NumericVector&); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
+			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
 #endif
 	}
 
@@ -122,7 +125,8 @@ struct VecTypeBase : public vector<T> {
 	VecTypeBase& operator=(const vector<T>& vt)											// copy assignment
 	{
 #if DEBUG > 0
-		fmt::print("@VecTypeBase& operator=(const vector<T>& vt)\n");
+		fmt::print("@VecTypeBase& operator=(const vector<T>& vt); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
+			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
 #endif
 		vector<T>::operator= (vt);
 		return *this;
@@ -134,14 +138,16 @@ struct VecTypeBase : public vector<T> {
 #else 
 	VecTypeBase(VecTypeBase&& dv) : vector<T>{ std::move(static_cast<vector<T>&&>(dv)) }
 	{
-		_ctrsgn(typeid(*this)); fmt::print("\t(VecTypeBase&&)\n");
+		_ctrsgn(typeid(*this)); fmt::print("\t\t\t(VecTypeBase&&); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
+			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
 	}
 #endif
 
 	VecTypeBase(vector<T>&& vt) : vector<T>{ std::move(vt) }								// move constructor
 	{
 #if DEBUG > 0
-		_ctrsgn(typeid(*this)); fmt::print("\t(vector<T>&&)\n");
+		_ctrsgn(typeid(*this)); fmt::print("\t(vector<T>&&); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
+			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
 #endif
 	}
 	VecTypeBase(NumericVector&& vt) = delete;											// move constructor - not defaultable
@@ -151,7 +157,8 @@ VecTypeBase& operator=(VecTypeBase&&) = default;											// move assignment
 #else 
 	VecTypeBase& operator=(VecTypeBase&& dv)
 	{
-		_ctrsgn(typeid(*this)); fmt::print("\tVecTypeBase& operator=(VecTypeBase&&)\n");
+		_ctrsgn(typeid(*this)); fmt::print("\tVecTypeBase& operator=(VecTypeBase&&); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
+			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
 		vector<T>::operator=(std::move(static_cast<vector<T>&&>(dv)));
 		return *this;
 	}
@@ -160,7 +167,8 @@ VecTypeBase& operator=(VecTypeBase&&) = default;											// move assignment
 	VecTypeBase& operator=(vector<T>&& vt)											// move assignment
 	{
 #if DEBUG > 0
-		fmt::print("@VecTypeBase& operator=(vector<T>&& vt)\n");
+		fmt::print("@VecTypeBase& operator=(vector<T>&& vt); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
+			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
 #endif
 		vector<T>::operator=(std::move(vt));
 		return *this;
@@ -174,7 +182,8 @@ template<typename T>
 VecTypeBase<T>::~VecTypeBase()
 {
 #if DEBUG > 0
-	_ctrsgn(typeid(*this), false);
+	_ctrsgn(typeid(*this), false); fmt::print("\t{}\t\tthis {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
+			padstr, (void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], "Maybe gone…"sv);
 #endif
 }
 

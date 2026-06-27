@@ -327,8 +327,8 @@ inline vector<double> Coords<T>::convert0() const
 	U dv_out(dv.size());
 	transform(dv.begin(), dv.end(), dv_out.begin(), Convertidor<T, U>());
 #if DEBUG > 0
-	fmt::print("@ICoords<T>::convert0<U>() const; {} dv_out[0] {}, &dv_out {}, &dv_out[0] {}, typeid: {}\n",
-		padstr, dv_out[0], address(dv_out), address(dv_out[0]), demangle(typeid(dv_out)));
+	fmt::print("@ICoords<T>::convert0<U>() const;\n\t{}\t &dv_out {}, &dv_out[0] {}, dv_out[0] {}, typeid: {}\n",
+		padstr, address(dv_out), address(dv_out[0]), dv_out[0], demangle(typeid(dv_out)));
 #endif
 	return dv_out;
 }
@@ -370,8 +370,8 @@ inline vector<string> Coords<T>::format0() const
 				transform(sv_out.begin(), sv_out.end(), dv.begin(), sv_out.begin(), lambda3);
 	}
 #if DEBUG > 0
-	fmt::print("@IICoords<T>::format0<U>() const; {} sv_out[0] {}, &sv_out {}, &sv_out[0] {}, typeid: {}\n",
-		padstr, sv_out[0], address(sv_out), address(sv_out[0]), demangle(typeid(sv_out)));
+	fmt::print("@ICoords<T>::format0<U>() const;\n\t{}\t &sv_out {}, &sv_out[0] {}, sv_out[0] {}, typeid: {}\n",
+		padstr, address(sv_out), address(sv_out[0]), sv_out[0], demangle(typeid(sv_out)));
 #endif
 	return sv_out;
 }
@@ -433,8 +433,8 @@ const vector<bool> Coords<T>::validate() const
 {
 #if DEBUG > 0
 	fmt::print("@Coords<T>::validate(); latlon: {}\n", fmt::join(latlon, ", "));
-	fmt::print("@ICoords<T>::validate(); {} dv[0] {}, &dv {}, &dv[0] {}, typeid: {}\n",
-		padstr, dv[0], address(dv), address(dv[0]), demangle(typeid(dv)));
+	fmt::print("@ICoords<T>::validate();\n\t{}\t\t &dv {}, &dv[0] {}, dv[0] {}, typeid: {}\n",
+		padstr, address(dv), address(dv[0]), dv[0], demangle(typeid(dv)));
 #endif
 	FamousFive<T> ff {};
 	vector<bool>::const_iterator ll_it{ latlon.begin() };
@@ -452,7 +452,7 @@ const vector<bool> Coords<T>::validate() const
 		valid.assign({true});
 
 #if DEBUG > 0
-	fmt::print("@IICoords<T>::validate(); {} &valid {}, typeid: {}, \n\t{}\n",
+	fmt::print("@IICoords<T>::validate();\n\t{}\t  &valid {}, typeid: {}, \n\t{}\n",
 		padstr, address(valid), demangle(typeid(valid)), fmt::join(valid, ", "));
 #endif
 	return valid;
@@ -464,8 +464,8 @@ template<DVecType T>
 inline coords_t auto coordsmaker(NumericVector nv, vector<bool> latlon)
 {
 #if DEBUG > 0
-	fmt::print("@coordsmaker(NumericVector, vector<bool>); {} nv[0] {}, &nv {}, &nv[0] {}, DVecType: {}\n",
-		padstr, nv[0], address(nv), address(nv[0]), demangle(typeid(T)));
+	fmt::print("@coordsmaker(NumericVector, vector<bool>);\n\t{}\t\t &nv {}, &nv[0] {}, nv[0] {}, DVecType: {}\n",
+		padstr, address(nv), address(nv[0]), nv[0], demangle(typeid(T)));
 #endif
 	if (!latlon.size())
 		latlon = get_vec_attr<NumericVector, bool>(nv, "latlon"s);
@@ -728,7 +728,7 @@ bool validate(const NumVec_or_DataFrame auto t, bool revalidate)
 	auto valid { validate_switch(t) };
 	if constexpr (isNumericVector_v<t_type>) {
 #if DEBUG > 0
-		fmt::print("@IIvalidate(const NumVec_or_DataFrame auto, bool); {} &valid {}, typeid: {}, \n\t{}\n",
+		fmt::print("@IIvalidate(const NumVec_or_DataFrame auto, bool);\n\t{}\t  &valid {}, typeid: {}, \n\t{}\n",
 			padstr, address(valid), demangle(typeid(valid)), fmt::join(valid, ", "));
 #endif
 		iscoords = true;
@@ -965,21 +965,21 @@ NumericVector convertcoords(const NumericVector x, int fmt)
 	CoordType newtype = get_coordtype(fmt);
 #if DEBUG > 0
 	fmt::print("{}@convertcoords(NumericVector, int); from {} to {}\n", exportstr, ct_current, newtype);
-	fmt::print("{}@Iconvertcoords(NumericVector, int); x[0] {}, &x {}, &x[0] {}, typeid: {}\n",
-		exportstr, x[0], address(x), address(x[0]), demangle(typeid(x)));
+	fmt::print("{}@Iconvertcoords(NumericVector, int);\n\t{}\t\t  &x {}, &x[0] {}, x[0] {}, typeid: {}\n",
+		exportstr, padstr, address(x), address(x[0]), x[0], demangle(typeid(x)));
 #endif
 	if (!check_valid(x))
 		stop("Invalid coords! Conversion aborted.\n [Use review() to show invalid elements]");
 	if (newtype != ct_current) {
 		auto vd_out { convert_switch(x, newtype) };
 #if DEBUG > 0
-		fmt::print("{}@Iconvertcoords(NumericVector, int);  vd_out[0] {}, &vd_out {}, &vd_out[0] {}, typeid: {}\n",
-			exportstr, vd_out[0], address(vd_out), address(vd_out[0]), demangle(typeid(vd_out)));
+		fmt::print("{}@IIconvertcoords(NumericVector, int);\n\t{}\t &vd_out {}, &vd_out[0] {}, vd_out[0] {}, typeid: {}\n",
+			exportstr, padstr, address(vd_out), address(vd_out[0]), vd_out[0], demangle(typeid(vd_out)));
 #endif
 		NumericVector nv_out { wrap(vd_out) };									// Copies output string
 #if DEBUG > 0
-		fmt::print("{}@IIconvertcoords(NumericVector, int); nv_out[0] {}, &nv_out {}, &nv_out[0] {}, typeid: {}\n",
-			exportstr, nv_out[0], address(nv_out), address(nv_out[0]), demangle(typeid(nv_out)));
+		fmt::print("{}@IIconvertcoords(NumericVector, int);\n\t{}\t &nv_out {}, &nv_out[0] {}, nv_out[0] {}, typeid: {}\n",
+			exportstr, padstr, address(nv_out), address(nv_out[0]), nv_out[0], demangle(typeid(nv_out)));
 #endif
 		nv_out.attr("class") = "coords";
 		nv_out.attr("fmt") = fmt;
@@ -1020,8 +1020,8 @@ CharacterVector formatcoords(const NumericVector x, bool usenames = true, bool v
 {
 #if DEBUG > 0
 	fmt::print("{}@formatcoords(const NumericVector, bool, bool, int); usenames: {}, validate: {}, fmt: {}\n", exportstr, usenames, validate, fmt);
-	fmt::print("{}@Iformatcoords(const NumericVector, bool, bool, int); x[0] {}, &x {}, &x[0] {}, typeid: {}\n",
-		exportstr, x[0], address(x), address(x[0]), demangle(typeid(x)));
+	fmt::print("{}@Iformatcoords(const NumericVector, bool, bool, int);\n\t{}\t\t  &x {}, &x[0] {}, x[0] {}, typeid: {}\n",
+		exportstr, padstr, address(x), address(x[0]), x[0], demangle(typeid(x)));
 #endif
 	checkinherits(x, "coords"s);
 	if(!x.size())
@@ -1033,8 +1033,8 @@ CharacterVector formatcoords(const NumericVector x, bool usenames = true, bool v
 	CoordType ct_required { fmt ? get_coordtype(fmt) : ct_current };
 	auto sv_out { format_switch(x, ct_required) };
 #if DEBUG > 0
-	fmt::print("{}@IIformatcoords(NumericVector, bool, bool, int); sv_out[0] {}, &sv_out {}, &sv_out[0] {}, typeid: {}\n",
-		exportstr, sv_out[0], address(sv_out), address(sv_out[0]), demangle(typeid(sv_out).name()));
+	fmt::print("{}@IIformatcoords(const NumericVector, bool, bool, int);\n\t{}\t\t&sv_out {}, &sv_out[0] {}, sv_out[0] {}, typeid: {}\n",
+		exportstr, padstr, address(sv_out), address(sv_out[0]), sv_out[0], demangle(typeid(sv_out).name()));
 #endif
 	vector names{ get_vec_attr<NumericVector, string>(x, "names"s) };
 	if (names.size() && usenames) {
@@ -1052,8 +1052,8 @@ NumericVector validatecoords(const NumericVector x, const bool force = true)
 {
 #if DEBUG > 0
 	fmt::print("{}@validatecoords(const NumericVector, const bool); force: {}\n", exportstr, force);
-	fmt::print("{}@Ivalidatecoords(const NumericVector, const bool); x[0] {}, &x {}, &x[0] {}, typeid: {}\n",
-		exportstr, x[0], address(x), address(x[0]), demangle(typeid(x)));
+	fmt::print("{}@Ivalidatecoords(const NumericVector, const bool);\n\t{}\t\t  &x {}, &x[0] {}, x[0] {}, typeid: {}\n",
+		exportstr, padstr, address(x), address(x[0]), x[0], demangle(typeid(x)));
 #endif
 	checkinherits(x, "coords"s);
 	bool warn { false };
