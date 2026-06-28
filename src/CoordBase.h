@@ -509,7 +509,7 @@ class Coords {
 		const vector<bool> latlon;
 
 		template<vectype U, functador V>
-		inline U conform() const;
+		inline U conform0() const;
 		void suffix_nesw(vector<string>&) const;
 		void suffix_latlon(vector<string>&) const;
 	public:
@@ -525,6 +525,8 @@ class Coords {
 #endif
 		vector<double> convert(CoordType) const;						// Non-const return type avoids making unnecessary copy
 		vector<string> format(CoordType) const;						// Non-const return type avoids making unnecessary copy
+		template<typename U, functador V>
+		vector<U>conform(CoordType) const;
 		const vector<bool> validate() const;
 };
 

@@ -320,10 +320,10 @@ Coords<T>::Coords(T t, const vector<bool> latlon) :
 /// __________________________________________________
 /// Format dv as a vectype object —— private
 template<DVecType T> template<vectype U, functador V>
-inline U Coords<T>::conform() const
+inline U Coords<T>::conform0() const
 {
 #if DEBUG > 0
-	fmt::print("@Coords<T>::conform<U, V>() const; T: {}, U: {}, V: {}\n", demangle(typeid(T)), demangle(typeid(U)), demangle(typeid(V)));
+	fmt::print("@Coords<T>::conform0<U, V>() const; T: {}, U: {}, V: {}\n", demangle(typeid(T)), demangle(typeid(U)), demangle(typeid(V)));
 #endif
 	U uv_out(dv.size());
 	transform(dv.begin(), dv.end(), uv_out.begin(), V());	
@@ -333,7 +333,7 @@ inline U Coords<T>::conform() const
 	else if constexpr (isDegMinVecString_v<U> || isDegMinSecVecString_v<U>)
 		suffix_nesw(uv_out);
 #if DEBUG > 0
-	fmt::print("@ICoords<T>::conform <U, V>() const;\n\t{}\t &uv_out {}, &uv_out[0] {}, uv_out[0] {}, typeid: {}\n",
+	fmt::print("@ICoords<T>::conform0 <U, V>() const;\n\t{}\t &uv_out {}, &uv_out[0] {}, uv_out[0] {}, typeid: {}\n",
 		padstr, address(uv_out), address(uv_out[0]), uv_out[0], demangle(typeid(uv_out)));
 #endif
 	return uv_out;
@@ -385,6 +385,31 @@ void Coords<T>::suffix_latlon(vector<string>& sv_out) const
 }
 
 /// __________________________________________________
+/// conform call entry point —— public
+template<DVecType T> template<typename U, functador V>
+vector<U> Coords<T>::conform(CoordType required) const
+{
+#if DEBUG > 0
+	fmt::print("@Coords<T>::conform<U, V>(CoordType) const; T: {}, U: {}, V: {}, required: {}\n", demangle(typeid(T)), demangle(typeid(U)), demangle(typeid(V)), required);
+#endif
+	using enum CoordType;
+	switch (required)
+	{
+		case decdeg:
+			return conform0<DecDegVec<U>, V>();
+
+		case degmin:
+			return conform0<DegMinVec<U>, V>();
+
+		case degminsec:
+			return conform0<DegMinSecVec<U>, V>();
+
+		default:
+			stop("Coords<T>::conform<U, V>(CoordType) const my bad");
+	}
+}
+
+/// __________________________________________________
 /// convert call entry point —— public
 template<DVecType T>
 vector<double> Coords<T>::convert(CoordType newtype) const
@@ -396,13 +421,13 @@ vector<double> Coords<T>::convert(CoordType newtype) const
 	switch (newtype)
 	{
 		case decdeg:
-			return conform<DecDegVecDouble, Convertidor<T, DecDegVecDouble>>();
+			return conform0<DecDegVecDouble, Convertidor<T, DecDegVecDouble>>();
 
 		case degmin:
-			return conform<DegMinVecDouble, Convertidor<T, DegMinVecDouble>>();
+			return conform0<DegMinVecDouble, Convertidor<T, DegMinVecDouble>>();
 
 		case degminsec:
-			return conform<DegMinSecVecDouble, Convertidor<T, DegMinSecVecDouble>>();
+			return conform0<DegMinSecVecDouble, Convertidor<T, DegMinSecVecDouble>>();
 
 		default:
 			stop("Coords<T>::convert(CoordType) const my bad");
@@ -421,13 +446,13 @@ vector<string> Coords<T>::format(CoordType required_type) const
 	switch (required_type)
 	{
 		case decdeg:
-			return conform<DecDegVecString, Formateador<T, DecDegVecString>>();
+			return conform0<DecDegVecString, Formateador<T, DecDegVecString>>();
 
 		case degmin:
-			return conform<DegMinVecString, Formateador<T, DegMinVecString>>();
+			return conform0<DegMinVecString, Formateador<T, DegMinVecString>>();
 
 		case degminsec:
-			return conform<DegMinSecVecString, Formateador<T, DegMinSecVecString>>();
+			return conform0<DegMinSecVecString, Formateador<T, DegMinSecVecString>>();
 
 		default:
 			stop("Coords<T>::format(CoordType) const my bad");
