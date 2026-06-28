@@ -13,7 +13,7 @@
 /// __________________________________________________
 /// Development and debugging
 
-#define DEBUG 0
+#define DEBUG 1
 
 #if DEBUG > 0
 
@@ -447,6 +447,15 @@ struct Convertidor<T, DegMinSecVecDouble>{
 	double operator()(double n) const { return ff.get_deg(n) * 1e4 + ff.get_min(n) * 1e2 + ff.get_sec(n); }
 };
 
+/// __________________________________________________
+/// Template aliases
+template<DVecType T>
+using ConvertidorDecDegVec = Convertidor<DecDegVecDouble, T>;
+template<DVecType T>
+using ConvertidorDegMinVec = Convertidor<DegMinVecDouble, T>;
+template<DVecType T>
+using ConvertidorDegMinSecVec = Convertidor<DegMinSecVecDouble, T>;
+
 
 /// __________________________________________________
 /// __________________________________________________
@@ -489,6 +498,15 @@ struct Formateador<T, DegMinSecVecString>{
 };
 
 /// __________________________________________________
+/// Template aliases
+template<SVecType T>
+using FormateadorDecDegVec = Formateador<DecDegVecDouble, T>;
+template<SVecType T>
+using FormateadorDegMinVec = Formateador<DegMinVecDouble, T>;
+template<SVecType T>
+using FormateadorDegMinSecVec = Formateador<DegMinSecVecDouble, T>;
+
+/// __________________________________________________
 /// Concept —— functador
 template<typename T>
 concept functador =
@@ -525,8 +543,8 @@ class Coords {
 #endif
 		vector<double> convert(CoordType) const;						// Non-const return type avoids making unnecessary copy
 		vector<string> format(CoordType) const;						// Non-const return type avoids making unnecessary copy
-		template<typename U, functador V>
-		vector<U>conform(CoordType) const;
+		template<typename U, template <typename V> typename F>
+		vector<U>conform(CoordType) const;							// Non-const return type avoids making unnecessary copy
 		const vector<bool> validate() const;
 };
 

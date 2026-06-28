@@ -386,26 +386,27 @@ void Coords<T>::suffix_latlon(vector<string>& sv_out) const
 
 /// __________________________________________________
 /// conform call entry point —— public
-template<DVecType T> template<typename U, functador V>
+// template<DVecType T> template<typename U, functador V>
+template<DVecType T> template<typename U, template <typename V> typename F>
 vector<U> Coords<T>::conform(CoordType required) const
 {
 #if DEBUG > 0
-	fmt::print("@Coords<T>::conform<U, V>(CoordType) const; T: {}, U: {}, V: {}, required: {}\n", demangle(typeid(T)), demangle(typeid(U)), demangle(typeid(V)), required);
+	fmt::print("@Coords<T>::conform<U, F>(CoordType) const; T: {}, U: {}, required: {}\n", demangle(typeid(T)), demangle(typeid(U)), required);
 #endif
 	using enum CoordType;
 	switch (required)
 	{
 		case decdeg:
-			return conform0<DecDegVec<U>, V>();
+			return conform0<DecDegVec<U>, F<DecDegVec<U>>>();
 
 		case degmin:
-			return conform0<DegMinVec<U>, V>();
+			return conform0<DegMinVec<U>, F<DegMinVec<U>>>();
 
 		case degminsec:
-			return conform0<DegMinSecVec<U>, V>();
+			return conform0<DegMinSecVec<U>, F<DegMinSecVec<U>>>();
 
 		default:
-			stop("Coords<T>::conform<U, V>(CoordType) const my bad");
+			stop("Coords<T>::conform<U, F>(CoordType) const my bad");
 	}
 }
 
@@ -516,6 +517,30 @@ vector<double> convert_switch(const NumericVector nv, CoordType newtype)
 	switch (get_coordtype(nv))
 	{
 		case decdeg:
+			return coordsmaker<DecDegVecDouble>(nv).conform<double, ConvertidorDecDegVec>(newtype);
+
+		case degmin:
+			return coordsmaker<DegMinVecDouble>(nv).conform<double, ConvertidorDegMinVec>(newtype);
+
+		case degminsec:
+			return coordsmaker<DegMinSecVecDouble>(nv).conform<double, ConvertidorDegMinSecVec>(newtype);
+
+		default:
+			stop("convert_switch(const NumericVector, CoordType) const my bad");
+	}
+}
+/*
+/// __________________________________________________
+/// Convert "coords" NumericVector
+vector<double> convert_switch(const NumericVector nv, CoordType newtype)
+{
+#if DEBUG > 0
+	fmt::print("@convert_switch(const NumericVector, CoordType); current type: {}, new type: {}\n", get_coordtype(nv), newtype);
+#endif
+	using enum CoordType;
+	switch (get_coordtype(nv))
+	{
+		case decdeg:
 			return coordsmaker<DecDegVecDouble>(nv).convert(newtype);
 
 		case degmin:
@@ -528,7 +553,7 @@ vector<double> convert_switch(const NumericVector nv, CoordType newtype)
 			stop("convert_switch(const NumericVector, CoordType) const my bad");
 	}
 }
-
+*/
 /// __________________________________________________
 /// Format "coords" NumericVector
 vector<string> format_switch(const NumericVector nv, CoordType ct_required)
@@ -540,13 +565,13 @@ vector<string> format_switch(const NumericVector nv, CoordType ct_required)
 	switch (get_coordtype(nv))
 	{
 		case decdeg:
-			return coordsmaker<DecDegVecDouble>(nv).format(ct_required);
+			return coordsmaker<DecDegVecDouble>(nv).conform<string, FormateadorDecDegVec>(ct_required);
 
 		case degmin:
-			return coordsmaker<DegMinVecDouble>(nv).format(ct_required);
+			return coordsmaker<DegMinVecDouble>(nv).conform<string, FormateadorDegMinVec>(ct_required);
 
 		case degminsec:
-			return coordsmaker<DegMinSecVecDouble>(nv).format(ct_required);
+			return coordsmaker<DegMinSecVecDouble>(nv).conform<string, FormateadorDegMinSecVec>(ct_required);
 
 		default:
 			stop("format_switch(const NumericVector, CoordType) const my bad");
