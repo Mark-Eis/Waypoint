@@ -390,7 +390,7 @@ template<DVecType T> template<typename U, template <typename V> typename F>
 vector<U> Coords<T>::conform(CoordType required) const
 {
 #if DEBUG > 0
-	fmt::print("@Coords<T>::conform<U, F>(CoordType) const;\n\t\t\tT: {},\n\t\t\tU: {},\n\t\t\tF: functador<T, vectype<U>>,\n\t\t\trequired: {}\n",
+	fmt::print("@Coords<T>::conform<U, F<V>>(CoordType) const;\n\t\t\tT: {},\n\t\t\tU: {},\n\t\t\tF: functador<T, vectype<U>>,\n\t\t\trequired: {}\n",
 		demangle(typeid(T)), demangle(typeid(U)), required);
 #endif
 	using enum CoordType;
@@ -406,7 +406,7 @@ vector<U> Coords<T>::conform(CoordType required) const
 			return conform0<DegMinSecVec<U>, F<DegMinSecVec<U>>>();
 
 		default:
-			stop("Coords<T>::conform<U, F>(CoordType) const my bad");
+			stop("Coords<T>::conform<U, F<V>>(CoordType) const my bad");
 	}
 }
 
