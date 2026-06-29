@@ -316,14 +316,14 @@ Coords<T>::Coords(T t, const vector<bool> latlon) :
 #endif
 }
 
-
 /// __________________________________________________
 /// Format dv as a vectype object —— private
 template<DVecType T> template<vectype U, functador V>
 inline U Coords<T>::conform0() const
 {
 #if DEBUG > 0
-	fmt::print("@Coords<T>::conform0<U, V>() const; T: {}, U: {}, V: {}\n", demangle(typeid(T)), demangle(typeid(U)), demangle(typeid(V)));
+	fmt::print("@Coords<T>::conform0<U, V>() const;\n\t\t\tT: {},\n\t\t\tU: {},\n\t\t\tV: {}\n",
+		demangle(typeid(T)), demangle(typeid(U)), demangle(typeid(V)));
 #endif
 	U uv_out(dv.size());
 	transform(dv.begin(), dv.end(), uv_out.begin(), V());	
@@ -386,12 +386,12 @@ void Coords<T>::suffix_latlon(vector<string>& sv_out) const
 
 /// __________________________________________________
 /// conform call entry point —— public
-// template<DVecType T> template<typename U, functador V>
 template<DVecType T> template<typename U, template <typename V> typename F>
 vector<U> Coords<T>::conform(CoordType required) const
 {
 #if DEBUG > 0
-	fmt::print("@Coords<T>::conform<U, F>(CoordType) const; T: {}, U: {}, required: {}\n", demangle(typeid(T)), demangle(typeid(U)), required);
+	fmt::print("@Coords<T>::conform<U, F>(CoordType) const;\n\t\t\tT: {},\n\t\t\tU: {},\n\t\t\tF: functador<T, vectype<U>>,\n\t\t\trequired: {}\n",
+		demangle(typeid(T)), demangle(typeid(U)), required);
 #endif
 	using enum CoordType;
 	switch (required)
@@ -411,7 +411,7 @@ vector<U> Coords<T>::conform(CoordType required) const
 }
 
 /// __________________________________________________
-/// convert call entry point —— public
+/// convert call entry point —— public												// ¡¡¡—— Deprecate ——!!!
 template<DVecType T>
 vector<double> Coords<T>::convert(CoordType newtype) const
 {
@@ -436,7 +436,7 @@ vector<double> Coords<T>::convert(CoordType newtype) const
 }
 
 /// __________________________________________________
-/// Format call entry point —— public
+/// Format call entry point —— public												// ¡¡¡—— Deprecate ——!!!
 template<DVecType T>
 vector<string> Coords<T>::format(CoordType required_type) const
 {
@@ -529,31 +529,7 @@ vector<double> convert_switch(const NumericVector nv, CoordType newtype)
 			stop("convert_switch(const NumericVector, CoordType) const my bad");
 	}
 }
-/*
-/// __________________________________________________
-/// Convert "coords" NumericVector
-vector<double> convert_switch(const NumericVector nv, CoordType newtype)
-{
-#if DEBUG > 0
-	fmt::print("@convert_switch(const NumericVector, CoordType); current type: {}, new type: {}\n", get_coordtype(nv), newtype);
-#endif
-	using enum CoordType;
-	switch (get_coordtype(nv))
-	{
-		case decdeg:
-			return coordsmaker<DecDegVecDouble>(nv).convert(newtype);
 
-		case degmin:
-			return coordsmaker<DegMinVecDouble>(nv).convert(newtype);
-
-		case degminsec:
-			return coordsmaker<DegMinSecVecDouble>(nv).convert(newtype);
-
-		default:
-			stop("convert_switch(const NumericVector, CoordType) const my bad");
-	}
-}
-*/
 /// __________________________________________________
 /// Format "coords" NumericVector
 vector<string> format_switch(const NumericVector nv, CoordType ct_required)
