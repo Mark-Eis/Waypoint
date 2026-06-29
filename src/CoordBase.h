@@ -13,7 +13,7 @@
 /// __________________________________________________
 /// Development and debugging
 
-#define DEBUG 1
+#define DEBUG 0
 
 #if DEBUG > 0
 
@@ -544,7 +544,7 @@ class Coords {
 		vector<double> convert(CoordType) const;						// ¡¡¡—— Deprecate ——!!!   (Non-const return type avoids making unnecessary copy)
 		vector<string> format(CoordType) const;						// ¡¡¡—— Deprecate ——!!!   (Non-const return type avoids making unnecessary copy)
 		template<typename U, template <typename V> typename F>
-		vector<U>conform(CoordType) const;							// Non-const return type avoids making unnecessary copy
+		vector<U> conform(CoordType) const;							// Non-const return type avoids making unnecessary copy
 		const vector<bool> validate() const;
 };
 
@@ -558,7 +558,15 @@ using CoordsDegMinSec = Coords<DegMinSecVecDouble>;
 /// Concept —— coords_t
 template<typename T>
 concept coords_t =
-    requires (T t, CoordType ct) {
+	requires (T t, CoordType ct) {
+		{ t.conform(ct) } -> std::same_as<vector<double>>;
+		{ t.validate() };
+	} ||
+	requires (T t, CoordType ct) {
+		{ t.conform(ct) }  -> std::same_as<vector<string>>;
+		{ t.validate() };
+	} ||
+    requires (T t, CoordType ct) {									// ¡¡¡—— Deprecate ——!!!
         { t.convert(ct) } -> std::same_as<vector<double>>;
         { t.format(ct) }  -> std::same_as<vector<string>>;
         { t.validate() } ;
