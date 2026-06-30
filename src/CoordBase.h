@@ -13,7 +13,7 @@
 /// __________________________________________________
 /// Development and debugging
 
-#define DEBUG 0
+#define DEBUG 1
 
 #if DEBUG > 0
 
@@ -580,7 +580,7 @@ inline coords_t auto coordsmaker(NumericVector, vector<bool> = vector<bool>{});
 /// __________________________________________________
 /// __________________________________________________
 /// Switches for Coords<DVecType>
-vector<double> convert_switch(const NumericVector, CoordType); 
+vector<double> converty(const NumericVector, CoordType); 
 vector<string> format_switch(const NumericVector, CoordType); 
 const vector<bool> validate_switch(const NumericVector); 
 

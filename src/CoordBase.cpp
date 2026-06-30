@@ -508,10 +508,10 @@ inline coords_t auto coordsmaker(NumericVector nv, vector<bool> latlon)
 
 /// __________________________________________________
 /// Convert "coords" NumericVector
-vector<double> convert_switch(const NumericVector nv, CoordType newtype)
+vector<double> converty(const NumericVector nv, CoordType newtype)
 {
 #if DEBUG > 0
-	fmt::print("@convert_switch(const NumericVector, CoordType); current type: {}, new type: {}\n", get_coordtype(nv), newtype);
+	fmt::print("@converty(const NumericVector, CoordType); current type: {}, new type: {}\n", get_coordtype(nv), newtype);
 #endif
 	using enum CoordType;
 	switch (get_coordtype(nv))
@@ -526,7 +526,7 @@ vector<double> convert_switch(const NumericVector nv, CoordType newtype)
 			return coordsmaker<DegMinSecVecDouble>(nv).conform<double, ConvertidorDegMinSecVec>(newtype);
 
 		default:
-			stop("convert_switch(const NumericVector, CoordType) const my bad");
+			stop("converty(const NumericVector, CoordType) const my bad");
 	}
 }
 
@@ -999,13 +999,13 @@ NumericVector convertcoords(const NumericVector x, int fmt)
 	CoordType newtype = get_coordtype(fmt);
 #if DEBUG > 0
 	fmt::print("{}@convertcoords(NumericVector, int); from {} to {}\n", exportstr, ct_current, newtype);
-	fmt::print("{}@Iconvertcoords(NumericVector, int);\n\t{}\t\t  &x {}, &x[0] {}, x[0] {}, typeid: {}\n",
-		exportstr, padstr, address(x), address(x[0]), x[0], demangle(typeid(x)));
+	fmt::print("{}@Iconvertcoords(NumericVector, int);\n\t{}\t\t  &x {}, &x[0] {}, x[0] {}, typeid: {}\n\t{}\t{}\n",
+		exportstr, padstr, address(x), address(x[0]), x[0], demangle(typeid(x)), padstr, fmt::join(x, ", "));
 #endif
 	if (!check_valid(x))
 		stop("Invalid coords! Conversion aborted.\n [Use review() to show invalid elements]");
 	if (newtype != ct_current) {
-		auto vd_out { convert_switch(x, newtype) };
+		auto vd_out { converty(x, newtype) };
 #if DEBUG > 0
 		fmt::print("{}@IIconvertcoords(NumericVector, int);\n\t{}\t &vd_out {}, &vd_out[0] {}, vd_out[0] {}, typeid: {}\n",
 			exportstr, padstr, address(vd_out), address(vd_out[0]), vd_out[0], demangle(typeid(vd_out)));
@@ -1149,12 +1149,23 @@ DataFrame convertwaypoints(DataFrame x, int fmt)
 	if(!valid_ll(x))
 		stop("Invalid llcols attribute!");
 	if (newtype != ct_current) {
-		auto vds_out { convert_switch(x, newtype) };
+		NumericVector xlat = x[get_vec_attr<DataFrame, int>(x, "llcols")[0] - 1];
+		NumericVector xlon = x[get_vec_attr<DataFrame, int>(x, "llcols")[1] - 1];
+		xlat.attr("fmt") = get_vec_attr<decltype(x), int>(x, "fmt");
+		xlon.attr("fmt") = get_vec_attr<decltype(x), int>(x, "fmt");
 #if DEBUG > 0
-		fmt::print("{}@Iconvertwaypoints(DataFrame, int);  vds_out[0][0] {}, &vds_out[0] {}, &vds_out[0][0] {}, typeid: {}\n",
-			exportstr, vds_out[0][0], address(vds_out[0]), address(vds_out[0][0]), demangle(typeid(vds_out[0])));
-		fmt::print("{}@IIconvertwaypoints(DataFrame, int);  vds_out[1][0] {}, &vds_out[1] {}, &vds_out[1][0] {}, typeid: {}\n",
-			exportstr, vds_out[1][0], address(vds_out[1]), address(vds_out[1][0]), demangle(typeid(vds_out[1])));
+		fmt::print("{}@Iconvertwaypoints(DataFrame, int); fmt: {}, &xlat {}, &xlat[0] {}, xlat[0] {}, typeid: {}\n\t{}\t{}\n",
+			exportstr, get_vec_attr<decltype(xlat), int>(xlat, "fmt"), address(xlat), address(xlat[0]), xlat[0], demangle(typeid(xlat)), padstr, fmt::join(xlat, ", "));
+		fmt::print("{}@IIconvertwaypoints(DataFrame, int); fmt: {}, &xlon {}, &xlon[0] {}, xlon[0] {}, typeid: {}\n\t{}\t{}\n",
+			exportstr, get_vec_attr<decltype(xlon), int>(xlon, "fmt"), address(xlon), address(xlon[0]), xlon[0], demangle(typeid(xlon)), padstr, fmt::join(xlon, ", "));
+#endif
+		auto vds_lat { converty(xlat, newtype) };
+		auto vds_lon { converty(xlon, newtype) };
+#if DEBUG > 0
+		fmt::print("{}@IIIconvertwaypoints(DataFrame, int); &vds_lat {}, &vds_lat[0] {}, vds_lat[0] {}, typeid: {}\n",
+			exportstr, address(vds_lat), address(vds_lat[0]), vds_lat[0], demangle(typeid(vds_lat)));
+		fmt::print("{}@IVconvertwaypoints(DataFrame, int); &vds_lon {}, &vds_lon[0] {}, vds_lon[0] {}, typeid: {}\n",
+			exportstr, address(vds_lon), address(vds_lon[0]), vds_lon[0], demangle(typeid(vds_lon)));
 #endif
 		auto llcols { get_vec_attr<decltype(x), int>(x, "llcols") };
 		auto namescol { get_vec_attr<decltype(x), int>(x, "namescol") };
@@ -1164,10 +1175,10 @@ DataFrame convertwaypoints(DataFrame x, int fmt)
 		auto validlon { get_vec_attr<decltype(x), bool>(x, "validlon") };
 
 		auto llcol_it { x.erase(llcols[0] - 1) };
-		x.insert(llcol_it, vds_out[0]);
+		x.insert(llcol_it, vds_lat);
 
 		llcol_it = x.erase(llcols[1] - 1);
-		x.insert(llcol_it, vds_out[1]);
+		x.insert(llcol_it, vds_lon);
 
 		x.attr("names") = names;
 		x.attr("class") = vector{"waypoints", "data.frame"};
