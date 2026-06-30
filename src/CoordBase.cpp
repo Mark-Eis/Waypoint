@@ -1126,8 +1126,10 @@ DataFrame convertwaypoints(DataFrame x, int fmt)
 		stop("Invalid llcols attribute!");
 	if (newtype != ct_current) {
 		auto llcols { get_vec_attr<int>(x, "llcols") };
-		NumericVector xlat = x[llcols[0] - 1];
-		NumericVector xlon = x[llcols[1] - 1];
+		for (auto llcol : llcols)
+			--llcol;
+		NumericVector xlat = x[llcols[0]];
+		NumericVector xlon = x[llcols[1]];
 		xlat.attr("fmt") = get_vec_attr<int>(x, "fmt");
 		xlon.attr("fmt") = get_vec_attr<int>(x, "fmt");
 #if DEBUG > 0
@@ -1150,10 +1152,10 @@ DataFrame convertwaypoints(DataFrame x, int fmt)
 		auto validlat { get_vec_attr<bool>(x, "validlat") };
 		auto validlon { get_vec_attr<bool>(x, "validlon") };
 
-		auto llcol_it { x.erase(llcols[0] - 1) };
+		auto llcol_it { x.erase(llcols[0]) };
 		x.insert(llcol_it, vds_lat);
 
-		llcol_it = x.erase(llcols[1] - 1);
+		llcol_it = x.erase(llcols[1]);
 		x.insert(llcol_it, vds_lon);
 
 		x.attr("names") = names;
