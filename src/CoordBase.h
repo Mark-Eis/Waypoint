@@ -580,7 +580,7 @@ inline coords_t auto coordsmaker(NumericVector, vector<bool> = vector<bool>{});
 /// __________________________________________________
 /// __________________________________________________
 /// Switches for Coords<DVecType>
-vector<double> converty(const NumericVector, CoordType); 
+vector<double> convert_switch(const NumericVector, CoordType); 
 vector<string> format_switch(const NumericVector, CoordType); 
 const vector<bool> validate_switch(const NumericVector); 
 
@@ -671,7 +671,6 @@ inline waypoints_t auto waypointsmaker(DataFrame);
 /// __________________________________________________
 /// __________________________________________________
 /// Switches for Waypoints<DVecType>
-const bisvec<double> convert_switch(const DataFrame, CoordType);
 const bisvec<string> format_switch(const DataFrame, CoordType);
 const bisconstvec<bool> validate_switch(const DataFrame);
 

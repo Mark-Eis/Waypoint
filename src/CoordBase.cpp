@@ -508,10 +508,10 @@ inline coords_t auto coordsmaker(NumericVector nv, vector<bool> latlon)
 
 /// __________________________________________________
 /// Convert "coords" NumericVector
-vector<double> converty(const NumericVector nv, CoordType newtype)
+vector<double> convert_switch(const NumericVector nv, CoordType newtype)
 {
 #if DEBUG > 0
-	fmt::print("@converty(const NumericVector, CoordType); current type: {}, new type: {}\n", get_coordtype(nv), newtype);
+	fmt::print("@convert_switch(const NumericVector, CoordType); current type: {}, new type: {}\n", get_coordtype(nv), newtype);
 #endif
 	using enum CoordType;
 	switch (get_coordtype(nv))
@@ -526,7 +526,7 @@ vector<double> converty(const NumericVector nv, CoordType newtype)
 			return coordsmaker<DegMinSecVecDouble>(nv).conform<double, ConvertidorDegMinSecVec>(newtype);
 
 		default:
-			stop("converty(const NumericVector, CoordType) const my bad");
+			stop("convert_switch(const NumericVector, CoordType) const my bad");
 	}
 }
 
@@ -638,30 +638,6 @@ inline waypoints_t auto waypointsmaker(DataFrame df)
 	fmt::print("@waypointsmaker(DataFrame); DVecType: {}\n", demangle(typeid(T)));
 #endif
 	return Waypoints<T>(df[get_vec_attr<DataFrame, int>(df, "llcols")[0] - 1], df[get_vec_attr<DataFrame, int>(df, "llcols")[1] - 1]);
-}
-
-/// __________________________________________________
-/// Convert "waypoints" DataFrame 
-const bisvec<double> convert_switch(const DataFrame df, CoordType newtype)
-{
-#if DEBUG > 0
-	fmt::print("@convert_switch(const DataFrame, CoordType); current type: {}, new type: {}\n", get_coordtype(df), newtype);
-#endif
-	using enum CoordType;
-	switch (get_coordtype(df))
-	{
-		case decdeg:
-			return waypointsmaker<DecDegVecDouble>(df).convert(newtype);
-
-		case degmin:
-			return waypointsmaker<DegMinVecDouble>(df).convert(newtype);
-
-		case degminsec:
-			return waypointsmaker<DegMinSecVecDouble>(df).convert(newtype);
-
-		default:
-			stop("convert_switch(const DataFrame) const my bad");
-	}
 }
 
 /// __________________________________________________
@@ -1005,7 +981,7 @@ NumericVector convertcoords(const NumericVector x, int fmt)
 	if (!check_valid(x))
 		stop("Invalid coords! Conversion aborted.\n [Use review() to show invalid elements]");
 	if (newtype != ct_current) {
-		auto vd_out { converty(x, newtype) };
+		auto vd_out { convert_switch(x, newtype) };
 #if DEBUG > 0
 		fmt::print("{}@IIconvertcoords(NumericVector, int);\n\t{}\t &vd_out {}, &vd_out[0] {}, vd_out[0] {}, typeid: {}\n",
 			exportstr, padstr, address(vd_out), address(vd_out[0]), vd_out[0], demangle(typeid(vd_out)));
@@ -1159,8 +1135,8 @@ DataFrame convertwaypoints(DataFrame x, int fmt)
 		fmt::print("{}@IIconvertwaypoints(DataFrame, int); fmt: {}, &xlon {}, &xlon[0] {}, xlon[0] {}, typeid: {}\n\t{}\t{}\n",
 			exportstr, get_vec_attr<decltype(xlon), int>(xlon, "fmt"), address(xlon), address(xlon[0]), xlon[0], demangle(typeid(xlon)), padstr, fmt::join(xlon, ", "));
 #endif
-		auto vds_lat { converty(xlat, newtype) };
-		auto vds_lon { converty(xlon, newtype) };
+		auto vds_lat { convert_switch(xlat, newtype) };
+		auto vds_lon { convert_switch(xlon, newtype) };
 #if DEBUG > 0
 		fmt::print("{}@IIIconvertwaypoints(DataFrame, int); &vds_lat {}, &vds_lat[0] {}, vds_lat[0] {}, typeid: {}\n",
 			exportstr, address(vds_lat), address(vds_lat[0]), vds_lat[0], demangle(typeid(vds_lat)));
