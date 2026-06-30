@@ -1126,8 +1126,10 @@ DataFrame convertwaypoints(DataFrame x, int fmt)
 		stop("Invalid llcols attribute!");
 	if (newtype != ct_current) {
 		auto llcols { get_vec_attr<int>(x, "llcols") };
-		for (auto llcol : llcols)
+//		fmt::print("{}@IAconvertwaypoints(DataFrame, int); In Mimiland, llcols {}, typeid(llcols) {}\n", exportstr, fmt::join(llcols, ", "), demangle(typeid(llcols)));
+		for (auto& llcol : llcols)	// llcols to C++ zero-based indexing
 			--llcol;
+//		fmt::print("{}@IAconvertwaypoints(DataFrame, int); In Mimiland, llcols {}, typeid(llcols) {}\n", exportstr, fmt::join(llcols, ", "), demangle(typeid(llcols)));
 		NumericVector xlat = x[llcols[0]];
 		NumericVector xlon = x[llcols[1]];
 		xlat.attr("fmt") = get_vec_attr<int>(x, "fmt");
@@ -1163,6 +1165,8 @@ DataFrame convertwaypoints(DataFrame x, int fmt)
 		x.attr("row.names") = row_names;
 		x.attr("fmt") = fmt;
 		x.attr("namescol") = namescol;
+		for (auto& llcol : llcols)	// llcols to R one-based indexing
+			++llcol;
 		x.attr("llcols") = llcols;
 		x.attr("validlat") = validlat;
 		x.attr("validlon") = validlon;
