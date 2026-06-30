@@ -321,7 +321,7 @@ inline double polish(double);
 /// __________________________________________________
 /// Utility
 template<typename U> 
-inline vector<U> get_vec_attrNew(const NumVec_or_DataFrame auto&, const string);
+inline vector<U> get_vec_attr(const NumVec_or_DataFrame auto&, const string);
 inline int get_fmt_attribute(const NumVec_or_DataFrame auto&);
 int check_logical_attr(NumVec_or_DataFrame auto, const string);
 inline void checkinherits(const NumVec_or_DataFrame auto&, const string);

@@ -102,9 +102,9 @@ inline double polish(double x)
 /// __________________________________________________
 /// Return named attribute as vector<U> or empty vector<U>
 template<typename U> 
-inline vector<U> get_vec_attrNew(const NumVec_or_DataFrame auto& t, const string attrname)
+inline vector<U> get_vec_attr(const NumVec_or_DataFrame auto& t, const string attrname)
 {
-//	fmt::print("@{} attr=\"{}\" {}\n", "get_vec_attrNew<U>(const NumVec_or_DataFrame auto&, const string)", attrname, t.hasAttribute(attrname) ? true : false);
+//	fmt::print("@{} attr=\"{}\" {}\n", "get_vec_attr<U>(const NumVec_or_DataFrame auto&, const string)", attrname, t.hasAttribute(attrname) ? true : false);
 	return t.hasAttribute(attrname) ? as<vector<U>>(t.attr(attrname)) : vector<U>{};
 }
 
@@ -121,7 +121,7 @@ inline int get_fmt_attribute(const NumVec_or_DataFrame auto& t)
 int check_logical_attr(NumVec_or_DataFrame auto t, const string attrname)
 {
 //	fmt::print("@check_logical_attr(NumVec_or_DataFrame auto, const string); T: {}; attrname {}\n", demangle(typeid(t)), attrname);
-	const vector vec_attr{ get_vec_attrNew<bool>(t, attrname) };
+	const vector vec_attr{ get_vec_attr<bool>(t, attrname) };
 	if (vec_attr.size()) {
 		return all_of(vec_attr.begin(), vec_attr.end(), [](bool v) { return v;}) ? 0b11 : 0b01;
 	} else {
@@ -205,7 +205,7 @@ inline string str_tolower(string s)
 int name_pos_in_df(const DataFrame df, const string name)
 {
 //	fmt::print("@name_pos_in_df(const DataFrame, const string); name={}\n", name);
-	vector names{ get_vec_attrNew<string>(df, "names"s) };
+	vector names{ get_vec_attr<string>(df, "names"s) };
 	if (!names.size())
 		return -1;
 	typedef decltype(names.size()) Tmp;
@@ -228,7 +228,7 @@ int name_pos_in_df(const DataFrame df, const string name)
 RObject getnames(const DataFrame df)
 {
 //	fmt::print("@{}\n", "getnames(const DataFrame)");
-	vector namescolvec{ get_vec_attrNew<int>(df, "namescol"s) };
+	vector namescolvec{ get_vec_attr<int>(df, "namescol"s) };
 	if (1 == namescolvec.size()) {
 		int namescol = namescolvec[0] - 1;
 		if (is_item_in_df(df, namescol))
@@ -502,7 +502,7 @@ inline coords_t auto coordsmaker(NumericVector nv, vector<bool> latlon)
 		padstr, address(nv), address(nv[0]), nv[0], demangle(typeid(T)));
 #endif
 	if (!latlon.size())
-		latlon = get_vec_attrNew<bool>(nv, "latlon"s);
+		latlon = get_vec_attr<bool>(nv, "latlon"s);
 	return Coords<T>(nv, latlon);
 }
 
@@ -637,7 +637,7 @@ inline waypoints_t auto waypointsmaker(DataFrame df)
 #if DEBUG > 0
 	fmt::print("@waypointsmaker(DataFrame); DVecType: {}\n", demangle(typeid(T)));
 #endif
-	return Waypoints<T>(df[get_vec_attrNew<int>(df, "llcols")[0] - 1], df[get_vec_attrNew<int>(df, "llcols")[1] - 1]);
+	return Waypoints<T>(df[get_vec_attr<int>(df, "llcols")[0] - 1], df[get_vec_attr<int>(df, "llcols")[1] - 1]);
 }
 
 /// __________________________________________________
@@ -772,7 +772,7 @@ bool valid_ll(const DataFrame df)
 	fmt::print("@{}\n", "valid_ll(const DataFrame)");
 #endif
 	bool valid = false;
-	vector llcols { get_vec_attrNew<int>(df, "llcols"s) };
+	vector llcols { get_vec_attr<int>(df, "llcols"s) };
 	if (2 == llcols.size()) {
 		transform(llcols.begin(), llcols.end(), llcols.begin(), [](auto x){ return --x; });
 		if (is_item_in_df(df, llcols[0]) && is_item_in_df(df, llcols[1]) && llcols[0] != llcols[1])
@@ -1046,7 +1046,7 @@ CharacterVector formatcoords(const NumericVector x, bool usenames = true, bool v
 	fmt::print("{}@IIformatcoords(const NumericVector, bool, bool, int);\n\t{}\t\t&sv_out {}, &sv_out[0] {}, sv_out[0] {}, typeid: {}\n",
 		exportstr, padstr, address(sv_out), address(sv_out[0]), sv_out[0], demangle(typeid(sv_out).name()));
 #endif
-	vector names{ get_vec_attrNew<string>(x, "names"s) };
+	vector names{ get_vec_attr<string>(x, "names"s) };
 	if (names.size() && usenames) {
 		stdlenstr(names);
 		concat_vecstr_elmnts(names, sv_out);
@@ -1125,16 +1125,16 @@ DataFrame convertwaypoints(DataFrame x, int fmt)
 	if(!valid_ll(x))
 		stop("Invalid llcols attribute!");
 	if (newtype != ct_current) {
-		auto llcols { get_vec_attrNew<int>(x, "llcols") };
+		auto llcols { get_vec_attr<int>(x, "llcols") };
 		NumericVector xlat = x[llcols[0] - 1];
 		NumericVector xlon = x[llcols[1] - 1];
-		xlat.attr("fmt") = get_vec_attrNew<int>(x, "fmt");
-		xlon.attr("fmt") = get_vec_attrNew<int>(x, "fmt");
+		xlat.attr("fmt") = get_vec_attr<int>(x, "fmt");
+		xlon.attr("fmt") = get_vec_attr<int>(x, "fmt");
 #if DEBUG > 0
 		fmt::print("{}@Iconvertwaypoints(DataFrame, int); fmt: {}, &xlat {}, &xlat[0] {}, xlat[0] {}, typeid: {}\n\t{}\t{}\n",
-			exportstr, get_vec_attrNew<int>(xlat, "fmt"), address(xlat), address(xlat[0]), xlat[0], demangle(typeid(xlat)), padstr, fmt::join(xlat, ", "));
+			exportstr, get_vec_attr<int>(xlat, "fmt"), address(xlat), address(xlat[0]), xlat[0], demangle(typeid(xlat)), padstr, fmt::join(xlat, ", "));
 		fmt::print("{}@IIconvertwaypoints(DataFrame, int); fmt: {}, &xlon {}, &xlon[0] {}, xlon[0] {}, typeid: {}\n\t{}\t{}\n",
-			exportstr, get_vec_attrNew<int>(xlon, "fmt"), address(xlon), address(xlon[0]), xlon[0], demangle(typeid(xlon)), padstr, fmt::join(xlon, ", "));
+			exportstr, get_vec_attr<int>(xlon, "fmt"), address(xlon), address(xlon[0]), xlon[0], demangle(typeid(xlon)), padstr, fmt::join(xlon, ", "));
 #endif
 		auto vds_lat { convert_switch(xlat, newtype) };
 		auto vds_lon { convert_switch(xlon, newtype) };
@@ -1144,11 +1144,11 @@ DataFrame convertwaypoints(DataFrame x, int fmt)
 		fmt::print("{}@IVconvertwaypoints(DataFrame, int); &vds_lon {}, &vds_lon[0] {}, vds_lon[0] {}, typeid: {}\n",
 			exportstr, address(vds_lon), address(vds_lon[0]), vds_lon[0], demangle(typeid(vds_lon)));
 #endif
-		auto namescol { get_vec_attrNew<int>(x, "namescol") };
-		auto names { get_vec_attrNew<string>(x, "names") };
-		auto row_names { get_vec_attrNew<int>(x, "row.names") };
-		auto validlat { get_vec_attrNew<bool>(x, "validlat") };
-		auto validlon { get_vec_attrNew<bool>(x, "validlon") };
+		auto namescol { get_vec_attr<int>(x, "namescol") };
+		auto names { get_vec_attr<string>(x, "names") };
+		auto row_names { get_vec_attr<int>(x, "row.names") };
+		auto validlat { get_vec_attr<bool>(x, "validlat") };
+		auto validlon { get_vec_attr<bool>(x, "validlon") };
 
 		auto llcol_it { x.erase(llcols[0] - 1) };
 		x.insert(llcol_it, vds_lat);
@@ -1257,7 +1257,7 @@ NumericVector as_coordswaypoints(DataFrame object, bool which)
 	fmt::print("{}@as_coord(DataFrame); which: {}\n", exportstr, which ? "lat" : "lon");
 #endif
 	checkinherits(object, "waypoints"s);
-	NumericVector nv = object[get_vec_attrNew<int>(object, "llcols"s)[which ? 0 : 1] - 1];
+	NumericVector nv = object[get_vec_attr<int>(object, "llcols"s)[which ? 0 : 1] - 1];
 	nv = clone(nv);
 	nv.attr("class") = "coords";
 	nv.attr("fmt") = object.attr("fmt");
