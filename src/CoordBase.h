@@ -13,7 +13,7 @@
 /// __________________________________________________
 /// Development and debugging
 
-#define DEBUG 1
+#define DEBUG 0
 
 #if DEBUG > 0
 
@@ -320,8 +320,8 @@ inline double polish(double);
 /// __________________________________________________
 /// __________________________________________________
 /// Utility
-template<NumVec_or_DataFrame T, typename U> 
-inline vector<U> get_vec_attr(const T&, const string);
+template<typename U> 
+inline vector<U> get_vec_attrNew(const NumVec_or_DataFrame auto&, const string);
 inline int get_fmt_attribute(const NumVec_or_DataFrame auto&);
 int check_logical_attr(NumVec_or_DataFrame auto, const string);
 inline void checkinherits(const NumVec_or_DataFrame auto&, const string);
