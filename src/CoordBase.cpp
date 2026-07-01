@@ -411,56 +411,6 @@ vector<U> Coords<T>::conform(CoordType required) const
 }
 
 /// __________________________________________________
-/// convert call entry point —— public												// ¡¡¡—— Deprecate ——!!!
-template<DVecType T>
-vector<double> Coords<T>::convert(CoordType newtype) const
-{
-#if DEBUG > 0
-	fmt::print("@Coords<T>::convert(CoordType) const; T: {}, new type: {}\n", demangle(typeid(T)), newtype);
-#endif
-	using enum CoordType;
-	switch (newtype)
-	{
-		case decdeg:
-			return conform0<DecDegVecDouble, Convertidor<T, DecDegVecDouble>>();
-
-		case degmin:
-			return conform0<DegMinVecDouble, Convertidor<T, DegMinVecDouble>>();
-
-		case degminsec:
-			return conform0<DegMinSecVecDouble, Convertidor<T, DegMinSecVecDouble>>();
-
-		default:
-			stop("Coords<T>::convert(CoordType) const my bad");
-	}
-}
-
-/// __________________________________________________
-/// Format call entry point —— public												// ¡¡¡—— Deprecate ——!!!
-template<DVecType T>
-vector<string> Coords<T>::format(CoordType required_type) const
-{
-#if DEBUG > 0
-	fmt::print("@Coords<T>::format(CoordType) const; T: {}, required type: {}\n", demangle(typeid(T)), required_type);
-#endif
-	using enum CoordType;
-	switch (required_type)
-	{
-		case decdeg:
-			return conform0<DecDegVecString, Formateador<T, DecDegVecString>>();
-
-		case degmin:
-			return conform0<DegMinVecString, Formateador<T, DegMinVecString>>();
-
-		case degminsec:
-			return conform0<DegMinSecVecString, Formateador<T, DegMinSecVecString>>();
-
-		default:
-			stop("Coords<T>::format(CoordType) const my bad");
-	}
-}
-
-/// __________________________________________________
 /// Validation call entry point —— public
 template<DVecType T>
 const vector<bool> Coords<T>::validate() const

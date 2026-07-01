@@ -541,8 +541,6 @@ class Coords {
 #elif DEBUG > 0
 		~Coords() { _ctrsgn(typeid(*this), false); }
 #endif
-		vector<double> convert(CoordType) const;						// ¡¡¡—— Deprecate ——!!!   (Non-const return type avoids making unnecessary copy)
-		vector<string> format(CoordType) const;						// ¡¡¡—— Deprecate ——!!!   (Non-const return type avoids making unnecessary copy)
 		template<typename U, template <typename V> typename F>
 		vector<U> conform(CoordType) const;							// Non-const return type avoids making unnecessary copy
 		const vector<bool> validate() const;
@@ -559,18 +557,13 @@ using CoordsDegMinSec = Coords<DegMinSecVecDouble>;
 template<typename T>
 concept coords_t =
 	requires (T t, CoordType ct) {
-		{ t.conform(ct) } -> std::same_as<vector<double>>;
+//		{ t.conform(ct) } -> std::same_as<vector<double>>;
 		{ t.validate() };
 	} ||
 	requires (T t, CoordType ct) {
-		{ t.conform(ct) }  -> std::same_as<vector<string>>;
+//		{ t.conform(ct) }  -> std::same_as<vector<string>>;
 		{ t.validate() };
-	} ||
-    requires (T t, CoordType ct) {									// ¡¡¡—— Deprecate ——!!!
-        { t.convert(ct) } -> std::same_as<vector<double>>;
-        { t.format(ct) }  -> std::same_as<vector<string>>;
-        { t.validate() } ;
-    };
+	};
 
 /// __________________________________________________
 /// Instantiate Coords<DVecType> object
