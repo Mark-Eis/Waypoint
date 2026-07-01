@@ -517,7 +517,6 @@ concept functador =
         { t.operator()(n) } -> std::same_as<string>;
     };
 
-
 /// __________________________________________________
 /// __________________________________________________
 /// Coords class
@@ -544,6 +543,7 @@ class Coords {
 		template<typename U, template <typename V> typename F>
 		vector<U> conform(CoordType) const;							// Non-const return type avoids making unnecessary copy
 		const vector<bool> validate() const;
+		void bjarne_stroustrup() const {}							// ¡¡¡—— temporary fix! ——!!!
 };
 
 /// __________________________________________________
@@ -554,15 +554,13 @@ using CoordsDegMinSec = Coords<DegMinSecVecDouble>;
 
 /// __________________________________________________
 /// Concept —— coords_t
+
 template<typename T>
 concept coords_t =
 	requires (T t, CoordType ct) {
-//		{ t.conform(ct) } -> std::same_as<vector<double>>;
+//		{ t.conform(ct) } -> vectype;
 		{ t.validate() };
-	} ||
-	requires (T t, CoordType ct) {
-//		{ t.conform(ct) }  -> std::same_as<vector<string>>;
-		{ t.validate() };
+		{ t.bjarne_stroustrup() };									// ¡¡¡—— temporary fix! ——!!!
 	};
 
 /// __________________________________________________
