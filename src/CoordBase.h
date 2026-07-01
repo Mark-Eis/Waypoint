@@ -611,8 +611,6 @@ class Waypoints {
 #elif DEBUG > 0
 		~Waypoints() { _ctrsgn(typeid(*this), false); }
 #endif
-		const bisvec<double> convert(CoordType) const;
-		const bisvec<string> format(CoordType) const;
 		const bisconstvec<bool> validate() const;
 };
 
@@ -671,7 +669,6 @@ inline waypoints_t auto waypointsmaker(DataFrame);
 /// __________________________________________________
 /// __________________________________________________
 /// Switches for Waypoints<DVecType>
-const bisvec<string> format_switch(const DataFrame, CoordType);
 const bisconstvec<bool> validate_switch(const DataFrame);
 
 
