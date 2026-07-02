@@ -585,27 +585,7 @@ template<typename T>
 using bisconstvec = array<const vector<T>, 2>;
 
 /// __________________________________________________
-/// __________________________________________________
-/// Waypoints class
-template<DVecType T>
-class Waypoints {
-		const Coords<T> crdlat;
-		const Coords<T> crdlon;
-	public:
-		explicit Waypoints(NumericVector, NumericVector);
-		Waypoints(const Waypoints&) = delete;					// Disallow copying
-		Waypoints& operator=(const Waypoints&) = delete;			//  ——— ditto ———
-		Waypoints(Waypoints&&) = delete;						// Disallow transfer ownership
-		Waypoints& operator=(Waypoints&&) = delete;				// Disallow moving
-#if DEBUG == 0
-		~Waypoints() = default;
-#elif DEBUG > 0
-		~Waypoints() { _ctrsgn(typeid(*this), false); }
-#endif
-		const bisconstvec<bool> validate() const;
-};
-
-/// __________________________________________________
+/// ¡¡¡—— Revised version ——!!!
 /// __________________________________________________
 /// WaypointsNew class
 class WaypointsNew {
@@ -626,7 +606,30 @@ class WaypointsNew {
 		vector<double> convert(CoordType, bool) const;
 		vector<string> format(CoordType, bool) const;
 		const bisconstvec<bool> validate() const;
-		void report() const;
+		inline const vector<int> get_llcols() const;
+		void report() const;													// ¡¡¡—— Deprecate ——!!!
+};
+
+/// __________________________________________________
+/// ¡¡¡—— Old Hat ——!!!
+/// __________________________________________________
+/// Waypoints class
+template<DVecType T>
+class Waypoints {
+		const Coords<T> crdlat;
+		const Coords<T> crdlon;
+	public:
+		explicit Waypoints(NumericVector, NumericVector);
+		Waypoints(const Waypoints&) = delete;					// Disallow copying
+		Waypoints& operator=(const Waypoints&) = delete;			//  ——— ditto ———
+		Waypoints(Waypoints&&) = delete;						// Disallow transfer ownership
+		Waypoints& operator=(Waypoints&&) = delete;				// Disallow moving
+#if DEBUG == 0
+		~Waypoints() = default;
+#elif DEBUG > 0
+		~Waypoints() { _ctrsgn(typeid(*this), false); }
+#endif
+		const bisconstvec<bool> validate() const;
 };
 
 /// __________________________________________________

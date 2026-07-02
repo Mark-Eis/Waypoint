@@ -566,6 +566,17 @@ vector<string> WaypointsNew::format(CoordType required_type, bool latlon) const
 	return format_switch(latlon ? nv_lat : nv_lon, required_type);
 }
 
+
+/// __________________________________________________
+/// Report addresses of nv_lat, nv_lon
+const vector<int> WaypointsNew::get_llcols() const
+{
+#if DEBUG > 0
+	fmt::print("@WaypointsNew::get_llcols() const\n")
+#endif
+	return llcols;
+}
+
 /// __________________________________________________
 /// Report addresses of nv_lat, nv_lon
 void WaypointsNew::report() const
@@ -953,15 +964,12 @@ DataFrame convertwaypoints(DataFrame x, int fmt)
 		fmt::print("{}@IVconvertwaypoints(DataFrame, int); &vd_lon {}, &vd_lon[0] {}, vd_lon[0] {}, typeid: {}\n",
 			exportstr, address(vd_lon), address(vd_lon[0]), vd_lon[0], demangle(typeid(vd_lon)));
 #endif
-		auto llcols { get_vec_attr<int>(x, "llcols") };      								// ¡¡¡—— Shouldn't need to repeat this ——!!!
-		for (auto& llcol : llcols)	// llcols to C++ zero-based indexing
-			--llcol;
-
-		auto namescol { get_vec_attr<int>(x, "namescol") };
-		auto names { get_vec_attr<string>(x, "names") };
-		auto row_names { get_vec_attr<int>(x, "row.names") };
-		auto validlat { get_vec_attr<bool>(x, "validlat") };
-		auto validlon { get_vec_attr<bool>(x, "validlon") };
+		auto llcols{ wp.get_llcols() };
+		auto namescol{ get_vec_attr<int>(x, "namescol") };
+		auto names{ get_vec_attr<string>(x, "names") };
+		auto row_names{ get_vec_attr<int>(x, "row.names") };
+		auto validlat{ get_vec_attr<bool>(x, "validlat") };
+		auto validlon{ get_vec_attr<bool>(x, "validlon") };
 
 		auto llcol_it { x.erase(llcols[0]) };
 		x.insert(llcol_it, vd_lat);
