@@ -971,9 +971,8 @@ DataFrame convertwaypoints(DataFrame x, int fmt)
 		auto validlat{ get_vec_attr<bool>(x, "validlat") };
 		auto validlon{ get_vec_attr<bool>(x, "validlon") };
 
-		auto llcol_it { x.erase(llcols[0]) };
+		auto llcol_it{ x.erase(llcols[0]) };
 		x.insert(llcol_it, vd_lat);
-
 		llcol_it = x.erase(llcols[1]);
 		x.insert(llcol_it, vd_lon);
 
