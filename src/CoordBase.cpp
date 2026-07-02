@@ -563,16 +563,32 @@ vector<string> WaypointsNew::format(CoordType required_type, bool latlon) const
 #if DEBUG > 0
 	fmt::print("@WaypointsNew::format(CoordType, bool) const;\n");
 #endif
-	return format_switch(latlon ? nv_lat : nv_lon, required_type);
+	using enum CoordType;
+	auto sv_out { format_switch(latlon ? nv_lat : nv_lon, required_type) };
+	if (decdeg != required_type) {
+		suffix_nesw(sv_out, latlon);
+	}
+	return sv_out;
 }
 
+/// __________________________________________________
+/// Add suffix of  "N", "S", "E", "W" if CoordType::degmin or CoordType::degminsec
+void WaypointsNew::suffix_nesw(vector<string>& sv_out, bool latlon) const
+{
+#if DEBUG > 0
+	fmt::print("@WaypointsNew::suffix_nesw(vector<string> sv_out) const; {}\n", latlon ? "lat" : "lon");
+#endif
+	transform(sv_out.begin(), sv_out.end(), (latlon ? nv_lat : nv_lon).begin(), sv_out.begin(), [latlon](auto& outstr, auto n){
+	   return outstr + cardpoint(n < 0, latlon); }
+	);
+}
 
 /// __________________________________________________
 /// Report column locations of nv_lat, nv_lon
 const vector<int> WaypointsNew::get_llcols() const
 {
 #if DEBUG > 0
-	fmt::print("@WaypointsNew::get_llcols() const\n")
+	fmt::print("@WaypointsNew::get_llcols() const\n");
 #endif
 	return llcols;
 }
@@ -1022,7 +1038,7 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate
 	fmt::print("{}@IVformatwaypoints(DataFrame, int); &vs_lon {}, &vs_lon[0] {}, vs_lon[0] {}, typeid: {}\n",
 		exportstr, address(vs_lon), address(vs_lon[0]), vs_lon[0], demangle(typeid(vs_lon)));
 #endif
-    transform(vs_lat.begin(), vs_lat.end(), vs_lon.begin(), vs_lat.begin(), [](auto& latstr, auto& lonstr){ return latstr + "  " + lonstr; });
+	transform(vs_lat.begin(), vs_lat.end(), vs_lon.begin(), vs_lat.begin(), [](auto& latstr, auto& lonstr){ return latstr + "  " + lonstr; });
 #if DEBUG > 0
 	fmt::print("{}@Iformatwaypoints(DataFrame, bool, bool, int); vs_lat[0] {}, &vs_lat {}, &vs_lat[0] {}, typeid: {}\n",
 		exportstr, vs_lat[0], address(vs_lat), address(vs_lat[0]), demangle(typeid(vs_lat)));

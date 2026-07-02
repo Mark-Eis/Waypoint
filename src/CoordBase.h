@@ -13,7 +13,7 @@
 /// __________________________________________________
 /// Development and debugging
 
-#define DEBUG 0
+#define DEBUG 1
 
 #if DEBUG > 0
 
@@ -605,6 +605,7 @@ class WaypointsNew {
 #endif
 		vector<double> convert(CoordType, bool) const;
 		vector<string> format(CoordType, bool) const;
+		void suffix_nesw(vector<string>&, bool) const;
 		const bisconstvec<bool> validate() const;
 		inline const vector<int> get_llcols() const;
 		void report() const;													// ¡¡¡—— Deprecate ——!!!
