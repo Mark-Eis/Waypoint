@@ -603,7 +603,7 @@ class WaypointsNew {
 		vector<double> convert(CoordType, bool) const;
 		vector<string> format(CoordType, bool) const;
 		void suffix_nesw(vector<string>&, bool) const;
-		const bisconstvec<bool> validate() const;
+		const vector<bool> validate(bool) const;
 		inline const vector<int> get_llcols() const;
 		void report() const;													// ¡¡¡—— Deprecate ——!!!
 };
@@ -685,9 +685,8 @@ inline WaypointsNew waypointsmakerNew(DataFrame);
 
 /// __________________________________________________
 /// __________________________________________________
-/// Switches for Waypoints<DVecType>
-const bisconstvec<bool> validate_switch(const DataFrame);
-
+/// for Waypoints
+inline const bisconstvec<bool> validate_switch(const DataFrame);
 
 /// __________________________________________________
 /// __________________________________________________

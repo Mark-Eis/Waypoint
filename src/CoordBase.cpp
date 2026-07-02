@@ -581,6 +581,16 @@ void WaypointsNew::suffix_nesw(vector<string>& sv_out, bool latlon) const
 }
 
 /// __________________________________________________
+/// Convert nv_lat, nv_lon
+const vector<bool> WaypointsNew::validate(bool latlon) const
+{
+#if DEBUG > 0
+	fmt::print("@WaypointsNew::validate(bool) const; latlon {}\n", latlon);
+#endif
+	return validate_switch(latlon ? nv_lat : nv_lon);
+}
+
+/// __________________________________________________
 /// Report column locations of nv_lat, nv_lon
 const vector<int> WaypointsNew::get_llcols() const
 {
@@ -669,26 +679,12 @@ inline waypoints_t auto waypointsmaker(DataFrame df)
 
 /// __________________________________________________
 /// Validate "waypoints" DataFrame 
-const bisconstvec <bool> validate_switch(const DataFrame df)
+inline const bisconstvec <bool> validate_switch(const DataFrame df)
 {
 #if DEBUG > 0
 	fmt::print("@validate_switch(const DataFrame); current type: {}\n", get_coordtype(df));
 #endif
-	using enum CoordType;
-	switch (get_coordtype(df))
-	{
-		case decdeg:
-			return waypointsmaker<DecDegVecDouble>(df).validate();
-
-		case degmin:
-			return waypointsmaker<DegMinVecDouble>(df).validate();
-
-		case degminsec:
-			return waypointsmaker<DegMinSecVecDouble>(df).validate();
-
-		default:
-			stop("validate_switch(const DataFrame) const my bad");
-	}
+	return { waypointsmakerNew(df).validate(true), waypointsmakerNew(df).validate(false) };
 }
 
 
