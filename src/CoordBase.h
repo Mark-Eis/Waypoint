@@ -13,7 +13,7 @@
 /// __________________________________________________
 /// Development and debugging
 
-#define DEBUG 1
+#define DEBUG 0
 
 #if DEBUG > 0
 
@@ -622,8 +622,9 @@ class WaypointsNew {
 #elif DEBUG > 0
 		~WaypointsNew() { _ctrsgn(typeid(*this), false); }
 #endif
-		const bisconstvec<bool> validate() const;
 		vector<double> convert(CoordType, bool) const;
+		vector<string> format(CoordType, bool) const;
+		const bisconstvec<bool> validate() const;
 		void report() const;
 };
 
