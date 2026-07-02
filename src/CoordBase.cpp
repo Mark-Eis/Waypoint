@@ -568,7 +568,7 @@ vector<string> WaypointsNew::format(CoordType required_type, bool latlon) const
 
 
 /// __________________________________________________
-/// Report addresses of nv_lat, nv_lon
+/// Report column locations of nv_lat, nv_lon
 const vector<int> WaypointsNew::get_llcols() const
 {
 #if DEBUG > 0
