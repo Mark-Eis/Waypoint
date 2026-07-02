@@ -13,7 +13,7 @@
 /// __________________________________________________
 /// Development and debugging
 
-#define DEBUG 1
+#define DEBUG 0
 
 #if DEBUG > 0
 
@@ -527,8 +527,6 @@ class Coords {
 
 		template<vectype U, functador V>
 		inline U conform0() const;
-		void suffix_nesw(vector<string>&) const;
-		void suffix_latlon(vector<string>&) const;
 	public:
 		explicit Coords(T, const vector<bool>);
 		Coords(const Coords&) = delete;								// Disallow copying
@@ -575,6 +573,10 @@ vector<double> convert_switch(const NumericVector, CoordType);
 vector<string> format_switch(const NumericVector, CoordType); 
 const vector<bool> validate_switch(const NumericVector); 
 
+/// __________________________________________________
+/// Suffixes for formatted coords
+void suffix_nesw(vector<string>&, const NumericVector&);
+void suffix_latlon(vector<string>&, const NumericVector&);
 
 /// __________________________________________________
 /// __________________________________________________
