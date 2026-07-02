@@ -550,9 +550,9 @@ WaypointsNew::WaypointsNew(NumericVector _nv_lat, NumericVector _nv_lon) :
 vector<double> WaypointsNew::convert(CoordType newtype, bool latlon) const
 {
 #if DEBUG > 0
-	fmt::print("@WaypointsNew::convert(CoordType, bool) const;\n");
-	return convert_switch(latlon ? nv_lat : nv_lon, newtype);
+	fmt::print("@WaypointsNew::convert(CoordType, bool) const; newtype {}, latlon {}\n", newtype, latlon);
 #endif
+	return convert_switch(latlon ? nv_lat : nv_lon, newtype);
 }
 
 /// __________________________________________________
@@ -561,8 +561,8 @@ vector<string> WaypointsNew::format(CoordType required_type, bool latlon) const
 {
 #if DEBUG > 0
 	fmt::print("@WaypointsNew::format(CoordType, bool) const;\n");
-	return format_switch(latlon ? nv_lat : nv_lon, required_type);
 #endif
+	return format_switch(latlon ? nv_lat : nv_lon, required_type);
 }
 
 /// __________________________________________________
@@ -578,6 +578,7 @@ void WaypointsNew::report() const
 }
 
 
+/// __________________________________________________
 /// __________________________________________________
 /// Instantiate WaypointsNew object
 inline WaypointsNew waypointsmakerNew(DataFrame df)
@@ -943,21 +944,6 @@ DataFrame convertwaypoints(DataFrame x, int fmt)
 		stop("Invalid llcols attribute!");
 	if (newtype != ct_current) {
 		auto wp { waypointsmakerNew(x) };
-#if DEBUG > 0
-////////////////// DEBUGGING CODE: show DataFrame x maintains integrity @ xlat[0] and xlon[0] //////////////////
-		wp.report();
-		auto _llcols { get_vec_attr<int>(x, "llcols") };
-		for (auto& llcol : _llcols)	// llcols to C++ zero-based indexing
-			--llcol;
-		NumericVector&& xlat = x[_llcols[0]];
-		NumericVector&& xlon = x[_llcols[1]];
-		fmt::print("{}@Iconvertwaypoints(DataFrame, int); fmt: {}, &xlat {}, &xlat[0] {}, xlat[0] {}, typeid: {}\n\t{}\t{}\n",
-			exportstr, get_vec_attr<int>(xlat, "fmt"), address(xlat), address(xlat[0]), xlat[0], demangle(typeid(xlat)), padstr, fmt::join(xlat, ", "));
-		fmt::print("{}@IIconvertwaypoints(DataFrame, int); fmt: {}, &xlon {}, &xlon[0] {}, xlon[0] {}, typeid: {}\n\t{}\t{}\n",
-			exportstr, get_vec_attr<int>(xlon, "fmt"), address(xlon), address(xlon[0]), xlon[0], demangle(typeid(xlon)), padstr, fmt::join(xlon, ", "));
-		stop("Got this far!");
-////////////////// DEBUGGING CODE ENDS //////////////////
-#endif
 		auto vd_lat { wp.convert(newtype, true) };
 		auto vd_lon { wp.convert(newtype, false) };
 #if DEBUG > 0
