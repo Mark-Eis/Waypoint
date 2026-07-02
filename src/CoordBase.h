@@ -611,8 +611,9 @@ class Waypoints {
 class WaypointsNew {
 		NumericVector nv_lat;
 		NumericVector nv_lon;
+		const vector<int> llcols;
 	public:
-		/* explicit */ WaypointsNew(NumericVector, NumericVector);
+		/* explicit */ WaypointsNew(NumericVector, NumericVector, vector<int>);
 		WaypointsNew(const WaypointsNew&) = delete;					// Disallow copying
 		WaypointsNew& operator=(const WaypointsNew&) = delete;			//  ——— ditto ———
 		WaypointsNew(WaypointsNew&&) = delete;						// Disallow transfer ownership

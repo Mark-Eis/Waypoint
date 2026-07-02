@@ -536,12 +536,13 @@ const vector<bool> validate_switch(const NumericVector nv)
 
 /// __________________________________________________
 /// Constructor
-WaypointsNew::WaypointsNew(NumericVector _nv_lat, NumericVector _nv_lon) :
+WaypointsNew::WaypointsNew(NumericVector _nv_lat, NumericVector _nv_lon, vector<int> _llcols) :
 	nv_lat{ _nv_lat },
-	nv_lon{ _nv_lon }
+	nv_lon{ _nv_lon },
+	llcols{ _llcols }
 {
 #if DEBUG > 0
-	_ctrsgn(typeid(*this)); fmt::print("\t(vector<double>, vector<double>)\n");
+	_ctrsgn(typeid(*this)); fmt::print("\t(vector<double>, vector<double>, vector<int>)\n");
 #endif
 }
 
@@ -599,7 +600,7 @@ inline WaypointsNew waypointsmakerNew(DataFrame df)
 #endif
 	dflat.attr("fmt") = get_vec_attr<int>(df, "fmt");
 	dflon.attr("fmt") = get_vec_attr<int>(df, "fmt");
-	return { std::move(dflat), std::move(dflon) };
+	return { std::move(dflat), std::move(dflon), llcols };
 }
 
 /// __________________________________________________
@@ -1001,24 +1002,6 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate
 	if (validate)
 		if (!check_valid(x))
 			warning("Formatting invalid waypoints!");
-/*
-	auto llcols { get_vec_attr<int>(x, "llcols") };
-	for (auto& llcol : llcols)	// llcols to C++ zero-based indexing
-		--llcol;
-	NumericVector xlat = x[llcols[0]];
-	NumericVector xlon = x[llcols[1]];
-	xlat.attr("fmt") = get_vec_attr<int>(x, "fmt");
-	xlon.attr("fmt") = get_vec_attr<int>(x, "fmt");
-#if DEBUG > 0
-	fmt::print("{}@Iformatwaypoints(DataFrame, int); fmt: {}, &xlat {}, &xlat[0] {}, xlat[0] {}, typeid: {}\n\t{}\t{}\n",
-		exportstr, get_vec_attr<int>(xlat, "fmt"), address(xlat), address(xlat[0]), xlat[0], demangle(typeid(xlat)), padstr, fmt::join(xlat, ", "));
-	fmt::print("{}@IIformatwaypoints(DataFrame, int); fmt: {}, &xlon {}, &xlon[0] {}, xlon[0] {}, typeid: {}\n\t{}\t{}\n",
-		exportstr, get_vec_attr<int>(xlon, "fmt"), address(xlon), address(xlon[0]), xlon[0], demangle(typeid(xlon)), padstr, fmt::join(xlon, ", "));
-#endif
-	auto vs_lat { format_switch(xlat, fmt ? get_coordtype(fmt) : get_coordtype(x)) };
-	auto vs_lon { format_switch(xlon, fmt ? get_coordtype(fmt) : get_coordtype(x)) };
-*/
-
 	auto wp { waypointsmakerNew(x) };
 #if DEBUG > 0
 	wp.report();
