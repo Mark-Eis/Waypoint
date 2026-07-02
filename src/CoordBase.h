@@ -545,12 +545,6 @@ class Coords {
 };
 
 /// __________________________________________________
-/// Template aliases
-using CoordsDecDeg = Coords<DecDegVecDouble>;
-using CoordsDegMin = Coords<DegMinVecDouble>;
-using CoordsDegMinSec = Coords<DegMinSecVecDouble>;
-
-/// __________________________________________________
 /// Concept —— coords_t
 
 template<typename T>
@@ -573,6 +567,7 @@ vector<double> convert_switch(const NumericVector, CoordType);
 vector<string> format_switch(const NumericVector, CoordType); 
 const vector<bool> validate_switch(const NumericVector); 
 
+/// __________________________________________________
 /// __________________________________________________
 /// Suffixes for formatted coords
 void suffix_nesw(vector<string>&, const NumericVector&);
