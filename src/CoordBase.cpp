@@ -546,6 +546,40 @@ Waypoints<T>::Waypoints(NumericVector nv_lat, NumericVector nv_lon) :
 }
 
 /// __________________________________________________
+/// Constructor
+WaypointsNew::WaypointsNew(NumericVector _nv_lat, NumericVector _nv_lon) :
+	nv_lat{ _nv_lat },
+	nv_lon{ _nv_lon }
+{
+#if DEBUG > 0
+	_ctrsgn(typeid(*this)); fmt::print("\t(vector<double>, vector<double>)\n");
+#endif
+}
+
+/// __________________________________________________
+/// Convert nv_lat, nv_lon
+vector<double> WaypointsNew::convert(CoordType newtype, bool latlon) const
+{
+#if DEBUG > 0
+	fmt::print("@WaypointsNew::convert(bool) const;\n");
+	return convert_switch(latlon ? nv_lat : nv_lon, newtype);
+#endif
+}
+
+
+/// __________________________________________________
+/// Report addresses of nv_lat, nv_lon
+void WaypointsNew::report() const
+{
+#if DEBUG > 0
+	fmt::print("@WaypointsNew::report() const; &nv_lat {}, &nv_lat[0] {}, nv_lat[0] {}, typeid: {}\n\t{}\t{}\n",
+		address(nv_lat), address(nv_lat[0]), nv_lat[0], demangle(typeid(nv_lat)), padstr, fmt::join(nv_lat, ", "));
+	fmt::print("@WaypointsNew::report() const; &nv_lon {}, &nv_lon[0] {}, nv_lon[0] {}, typeid: {}\n\t{}\t{}\n",
+		address(nv_lon), address(nv_lon[0]), nv_lon[0], demangle(typeid(nv_lon)), padstr, fmt::join(nv_lon, ", "));
+#endif
+}
+
+/// __________________________________________________
 /// validate call entry point -- public
 template<DVecType T>
 const bisconstvec<bool> Waypoints<T>::validate() const
@@ -566,6 +600,30 @@ inline waypoints_t auto waypointsmaker(DataFrame df)
 	fmt::print("@waypointsmaker(DataFrame); DVecType: {}\n", demangle(typeid(T)));
 #endif
 	return Waypoints<T>(df[get_vec_attr<int>(df, "llcols")[0] - 1], df[get_vec_attr<int>(df, "llcols")[1] - 1]);
+}
+
+
+/// __________________________________________________
+/// Instantiate WaypointsNew object
+inline WaypointsNew waypointsmakerNew(DataFrame df)
+{
+#if DEBUG > 0
+	fmt::print("@waypointsmakerNew(DataFrame)\n");
+#endif
+	auto llcols { get_vec_attr<int>(df, "llcols") };
+	for (auto& llcol : llcols)							// llcols to C++ zero-based indexing
+		--llcol;
+	NumericVector dflat = df[llcols[0]];
+	NumericVector dflon = df[llcols[1]];
+#if DEBUG > 0
+	fmt::print("@IwaypointsmakerNew(DataFrame); &dflat {}, &dflat[0] {}, dflat[0] {}, typeid: {}\n\t{}\t{}\n",
+		address(dflat), address(dflat[0]), dflat[0], demangle(typeid(dflat)), padstr, fmt::join(dflat, ", "));
+	fmt::print("@IIwaypointsmakerNew(DataFrame); &dflon {}, &dflon[0] {}, dflon[0] {}, typeid: {}\n\t{}\t{}\n",
+		address(dflon), address(dflon[0]), dflon[0], demangle(typeid(dflon)), padstr, fmt::join(dflon, ", "));
+#endif
+	dflat.attr("fmt") = get_vec_attr<int>(df, "fmt");
+	dflon.attr("fmt") = get_vec_attr<int>(df, "fmt");
+	return { std::move(dflat), std::move(dflon) };
 }
 
 /// __________________________________________________
@@ -868,27 +926,22 @@ DataFrame convertwaypoints(DataFrame x, int fmt)
 	if(!valid_ll(x))
 		stop("Invalid llcols attribute!");
 	if (newtype != ct_current) {
-		auto llcols { get_vec_attr<int>(x, "llcols") };
-		for (auto& llcol : llcols)	// llcols to C++ zero-based indexing
-			--llcol;
-		NumericVector xlat = x[llcols[0]];
-		NumericVector xlon = x[llcols[1]];
-		xlat.attr("fmt") = get_vec_attr<int>(x, "fmt");
-		xlon.attr("fmt") = get_vec_attr<int>(x, "fmt");
+		auto wp { waypointsmakerNew(x) };
 #if DEBUG > 0
-		fmt::print("{}@Iconvertwaypoints(DataFrame, int); fmt: {}, &xlat {}, &xlat[0] {}, xlat[0] {}, typeid: {}\n\t{}\t{}\n",
-			exportstr, get_vec_attr<int>(xlat, "fmt"), address(xlat), address(xlat[0]), xlat[0], demangle(typeid(xlat)), padstr, fmt::join(xlat, ", "));
-		fmt::print("{}@IIconvertwaypoints(DataFrame, int); fmt: {}, &xlon {}, &xlon[0] {}, xlon[0] {}, typeid: {}\n\t{}\t{}\n",
-			exportstr, get_vec_attr<int>(xlon, "fmt"), address(xlon), address(xlon[0]), xlon[0], demangle(typeid(xlon)), padstr, fmt::join(xlon, ", "));
+		wp.report();
 #endif
-		auto vd_lat { convert_switch(xlat, newtype) };
-		auto vd_lon { convert_switch(xlon, newtype) };
+		auto vd_lat { wp.convert(newtype, true) };
+		auto vd_lon { wp.convert(newtype, false) };
 #if DEBUG > 0
 		fmt::print("{}@IIIconvertwaypoints(DataFrame, int); &vd_lat {}, &vd_lat[0] {}, vd_lat[0] {}, typeid: {}\n",
 			exportstr, address(vd_lat), address(vd_lat[0]), vd_lat[0], demangle(typeid(vd_lat)));
 		fmt::print("{}@IVconvertwaypoints(DataFrame, int); &vd_lon {}, &vd_lon[0] {}, vd_lon[0] {}, typeid: {}\n",
 			exportstr, address(vd_lon), address(vd_lon[0]), vd_lon[0], demangle(typeid(vd_lon)));
 #endif
+		auto llcols { get_vec_attr<int>(x, "llcols") };      								// ¡¡¡—— Shouldn't need to repeat this ——!!!
+		for (auto& llcol : llcols)	// llcols to C++ zero-based indexing
+			--llcol;
+
 		auto namescol { get_vec_attr<int>(x, "namescol") };
 		auto names { get_vec_attr<string>(x, "names") };
 		auto row_names { get_vec_attr<int>(x, "row.names") };

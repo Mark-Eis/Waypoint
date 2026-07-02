@@ -13,7 +13,7 @@
 /// __________________________________________________
 /// Development and debugging
 
-#define DEBUG 0
+#define DEBUG 1
 
 #if DEBUG > 0
 
@@ -606,6 +606,28 @@ class Waypoints {
 };
 
 /// __________________________________________________
+/// __________________________________________________
+/// WaypointsNew class
+class WaypointsNew {
+		NumericVector nv_lat;
+		NumericVector nv_lon;
+	public:
+		/* explicit */ WaypointsNew(NumericVector, NumericVector);
+		WaypointsNew(const WaypointsNew&) = delete;					// Disallow copying
+		WaypointsNew& operator=(const WaypointsNew&) = delete;			//  ——— ditto ———
+		WaypointsNew(WaypointsNew&&) = delete;						// Disallow transfer ownership
+		WaypointsNew& operator=(WaypointsNew&&) = delete;				// Disallow moving
+#if DEBUG == 0
+		~WaypointsNew() = default;
+#elif DEBUG > 0
+		~WaypointsNew() { _ctrsgn(typeid(*this), false); }
+#endif
+		const bisconstvec<bool> validate() const;
+		vector<double> convert(CoordType, bool) const;
+		void report() const;
+};
+
+/// __________________________________________________
 /// Template aliases
 using WaypointsDecDeg = Waypoints<DecDegVecDouble>;
 using WaypointsDegMin = Waypoints<DegMinVecDouble>;
@@ -656,6 +678,7 @@ concept waypoints_t =
 /// Instantiate Waypoints<DVecType> object
 template<DVecType T>
 inline waypoints_t auto waypointsmaker(DataFrame);
+inline WaypointsNew waypointsmakerNew(DataFrame);
 
 /// __________________________________________________
 /// __________________________________________________
