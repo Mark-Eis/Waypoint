@@ -977,15 +977,14 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate
 	auto vs_lat { wp.format(required, true) };
 	auto vs_lon { wp.format(required, false) };
 #if DEBUG > 0
-	fmt::print("{}@IIIformatwaypoints(DataFrame, int); &vs_lat {}, &vs_lat[0] {}, vs_lat[0] {}, typeid: {}\n",
-		exportstr, address(vs_lat), address(vs_lat[0]), vs_lat[0], demangle(typeid(vs_lat)));
-	fmt::print("{}@IVformatwaypoints(DataFrame, int); &vs_lon {}, &vs_lon[0] {}, vs_lon[0] {}, typeid: {}\n",
-		exportstr, address(vs_lon), address(vs_lon[0]), vs_lon[0], demangle(typeid(vs_lon)));
+	fmt::print("{}@Iformatwaypoints(DataFrame, bool, bool, int);\n\t{}\t&vs_lat {}, &vs_lat[0] {}, vs_lat[0] {}, typeid: {}\n\t{}\t&vs_lon {}, &vs_lon[0] {}, vs_lon[0] {}, typeid: {}\n",
+		exportstr, padstr, address(vs_lat), address(vs_lat[0]), vs_lat[0], demangle(typeid(vs_lat)),
+				   padstr, address(vs_lon), address(vs_lon[0]), vs_lon[0], demangle(typeid(vs_lat)));
 #endif
 	transform(vs_lat.begin(), vs_lat.end(), vs_lon.begin(), vs_lat.begin(), [](auto& latstr, auto& lonstr){ return latstr + "  " + lonstr; });
 #if DEBUG > 0
-	fmt::print("{}@Iformatwaypoints(DataFrame, bool, bool, int); vs_lat[0] {}, &vs_lat {}, &vs_lat[0] {}, typeid: {}\n",
-		exportstr, vs_lat[0], address(vs_lat), address(vs_lat[0]), demangle(typeid(vs_lat)));
+	fmt::print("{}@IIformatwaypoints(DataFrame, bool, bool, int); &vs_lat {}, &vs_lat[0] {}, vs_lat[0] {}, typeid: {}\n",
+		exportstr, address(vs_lat), address(vs_lat[0]), vs_lat[0], demangle(typeid(vs_lat)));
 #endif
 	if (usenames) {
 		RObject names = getnames(x);
@@ -993,8 +992,8 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate
 			stop("Invalid \"namescol\" attribute!");
 	}
 #if DEBUG > 0
-	fmt::print("{}@IIformatwaypoints(DataFrame, bool, bool, int); vs_lat[0] {}, &vs_lat {}, &vs_lat[0] {}, typeid: {}\n",
-		exportstr, vs_lat[0], address(vs_lat), address(vs_lat[0]), demangle(typeid(vs_lat)));
+	fmt::print("{}@IIIformatwaypoints(DataFrame, bool, bool, int);\n\t{}\t&vs_lat {}, &vs_lat[0] {}, vs_lat[0] {}, typeid: {}\n",
+		exportstr, padstr, address(vs_lat), address(vs_lat[0]), vs_lat[0], demangle(typeid(vs_lat)));
 #endif
 	return wrap(vs_lat);
 }
