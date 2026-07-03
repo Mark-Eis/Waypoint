@@ -13,7 +13,7 @@
 /// __________________________________________________
 /// Development and debugging
 
-#define DEBUG 0
+#define DEBUG 1
 
 #if DEBUG > 0
 
@@ -584,40 +584,13 @@ using bisconstvec = array<const vector<T>, 2>;
 /// __________________________________________________
 /// ¡¡¡—— Revised version ——!!!
 /// __________________________________________________
-/// WaypointsNew class
-class WaypointsNew {
+/// Waypoints class
+class Waypoints {
 		NumericVector nv_lat;
 		NumericVector nv_lon;
 		const vector<int> llcols;
 	public:
-		/* explicit */ WaypointsNew(NumericVector, NumericVector, vector<int>);
-		WaypointsNew(const WaypointsNew&) = delete;					// Disallow copying
-		WaypointsNew& operator=(const WaypointsNew&) = delete;			//  ——— ditto ———
-		WaypointsNew(WaypointsNew&&) = delete;						// Disallow transfer ownership
-		WaypointsNew& operator=(WaypointsNew&&) = delete;				// Disallow moving
-#if DEBUG == 0
-		~WaypointsNew() = default;
-#elif DEBUG > 0
-		~WaypointsNew() { _ctrsgn(typeid(*this), false); }
-#endif
-		vector<double> convert(CoordType, bool) const;
-		vector<string> format(CoordType, bool) const;
-		void suffix_nesw(vector<string>&, bool) const;
-		const vector<bool> validate(bool) const;
-		inline const vector<int> get_llcols() const;
-		void report() const;													// ¡¡¡—— Deprecate ——!!!
-};
-
-/// __________________________________________________
-/// ¡¡¡—— Old Hat ——!!!
-/// __________________________________________________
-/// Waypoints class
-template<DVecType T>
-class Waypoints {
-		const Coords<T> crdlat;
-		const Coords<T> crdlon;
-	public:
-		explicit Waypoints(NumericVector, NumericVector);
+		/* explicit */ Waypoints(NumericVector, NumericVector, vector<int>);
 		Waypoints(const Waypoints&) = delete;					// Disallow copying
 		Waypoints& operator=(const Waypoints&) = delete;			//  ——— ditto ———
 		Waypoints(Waypoints&&) = delete;						// Disallow transfer ownership
@@ -627,61 +600,17 @@ class Waypoints {
 #elif DEBUG > 0
 		~Waypoints() { _ctrsgn(typeid(*this), false); }
 #endif
-		const bisconstvec<bool> validate() const;
+		vector<double> convert(CoordType, bool) const;
+		vector<string> format(CoordType, bool) const;
+		void suffix_nesw(vector<string>&, bool) const;
+		const vector<bool> validate(bool) const;
+		inline const vector<int> get_llcols() const;
 };
-
-/// __________________________________________________
-/// Template aliases
-using WaypointsDecDeg = Waypoints<DecDegVecDouble>;
-using WaypointsDegMin = Waypoints<DegMinVecDouble>;
-using WaypointsDegMinSec = Waypoints<DegMinSecVecDouble>;
-
-/// __________________________________________________
-/// Type Traits
-
-/// waypointsdecdeg
-template <typename t>
-struct is_waypointsdecdeg : public std::false_type {};
-
-template <>
-struct is_waypointsdecdeg<WaypointsDecDeg> : public std::true_type {};
-
-template<typename t>
-constexpr bool is_waypointsdecdeg_v = is_waypointsdecdeg<t>::value;
-
-/// waypointsdegmin
-template <typename t>
-struct is_waypointsdegmin : public std::false_type {};
-
-template <>
-struct is_waypointsdegmin<WaypointsDegMin> : public std::true_type {};
-
-template<typename t>
-constexpr bool is_waypointsdegmin_v = is_waypointsdegmin<t>::value;
-
-/// waypointsdegminsec
-template <typename t>
-struct is_waypointsdegminsec : public std::false_type {};
-
-template <>
-struct is_waypointsdegminsec<WaypointsDegMinSec> : public std::true_type {};
-
-template<typename t>
-constexpr bool is_waypointsdegminsec_v = is_waypointsdegminsec<t>::value;
-
-/// __________________________________________________
-/// Concept —— waypoints_t
-template <typename T>
-concept waypoints_t = 
-	is_waypointsdecdeg_v<T> ||
-	is_waypointsdegmin_v<T> ||
-	is_waypointsdegminsec_v<T>;
 
 /// __________________________________________________
 /// Instantiate Waypoints<DVecType> object
 template<DVecType T>
-inline waypoints_t auto waypointsmaker(DataFrame);
-inline WaypointsNew waypointsmakerNew(DataFrame);
+inline Waypoints waypointsmaker(DataFrame);
 
 /// __________________________________________________
 /// __________________________________________________
