@@ -13,7 +13,7 @@
 /// __________________________________________________
 /// Development and debugging
 
-#define DEBUG 1
+#define DEBUG 0
 
 #if DEBUG > 0
 
@@ -551,9 +551,10 @@ template<typename T>
 concept coords_t =
 	requires (T t, CoordType ct) {
 //		{ t.conform(ct) } -> vectype;
-		{ t.validate() };
+		{ t.validate() } -> std::same_as<const vector<bool>>;
 		{ t.bjarne_stroustrup() };									// ¡¡¡—— temporary fix! ——!!!
 	};
+
 
 /// __________________________________________________
 /// Instantiate Coords<DVecType> object
