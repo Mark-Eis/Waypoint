@@ -533,14 +533,30 @@ const vector<bool> validate_switch(const NumericVector nv)
 
 /// __________________________________________________
 /// Constructor
-Waypoints::Waypoints(NumericVector _nv_lat, NumericVector _nv_lon, vector<int> _llcols) :
-	nv_lat{ _nv_lat },
-	nv_lon{ _nv_lon },
-	llcols{ _llcols }
+Waypoints::Waypoints(const DataFrame& df) :
+	nv_lat( df[get_vec_attr<int>(df, "llcols")[0] - 1] ), 
+	nv_lon( df[get_vec_attr<int>(df, "llcols")[1] - 1] )
 {
 #if DEBUG > 0
-	_ctrsgn(typeid(*this)); fmt::print("\t(vector<double>, vector<double>, vector<int>)\n");
+	_ctrsgn(typeid(*this)); fmt::print("\t(DataFrame); &df {}, typeid: {}\n", address(df), demangle(typeid(df)));
 #endif
+	nv_lat.attr("fmt") = get_vec_attr<int>(df, "fmt");
+	nv_lon.attr("fmt") = get_vec_attr<int>(df, "fmt");
+	nv_lat.attr("latlon") = true;
+	nv_lon.attr("latlon") = false;
+}
+
+/// __________________________________________________
+/// Destructor
+Waypoints::~Waypoints()
+{
+#if DEBUG > 0
+	_ctrsgn(typeid(*this), true);
+#endif
+	nv_lat.attr("latlon") = R_NilValue;
+	nv_lon.attr("latlon") = R_NilValue;
+	nv_lat.attr("fmt") = R_NilValue;
+	nv_lon.attr("fmt") = R_NilValue;
 }
 
 /// __________________________________________________
@@ -589,41 +605,6 @@ const vector<bool> Waypoints::validate(bool latlon) const
 	return validate_switch(latlon ? nv_lat : nv_lon);
 }
 
-/// __________________________________________________
-/// Report column locations of nv_lat, nv_lon
-const vector<int> Waypoints::get_llcols() const
-{
-#if DEBUG > 0
-	fmt::print("@Waypoints::get_llcols() const\n");
-#endif
-	return llcols;
-}
-
-
-/// __________________________________________________
-/// __________________________________________________
-/// Instantiate Waypoints object
-inline Waypoints waypointsmaker(DataFrame df)
-{
-#if DEBUG > 0
-	fmt::print("@waypointsmaker(DataFrame)\n");
-#endif
-	auto llcols { get_vec_attr<int>(df, "llcols") };
-	for (auto& llcol : llcols)							// llcols to C++ zero-based indexing
-		--llcol;
-	NumericVector dflat = df[llcols[0]];
-	NumericVector dflon = df[llcols[1]];
-#if DEBUG > 0
-	fmt::print("@Iwaypointsmaker(DataFrame); &dflat {}, &dflat[0] {}, dflat[0] {}, typeid: {}\n\t{}\t{}\n",
-		address(dflat), address(dflat[0]), dflat[0], demangle(typeid(dflat)), padstr, fmt::join(dflat, ", "));
-	fmt::print("@IIwaypointsmaker(DataFrame); &dflon {}, &dflon[0] {}, dflon[0] {}, typeid: {}\n\t{}\t{}\n",
-		address(dflon), address(dflon[0]), dflon[0], demangle(typeid(dflon)), padstr, fmt::join(dflon, ", "));
-#endif
-	dflat.attr("fmt") = get_vec_attr<int>(df, "fmt");
-	dflon.attr("fmt") = get_vec_attr<int>(df, "fmt");
-	return { std::move(dflat), std::move(dflon), llcols };
-}
-
 
 /// __________________________________________________
 /// Validate "waypoints" DataFrame 
@@ -632,7 +613,8 @@ inline const bisconstvec <bool> validate_switch(const DataFrame df)
 #if DEBUG > 0
 	fmt::print("@validate_switch(const DataFrame); current type: {}\n", get_coordtype(df));
 #endif
-	return { waypointsmaker(df).validate(true), waypointsmaker(df).validate(false) };
+	Waypoints wp{ df };
+	return { wp.validate(true), wp.validate(false) };
 }
 
 
@@ -910,15 +892,15 @@ DataFrame convertwaypoints(DataFrame x, int fmt)
 	CoordType ct_current = get_coordtype(x);
 	CoordType newtype = get_coordtype(fmt);
 #if DEBUG > 0
-	fmt::print("{}@convertwaypoints(DataFrame, int); from {} to {}, &x {}, &x[0] {}, typeid: {}\n",
-		exportstr, ct_current, newtype, address(x), address(x[0]), demangle(typeid(x)));
+	fmt::print("{}@convertwaypoints(DataFrame, int); from {} to {}, &x {}, typeid: {}\n",
+		exportstr, ct_current, newtype, address(x), demangle(typeid(x)));
 #endif
 	if (!check_valid(x))
 		stop("Invalid waypoints! Conversion aborted.\n [Use review() to show invalid elements]");
 	if(!valid_ll(x))
 		stop("Invalid llcols attribute!");
 	if (newtype != ct_current) {
-		auto wp { waypointsmaker(x) };
+		Waypoints wp{ x };
 		auto vd_lat { wp.convert(newtype, true) };
 		auto vd_lon { wp.convert(newtype, false) };
 #if DEBUG > 0
@@ -927,7 +909,9 @@ DataFrame convertwaypoints(DataFrame x, int fmt)
 		fmt::print("{}@IVconvertwaypoints(DataFrame, int); &vd_lon {}, &vd_lon[0] {}, vd_lon[0] {}, typeid: {}\n",
 			exportstr, address(vd_lon), address(vd_lon[0]), vd_lon[0], demangle(typeid(vd_lon)));
 #endif
-		auto llcols{ wp.get_llcols() };
+		auto llcols{ get_vec_attr<int>(x, "llcols") };
+		for (auto& llcol : llcols)							// llcols to C++ zero-based indexing
+			--llcol;
 		auto namescol{ get_vec_attr<int>(x, "namescol") };
 		auto names{ get_vec_attr<string>(x, "names") };
 		auto row_names{ get_vec_attr<int>(x, "row.names") };
@@ -962,7 +946,8 @@ DataFrame convertwaypoints(DataFrame x, int fmt)
 CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate = true, int fmt = 0)
 {
 #if DEBUG > 0
-	fmt::print("{}@formatwaypoints(DataFrame, bool, bool, int); usenames: {}, validate: {}, fmt: {}\n", exportstr, usenames, validate, fmt);
+	fmt::print("{}@formatwaypoints(DataFrame, bool, bool, int); usenames: {}, validate: {}, fmt: {}, &x {}, typeid: {}\n",
+		exportstr, usenames, validate, fmt, address(x), demangle(typeid(x)));
 #endif
 	checkinherits(x, "waypoints"s);
 	if(!x.nrows())
@@ -972,7 +957,7 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate
 	if (validate)
 		if (!check_valid(x))
 			warning("Formatting invalid waypoints!");
-	auto wp { waypointsmaker(x) };
+	Waypoints wp{ x };
 	auto required { fmt ? get_coordtype(fmt) : get_coordtype(x) };
 	auto vs_lat { wp.format(required, true) };
 	auto vs_lon { wp.format(required, false) };

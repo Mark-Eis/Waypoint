@@ -13,7 +13,7 @@
 /// __________________________________________________
 /// Development and debugging
 
-#define DEBUG 0
+#define DEBUG 1
 
 #if DEBUG > 0
 
@@ -583,7 +583,6 @@ template<typename T>
 using bisconstvec = array<const vector<T>, 2>;
 
 /// __________________________________________________
-/// ¡¡¡—— Revised version ——!!!
 /// __________________________________________________
 /// Waypoints class
 class Waypoints {
@@ -591,27 +590,18 @@ class Waypoints {
 		NumericVector nv_lon;
 		const vector<int> llcols;
 	public:
-		/* explicit */ Waypoints(NumericVector, NumericVector, vector<int>);
+		Waypoints(const DataFrame&);
 		Waypoints(const Waypoints&) = delete;					// Disallow copying
 		Waypoints& operator=(const Waypoints&) = delete;			//  ——— ditto ———
 		Waypoints(Waypoints&&) = delete;						// Disallow transfer ownership
 		Waypoints& operator=(Waypoints&&) = delete;				// Disallow moving
-#if DEBUG == 0
-		~Waypoints() = default;
-#elif DEBUG > 0
-		~Waypoints() { _ctrsgn(typeid(*this), false); }
-#endif
+		~Waypoints();
+
 		vector<double> convert(CoordType, bool) const;
 		vector<string> format(CoordType, bool) const;
 		void suffix_nesw(vector<string>&, bool) const;
 		const vector<bool> validate(bool) const;
-		inline const vector<int> get_llcols() const;
 };
-
-/// __________________________________________________
-/// Instantiate Waypoints<DVecType> object
-template<DVecType T>
-inline Waypoints waypointsmaker(DataFrame);
 
 /// __________________________________________________
 /// __________________________________________________
