@@ -1,4 +1,4 @@
-# Waypoint (development version)
+# Waypoint 2.0.0
 
 * Shorthand notation for simple, single-type argument concepts (#175).
 
