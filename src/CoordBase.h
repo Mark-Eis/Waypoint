@@ -94,82 +94,103 @@ concept NumVec_or_DataFrame =
 /// __________________________________________________
 /// DVecType and SVecType
 
+#if DEBUG == 0
+
+/// __________________________________________________
+/// VecTypeBase
+template<typename T>
+struct VecTypeBase : public vector<T> {
+	explicit VecTypeBase( vector<T>::size_type count ) : vector<T>(count) {}				// ≈ "default"
+	VecTypeBase(const VecTypeBase&) = delete;											// copy constructor
+	VecTypeBase(const vector<T>& vt) : vector<T>{ vt } {}								// copy constructor
+	VecTypeBase(const NumericVector vt) : vector<T>{ as<vector<double>>(vt) } {}			// copy constructor
+
+	VecTypeBase& operator=(const VecTypeBase&) = delete;									// copy assignment
+	VecTypeBase& operator=(const vector<T>& vt)											// copy assignment
+	{
+		vector<T>::operator= (vt);
+		return *this;
+	}
+	VecTypeBase& operator=(const NumericVector) = delete;								// copy assignment - not defaultable
+
+	VecTypeBase(VecTypeBase&&) = default;												// move constructor
+
+	VecTypeBase(vector<T>&& vt) : vector<T>{ std::move(vt) } {}							// move constructor
+	VecTypeBase(NumericVector&& vt) = delete;											// move constructor - not defaultable
+
+	VecTypeBase& operator=(VecTypeBase&&) = default;										// move assignment
+
+	VecTypeBase& operator=(vector<T>&& vt)												// move assignment
+	{
+		vector<T>::operator=(std::move(vt));
+		return *this;
+	}
+	VecTypeBase& operator=(NumericVector&& vt)	 = delete;								// move assignment - not defaultable
+
+	virtual ~VecTypeBase() = 0;
+};
+
+template<typename T>
+VecTypeBase<T>::~VecTypeBase() {}
+
+#else // i.e. #if DEBUG > 0
+
 /// __________________________________________________
 /// VecTypeBase
 template<typename T>
 struct VecTypeBase : public vector<T> {
 	explicit VecTypeBase( vector<T>::size_type count ) : vector<T>(count)				// ≈ "default"
 	{
-#if DEBUG > 0
 		_ctrsgn(typeid(*this)); fmt::print("\t(vector<T>::size_type); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
 			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
-#endif
 	}
 	VecTypeBase(const VecTypeBase&) = delete;											// copy constructor
 	VecTypeBase(const vector<T>& vt) : vector<T>{ vt }									// copy constructor
 	{
-#if DEBUG > 0
 		_ctrsgn(typeid(*this)); fmt::print("\t(const vector<T>&); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
 			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
-#endif
 	}
 	VecTypeBase(const NumericVector vt) : vector<T>{ as<vector<double>>(vt) }			// copy constructor
 	{
-#if DEBUG > 0
 		_ctrsgn(typeid(*this)); fmt::print("\t(const NumericVector&); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
 			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
-#endif
 	}
 
 	VecTypeBase& operator=(const VecTypeBase&) = delete;									// copy assignment
 	VecTypeBase& operator=(const vector<T>& vt)											// copy assignment
 	{
-#if DEBUG > 0
 		fmt::print("@VecTypeBase& operator=(const vector<T>& vt); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
 			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
-#endif
 		vector<T>::operator= (vt);
 		return *this;
 	}
 	VecTypeBase& operator=(const NumericVector) = delete;								// copy assignment - not defaultable
 
-#if DEBUG == 0
-	VecTypeBase(VecTypeBase&&) = default;												// move constructor
-#else 
-	VecTypeBase(VecTypeBase&& dv) : vector<T>{ std::move(static_cast<vector<T>&&>(dv)) }
+	VecTypeBase(VecTypeBase&& dv) : vector<T>{ std::move(static_cast<vector<T>&&>(dv)) }	// move constructor
 	{
 		_ctrsgn(typeid(*this)); fmt::print("\t\t\t(VecTypeBase&&); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
 			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
 	}
-#endif
 
 	VecTypeBase(vector<T>&& vt) : vector<T>{ std::move(vt) }								// move constructor
 	{
-#if DEBUG > 0
 		_ctrsgn(typeid(*this)); fmt::print("\t(vector<T>&&); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
 			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
-#endif
 	}
 	VecTypeBase(NumericVector&& vt) = delete;											// move constructor - not defaultable
 
-#if DEBUG == 0
-VecTypeBase& operator=(VecTypeBase&&) = default;											// move assignment
-#else 
-	VecTypeBase& operator=(VecTypeBase&& dv)
+	VecTypeBase& operator=(VecTypeBase&& dv)												// move assignment
 	{
 		_ctrsgn(typeid(*this)); fmt::print("\tVecTypeBase& operator=(VecTypeBase&&); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
 			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
 		vector<T>::operator=(std::move(static_cast<vector<T>&&>(dv)));
 		return *this;
 	}
-#endif
 
 	VecTypeBase& operator=(vector<T>&& vt)											// move assignment
 	{
-#if DEBUG > 0
 		fmt::print("@VecTypeBase& operator=(vector<T>&& vt); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
 			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
-#endif
 		vector<T>::operator=(std::move(vt));
 		return *this;
 	}
@@ -181,11 +202,11 @@ VecTypeBase& operator=(VecTypeBase&&) = default;											// move assignment
 template<typename T>
 VecTypeBase<T>::~VecTypeBase()
 {
-#if DEBUG > 0
 	_ctrsgn(typeid(*this), false); fmt::print("\t{}\t\tthis {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
 			padstr, (void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], "Maybe gone…"sv);
-#endif
 }
+
+#endif	// #if DEBUG > 0
 
 /// __________________________________________________
 /// DecDegVec
@@ -377,7 +398,8 @@ struct FamousFive<DecDegVecDouble> {
 	double get_decdeg(double x) const { return x; }
 	int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
 	double get_decmin(double x) const { return polish(mod1by60(x)); }
-	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
+//	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
+	double get_sec(double x) const { return mod1by60(mod1by60(x)); }
 };
 
 /// __________________________________________________
@@ -392,7 +414,8 @@ struct FamousFive<DegMinVecDouble> {
 	double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
 	int get_min(double x) const { return int(x) % int(1e2); }
 	double get_decmin(double x) const { return polish(mod1e2(x)); }
-	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
+//	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
+	double get_sec(double x) const { return mod1by60(mod1e2(x)); }
 };
 
 /// __________________________________________________
