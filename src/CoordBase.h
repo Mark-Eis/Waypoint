@@ -13,7 +13,7 @@
 /// __________________________________________________
 /// Development and debugging
 
-#define DEBUG 0
+#define DEBUG 1
 
 #if DEBUG > 0
 
@@ -49,16 +49,6 @@ struct isNumericVector<NumericVector> : public std::true_type {};
 
 template<typename T>
 constexpr bool isNumericVector_v = isNumericVector<T>::value;
-
-/// DataFrame
-template <typename T>
-struct isDataFrame : public std::false_type {};
-
-template <>
-struct isDataFrame<DataFrame> : public std::true_type {};
-
-template<typename T>
-constexpr bool isDataFrame_v = isDataFrame<T>::value;
 
 /// __________________________________________________
 /// Concepts
@@ -414,8 +404,7 @@ struct FamousFive<DegMinVecDouble> {
 	double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
 	int get_min(double x) const { return int(x) % int(1e2); }
 	double get_decmin(double x) const { return polish(mod1e2(x)); }
-//	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
-	double get_sec(double x) const { return mod1by60(mod1e2(x)); }
+	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
 };
 
 /// __________________________________________________

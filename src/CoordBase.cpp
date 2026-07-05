@@ -674,7 +674,7 @@ bool validate(const NumVec_or_DataFrame auto t, bool revalidate)
 		if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; }))
 			warn = true;
 		static_cast<NumericVector>(t).attr("valid") = valid; 
-	} else if constexpr (isDataFrame_v<t_type>) {
+	} else if constexpr (Is_DataFrame<t_type>) {
 #if DEBUG > 0
 		fmt::print("@IIIvalidate(const NumVec_or_DataFrame auto, bool); &valid {}, &valid[0] {}, &valid[1]{}, typeid: {}, \n\t{}, \n\t{}\n",
 			address(valid), address(valid[0]), address(valid[1]), demangle(typeid(valid)), fmt::join(valid[0], ", "), fmt::join(valid[1], ", "));
