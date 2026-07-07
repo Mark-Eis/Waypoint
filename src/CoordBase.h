@@ -13,7 +13,7 @@
 /// __________________________________________________
 /// Development and debugging
 
-#define DEBUG 1
+#define DEBUG 0
 
 #if DEBUG > 0
 
@@ -386,10 +386,10 @@ struct FamousFive<DecDegVecDouble> {
 #endif
 	int get_deg(double x) const { return int(x); }
 	double get_decdeg(double x) const { return x; }
-	int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }
+	int get_min(double x) const { return int(mod1by60(x)); }
+
 	double get_decmin(double x) const { return polish(mod1by60(x)); }
-//	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
-	double get_sec(double x) const { return mod1by60(mod1by60(x)); }
+	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
 };
 
 /// __________________________________________________
