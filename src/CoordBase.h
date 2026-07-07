@@ -325,7 +325,7 @@ concept vectype =
 /// Formula simplification
 inline double mod1by60(double);
 inline double mod1e2(double);
-inline double round2(double, int);
+inline double round2(double, int = 2);
 inline double polish(double);
 
 /// __________________________________________________
@@ -386,7 +386,11 @@ struct FamousFive<DecDegVecDouble> {
 #endif
 	int get_deg(double x) const { return int(x); }
 	double get_decdeg(double x) const { return x; }
-	int get_min(double x) const { return int(mod1by60(x)); }
+//	int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }		// Original, but Yuin Station lat 59′ -> 58′; => not this one!
+//	int get_min(double x) const { return (int(x * 1e7) % int(1e7)) * 6e-6; }		// Yes?
+//	int get_min(double x) const { return int(get_decmin(x)); }						// Yes?
+//	int get_min(double x) const { return int(polish(mod1by60(x))); }				// Yes? Same as above
+	int get_min(double x) const { return int(mod1by60(x)); }							// Yes? Best option
 
 	double get_decmin(double x) const { return polish(mod1by60(x)); }
 	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
@@ -456,7 +460,12 @@ template<DVecType T>
 struct Convertidor<T, DegMinSecVecDouble>{
 	FamousFive<T> ff {};
 	Convertidor() {}
-	double operator()(double n) const { return ff.get_deg(n) * 1e4 + ff.get_min(n) * 1e2 + ff.get_sec(n); }
+	double operator()(double n) const {
+#if DEBUG > 0
+		fmt::print("@Convertidor<T, DegMinSecVecDouble>::operator()(double n) const; T: {}, ff.get_deg(n) {}, ff.get_min(n) {}, ff.get_sec(n) {}\n", 
+			demangle(typeid(T)), ff.get_deg(n), ff.get_min(n), ff.get_sec(n));
+#endif
+		return ff.get_deg(n) * 1e4 + ff.get_min(n) * 1e2 + ff.get_sec(n); }
 };
 
 /// __________________________________________________
@@ -485,7 +494,10 @@ template<DVecType T>
 struct Formateador<T, DecDegVecString>{
 	FamousFive<T> ff {};
 	Formateador() {}
-	string operator()(double n) const { return fmt::format("{:>{}.{}f}\u00B0", ff.get_decdeg(n), 11, 6); }
+	string operator()(double n) const
+	{
+		return fmt::format("{:>{}.{}f}\u00B0", ff.get_decdeg(n), 11, 6);
+	}
 };
 
 /// __________________________________________________
@@ -494,8 +506,22 @@ template<DVecType T>
 struct Formateador<T, DegMinVecString>{
 	FamousFive<T> ff {};
 	Formateador() {}
-	string operator()(double n) const { return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) + 
-					 fmt::format("{:0>{}.{}f}\u2032", fabs(ff.get_decmin(n)), 7, 4); }
+	string operator()(double n) const
+	{
+		auto deg {abs(ff.get_deg(n))};
+		auto min {fabs(ff.get_min(n))};
+		bool bump { round2(min) > 59.99995 };
+		if (bump) {
+			++deg;
+			min = 0;
+		} 
+#if DEBUG > 0
+		fmt::print("@Formateador<T, DegMinVecDouble>::operator()(double n) const; T: {}, abs(ff.get_deg(n)) {}, fabs(ff.get_decmin(n)) {}, bump {}, min {}, sec {}\n",
+			demangle(typeid(T)), abs(ff.get_deg(n)), fabs(ff.get_decmin(n)), bump, deg, min); 
+#endif
+		return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
+			   fmt::format("{:0>{}.{}f}\u2032", fabs(ff.get_decmin(n)), 7, 4);
+	}
 };
 
 /// __________________________________________________
@@ -504,9 +530,22 @@ template<DVecType T>
 struct Formateador<T, DegMinSecVecString>{
 	FamousFive<T> ff {};
 	Formateador() {}
-	string operator()(double n) const { return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
-					 fmt::format("{:0>{}}\u2032", abs(ff.get_min(n)), 2) +
-					 fmt::format("{:0>{}.{}f}\u2033", fabs(ff.get_sec(n)), 5, 2); }
+	string operator()(double n) const {
+		auto min {abs(ff.get_min(n))};
+		auto sec {abs(ff.get_sec(n))};
+		bool bump { round2(sec) > 59.995 };
+		if (bump) {
+			++min;
+			sec = 0;
+		} 
+#if DEBUG > 0
+		fmt::print("@Formateador<T, DegMinSecVecDouble>::operator()(double n) const; T: {}, abs(ff.get_deg(n)) {}, abs(ff.get_min(n)) {}, fabs(ff.get_sec(n)) {}, bump {}, min {}, sec {}\n",
+			demangle(typeid(T)), abs(ff.get_deg(n)), abs(ff.get_min(n)), fabs(ff.get_sec(n)), bump, min, sec); 
+#endif
+		return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
+		fmt::format("{:0>{}}\u2032", min, 2) +
+		fmt::format("{:0>{}.{}f}\u2033", sec, 5, 2);
+	}
 };
 
 /// __________________________________________________

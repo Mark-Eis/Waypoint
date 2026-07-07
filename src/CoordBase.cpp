@@ -82,7 +82,7 @@ inline double mod1e2(double x)
 
 /// __________________________________________________
 /// Round a floating point number to n dp
-inline double round2(double x, int n = 2)
+inline double round2(double x, int n)
 {
 	int pow10n = pow(10, n);
 	return round(x * pow10n) / pow10n;
