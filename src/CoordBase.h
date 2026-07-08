@@ -386,12 +386,7 @@ struct FamousFive<DecDegVecDouble> {
 #endif
 	int get_deg(double x) const { return int(x); }
 	double get_decdeg(double x) const { return x; }
-//	int get_min(double x) const { return (int(x * 1e6) % int(1e6)) * 6e-5; }		// Original, but Yuin Station lat 59′ -> 58′; => not this one!
-//	int get_min(double x) const { return (int(x * 1e7) % int(1e7)) * 6e-6; }		// Yes?
-	int get_min(double x) const { return int(get_decmin(x)); }						// Yes—best option? 
-//	int get_min(double x) const { return int(polish(mod1by60(x))); }					// Yes? Same as above
-//	int get_min(double x) const { return int(mod1by60(x)); }						// No! Errors on Diynah Airport lat 57′ -> 56′; => not this one!
-
+	int get_min(double x) const { return int(get_decmin(x)); }
 	double get_decmin(double x) const { return polish(mod1by60(x)); }
 	double get_sec(double x) const { return mod1by60(get_decmin(x)); }
 };
