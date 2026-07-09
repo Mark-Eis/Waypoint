@@ -306,11 +306,13 @@ inline string cardi_b(bool negative)
 /// __________________________________________________
 /// __________________________________________________
 /// Coords class —— Constructor
-template<DVecType T>
-Coords<T>::Coords(T t, const vector<bool> latlon) :
+// template<DVecType T, sufijo S>
+template<DVecType T, typename S>
+Coords<T, S>::Coords(T t, const vector<bool> latlon) :
 	dv { std::move(t) },
 	latlon { latlon } //,
 {
+// static_assert(sufijo<S>);
 #if DEBUG > 0
 	_ctrsgn(typeid(*this)); fmt::print("\t(T, const vector<bool>)\n");
 #endif
@@ -318,8 +320,9 @@ Coords<T>::Coords(T t, const vector<bool> latlon) :
 
 /// __________________________________________________
 /// Format dv as a vectype object —— private
-template<DVecType T> template<vectype U, functador V>
-inline U Coords<T>::conform0() const
+// template<DVecType T, sufijo S> template<vectype U, functador V>
+template<DVecType T, typename S> template<vectype U, functador V>
+inline U Coords<T, S>::conform0() const
 {
 #if DEBUG > 0
 	fmt::print("@Coords<T>::conform0<U, V>() const;\n\t\t\tT: {},\n\t\t\tU: {},\n\t\t\tV: {}\n",
@@ -331,13 +334,16 @@ inline U Coords<T>::conform0() const
 	fmt::print("@ICoords<T>::conform0 <U, V>() const;\n\t{}\t &uv_out {}, &uv_out[0] {}, uv_out[0] {}, typeid: {}\n",
 		padstr, address(uv_out), address(uv_out[0]), uv_out[0], demangle(typeid(uv_out)));
 #endif
+	if constexpr (SVecType<U>)
+		add_suffix(uv_out);
 	return uv_out;
 }
 
 /// __________________________________________________
 /// conform call entry point —— public
-template<DVecType T> template<typename U, template <typename V> typename F>
-vector<U> Coords<T>::conform(CoordType required) const
+// template<DVecType T, sufijo S> template<typename U, template <typename V> typename F>
+template<DVecType T, typename S> template<typename U, template <typename V> typename F>
+vector<U> Coords<T, S>::conform(CoordType required) const
 {
 #if DEBUG > 0
 	fmt::print("@Coords<T>::conform<U, F<V>>(CoordType) const;\n\t\t\tT: {},\n\t\t\tU: {},\n\t\t\tF: functador<T, vectype<U>>,\n\t\t\trequired: {}\n",
@@ -362,8 +368,9 @@ vector<U> Coords<T>::conform(CoordType required) const
 
 /// __________________________________________________
 /// Validation call entry point —— public
-template<DVecType T>
-const vector<bool> Coords<T>::validate() const
+// template<DVecType T, sufijo S>
+template<DVecType T, typename S>
+const vector<bool> Coords<T, S>::validate() const
 {
 #if DEBUG > 0
 	fmt::print("@Coords<T>::validate(); latlon: {}\n", fmt::join(latlon, ", "));
@@ -392,18 +399,104 @@ const vector<bool> Coords<T>::validate() const
 	return valid;
 }
 
+
 /// __________________________________________________
-/// Instantiate Coords<T> object
-template<DVecType T>
-inline coords_t auto coordsmaker(NumericVector nv, vector<bool> latlon)
+/// Suffix call entry point
+template<DVecType T, typename S>
+void Coords<T, S>::add_suffix(vectype auto& uv_out) const
 {
 #if DEBUG > 0
-	fmt::print("@coordsmaker(NumericVector, vector<bool>);\n\t{}\t\t &nv {}, &nv[0] {}, nv[0] {}, DVecType: {}\n",
+	fmt::print("@Coords<T, S>::add_suffix(vectype auto&) const; T: {}, S: {}\n", demangle(typeid(T)), demangle(typeid(S)));
+#endif
+	static_cast<const S *>(this)->suffix(uv_out);
+}
+
+
+/// __________________________________________________
+/// __________________________________________________
+/// SufijoCoords class —— add suffix
+template<DVecType T>
+void SufijoCoords<T>::suffix(vectype auto& uv_out) const
+{
+#if DEBUG > 0
+	fmt::print("@SufijoCoords<T>::suffix(vector<string>&) const; T {}, uv_out {}\n", demangle(typeid(T)), demangle(typeid(uv_out)));
+#endif
+	using uv_out_type = std::remove_cvref_t<decltype(uv_out)>;
+	vector<bool>::const_iterator ll_it { latlon.begin() };
+	const auto ll_size { latlon.size() };
+
+#if DEBUG > 0
+	fmt::print("@ISufijoCoords<T>::suffix(vector<string>&) const; T {}, uv_out_type {}\n", demangle(typeid(T)), demangle(typeid(uv_out_type)));
+#endif
+	if constexpr (isDecDegVecString_v<uv_out_type>) {
+		const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it++ ? " lat" : " lon"); };
+		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it ? " lat" : " lon"); };
+	
+		if (ll_size > 1)
+			transform(uv_out.begin(), uv_out.end(), dv.begin(), uv_out.begin(), lambda1);
+		else
+			if (ll_size == 1)   // uniform coords
+				transform(uv_out.begin(), uv_out.end(), dv.begin(), uv_out.begin(), lambda2);
+	} else if constexpr (isDegMinVecString_v<uv_out_type> || isDegMinSecVecString_v<uv_out_type>) {
+		const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it++); };
+		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it); };
+		const auto lambda3 = [](auto& outstr, auto n){ return outstr + cardi_b(n < 0); };
+	
+		if (ll_size > 1)
+			transform(uv_out.begin(), uv_out.end(), dv.begin(), uv_out.begin(), lambda1);
+		else
+			if (ll_size == 1)   // uniform coords
+				transform(uv_out.begin(), uv_out.end(), dv.begin(), uv_out.begin(), lambda2);
+			else				// no latlon info
+				transform(uv_out.begin(), uv_out.end(), dv.begin(), uv_out.begin(), lambda3);
+	}
+}
+
+
+/// __________________________________________________
+/// __________________________________________________
+/// SufijoWaypoints class —— add suffix
+template<DVecType T>
+void SufijoWaypoints<T>::suffix(vectype auto& uv_out) const
+{
+#if DEBUG > 0
+	fmt::print("@SufijoWaypoints<T>::suffix(vector<string>&) const; T {}, uv_out {}\n", demangle(typeid(T)), demangle(typeid(uv_out)));
+#endif
+	using uv_out_type = std::remove_cvref_t<decltype(uv_out)>;
+	if constexpr (!isDecDegVecString_v<uv_out_type>)
+		transform(uv_out.begin(), uv_out.end(), dv.begin(), uv_out.begin(), [this](auto& outstr, auto n){
+		   return outstr + cardpoint(n < 0, latlon[0]); }
+		);
+}
+
+
+/// __________________________________________________
+/// Instantiate SufijoCoords<T> object
+template<DVecType T>
+// inline sufijo auto sufijocoordsmaker(NumericVector nv, vector<bool> latlon)
+inline SufijoCoords<T> sufijocoordsmaker(NumericVector nv, vector<bool> latlon)
+{
+#if DEBUG > 0
+	fmt::print("@sufijocoordsmaker(NumericVector, vector<bool>);\n\t{}\t\t &nv {}, &nv[0] {}, nv[0] {}, DVecType: {}\n",
 		padstr, address(nv), address(nv[0]), nv[0], demangle(typeid(T)));
 #endif
 	if (!latlon.size())
 		latlon = get_vec_attr<bool>(nv, "latlon"s);
-	return Coords<T>(nv, latlon);
+	return SufijoCoords<T>(nv, latlon);
+}
+
+/// __________________________________________________
+/// Instantiate SufijoWaypoints<T> object
+template<DVecType T>
+inline SufijoWaypoints<T> sufijowaypointsmaker(NumericVector nv, vector<bool> latlon)
+{
+#if DEBUG > 0
+	fmt::print("@sufijowaypointsmaker(NumericVector, vector<bool>);\n\t{}\t\t &nv {}, &nv[0] {}, nv[0] {}, DVecType: {}\n",
+		padstr, address(nv), address(nv[0]), nv[0], demangle(typeid(T)));
+#endif
+	if (!latlon.size())
+		latlon = get_vec_attr<bool>(nv, "latlon"s);
+	return SufijoWaypoints<T>(nv, latlon);
 }
 
 /// __________________________________________________
@@ -411,94 +504,71 @@ inline coords_t auto coordsmaker(NumericVector nv, vector<bool> latlon)
 vector<double> convert_switch(const NumericVector nv, CoordType newtype)
 {
 #if DEBUG > 0
-	fmt::print("@convert_switch(const NumericVector, CoordType); current type: {}, new type: {}\n", get_coordtype(nv), newtype);
+	fmt::print("@convert_switch<sufijo>(const NumericVector, CoordType); current type: {}, new type: {}\n", get_coordtype(nv), newtype);
 #endif
 	using enum CoordType;
 	switch (get_coordtype(nv))
 	{
 		case decdeg:
-			return coordsmaker<DecDegVecDouble>(nv).conform<double, ConvertidorDecDegVec>(newtype);
+			return sufijocoordsmaker<DecDegVecDouble>(nv).template conform<double, ConvertidorDecDegVec>(newtype);
 
 		case degmin:
-			return coordsmaker<DegMinVecDouble>(nv).conform<double, ConvertidorDegMinVec>(newtype);
+			return sufijocoordsmaker<DegMinVecDouble>(nv).template conform<double, ConvertidorDegMinVec>(newtype);
 
 		case degminsec:
-			return coordsmaker<DegMinSecVecDouble>(nv).conform<double, ConvertidorDegMinSecVec>(newtype);
+			return sufijocoordsmaker<DegMinSecVecDouble>(nv).template conform<double, ConvertidorDegMinSecVec>(newtype);
 
 		default:
-			stop("convert_switch(const NumericVector, CoordType) const my bad");
+			stop("convert_switch<sufijo>(const NumericVector, CoordType) const my bad");
 	}
 }
 
 /// __________________________________________________
-/// Format "coords" NumericVector
-vector<string> format_switch(const NumericVector nv, CoordType ct_required)
+/// Format "coords" NumericVector with coords suffixes
+vector<string> format_switch_c(const NumericVector nv, CoordType ct_required)
 {
 #if DEBUG > 0
-	fmt::print("@format_switch(const NumericVector, CoordType); current type: {}, required type: {}\n", get_coordtype(nv), ct_required);
+	fmt::print("@format_switch_c(const NumericVector, CoordType); current type: {}, required type: {}\n", get_coordtype(nv), ct_required);
 #endif
 	using enum CoordType;
 	switch (get_coordtype(nv))
 	{
 		case decdeg:
-			return coordsmaker<DecDegVecDouble>(nv).conform<string, FormateadorDecDegVec>(ct_required);
+			return sufijocoordsmaker<DecDegVecDouble>(nv).template conform<string, FormateadorDecDegVec>(ct_required);
 
 		case degmin:
-			return coordsmaker<DegMinVecDouble>(nv).conform<string, FormateadorDegMinVec>(ct_required);
+			return sufijocoordsmaker<DegMinVecDouble>(nv).template conform<string, FormateadorDegMinVec>(ct_required);
 
 		case degminsec:
-			return coordsmaker<DegMinSecVecDouble>(nv).conform<string, FormateadorDegMinSecVec>(ct_required);
+			return sufijocoordsmaker<DegMinSecVecDouble>(nv).template conform<string, FormateadorDegMinSecVec>(ct_required);
 
 		default:
-			stop("format_switch(const NumericVector, CoordType) const my bad");
+			stop("format_switch_c(const NumericVector, CoordType) const my bad");
 	}
 }
 
-
 /// __________________________________________________
-/// Add suffix of "N", "E", "S", "W"; or "(N/E)", "(S/W)"
-void suffix_nesw(vector<string>& sv_out, const NumericVector& nv)
+/// Format "coords" NumericVector with waypoints suffixes
+vector<string> format_switch_w(const NumericVector nv, CoordType ct_required)
 {
 #if DEBUG > 0
-  fmt::print("@suffix_nesw(vector<string>& sv_out) const\n");
+	fmt::print("@format_switch_w(const NumericVector, CoordType); current type: {}, required type: {}\n", get_coordtype(nv), ct_required);
 #endif
-	const auto latlon{ get_vec_attr<bool>(nv, "latlon"s) };
-	vector<bool>::const_iterator ll_it { latlon.begin() };
-	const auto ll_size { latlon.size() };
+	using enum CoordType;
+	switch (get_coordtype(nv))
+	{
+		case decdeg:
+			return sufijowaypointsmaker<DecDegVecDouble>(nv).template conform<string, FormateadorDecDegVec>(ct_required);
 
-	const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it++); };
-	const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it); };
-	const auto lambda3 = [](auto& outstr, auto n){ return outstr + cardi_b(n < 0); };
+		case degmin:
+			return sufijowaypointsmaker<DegMinVecDouble>(nv).template conform<string, FormateadorDegMinVec>(ct_required);
 
-	if (ll_size > 1)
-		transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda1);
-	else
-		if (ll_size == 1)   // uniform coords
-			transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda2);
-		else				// no latlon info
-			transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda3);
-}
+		case degminsec:
+			return sufijowaypointsmaker<DegMinSecVecDouble>(nv).template conform<string, FormateadorDegMinSecVec>(ct_required);
 
-
-/// __________________________________________________
-/// Add suffix of "lat", "lon"
-void suffix_latlon(vector<string>& sv_out, const NumericVector& nv)
-{
-#if DEBUG > 0
-  fmt::print("@suffix_latlon(vector<string>& sv_out) const\n");
-#endif
-	const auto latlon{ get_vec_attr<bool>(nv, "latlon"s) };
-	vector<bool>::const_iterator ll_it { latlon.begin() };
-	const auto ll_size { latlon.size() };
-
-	const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it++ ? " lat" : " lon"); };
-	const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it ? " lat" : " lon"); };
-
-	if (ll_size > 1)
-		transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda1);
-	else
-		if (ll_size == 1)   // uniform coords
-			transform(sv_out.begin(), sv_out.end(), nv.begin(), sv_out.begin(), lambda2);
+		default:
+			stop("format_switch_w(const NumericVector, CoordType) const my bad");
+	}
 }
 
 
@@ -513,13 +583,13 @@ const vector<bool> validate_switch(const NumericVector nv)
 	switch (get_coordtype(nv))
 	{
 		case decdeg:
-			return coordsmaker<DecDegVecDouble>(nv).validate();
+			return sufijocoordsmaker<DecDegVecDouble>(nv).validate();
 
 		case degmin:
-			return coordsmaker<DegMinVecDouble>(nv).validate();
+			return sufijocoordsmaker<DegMinVecDouble>(nv).validate();
 
 		case degminsec:
-			return coordsmaker<DegMinSecVecDouble>(nv).validate();
+			return sufijocoordsmaker<DegMinSecVecDouble>(nv).validate();
 
 		default:
 			stop("validate_switch(const NumericVector) const my bad");
@@ -577,22 +647,8 @@ vector<string> Waypoints::format(CoordType required_type, bool latlon) const
 	fmt::print("@Waypoints::format(CoordType, bool) const;\n");
 #endif
 	using enum CoordType;
-	auto sv_out { format_switch(latlon ? nv_lat : nv_lon, required_type) };
-	if (decdeg != required_type)
-		suffix_nesw(sv_out, latlon);
+	auto sv_out { format_switch_w(latlon ? nv_lat : nv_lon, required_type) };
 	return sv_out;
-}
-
-/// __________________________________________________
-/// Add suffix of  "N", "S", "E", "W" if CoordType::degmin or CoordType::degminsec
-void Waypoints::suffix_nesw(vector<string>& sv_out, bool latlon) const
-{
-#if DEBUG > 0
-	fmt::print("@Waypoints::suffix_nesw(vector<string> sv_out) const; {}\n", latlon ? "lat" : "lon");
-#endif
-	transform(sv_out.begin(), sv_out.end(), (latlon ? nv_lat : nv_lon).begin(), sv_out.begin(), [latlon](auto& outstr, auto n){
-	   return outstr + cardpoint(n < 0, latlon); }
-	);
 }
 
 /// __________________________________________________
@@ -810,12 +866,7 @@ CharacterVector formatcoords(const NumericVector x, bool usenames = true, bool v
 			warning("Formatting invalid coords!\n [Use review() to show invalid elements]");
 	CoordType ct_current { get_coordtype(x) };
 	CoordType ct_required { fmt ? get_coordtype(fmt) : ct_current };
-	auto sv_out { format_switch(x, ct_required) };
-	if (decdeg == ct_required)
-		suffix_latlon(sv_out, x);
-	else
-		suffix_nesw(sv_out, x);
-
+	auto sv_out { format_switch_c(x, ct_required) };
 #if DEBUG > 0
 	fmt::print("{}@IIformatcoords(const NumericVector, bool, bool, int);\n\t{}\t\t&sv_out {}, &sv_out[0] {}, sv_out[0] {}, typeid: {}\n",
 		exportstr, padstr, address(sv_out), address(sv_out[0]), sv_out[0], demangle(typeid(sv_out).name()));

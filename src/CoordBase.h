@@ -510,7 +510,7 @@ struct Formateador<T, DegMinVecString>{
 			++deg;
 			min = 0;
 		} 
-#if DEBUG > 0
+#if DEBUG > 1
 		fmt::print("@Formateador<T, DegMinVecDouble>::operator()(double n) const; T: {}, abs(ff.get_deg(n)) {}, fabs(ff.get_decmin(n)) {}, bump {}, min {}, sec {}\n",
 			demangle(typeid(T)), abs(ff.get_deg(n)), fabs(ff.get_decmin(n)), bump, deg, min); 
 #endif
@@ -533,7 +533,7 @@ struct Formateador<T, DegMinSecVecString>{
 			++min;
 			sec = 0;
 		} 
-#if DEBUG > 0
+#if DEBUG > 1
 		fmt::print("@Formateador<T, DegMinSecVecDouble>::operator()(double n) const; T: {}, abs(ff.get_deg(n)) {}, abs(ff.get_min(n)) {}, fabs(ff.get_sec(n)) {}, bump {}, min {}, sec {}\n",
 			demangle(typeid(T)), abs(ff.get_deg(n)), abs(ff.get_min(n)), fabs(ff.get_sec(n)), bump, min, sec); 
 #endif
@@ -563,11 +563,34 @@ concept functador =
         { t.operator()(n) } -> std::same_as<string>;
     };
 
+
 /// __________________________________________________
+/// __________________________________________________
+/// Concept —— sufijo
+template<typename T>
+concept sufijo =
+	requires (T t, CoordType ct) {
+		{ t.suffix() } -> std::same_as<vector<string>>;
+	};
+
+/// __________________________________________________
+/// Concept —— coords_t
+
+template<typename T>
+concept coords_t =
+	requires (T t, CoordType ct) {
+//		{ t.conform(ct) } -> vectype;
+		{ t.validate() } -> std::same_as<const vector<bool>>;
+		{ t.bjarne_stroustrup() };									// ¡¡¡—— temporary fix! ——!!!
+	};
+
+
 /// __________________________________________________
 /// Coords class
-template<DVecType T>
+//template<DVecType T, sufijo S>
+template<DVecType T, typename S>
 class Coords {
+	protected:
 		T dv;
 		const vector<bool> latlon;
 
@@ -587,38 +610,54 @@ class Coords {
 		template<typename U, template <typename V> typename F>
 		vector<U> conform(CoordType) const;							// Non-const return type avoids making unnecessary copy
 		const vector<bool> validate() const;
+		void add_suffix(vectype auto&) const;
 		void bjarne_stroustrup() const {}							// ¡¡¡—— temporary fix! ——!!!
 };
 
-/// __________________________________________________
-/// Concept —— coords_t
 
-template<typename T>
-concept coords_t =
-	requires (T t, CoordType ct) {
-//		{ t.conform(ct) } -> vectype;
-		{ t.validate() } -> std::same_as<const vector<bool>>;
-		{ t.bjarne_stroustrup() };									// ¡¡¡—— temporary fix! ——!!!
-	};
+/// __________________________________________________
+/// SufijoCoords class
+template<DVecType T>
+class SufijoCoords final : public Coords<T, SufijoCoords<T>> {
+		void suffix_nesw(vector<string>&, const NumericVector&);
+		void suffix_latlon(vector<string>&, const NumericVector&);
+	public:
+		using Coords<T, SufijoCoords<T>>::Coords;
+		using Coords<T, SufijoCoords<T>>::latlon;
+		using Coords<T, SufijoCoords<T>>::dv;
+		void suffix(vectype auto&) const;
+};
+
+
+/// __________________________________________________
+/// SufijoWaypoints class
+template<DVecType T>
+class SufijoWaypoints final : public Coords<T, SufijoWaypoints<T>> {
+		void suffix_nesw(vector<string>&, bool) const;
+	public:
+		using Coords<T, SufijoWaypoints<T>>::Coords;
+		using Coords<T, SufijoWaypoints<T>>::latlon;
+		using Coords<T, SufijoWaypoints<T>>::dv;
+		void suffix(vectype auto&) const;
+};
 
 
 /// __________________________________________________
 /// Instantiate Coords<DVecType> object
 template<DVecType T>
-inline coords_t auto coordsmaker(NumericVector, vector<bool> = vector<bool>{});
+// inline sufijo auto sufijocoordsmaker(NumericVector, vector<bool> = vector<bool>{});
+inline SufijoCoords<T> sufijocoordsmaker(NumericVector, vector<bool> = vector<bool>{});
+template<DVecType T>
+// inline sufijo auto sufijowaypointsmaker(NumericVector, vector<bool> = vector<bool>{});
+inline SufijoWaypoints<T> sufijowaypointsmaker(NumericVector, vector<bool> = vector<bool>{});
 
 /// __________________________________________________
 /// __________________________________________________
 /// Switches for Coords<DVecType>
 vector<double> convert_switch(const NumericVector, CoordType); 
-vector<string> format_switch(const NumericVector, CoordType); 
+vector<string> format_switch_c(const NumericVector, CoordType); 
+vector<string> format_switch_w(const NumericVector, CoordType); 
 const vector<bool> validate_switch(const NumericVector); 
-
-/// __________________________________________________
-/// __________________________________________________
-/// Suffixes for formatted coords
-void suffix_nesw(vector<string>&, const NumericVector&);
-void suffix_latlon(vector<string>&, const NumericVector&);
 
 /// __________________________________________________
 /// __________________________________________________
@@ -645,7 +684,6 @@ class Waypoints {
 
 		vector<double> convert(CoordType, bool) const;
 		vector<string> format(CoordType, bool) const;
-		void suffix_nesw(vector<string>&, bool) const;
 		const vector<bool> validate(bool) const;
 };
 
