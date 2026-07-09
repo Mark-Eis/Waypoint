@@ -578,10 +578,20 @@ concept sufijo =
 
 template<typename T>
 concept coords_t =
-	requires (T t, CoordType ct) {
+	requires (T t, CoordType ct, DecDegVecString& vt) {
 //		{ t.conform(ct) } -> vectype;
 		{ t.validate() } -> std::same_as<const vector<bool>>;
-		{ t.bjarne_stroustrup() };									// ¡¡¡—— temporary fix! ——!!!
+		{ t.add_suffix(vt) };
+	} ||
+	requires (T t, CoordType ct, DegMinVecString& vt) {
+//		{ t.conform(ct) } -> vectype;
+		{ t.validate() } -> std::same_as<const vector<bool>>;
+		{ t.add_suffix(vt) };
+	} ||
+	requires (T t, CoordType ct, DegMinSecVecString& vt) {
+//		{ t.conform(ct) } -> vectype;
+		{ t.validate() } -> std::same_as<const vector<bool>>;
+		{ t.add_suffix(vt) };
 	};
 
 
@@ -611,7 +621,6 @@ class Coords {
 		vector<U> conform(CoordType) const;							// Non-const return type avoids making unnecessary copy
 		const vector<bool> validate() const;
 		void add_suffix(vectype auto&) const;
-		void bjarne_stroustrup() const {}							// ¡¡¡—— temporary fix! ——!!!
 };
 
 
