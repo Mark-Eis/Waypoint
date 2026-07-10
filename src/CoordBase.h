@@ -90,15 +90,15 @@ concept NumVec_or_DataFrame =
 /// VecTypeBase
 template<typename T>
 struct VecTypeBase : public vector<T> {
-	explicit VecTypeBase( vector<T>::size_type count ) : vector<T>(count) {}				// ≈ "default"
+	explicit VecTypeBase( vector<T>::size_type count ) : vector<T>(count) {}			// ≈ "default"
 	VecTypeBase(const VecTypeBase&) = delete;											// copy constructor
 	VecTypeBase(const vector<T>& vt) : vector<T>{ vt } {}								// copy constructor
-	VecTypeBase(const NumericVector vt) : vector<T>{ as<vector<double>>(vt) } {}			// copy constructor
+	VecTypeBase(const NumericVector vt) : vector<T>{ as<vector<double>>(vt) } {}		// copy constructor
 
 	VecTypeBase& operator=(const VecTypeBase&) = delete;									// copy assignment
 	VecTypeBase& operator=(const vector<T>& vt)											// copy assignment
 	{
-		vector<T>::operator= (vt);
+		vector<T>::operator=(vt);
 		return *this;
 	}
 	VecTypeBase& operator=(const NumericVector) = delete;								// copy assignment - not defaultable
@@ -108,14 +108,14 @@ struct VecTypeBase : public vector<T> {
 	VecTypeBase(vector<T>&& vt) : vector<T>{ std::move(vt) } {}							// move constructor
 	VecTypeBase(NumericVector&& vt) = delete;											// move constructor - not defaultable
 
-	VecTypeBase& operator=(VecTypeBase&&) = default;										// move assignment
+	VecTypeBase& operator=(VecTypeBase&&) = default;									// move assignment
 
 	VecTypeBase& operator=(vector<T>&& vt)												// move assignment
 	{
 		vector<T>::operator=(std::move(vt));
 		return *this;
 	}
-	VecTypeBase& operator=(NumericVector&& vt)	 = delete;								// move assignment - not defaultable
+	VecTypeBase& operator=(NumericVector&& vt) = delete;									// move assignment - not defaultable
 
 	virtual ~VecTypeBase() = 0;
 };
@@ -177,7 +177,7 @@ struct VecTypeBase : public vector<T> {
 		return *this;
 	}
 
-	VecTypeBase& operator=(vector<T>&& vt)											// move assignment
+	VecTypeBase& operator=(vector<T>&& vt)												// move assignment
 	{
 		fmt::print("@VecTypeBase& operator=(vector<T>&& vt); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
 			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
