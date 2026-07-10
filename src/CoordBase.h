@@ -556,12 +556,12 @@ using FormateadorDegMinSecVec = Formateador<DegMinSecVecDouble, T>;
 /// Concept —— functador
 template<typename T>
 concept functador =
-    requires (T t, double n) {
-        { t.operator()(n) } -> std::same_as<double>;
-    } ||
-    requires (T t, double n) {
-        { t.operator()(n) } -> std::same_as<string>;
-    };
+	requires (T t, double n) {
+		{ t.operator()(n) } -> std::same_as<double>;
+	} ||
+	requires (T t, double n) {
+		{ t.operator()(n) } -> std::same_as<string>;
+	};
 
 
 /// __________________________________________________
@@ -569,8 +569,14 @@ concept functador =
 /// Concept —— sufijo
 template<typename T>
 concept sufijo =
-	requires (T t, CoordType ct) {
-		{ t.suffix() } -> std::same_as<vector<string>>;
+	requires (T t, DecDegVecString& vt) {
+		{ t.suffix(vt) };
+	} ||
+	requires (T t, DegMinVecString& vt) {
+		{ t.suffix(vt) };
+	} ||
+	requires (T t, DegMinSecVecString& vt) {
+		{ t.suffix(vt) };
 	};
 
 /// __________________________________________________

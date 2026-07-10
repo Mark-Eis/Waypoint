@@ -311,8 +311,7 @@ Coords<T, S>::Coords(T t, const vector<bool> latlon) :
 	dv { std::move(t) },
 	latlon { latlon } //,
 {
-// static_assert(sufijo<S>);
-static_assert(std::derived_from<S, Coords>);
+static_assert(sufijo<S> && std::derived_from<S, Coords>);
 #if DEBUG > 0
 	_ctrsgn(typeid(*this)); fmt::print("\t(T, const vector<bool>)\n");
 #endif
