@@ -319,7 +319,6 @@ static_assert(sufijo<S> && std::derived_from<S, Coords>);
 
 /// __________________________________________________
 /// Format dv as a vectype object —— private
-// template<DVecType T, sufijo S> template<vectype U, functador V>
 template<DVecType T, typename S> template<vectype U, functador V>
 inline U Coords<T, S>::conform0() const
 {
@@ -340,7 +339,6 @@ inline U Coords<T, S>::conform0() const
 
 /// __________________________________________________
 /// conform call entry point —— public
-// template<DVecType T, sufijo S> template<typename U, template <typename V> typename F>
 template<DVecType T, typename S> template<typename U, template <typename V> typename F>
 vector<U> Coords<T, S>::conform(CoordType required) const
 {
@@ -367,7 +365,6 @@ vector<U> Coords<T, S>::conform(CoordType required) const
 
 /// __________________________________________________
 /// Validation call entry point —— public
-// template<DVecType T, sufijo S>
 template<DVecType T, typename S>
 const vector<bool> Coords<T, S>::validate() const
 {

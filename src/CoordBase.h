@@ -552,20 +552,26 @@ using FormateadorDegMinVec = Formateador<DegMinVecDouble, T>;
 template<SVecType T>
 using FormateadorDegMinSecVec = Formateador<DegMinSecVecDouble, T>;
 
+
+/// __________________________________________________
+/// Concept —— float_or_string
+template<typename T>
+concept float_or_string =
+	std::floating_point<T> || std::same_as<T, string>;
+
 /// __________________________________________________
 /// Concept —— functador
 template<typename T>
 concept functador =
 	requires (T t, double n) {
-		{ t.operator()(n) } -> std::same_as<double>;
-	} ||
-	requires (T t, double n) {
-		{ t.operator()(n) } -> std::same_as<string>;
+		{ t.operator()(n) } -> float_or_string;
 	};
 
+/// __________________________________________________
+/// __________________________________________________
+template<DVecType T, typename S>
+class Coords;
 
-/// __________________________________________________
-/// __________________________________________________
 /// Concept —— sufijo
 template<typename T>
 concept sufijo =
@@ -581,21 +587,17 @@ concept sufijo =
 
 /// __________________________________________________
 /// Concept —— coords_t
-
 template<typename T>
 concept coords_t =
 	requires (T t, CoordType ct, DecDegVecString& vt) {
-//		{ t.conform(ct) } -> vectype;
 		{ t.validate() } -> std::same_as<const vector<bool>>;
 		{ t.add_suffix(vt) };
 	} ||
 	requires (T t, CoordType ct, DegMinVecString& vt) {
-//		{ t.conform(ct) } -> vectype;
 		{ t.validate() } -> std::same_as<const vector<bool>>;
 		{ t.add_suffix(vt) };
 	} ||
 	requires (T t, CoordType ct, DegMinSecVecString& vt) {
-//		{ t.conform(ct) } -> vectype;
 		{ t.validate() } -> std::same_as<const vector<bool>>;
 		{ t.add_suffix(vt) };
 	};
@@ -603,7 +605,6 @@ concept coords_t =
 
 /// __________________________________________________
 /// Coords class
-//template<DVecType T, sufijo S>
 template<DVecType T, typename S>
 class Coords {
 	protected:
