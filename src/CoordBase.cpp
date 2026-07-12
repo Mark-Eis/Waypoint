@@ -20,8 +20,6 @@ using namespace std::literals;
 using std::string_view;
 using namespace std::string_view_literals;
 using std::transform;
-using std::unique_ptr;
-using std::make_unique;
 
 #include "CoordBase.h"
 
