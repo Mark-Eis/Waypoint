@@ -1063,6 +1063,6 @@ NumericVector as_coordswaypoints(DataFrame object, bool which)
 /// __________________________________________________
 /// __________________________________________________
 
-#if DEBUG > 1
+#if DEBUG > 2
 .
 #endif

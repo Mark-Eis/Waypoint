@@ -630,8 +630,6 @@ class Coords {
 /// SufijoCoords class
 template<DVecType T>
 class SufijoCoords final : public Coords<T, SufijoCoords<T>> {
-		void suffix_nesw(vector<string>&, const NumericVector&);
-		void suffix_latlon(vector<string>&, const NumericVector&);
 	public:
 		using Coords<T, SufijoCoords<T>>::Coords;
 		using Coords<T, SufijoCoords<T>>::latlon;
@@ -644,7 +642,6 @@ class SufijoCoords final : public Coords<T, SufijoCoords<T>> {
 /// SufijoWaypoints class
 template<DVecType T>
 class SufijoWaypoints final : public Coords<T, SufijoWaypoints<T>> {
-		void suffix_nesw(vector<string>&, bool) const;
 	public:
 		using Coords<T, SufijoWaypoints<T>>::Coords;
 		using Coords<T, SufijoWaypoints<T>>::latlon;
