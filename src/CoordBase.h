@@ -614,7 +614,7 @@ class Coords {
 		template<vectype U, functador V>
 		inline U conform0() const;
 	public:
-		explicit Coords(T, const vector<bool>);
+		explicit Coords(NumericVector);
 		Coords(const Coords&) = delete;								// Disallow copying
 		Coords& operator=(const Coords&) = delete;					//  ——— ditto ———
 		Coords(Coords&&) = delete;									// Disallow transfer ownership
@@ -657,13 +657,6 @@ class SufijoWaypoints final : public Coords<T, SufijoWaypoints<T>> {
 		void suffix(vectype auto&) const;
 };
 
-
-/// __________________________________________________
-/// Instantiate Coords<DVecType> object
-template<DVecType T>
-inline SufijoCoords<T> sufijocoordsmaker(NumericVector, vector<bool> = vector<bool>{});
-template<DVecType T>
-inline SufijoWaypoints<T> sufijowaypointsmaker(NumericVector, vector<bool> = vector<bool>{});
 
 /// __________________________________________________
 /// __________________________________________________

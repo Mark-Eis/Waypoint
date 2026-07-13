@@ -305,13 +305,13 @@ inline string cardi_b(bool negative)
 /// __________________________________________________
 /// Coords class —— Constructor
 template<DVecType T, typename S>
-Coords<T, S>::Coords(T t, const vector<bool> latlon) :
-	dv { std::move(t) },
-	latlon { latlon } //,
+Coords<T, S>::Coords(NumericVector nv) :
+	dv { std::move(T{ nv }) },
+	latlon { get_vec_attr<bool>(nv, "latlon"s) }
 {
 static_assert(sufijo<S> && std::derived_from<S, Coords>);
 #if DEBUG > 0
-	_ctrsgn(typeid(*this)); fmt::print("\t(T, const vector<bool>)\n");
+	_ctrsgn(typeid(*this)); fmt::print("\t(T, const vector<bool>); T: {}, S: {}\n", demangle(typeid(T)), demangle(typeid(S)));
 #endif
 }
 
@@ -465,34 +465,6 @@ void SufijoWaypoints<T>::suffix(vectype auto& uv_out) const
 
 
 /// __________________________________________________
-/// Instantiate SufijoCoords<T> object
-template<DVecType T>
-inline SufijoCoords<T> sufijocoordsmaker(NumericVector nv, vector<bool> latlon)
-{
-#if DEBUG > 0
-	fmt::print("@sufijocoordsmaker(NumericVector, vector<bool>);\n\t{}\t\t &nv {}, &nv[0] {}, nv[0] {}, DVecType: {}\n",
-		padstr, address(nv), address(nv[0]), nv[0], demangle(typeid(T)));
-#endif
-	if (!latlon.size())
-		latlon = get_vec_attr<bool>(nv, "latlon"s);
-	return SufijoCoords<T>(nv, latlon);
-}
-
-/// __________________________________________________
-/// Instantiate SufijoWaypoints<T> object
-template<DVecType T>
-inline SufijoWaypoints<T> sufijowaypointsmaker(NumericVector nv, vector<bool> latlon)
-{
-#if DEBUG > 0
-	fmt::print("@sufijowaypointsmaker(NumericVector, vector<bool>);\n\t{}\t\t &nv {}, &nv[0] {}, nv[0] {}, DVecType: {}\n",
-		padstr, address(nv), address(nv[0]), nv[0], demangle(typeid(T)));
-#endif
-	if (!latlon.size())
-		latlon = get_vec_attr<bool>(nv, "latlon"s);
-	return SufijoWaypoints<T>(nv, latlon);
-}
-
-/// __________________________________________________
 /// Convert "coords" NumericVector
 vector<double> convert_switch(const NumericVector nv, CoordType newtype)
 {
@@ -503,13 +475,13 @@ vector<double> convert_switch(const NumericVector nv, CoordType newtype)
 	switch (get_coordtype(nv))
 	{
 		case decdeg:
-			return sufijocoordsmaker<DecDegVecDouble>(nv).template conform<double, ConvertidorDecDegVec>(newtype);
+			return SufijoCoords<DecDegVecDouble>(nv).template conform<double, ConvertidorDecDegVec>(newtype);
 
 		case degmin:
-			return sufijocoordsmaker<DegMinVecDouble>(nv).template conform<double, ConvertidorDegMinVec>(newtype);
+			return SufijoCoords<DegMinVecDouble>(nv).template conform<double, ConvertidorDegMinVec>(newtype);
 
 		case degminsec:
-			return sufijocoordsmaker<DegMinSecVecDouble>(nv).template conform<double, ConvertidorDegMinSecVec>(newtype);
+			return SufijoCoords<DegMinSecVecDouble>(nv).template conform<double, ConvertidorDegMinSecVec>(newtype);
 
 		default:
 			stop("convert_switch<sufijo>(const NumericVector, CoordType) const my bad");
@@ -527,13 +499,13 @@ vector<string> format_switch_c(const NumericVector nv, CoordType ct_required)
 	switch (get_coordtype(nv))
 	{
 		case decdeg:
-			return sufijocoordsmaker<DecDegVecDouble>(nv).template conform<string, FormateadorDecDegVec>(ct_required);
+			return SufijoCoords<DecDegVecDouble>(nv).template conform<string, FormateadorDecDegVec>(ct_required);
 
 		case degmin:
-			return sufijocoordsmaker<DegMinVecDouble>(nv).template conform<string, FormateadorDegMinVec>(ct_required);
+			return SufijoCoords<DegMinVecDouble>(nv).template conform<string, FormateadorDegMinVec>(ct_required);
 
 		case degminsec:
-			return sufijocoordsmaker<DegMinSecVecDouble>(nv).template conform<string, FormateadorDegMinSecVec>(ct_required);
+			return SufijoCoords<DegMinSecVecDouble>(nv).template conform<string, FormateadorDegMinSecVec>(ct_required);
 
 		default:
 			stop("format_switch_c(const NumericVector, CoordType) const my bad");
@@ -551,13 +523,13 @@ vector<string> format_switch_w(const NumericVector nv, CoordType ct_required)
 	switch (get_coordtype(nv))
 	{
 		case decdeg:
-			return sufijowaypointsmaker<DecDegVecDouble>(nv).template conform<string, FormateadorDecDegVec>(ct_required);
+			return SufijoWaypoints<DecDegVecDouble>(nv).template conform<string, FormateadorDecDegVec>(ct_required);
 
 		case degmin:
-			return sufijowaypointsmaker<DegMinVecDouble>(nv).template conform<string, FormateadorDegMinVec>(ct_required);
+			return SufijoWaypoints<DegMinVecDouble>(nv).template conform<string, FormateadorDegMinVec>(ct_required);
 
 		case degminsec:
-			return sufijowaypointsmaker<DegMinSecVecDouble>(nv).template conform<string, FormateadorDegMinSecVec>(ct_required);
+			return SufijoWaypoints<DegMinSecVecDouble>(nv).template conform<string, FormateadorDegMinSecVec>(ct_required);
 
 		default:
 			stop("format_switch_w(const NumericVector, CoordType) const my bad");
@@ -576,13 +548,13 @@ const vector<bool> validate_switch(const NumericVector nv)
 	switch (get_coordtype(nv))
 	{
 		case decdeg:
-			return sufijocoordsmaker<DecDegVecDouble>(nv).validate();
+			return SufijoCoords<DecDegVecDouble>(nv).validate();
 
 		case degmin:
-			return sufijocoordsmaker<DegMinVecDouble>(nv).validate();
+			return SufijoCoords<DegMinVecDouble>(nv).validate();
 
 		case degminsec:
-			return sufijocoordsmaker<DegMinSecVecDouble>(nv).validate();
+			return SufijoCoords<DegMinSecVecDouble>(nv).validate();
 
 		default:
 			stop("validate_switch(const NumericVector) const my bad");
