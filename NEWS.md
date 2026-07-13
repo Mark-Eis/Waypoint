@@ -1,31 +1,36 @@
 # Waypoint 2.0.0
 
-* Shorthand notation for simple, single-type argument concepts (#175).
+* Extensively revised source code, making use of the newer C++17, C++20 and C++23 features where
+  possible, for simpler, more understandable and more easily maintainable code (#150-#213).
+  
+* Static polymorphism used for adding suffixes to formatted coordinates (#209).
 
-* New `Coords` and `Waypoints` classes each inheriting from abstract base class `CrdWptBase`, which implements
-  member functions common to both derived classes or as pure virtual functions where the two derived classes
-  differ. Class `Coords` has a single `NumericVector` representing coordinate values, and `Waypoints` has two
-  representing latitude and longitude. `Coordlet` class implements low-level formatting, validation and
-  conversion functions on these `NumericVector`s (#163–#165, #168, #171–#174).
+* Fixed edge cases when decimal minutes in `degmin`, or decimal seconds in `degminsec`, round up
+  to 60.00 when formatted for printing (#208).
 
-* Extensively revised source code, making use of the newer C++17, C++20 and C++23 features where possible for
-  simpler, more understandable and more easily maintainable code (#150, #169, #170).
+* Shorthand notation for simple, single-type argument concepts instead of traditional templated
+  function notation (#175).
+  
+* Lambdas for conversion and formatting replaced with specialised template function objects managed
+  using generic templated code (#205).
 
-* `coordtype_to_int(CoordType)` adds 1 for consistency with its inverse function `get_coordtype(int)`,
+* Type traits and concepts for `NumericVector`, `DataFrame`, specialiased vectors and `Coords`
+  class (#186).
+
+* Replace C style `const char*` with `string` (#184).
+
+* Typed vectors to carry coordinate format information, allowing used of specialised templates
+  for conversion and formatting (#178-#181, #203).
+
+* New `Coords` and `Waypoints` classes. Templated `Coords` class has a single `NumericVector`
+  representing coordinate values, and `Waypoints` has two representing latitude and longitude.
+  `Coords` class implements low-level formatting, validation and conversion functions on these
+  `NumericVector`s. (#163–#165, #168, #171–#174).
+
+* `coordtype_to_int(CoordType)` function adds 1 for consistency with its inverse `get_coordtype(int)`,
   which subtracts 1 (#167).
    
-* Improved and simplified validation warnings (#166).
-
-* `template<NumericVector_or_DataFrame T, Coords_or_Waypoints U> const T validate(const T t)`, absorbed
-  into `template<NumericVector_or_DataFrame T, Coords_or_Waypoints U> bool revalidate(const T)` (#166).
-
-* `prefixvecstr(vector<string>&, const vector<T>&)` simply overloaded rather than templated (#162).
-
-* Introduce enum class `CoordType` type traits (#161).
-
-* `FamousFive` classes now combine generic and OO techniques in abstract non-template base class with pure
-  virtual functions inherited by three templated derived classes, and instantiated in each `Cordlet`
-  class object (#151).
+* Improved and simplified validation algorithms and warnings (#166, #198).
 
 # Waypoint 1.3.0
 
