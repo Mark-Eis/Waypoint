@@ -467,7 +467,6 @@ void SufijoWaypoints<T>::suffix(vectype auto& uv_out) const
 /// __________________________________________________
 /// Instantiate SufijoCoords<T> object
 template<DVecType T>
-// inline sufijo auto sufijocoordsmaker(NumericVector nv, vector<bool> latlon)
 inline SufijoCoords<T> sufijocoordsmaker(NumericVector nv, vector<bool> latlon)
 {
 #if DEBUG > 0

@@ -661,10 +661,8 @@ class SufijoWaypoints final : public Coords<T, SufijoWaypoints<T>> {
 /// __________________________________________________
 /// Instantiate Coords<DVecType> object
 template<DVecType T>
-// inline sufijo auto sufijocoordsmaker(NumericVector, vector<bool> = vector<bool>{});
 inline SufijoCoords<T> sufijocoordsmaker(NumericVector, vector<bool> = vector<bool>{});
 template<DVecType T>
-// inline sufijo auto sufijowaypointsmaker(NumericVector, vector<bool> = vector<bool>{});
 inline SufijoWaypoints<T> sufijowaypointsmaker(NumericVector, vector<bool> = vector<bool>{});
 
 /// __________________________________________________
