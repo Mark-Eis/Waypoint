@@ -586,7 +586,7 @@ Waypoints::Waypoints(const DataFrame& df) :
 Waypoints::~Waypoints()
 {
 #if DEBUG > 0
-	_ctrsgn(typeid(*this), true);
+	_ctrsgn(typeid(*this), false);
 #endif
 	nv_lat.attr("latlon") = R_NilValue;
 	nv_lon.attr("latlon") = R_NilValue;

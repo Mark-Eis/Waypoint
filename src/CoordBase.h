@@ -455,12 +455,7 @@ template<DVecType T>
 struct Convertidor<T, DegMinSecVecDouble>{
 	FamousFive<T> ff {};
 	Convertidor() {}
-	double operator()(double n) const {
-#if DEBUG > 0
-		fmt::print("@Convertidor<T, DegMinSecVecDouble>::operator()(double n) const; T: {}, ff.get_deg(n) {}, ff.get_min(n) {}, ff.get_sec(n) {}\n", 
-			demangle(typeid(T)), ff.get_deg(n), ff.get_min(n), ff.get_sec(n));
-#endif
-		return ff.get_deg(n) * 1e4 + ff.get_min(n) * 1e2 + ff.get_sec(n); }
+	double operator()(double n) const { return ff.get_deg(n) * 1e4 + ff.get_min(n) * 1e2 + ff.get_sec(n); }
 };
 
 /// __________________________________________________
