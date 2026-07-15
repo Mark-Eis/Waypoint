@@ -787,8 +787,8 @@ NumericVector convertcoords(const NumericVector x, int fmt)
 		nv_out.names() = x.names();
 		return nv_out;
 	} else { 
-		Rcout << "\t—— fmt out == fmt in: returning original x!——\n\n";
-		return x;														//	¡¡¡—— D'you think that's wise, sir? ——!!!
+		warning("Returning x (fmt = %i, unchanged)", fmt);
+		return x;
 	}
 }
 
@@ -950,7 +950,7 @@ DataFrame convertwaypoints(DataFrame x, int fmt)
 		x.attr("validlat") = validlat;
 		x.attr("validlon") = validlon;
 	} else
-		Rcout << "\t—— fmt out == fmt in! ——\n\n";
+		warning("Returning x (fmt = %i, unchanged)", fmt);
 	return x;
 }
 
