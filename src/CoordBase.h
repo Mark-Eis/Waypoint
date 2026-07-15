@@ -93,7 +93,6 @@ struct VecTypeBase : public vector<T> {
 	explicit VecTypeBase( vector<T>::size_type count ) : vector<T>(count) {}			// ≈ "default"
 	VecTypeBase(const VecTypeBase&) = delete;											// copy constructor
 	VecTypeBase(const vector<T>& vt) : vector<T>{ vt } {}								// copy constructor
-	VecTypeBase(const NumericVector vt) : vector<T>{ as<vector<double>>(vt) } {}		// copy constructor
 
 	VecTypeBase& operator=(const VecTypeBase&) = delete;									// copy assignment
 	VecTypeBase& operator=(const vector<T>& vt)											// copy assignment
@@ -101,12 +100,10 @@ struct VecTypeBase : public vector<T> {
 		vector<T>::operator=(vt);
 		return *this;
 	}
-	VecTypeBase& operator=(const NumericVector) = delete;								// copy assignment - not defaultable
 
 	VecTypeBase(VecTypeBase&&) = default;												// move constructor
 
 	VecTypeBase(vector<T>&& vt) : vector<T>{ std::move(vt) } {}							// move constructor
-	VecTypeBase(NumericVector&& vt) = delete;											// move constructor - not defaultable
 
 	VecTypeBase& operator=(VecTypeBase&&) = default;									// move assignment
 
@@ -115,7 +112,6 @@ struct VecTypeBase : public vector<T> {
 		vector<T>::operator=(std::move(vt));
 		return *this;
 	}
-	VecTypeBase& operator=(NumericVector&& vt) = delete;									// move assignment - not defaultable
 
 	virtual ~VecTypeBase() = 0;
 };
@@ -140,11 +136,6 @@ struct VecTypeBase : public vector<T> {
 		_ctrsgn(typeid(*this)); fmt::print("\t(const vector<T>&); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
 			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
 	}
-	VecTypeBase(const NumericVector vt) : vector<T>{ as<vector<double>>(vt) }			// copy constructor
-	{
-		_ctrsgn(typeid(*this)); fmt::print("\t(const NumericVector&); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
-			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
-	}
 
 	VecTypeBase& operator=(const VecTypeBase&) = delete;									// copy assignment
 	VecTypeBase& operator=(const vector<T>& vt)											// copy assignment
@@ -154,7 +145,6 @@ struct VecTypeBase : public vector<T> {
 		vector<T>::operator= (vt);
 		return *this;
 	}
-	VecTypeBase& operator=(const NumericVector) = delete;								// copy assignment - not defaultable
 
 	VecTypeBase(VecTypeBase&& dv) : vector<T>{ std::move(static_cast<vector<T>&&>(dv)) }	// move constructor
 	{
@@ -167,7 +157,6 @@ struct VecTypeBase : public vector<T> {
 		_ctrsgn(typeid(*this)); fmt::print("\t(vector<T>&&); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
 			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
 	}
-	VecTypeBase(NumericVector&& vt) = delete;											// move constructor - not defaultable
 
 	VecTypeBase& operator=(VecTypeBase&& dv)												// move assignment
 	{
@@ -184,7 +173,6 @@ struct VecTypeBase : public vector<T> {
 		vector<T>::operator=(std::move(vt));
 		return *this;
 	}
-	VecTypeBase& operator=(NumericVector&& vt)	 = delete;								// move assignment - not defaultable
 
 	virtual ~VecTypeBase() = 0;
 };
