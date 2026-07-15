@@ -41,11 +41,10 @@ seconds in the case of degrees, minutes and seconds.
 Prior to conversion, the \code{"coords"} or \code{"waypoints"} object to be converted is checked
 to ensure its values represent valid geographic locations as described under
 \code{\link{validate}()}.
-}
-\note{
-\code{convert()} modifies its argument \code{x} in place. To format or print
-  \code{"coords"} or \code{"waypoints"} in another coordinate format without modifying the
-  original object, use \code{\link{format}()} or \code{\link[Waypoint:format]{print}()}.
+
+To format or print \code{"coords"} or \code{"waypoints"} in another coordinate format without
+modifying the original object, use \code{\link{format}()} or
+\code{\link[Waypoint:format]{print}()} with the required \code{fmt} argument as above.
 }
 \examples{
 ## Continuing example from `as_coords()`...

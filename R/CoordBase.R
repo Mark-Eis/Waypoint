@@ -255,7 +255,7 @@ as_waypoints <- function(object, ...)
 #'
 #' To format or print \code{"coords"} or \code{"waypoints"} in another coordinate format without
 #' modifying the original object, use \code{\link{format}()} or
-#' \code{\link[Waypoint:format]{print}()}.
+#' \code{\link[Waypoint:format]{print}()} with the required \code{fmt} argument as above.
 #'
 #' @family coordsandway
 #' @seealso
