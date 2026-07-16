@@ -93,7 +93,6 @@ struct VecTypeBase : public vector<T> {
 	explicit VecTypeBase( vector<T>::size_type count ) : vector<T>(count) {}			// ≈ "default"
 	VecTypeBase(const VecTypeBase&) = delete;											// copy constructor
 	VecTypeBase(const vector<T>& vt) : vector<T>{ vt } {}								// copy constructor
-	VecTypeBase(const NumericVector vt) : vector<T>{ as<vector<double>>(vt) } {}		// copy constructor
 
 	VecTypeBase& operator=(const VecTypeBase&) = delete;									// copy assignment
 	VecTypeBase& operator=(const vector<T>& vt)											// copy assignment
@@ -101,12 +100,10 @@ struct VecTypeBase : public vector<T> {
 		vector<T>::operator=(vt);
 		return *this;
 	}
-	VecTypeBase& operator=(const NumericVector) = delete;								// copy assignment - not defaultable
 
 	VecTypeBase(VecTypeBase&&) = default;												// move constructor
 
 	VecTypeBase(vector<T>&& vt) : vector<T>{ std::move(vt) } {}							// move constructor
-	VecTypeBase(NumericVector&& vt) = delete;											// move constructor - not defaultable
 
 	VecTypeBase& operator=(VecTypeBase&&) = default;									// move assignment
 
@@ -115,7 +112,6 @@ struct VecTypeBase : public vector<T> {
 		vector<T>::operator=(std::move(vt));
 		return *this;
 	}
-	VecTypeBase& operator=(NumericVector&& vt) = delete;									// move assignment - not defaultable
 
 	virtual ~VecTypeBase() = 0;
 };
@@ -140,11 +136,6 @@ struct VecTypeBase : public vector<T> {
 		_ctrsgn(typeid(*this)); fmt::print("\t(const vector<T>&); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
 			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
 	}
-	VecTypeBase(const NumericVector vt) : vector<T>{ as<vector<double>>(vt) }			// copy constructor
-	{
-		_ctrsgn(typeid(*this)); fmt::print("\t(const NumericVector&); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
-			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
-	}
 
 	VecTypeBase& operator=(const VecTypeBase&) = delete;									// copy assignment
 	VecTypeBase& operator=(const vector<T>& vt)											// copy assignment
@@ -154,7 +145,6 @@ struct VecTypeBase : public vector<T> {
 		vector<T>::operator= (vt);
 		return *this;
 	}
-	VecTypeBase& operator=(const NumericVector) = delete;								// copy assignment - not defaultable
 
 	VecTypeBase(VecTypeBase&& dv) : vector<T>{ std::move(static_cast<vector<T>&&>(dv)) }	// move constructor
 	{
@@ -167,7 +157,6 @@ struct VecTypeBase : public vector<T> {
 		_ctrsgn(typeid(*this)); fmt::print("\t(vector<T>&&); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
 			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
 	}
-	VecTypeBase(NumericVector&& vt) = delete;											// move constructor - not defaultable
 
 	VecTypeBase& operator=(VecTypeBase&& dv)												// move assignment
 	{
@@ -184,7 +173,6 @@ struct VecTypeBase : public vector<T> {
 		vector<T>::operator=(std::move(vt));
 		return *this;
 	}
-	VecTypeBase& operator=(NumericVector&& vt)	 = delete;								// move assignment - not defaultable
 
 	virtual ~VecTypeBase() = 0;
 };
@@ -484,9 +472,16 @@ template<DVecType T>
 struct Formateador<T, DecDegVecString>{
 	FamousFive<T> ff {};
 	Formateador() {}
-	string operator()(double n) const
+	ostringstream ostrstr;
+	string operator()(double n)
 	{
-		return fmt::format("{:>{}.{}f}\u00B0", ff.get_decdeg(n), 11, 6);
+#if DEBUG > 1
+		fmt::print("@Formateador<T, DecDegVecString>::operator()(double n) const; T: {}, ff.get_decdeg(n) {}\n",
+			demangle(typeid(T)), ff.get_decdeg(n)); 
+#endif
+		ostrstr.str(""s);
+		ostrstr << setw(11) << setfill(' ')  << fixed << setprecision(6) << ff.get_decdeg(n) << "\u00B0";
+		return ostrstr.str();
 	}
 };
 
@@ -496,21 +491,24 @@ template<DVecType T>
 struct Formateador<T, DegMinVecString>{
 	FamousFive<T> ff {};
 	Formateador() {}
-	string operator()(double n) const
+	ostringstream ostrstr;
+	string operator()(double n)
 	{
 		auto deg {abs(ff.get_deg(n))};
-		auto min {fabs(ff.get_min(n))};
+		auto min {fabs(ff.get_decmin(n))};
 		bool bump { round2(min) > 59.99995 };
 		if (bump) {
 			++deg;
 			min = 0;
 		} 
 #if DEBUG > 1
-		fmt::print("@Formateador<T, DegMinVecDouble>::operator()(double n) const; T: {}, abs(ff.get_deg(n)) {}, fabs(ff.get_decmin(n)) {}, bump {}, min {}, sec {}\n",
+		fmt::print("@Formateador<T, DegMinVecString>::operator()(double n) const; T: {}, abs(ff.get_deg(n)) {}, fabs(ff.get_decmin(n)) {}, bump {}, min {}, sec {}\n",
 			demangle(typeid(T)), abs(ff.get_deg(n)), fabs(ff.get_decmin(n)), bump, deg, min); 
 #endif
-		return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
-			   fmt::format("{:0>{}.{}f}\u2032", fabs(ff.get_decmin(n)), 7, 4);
+		ostrstr.str(""s);
+		ostrstr << setw(3) << setfill(' ') << deg << "\u00B0"
+				<< setw(7) << setfill('0') << fixed << setprecision(4) << min << "\u2032";
+		return ostrstr.str();
 	}
 };
 
@@ -520,21 +518,25 @@ template<DVecType T>
 struct Formateador<T, DegMinSecVecString>{
 	FamousFive<T> ff {};
 	Formateador() {}
-	string operator()(double n) const {
+	ostringstream ostrstr;
+	string operator()(double n)
+	{
 		auto min {abs(ff.get_min(n))};
-		auto sec {abs(ff.get_sec(n))};
+		auto sec {fabs(ff.get_sec(n))};
 		bool bump { round2(sec) > 59.995 };
 		if (bump) {
 			++min;
 			sec = 0;
 		} 
 #if DEBUG > 1
-		fmt::print("@Formateador<T, DegMinSecVecDouble>::operator()(double n) const; T: {}, abs(ff.get_deg(n)) {}, abs(ff.get_min(n)) {}, fabs(ff.get_sec(n)) {}, bump {}, min {}, sec {}\n",
+		fmt::print("@Formateador<T, DegMinSecVecString>::operator()(double n) const; T: {}, abs(ff.get_deg(n)) {}, abs(ff.get_min(n)) {}, fabs(ff.get_sec(n)) {}, bump {}, min {}, sec {}\n",
 			demangle(typeid(T)), abs(ff.get_deg(n)), abs(ff.get_min(n)), fabs(ff.get_sec(n)), bump, min, sec); 
 #endif
-		return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
-		fmt::format("{:0>{}}\u2032", min, 2) +
-		fmt::format("{:0>{}.{}f}\u2033", sec, 5, 2);
+		ostrstr.str(""s);
+		ostrstr << setw(3) << setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
+				<< setw(2) << setfill('0') << min << "\u2032"
+				<< setw(5) << fixed << setprecision(2) << sec << "\u2033";
+		return ostrstr.str();
 	}
 };
 

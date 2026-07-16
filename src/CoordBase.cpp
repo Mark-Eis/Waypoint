@@ -10,6 +10,8 @@
 #include <memory>
 #include <string>
 #include <utility>
+#include <iostream>     // std::cout
+#include <sstream>      // std::ostringstream
 
 using namespace Rcpp;
 
@@ -20,6 +22,11 @@ using namespace std::literals;
 using std::string_view;
 using namespace std::string_view_literals;
 using std::transform;
+using std::ostringstream;
+using std::setw;
+using std::setfill;
+using std::fixed;
+using std::setprecision;
 
 #include "CoordBase.h"
 
@@ -306,7 +313,7 @@ inline string cardi_b(bool negative)
 /// Coords class —— Constructor
 template<DVecType T, typename S>
 Coords<T, S>::Coords(NumericVector nv) :
-	dv { std::move(T{ nv }) },
+	dv { std::move(as<vector<double>>(nv)) },
 	latlon { get_vec_attr<bool>(nv, "latlon"s) }
 {
 static_assert(sufijo<S> && std::derived_from<S, Coords>);
