@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Waypoint</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,6 +43,20 @@
 
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.0.0" id="waypoint-200">Waypoint 2.0.0<a class="anchor" aria-label="anchor" href="#waypoint-200"></a></h2>
+<ul><li><p>Extensively revised source code, making use of the newer C++17, C++20 and C++23 features where possible, for simpler, more understandable and more easily maintainable code (#150-#213).</p></li>
+<li><p>Static polymorphism and SFINAE used for <code>FamousFive</code> stuctures and for adding suffixes to formatted coordinates (#195, #209).</p></li>
+<li><p>Fixed edge cases when decimal minutes in <code>degmin</code>, or decimal seconds in <code>degminsec</code>, round up to 60.00 when formatted for printing (#208).</p></li>
+<li><p>Shorthand notation for simple, single-type argument concepts instead of traditional templated function notation (#175).</p></li>
+<li><p>Lambdas for conversion and formatting replaced with specialised template function objects managed using generic templated code (#205).</p></li>
+<li><p>Type traits and concepts for <code>NumericVector</code>, <code>DataFrame</code>, specialiased vectors and <code>Coords</code> class (#186).</p></li>
+<li><p>Replace C style <code>const char*</code> with <code>string</code> (#184).</p></li>
+<li><p>Typed vectors to carry coordinate format information, allowing used of specialised template functors for conversion and formatting (#178-#181, #203).</p></li>
+<li><p>New <code>Coords</code> and <code>Waypoints</code> classes. Templated <code>Coords</code> class has a single <code>NumericVector</code> representing coordinate values, and <code>Waypoints</code> has two representing latitude and longitude. <code>Coords</code> class implements low-level formatting, validation and conversion functions on these <code>NumericVector</code>s. (#163–#165, #168, #171–#174).</p></li>
+<li><p><code>coordtype_to_int(CoordType)</code> function adds 1 for consistency with its inverse <code>get_coordtype(int)</code>, which subtracts 1 (#167).</p></li>
+<li><p>Improved and simplified validation algorithms and warnings (#166, #198).</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.3.0" id="waypoint-130">Waypoint 1.3.0<a class="anchor" aria-label="anchor" href="#waypoint-130"></a></h2><p class="text-muted">CRAN release: 2026-06-01</p>
 <ul><li><p>Improve documentation of <code>[&lt;-.coords</code> replacement operator and <code><a href="../reference/validate.html">validate()</a></code> examples (#160).</p></li>
@@ -100,7 +114,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

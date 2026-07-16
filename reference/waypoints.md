@@ -119,16 +119,16 @@ wp1 <- data.frame(
 
 ## Create "waypoints" object in degrees, minutes and seconds (fmt = 3)
 as_waypoints(wp1, fmt = 3)
-#>                                                Latitude        Longitude
-#>                                           ______________  _______________
-#> Nelson's Column                           51°30′27.95″ N    0°07′40.53″ W
-#> Ostravice                                 49°32′46.36″ N   18°23′54.82″ E
-#> Tally Ho                                  48°06′26.04″ N  122°46′43.22″ W
-#> Washington Monument                       38°53′22.18″ N   77°02′06.87″ W
-#> Null Island                                0°00′00.00″ N    0°00′00.00″ E
-#> Tristan da Cunha                          37°06′42.26″ S   12°17′19.07″ W
-#> Mawson Peak                               53°06′17.21″ S   73°31′02.22″ E
-#> Silvio Pettirossi International Airport   25°14′24.56″ S   57°31′09.21″ W
+#>                                               Latitude        Longitude
+#>                                          ______________  _______________
+#> Nelson's Column                          51°30′27.95″ N    0°07′40.53″ W
+#> Ostravice                                49°32′46.36″ N   18°23′54.82″ E
+#> Tally Ho                                 48°06′26.04″ N  122°46′43.22″ W
+#> Washington Monument                      38°53′22.18″ N   77°02′06.87″ W
+#> Null Island                               0°00′00.00″ N    0°00′00.00″ E
+#> Tristan da Cunha                         37°06′42.26″ S   12°17′19.07″ W
+#> Mawson Peak                              53°06′17.21″ S   73°31′02.22″ E
+#> Silvio Pettirossi International Airport  25°14′24.56″ S   57°31′09.21″ W
 
 ## Show as an ordinary R data frame
 as.data.frame(wp1)
@@ -153,16 +153,16 @@ wp2 <- data.frame(
 
 ## Create unnamed "waypoints" object in decimal degrees (default fmt = 1)
 as_waypoints(wp2)
-#>       Latitude     Longitude
-#>     ___________  ____________
-#> 1    51.507765°    -0.127924°
-#> 2    49.546210°    18.398562°
-#> 3    48.107232°  -122.778671°
-#> 4    38.889494°   -77.035242°
-#> 5     0.000000°     0.000000°
-#> 6   -37.111740°   -12.288630°
-#> 7   -53.104781°    73.517283°
-#> 8   -25.240156°   -57.519227°
+#>      Latitude     Longitude
+#>    ___________  ____________
+#> 1   51.507765°    -0.127924°
+#> 2   49.546210°    18.398562°
+#> 3   48.107232°  -122.778671°
+#> 4   38.889494°   -77.035242°
+#> 5    0.000000°     0.000000°
+#> 6  -37.111740°   -12.288630°
+#> 7  -53.104781°    73.517283°
+#> 8  -25.240156°   -57.519227°
 
 ## Add waypoint names as row.names
 row.names(wp2) <-
@@ -170,16 +170,16 @@ row.names(wp2) <-
       "Tristan da Cunha", "Mawson Peak", "Silvio Pettirossi International Airport")
 
 wp2
-#>                                             Latitude     Longitude
-#>                                           ___________  ____________
-#> Nelson's Column                            51.507765°    -0.127924°
-#> Ostravice                                  49.546210°    18.398562°
-#> Tally Ho                                   48.107232°  -122.778671°
-#> Washington Monument                        38.889494°   -77.035242°
-#> Null Island                                 0.000000°     0.000000°
-#> Tristan da Cunha                          -37.111740°   -12.288630°
-#> Mawson Peak                               -53.104781°    73.517283°
-#> Silvio Pettirossi International Airport   -25.240156°   -57.519227°
+#>                                            Latitude     Longitude
+#>                                          ___________  ____________
+#> Nelson's Column                           51.507765°    -0.127924°
+#> Ostravice                                 49.546210°    18.398562°
+#> Tally Ho                                  48.107232°  -122.778671°
+#> Washington Monument                       38.889494°   -77.035242°
+#> Null Island                                0.000000°     0.000000°
+#> Tristan da Cunha                         -37.111740°   -12.288630°
+#> Mawson Peak                              -53.104781°    73.517283°
+#> Silvio Pettirossi International Airport  -25.240156°   -57.519227°
 
 ## Show as an ordinary R data frame
 as.data.frame(wp2)
