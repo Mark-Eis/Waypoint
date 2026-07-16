@@ -472,9 +472,16 @@ template<DVecType T>
 struct Formateador<T, DecDegVecString>{
 	FamousFive<T> ff {};
 	Formateador() {}
-	string operator()(double n) const
+	ostringstream ostrstr;
+	string operator()(double n)
 	{
-		return fmt::format("{:>{}.{}f}\u00B0", ff.get_decdeg(n), 11, 6);
+#if DEBUG > 1
+		fmt::print("@Formateador<T, DecDegVecString>::operator()(double n) const; T: {}, ff.get_decdeg(n) {}\n",
+			demangle(typeid(T)), ff.get_decdeg(n)); 
+#endif
+		ostrstr.str(""s);
+		ostrstr << setw(11) << setfill(' ')  << fixed << setprecision(6) << ff.get_decdeg(n) << "\u00B0";
+		return ostrstr.str();
 	}
 };
 
@@ -484,7 +491,8 @@ template<DVecType T>
 struct Formateador<T, DegMinVecString>{
 	FamousFive<T> ff {};
 	Formateador() {}
-	string operator()(double n) const
+	ostringstream ostrstr;
+	string operator()(double n)
 	{
 		auto deg {abs(ff.get_deg(n))};
 		auto min {fabs(ff.get_min(n))};
@@ -494,11 +502,13 @@ struct Formateador<T, DegMinVecString>{
 			min = 0;
 		} 
 #if DEBUG > 1
-		fmt::print("@Formateador<T, DegMinVecDouble>::operator()(double n) const; T: {}, abs(ff.get_deg(n)) {}, fabs(ff.get_decmin(n)) {}, bump {}, min {}, sec {}\n",
+		fmt::print("@Formateador<T, DegMinVecString>::operator()(double n) const; T: {}, abs(ff.get_deg(n)) {}, fabs(ff.get_decmin(n)) {}, bump {}, min {}, sec {}\n",
 			demangle(typeid(T)), abs(ff.get_deg(n)), fabs(ff.get_decmin(n)), bump, deg, min); 
 #endif
-		return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
-			   fmt::format("{:0>{}.{}f}\u2032", fabs(ff.get_decmin(n)), 7, 4);
+		ostrstr.str(""s);
+		ostrstr << setw(3) << setfill(' ') << deg << "\u00B0"
+				<< setw(7) << setfill('0') << fixed << setprecision(4) << min << "\u2032";
+		return ostrstr.str();
 	}
 };
 
@@ -508,21 +518,25 @@ template<DVecType T>
 struct Formateador<T, DegMinSecVecString>{
 	FamousFive<T> ff {};
 	Formateador() {}
-	string operator()(double n) const {
+	ostringstream ostrstr;
+	string operator()(double n)
+	{
 		auto min {abs(ff.get_min(n))};
-		auto sec {abs(ff.get_sec(n))};
+		auto sec {fabs(ff.get_sec(n))};
 		bool bump { round2(sec) > 59.995 };
 		if (bump) {
 			++min;
 			sec = 0;
 		} 
 #if DEBUG > 1
-		fmt::print("@Formateador<T, DegMinSecVecDouble>::operator()(double n) const; T: {}, abs(ff.get_deg(n)) {}, abs(ff.get_min(n)) {}, fabs(ff.get_sec(n)) {}, bump {}, min {}, sec {}\n",
+		fmt::print("@Formateador<T, DegMinSecVecString>::operator()(double n) const; T: {}, abs(ff.get_deg(n)) {}, abs(ff.get_min(n)) {}, fabs(ff.get_sec(n)) {}, bump {}, min {}, sec {}\n",
 			demangle(typeid(T)), abs(ff.get_deg(n)), abs(ff.get_min(n)), fabs(ff.get_sec(n)), bump, min, sec); 
 #endif
-		return fmt::format("{:>{}}\u00B0", abs(ff.get_deg(n)), 3) +
-		fmt::format("{:0>{}}\u2032", min, 2) +
-		fmt::format("{:0>{}.{}f}\u2033", sec, 5, 2);
+		ostrstr.str(""s);
+		ostrstr << setw(3) << setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
+				<< setw(2) << setfill('0') << min << "\u2032"
+				<< setw(5) << fixed << setprecision(2) << sec << "\u2033";
+		return ostrstr.str();
 	}
 };
 

@@ -10,6 +10,8 @@
 #include <memory>
 #include <string>
 #include <utility>
+#include <iostream>     // std::cout
+#include <sstream>      // std::ostringstream
 
 using namespace Rcpp;
 
@@ -20,6 +22,11 @@ using namespace std::literals;
 using std::string_view;
 using namespace std::string_view_literals;
 using std::transform;
+using std::ostringstream;
+using std::setw;
+using std::setfill;
+using std::fixed;
+using std::setprecision;
 
 #include "CoordBase.h"
 
