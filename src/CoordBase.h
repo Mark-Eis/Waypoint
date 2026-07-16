@@ -495,7 +495,7 @@ struct Formateador<T, DegMinVecString>{
 	string operator()(double n)
 	{
 		auto deg {abs(ff.get_deg(n))};
-		auto min {fabs(ff.get_min(n))};
+		auto min {fabs(ff.get_decmin(n))};
 		bool bump { round2(min) > 59.99995 };
 		if (bump) {
 			++deg;
