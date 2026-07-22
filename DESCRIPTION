@@ -1,7 +1,7 @@
 Package: Waypoint
 Type: Package
 Title: Convert, Validate, Format and Print Geographic Coordinates and Waypoints
-Version: 2.0.0
+Version: 2.0.0.9000
 Authors@R: 
     person("Mark", "Eisler", email = "mark.eisler@bristol.ac.uk", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0001-6843-3345"))
@@ -17,4 +17,3 @@ RoxygenNote: 7.3.3
 Encoding: UTF-8
 URL: https://mark-eis.github.io/Waypoint/
 Depends: R (>= 4.1.0)
-
