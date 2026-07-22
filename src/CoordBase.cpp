@@ -23,15 +23,13 @@ using std::string_view;
 using namespace std::string_view_literals;
 using std::transform;
 using std::ostringstream;
+using std::fixed;
+using std::left;
 using std::setw;
 using std::setfill;
-using std::fixed;
 using std::setprecision;
 
 #include "CoordBase.h"
-
-#define FMT_HEADER_ONLY
-#include "fmt/format.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt.
 
 /// __________________________________________________
 /// __________________________________________________
@@ -119,7 +117,12 @@ inline bool is_item_in_df(const DataFrame df, int item_no)
 inline void stdlenstr(vector<string>& sv)
 {
 	auto maxwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
-	transform(sv.begin(), sv.end(), sv.begin(), [maxwdth](const string& s) { return fmt::format("{:<{}}", s, maxwdth); });
+	ostringstream ostrstr;
+	transform(sv.begin(), sv.end(), sv.begin(), [&ostrstr, maxwdth](const string& s) {
+		ostrstr.str("");
+		ostrstr << left << setw(maxwdth) << s;
+		return ostrstr.str(); 
+	}); 
 }
 
 /// __________________________________________________
@@ -832,12 +835,16 @@ DataFrame validatewaypoints(DataFrame x, bool force = true)
 // [[Rcpp::export]]
 CharacterVector ll_headers(int width, int fmt)
 {
-	--fmt;  //	  to C++ array numbering
-	constexpr int spacing[][3] { {15,  17,  18}, {11, 13, 14} };
-	return wrap(vector {
-		fmt::format("{:>{}}{:>{}}", "Latitude", width - spacing[0][fmt], "Longitude", spacing[0][fmt] - 1), // --fmt —> C++ array numbering
-		fmt::format("{:>{}}", string(spacing[1][fmt], '_') + string(2, ' ') + string(spacing[1][fmt] + 1, '_'), width),
+	--fmt;														// -> C++ array numbering
+	constexpr auto spacing{ array{ 0, 2, 3 } };
+	const auto llstring{ "Latitude"s + string(5 + spacing[fmt], ' ') + "Longitude"s };
+	const auto u_string{ string(11 + spacing[fmt], '_') + "  "s + string(12 + spacing[fmt], '_') };
+	
+	return wrap(vector{
+		string(width - llstring.length() - 1, ' ') + llstring,
+		string(width - u_string.length(), ' ') + u_string
 	});
+
 }
 
 /// __________________________________________________
