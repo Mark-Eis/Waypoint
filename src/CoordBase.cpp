@@ -1042,6 +1042,9 @@ DataFrame validatewaypoints(DataFrame x, bool force = true)
 // [[Rcpp::export]]
 CharacterVector ll_headers(int width, int fmt)
 {
+#if DEBUG > 0
+	fmt::print("{}@ll_headers(int, int); width={}, fmt={}\n", exportstr, width, fmt);
+#endif
 	--fmt;														// -> C++ array numbering
 	constexpr auto spacing{ array{ 0, 2, 3 } };
 	const auto llstring{ "Latitude"s + string(5 + spacing[fmt], ' ') + "Longitude"s };
