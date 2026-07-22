@@ -1042,14 +1042,14 @@ DataFrame validatewaypoints(DataFrame x, bool force = true)
 // [[Rcpp::export]]
 CharacterVector ll_headers(int width, int fmt)
 {
-#if DEBUG > 0
-	fmt::print("{}@ll_headers(int, int); width={}, fmt={}\n", exportstr, width, fmt);
-#endif
-	--fmt;  //	  to C++ array numbering
-	constexpr int spacing[][3] { {15,  17,  18}, {11, 13, 14} };
-	return wrap(vector {
-		fmt::format("{:>{}}{:>{}}", "Latitude", width - spacing[0][fmt], "Longitude", spacing[0][fmt] - 1), // --fmt —> C++ array numbering
-		fmt::format("{:>{}}", string(spacing[1][fmt], '_') + string(2, ' ') + string(spacing[1][fmt] + 1, '_'), width),
+	--fmt;														// -> C++ array numbering
+	constexpr auto spacing{ array{ 0, 2, 3 } };
+	const auto llstring{ "Latitude"s + string(5 + spacing[fmt], ' ') + "Longitude"s };
+	const auto u_string{ string(11 + spacing[fmt], '_') + "  "s + string(12 + spacing[fmt], '_') };
+	
+	return wrap(vector{
+		string(width - llstring.length() - 1, ' ') + llstring,
+		string(width - u_string.length(), ' ') + u_string
 	});
 }
 
