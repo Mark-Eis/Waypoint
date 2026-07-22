@@ -844,7 +844,6 @@ CharacterVector ll_headers(int width, int fmt)
 		string(width - llstring.length() - 1, ' ') + llstring,
 		string(width - u_string.length(), ' ') + u_string
 	});
-
 }
 
 /// __________________________________________________
