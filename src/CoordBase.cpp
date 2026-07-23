@@ -31,6 +31,9 @@ using std::setprecision;
 
 #include "CoordBase.h"
 
+#define FMT_HEADER_ONLY
+#include "fmt/format.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt.
+
 /// __________________________________________________
 /// __________________________________________________
 /// Formula simplification functions
@@ -117,12 +120,7 @@ inline bool is_item_in_df(const DataFrame df, int item_no)
 inline void stdlenstr(vector<string>& sv)
 {
 	auto maxwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
-	ostringstream ostrstr;
-	transform(sv.begin(), sv.end(), sv.begin(), [&ostrstr, maxwdth](const string& s) {
-		ostrstr.str("");
-		ostrstr << left << setw(maxwdth) << s;
-		return ostrstr.str(); 
-	}); 
+	transform(sv.begin(), sv.end(), sv.begin(), [maxwdth](const string& s) { return fmt::format("{:<{}}", s, maxwdth); });
 }
 
 /// __________________________________________________
