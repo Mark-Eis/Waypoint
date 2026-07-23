@@ -160,13 +160,7 @@ inline void stdlenstr(vector<string>& sv)
 {
 //	fmt::print("@{}\n", "stdlenstr(vector<string>&)");
 	auto maxwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
-//	transform(sv.begin(), sv.end(), sv.begin(), [maxwdth](const string& s) { return fmt::format("{:<{}}", s, maxwdth); });
-	ostringstream ostrstr;
-	transform(sv.begin(), sv.end(), sv.begin(), [&ostrstr, maxwdth](const string& s) {
-		ostrstr.str("");
-		ostrstr << left << setw(maxwdth) << s;
-		return ostrstr.str(); 
-	}); 
+	transform(sv.begin(), sv.end(), sv.begin(), [maxwdth](const string& s) { return fmt::format("{:<{}}", s, maxwdth); });
 }
 
 /// __________________________________________________
