@@ -1,5 +1,7 @@
 # Changelog
 
+## Waypoint (development version)
+
 ## Waypoint 2.0.0
 
 CRAN release: 2026-07-16
