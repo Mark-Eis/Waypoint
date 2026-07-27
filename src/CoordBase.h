@@ -308,7 +308,6 @@ struct Convertidor{
 template<DVecType T>
 struct Convertidor<T, DecDegVecDouble>{
 	FamousFive<T> ff {};
-	Convertidor() {}
 	double operator()(double n) const { return ff.get_decdeg(n); }
 };
 
@@ -317,7 +316,6 @@ struct Convertidor<T, DecDegVecDouble>{
 template<DVecType T>
 struct Convertidor<T, DegMinVecDouble>{
 	FamousFive<T> ff {};
-	Convertidor() {}
 	double operator()(double n) const { return ff.get_deg(n) * 1e2 + ff.get_decmin(n); }
 };
 
@@ -326,7 +324,6 @@ struct Convertidor<T, DegMinVecDouble>{
 template<DVecType T>
 struct Convertidor<T, DegMinSecVecDouble>{
 	FamousFive<T> ff {};
-	Convertidor() {}
 	double operator()(double n) const { return ff.get_deg(n) * 1e4 + ff.get_min(n) * 1e2 + ff.get_sec(n); }
 };
 
@@ -355,7 +352,6 @@ struct Formateador{
 template<DVecType T>
 struct Formateador<T, DecDegVecString>{
 	FamousFive<T> ff {};
-	Formateador() {}
 	ostringstream ostrstr;
 	string operator()(double n)
 	{
@@ -370,7 +366,6 @@ struct Formateador<T, DecDegVecString>{
 template<DVecType T>
 struct Formateador<T, DegMinVecString>{
 	FamousFive<T> ff {};
-	Formateador() {}
 	ostringstream ostrstr;
 	string operator()(double n)
 	{
@@ -393,7 +388,6 @@ struct Formateador<T, DegMinVecString>{
 template<DVecType T>
 struct Formateador<T, DegMinSecVecString>{
 	FamousFive<T> ff {};
-	Formateador() {}
 	ostringstream ostrstr;
 	string operator()(double n)
 	{
