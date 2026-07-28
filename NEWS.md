@@ -1,5 +1,7 @@
 # Waypoint (development version)
 
+* `Coords` as abstract base class (#218).
+
 * Minimised unnecessary dependency on `{fmt}` headers. Dependency on `{fmt}` headers is not
   eliminated completely as it allows `stdlenstr(vector<string>&)` to count extended Unicode
   characters (e.g., those with accents) as a single character (#109, #207).
