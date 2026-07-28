@@ -496,8 +496,8 @@ struct Formateador<T, DegMinVecString>{
 			min = 0;
 		} 
 #if DEBUG > 1
-		fmt::print("@Formateador<T, DegMinVecString>::operator()(double n) const; T: {}, abs(ff.get_deg(n)) {}, fabs(ff.get_decmin(n)) {}, bump {}, min {}, sec {}\n",
-			demangle(typeid(T)), abs(ff.get_deg(n)), fabs(ff.get_decmin(n)), bump, deg, min); 
+		fmt::print("@Formateador<T, DegMinVecString>::operator()(double n) const; T: {}, abs(ff.get_deg(n)) {}, fabs(ff.get_decmin(n)) {}, deg {}, min {}\n",
+			demangle(typeid(T)), abs(ff.get_deg(n)), fabs(ff.get_decmin(n)), deg, min); 
 #endif
 		ostrstr.str(""s);
 		ostrstr << setw(3) << setfill(' ') << deg << "\u00B0"
@@ -521,8 +521,8 @@ struct Formateador<T, DegMinSecVecString>{
 			sec = 0;
 		} 
 #if DEBUG > 1
-		fmt::print("@Formateador<T, DegMinSecVecString>::operator()(double n) const; T: {}, abs(ff.get_deg(n)) {}, abs(ff.get_min(n)) {}, fabs(ff.get_sec(n)) {}, bump {}, min {}, sec {}\n",
-			demangle(typeid(T)), abs(ff.get_deg(n)), abs(ff.get_min(n)), fabs(ff.get_sec(n)), bump, min, sec); 
+		fmt::print("@Formateador<T, DegMinSecVecString>::operator()(double n) const; T: {}, abs(ff.get_deg(n)) {}, abs(ff.get_min(n)) {}, fabs(ff.get_sec(n)) {}, min {}, sec {}\n",
+			demangle(typeid(T)), abs(ff.get_deg(n)), abs(ff.get_min(n)), fabs(ff.get_sec(n)), min, sec); 
 #endif
 		ostrstr.str(""s);
 		ostrstr << setw(3) << setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
@@ -608,11 +608,8 @@ class Coords {
 		Coords& operator=(const Coords&) = delete;					//  ——— ditto ———
 		Coords(Coords&&) = delete;									// Disallow transfer ownership
 		Coords& operator=(Coords&&) = delete;						// Disallow moving
-#if DEBUG == 0
-		~Coords() = default;
-#elif DEBUG > 0
-		~Coords() { _ctrsgn(typeid(*this), false); }
-#endif
+		virtual ~Coords() = 0;
+
 		template<typename U, template <typename V> typename F>
 		vector<U> conform(CoordType) const;							// Non-const return type avoids making unnecessary copy
 		const vector<bool> validate() const;
