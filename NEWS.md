@@ -1,3 +1,5 @@
+# Waypoint (development version)
+
 # Waypoint 2.0.0
 
 * Extensively revised source code, making use of the newer C++17, C++20 and C++23 features where
