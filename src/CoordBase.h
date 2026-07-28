@@ -482,7 +482,7 @@ class Coords {
 		Coords& operator=(Coords&&) = delete;						// Disallow moving
 		virtual ~Coords() = 0;
 
-        	template<typename U, template <typename V> typename F>
+		template<typename U, template <typename V> typename F>
 		vector<U> conform(CoordType) const;							// Non-const return type avoids making unnecessary copy
 		const vector<bool> validate() const;
 		void add_suffix(vectype auto&) const;
