@@ -491,8 +491,7 @@ struct Formateador<T, DegMinVecString>{
 	{
 		auto deg {abs(ff.get_deg(n))};
 		auto min {fabs(ff.get_decmin(n))};
-		bool bump { round2(min) > 59.99995 };
-		if (bump) {
+		if (round2(min) > 59.99995) {
 			++deg;
 			min = 0;
 		} 
@@ -517,8 +516,7 @@ struct Formateador<T, DegMinSecVecString>{
 	{
 		auto min {abs(ff.get_min(n))};
 		auto sec {fabs(ff.get_sec(n))};
-		bool bump { round2(sec) > 59.995 };
-		if (bump) {
+		if (round2(sec) > 59.995) {
 			++min;
 			sec = 0;
 		} 
