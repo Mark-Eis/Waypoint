@@ -10,8 +10,8 @@
 #include <memory>
 #include <string>
 #include <utility>
-#include <iostream>     // std::cout
-#include <sstream>      // std::ostringstream
+#include <iostream>
+#include <sstream>
 
 using namespace Rcpp;
 
