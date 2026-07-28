@@ -1,5 +1,15 @@
 # Waypoint (development version)
 
+* `Coords` as abstract base class (#218).
+
+* Minimised unnecessary dependency on {fmt} headers. Dependency on {fmt} headers is not eliminated
+  completely as it allows stdlenstr(vector<string>&) to count extended Unicode characters (e.g.,
+  those with accents) as a single character (#109, #207).
+
+* Other minor tweaks and tidying of code.
+
+
+
 # Waypoint 2.0.0
 
 * Extensively revised source code, making use of the newer C++17, C++20 and C++23 features where
