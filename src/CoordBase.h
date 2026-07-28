@@ -480,12 +480,9 @@ class Coords {
 		Coords& operator=(const Coords&) = delete;					//  ——— ditto ———
 		Coords(Coords&&) = delete;									// Disallow transfer ownership
 		Coords& operator=(Coords&&) = delete;						// Disallow moving
-#if DEBUG == 0
-		~Coords() = default;
-#elif DEBUG > 0
-		~Coords() { _ctrsgn(typeid(*this), false); }
-#endif
-		template<typename U, template <typename V> typename F>
+		virtual ~Coords() = 0;
+
+        	template<typename U, template <typename V> typename F>
 		vector<U> conform(CoordType) const;							// Non-const return type avoids making unnecessary copy
 		const vector<bool> validate() const;
 		void add_suffix(vectype auto&) const;

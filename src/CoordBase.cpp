@@ -272,6 +272,11 @@ Coords<T, S>::Coords(NumericVector nv) :
 }
 
 /// __________________________________________________
+/// Coords class —— Destructor
+template<DVecType T, typename S>
+Coords<T, S>::~Coords() {}
+
+/// __________________________________________________
 /// Format dv as a vectype object —— private
 template<DVecType T, typename S> template<vectype U, functador V>
 inline U Coords<T, S>::conform0() const
