@@ -58,13 +58,30 @@ void _ctrsgn(const std::type_info& obj, bool construct)
 /// Demangle object names
 const string demangle(const std::type_info& obj)
 {
-	int status = 0;
-	const auto objname { obj.name() };
-//	char* p { abi::__cxa_demangle(obj.name(), NULL, NULL, &status) };
-	char* p { abi::__cxa_demangle(objname, NULL, NULL, &status) };
-//	string str { fmt::format("\"{}\" (status {})", p, std::to_string(status)) };
-	string str { fmt::format("{}", p) };
-	std::free(p);
+	int status{ 0 };
+	std::unique_ptr<char> u_ptr { abi::__cxa_demangle(obj.name(), NULL, NULL, &status) };
+	string str { u_ptr.get() };
+	
+	switch (status) {
+		case 0: {
+			// demangling operation succeeded
+		} break;
+		case -1: {
+			// memory allocation failure occurred
+			str = "Could not allocate memory";
+		} break;
+		case -2: {
+			// mangled_name is not a valid name under the C++ ABI mangling rules
+			str = "Invalid name";
+		} break;
+		case -3: {
+			// One of the arguments is invalid
+			str = "Invalid argument to demangle()";
+		} break;
+		default:
+			// unknown error
+			stop("demangle(const std::type_info&) my bad");
+	}
 	return str;
 }
 
