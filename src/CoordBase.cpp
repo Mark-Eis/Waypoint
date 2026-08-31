@@ -29,6 +29,8 @@ using std::setw;
 using std::setfill;
 using std::setprecision;
 
+namespace rng = std::ranges;
+
 #include "CoordBase.h"
 
 #define FMT_HEADER_ONLY
@@ -41,10 +43,11 @@ using std::setprecision;
 /// Development and Debugging functions
 
 #if DEBUG > 0
+using std::type_info;
 
 /// __________________________________________________
 /// Report object construction and destruction
-void _ctrsgn(const std::type_info& obj, bool construct)
+void _ctrsgn(const type_info& obj, bool construct)
 { /*
 */	fmt::print("{}structing: ", construct ? "§§§Con" : "~§§De");
 	std::fflush(nullptr);
@@ -52,11 +55,9 @@ void _ctrsgn(const std::type_info& obj, bool construct)
 	std::fflush(nullptr);
 }
 
-#endif
-
 /// __________________________________________________
 /// Demangle object names
-const string demangle(const std::type_info& obj)
+const string demangle(const type_info& obj)
 {
 	int status{ 0 };
 	std::unique_ptr<char> u_ptr { abi::__cxa_demangle(obj.name(), NULL, NULL, &status) };
@@ -80,10 +81,13 @@ const string demangle(const std::type_info& obj)
 		} break;
 		default:
 			// unknown error
-			stop("demangle(const std::type_info&) my bad");
+			stop("demangle(const type_info&) my bad");
 	}
+
 	return str;
 }
+
+#endif	// #if DEBUG > 0
 
 /// __________________________________________________
 /// __________________________________________________
@@ -146,7 +150,7 @@ int check_logical_attr(NumVec_or_DataFrame auto t, const string attrname)
 //	fmt::print("@check_logical_attr(NumVec_or_DataFrame auto, const string); T: {}; attrname {}\n", demangle(typeid(t)), attrname);
 	const vector vec_attr{ get_vec_attr<bool>(t, attrname) };
 	if (vec_attr.size()) {
-		return all_of(vec_attr.begin(), vec_attr.end(), [](bool v) { return v;}) ? 0b11 : 0b01;
+		return rng::all_of(vec_attr, [](bool v) { return v;}) ? 0b11 : 0b01;
 	} else {
 		return 0b00;
 	}
@@ -176,8 +180,8 @@ inline bool is_item_in_df(const DataFrame df, int item_no)
 inline void stdlenstr(vector<string>& sv)
 {
 //	fmt::print("@{}\n", "stdlenstr(vector<string>&)");
-	auto maxwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
-	transform(sv.begin(), sv.end(), sv.begin(), [maxwdth](const string& s) { return fmt::format("{:<{}}", s, maxwdth); });
+	auto maxwdth = rng::max_element(sv, [](const string& a, const string& b){ return a.size() < b.size(); })->size();
+	rng::transform(sv, sv.begin(), [maxwdth](const string& s) { return fmt::format("{:<{}}", s, maxwdth); });
 }
 
 /// __________________________________________________
@@ -185,7 +189,7 @@ inline void stdlenstr(vector<string>& sv)
 inline void concat_vecstr_elmnts(const vector<string>& sv_a, vector<string>& sv_b, const string sep)
 {
 //	fmt::print("@concat_vecstr_elmnts(vector<string>&, const vector<string>&, sep = \" \")\n");
-	transform(sv_a.begin(), sv_a.end(), sv_b.begin(), sv_b.begin(), [&sep](const string& str_a, const string& str_b) {
+	rng::transform(sv_a, sv_b, sv_b.begin(), [&sep](const string& str_a, const string& str_b) {
 		return str_a + sep + str_b; }); 
 }
 
@@ -194,7 +198,7 @@ inline void concat_vecstr_elmnts(const vector<string>& sv_a, vector<string>& sv_
 inline void concat_vecstr_elmnts(const vector<int>& iv_a, vector<string>& sv_b, const string sep)
 {
 //	fmt::print("@concat_vecstr_elmnts(const vector<int>&, vector<string>&, sep = \" \")\n");
-	transform(iv_a.begin(), iv_a.end(), sv_b.begin(), sv_b.begin(), [&sep](const int i, const string& str_b) {
+	rng::transform(iv_a, sv_b, sv_b.begin(), [&sep](const int i, const string& str_b) {
 		return (std::to_string(i)) + sep + str_b; }); 
 }
 
@@ -219,7 +223,7 @@ inline bool prefixwithnames(vector<string>& sv, RObject& namesobj)
 inline string str_tolower(string s)
 {
 //	fmt::print("@{}\n", "str_tolower(string)");
-	transform(s.begin(), s.end(), s.begin(), [](unsigned char c){ return tolower(c); });
+	rng::transform(s, s.begin(), [](unsigned char c){ return tolower(c); });
 	return s;
 }
 
@@ -412,13 +416,13 @@ const vector<bool> Coords<T, S>::validate() const
 	auto valid = vector<bool>{};
 	valid.assign(dv.size(), {false});
 
-	transform(dv.begin(), dv.end(), valid.begin(), [&ff, &ll_it, &ll_size](auto n){
+	rng::transform(dv, valid.begin(), [&ff, &ll_it, &ll_size](auto n){
 		return !((fabs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
 				(fabs(ff.get_decmin(n)) >= 60) ||
 				(fabs(ff.get_sec(n)) >= 60));
 	});
 
-	if (all_of(valid.begin(), valid.end(), [](auto v) { return v;}))
+	if (rng::all_of(valid, [](auto v) { return v;}))
 		valid.assign({true});
 
 #if DEBUG > 0
@@ -462,22 +466,22 @@ void SufijoCoords<T>::suffix(vectype auto& uv_out) const
 		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it ? " lat" : " lon"); };
 	
 		if (ll_size > 1)
-			transform(uv_out.begin(), uv_out.end(), dv.begin(), uv_out.begin(), lambda1);
+			rng::transform(uv_out, dv, uv_out.begin(), lambda1);
 		else
 			if (ll_size == 1)   // uniform coords
-				transform(uv_out.begin(), uv_out.end(), dv.begin(), uv_out.begin(), lambda2);
+				rng::transform(uv_out, dv, uv_out.begin(), lambda2);
 	} else if constexpr (isDegMinVecString_v<uv_out_type> || isDegMinSecVecString_v<uv_out_type>) {
 		const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it++); };
 		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it); };
 		const auto lambda3 = [](auto& outstr, auto n){ return outstr + cardi_b(n < 0); };
 	
 		if (ll_size > 1)
-			transform(uv_out.begin(), uv_out.end(), dv.begin(), uv_out.begin(), lambda1);
+			rng::transform(uv_out, dv, uv_out.begin(), lambda1);
 		else
 			if (ll_size == 1)   // uniform coords
-				transform(uv_out.begin(), uv_out.end(), dv.begin(), uv_out.begin(), lambda2);
+				rng::transform(uv_out, dv, uv_out.begin(), lambda2);
 			else				// no latlon info
-				transform(uv_out.begin(), uv_out.end(), dv.begin(), uv_out.begin(), lambda3);
+				rng::transform(uv_out, dv, uv_out.begin(), lambda3);
 	}
 }
 
@@ -493,7 +497,7 @@ void SufijoWaypoints<T>::suffix(vectype auto& uv_out) const
 #endif
 	using uv_out_type = std::remove_cvref_t<decltype(uv_out)>;
 	if constexpr (!isDecDegVecString_v<uv_out_type>)
-		transform(uv_out.begin(), uv_out.end(), dv.begin(), uv_out.begin(), [this](auto& outstr, auto n){
+		rng::transform(uv_out, dv, uv_out.begin(), [this](auto& outstr, auto n){
 		   return outstr + cardpoint(n < 0, latlon[0]); }
 		);
 }
@@ -721,22 +725,24 @@ bool validate(const NumVec_or_DataFrame auto t, bool revalidate)
 	bool iscoords {false};
 	bool warn {false};
 	auto valid { validate_switch(t) };
+
 	if constexpr (isNumericVector_v<t_type>) {
 #if DEBUG > 0
 		fmt::print("@IIvalidate(const NumVec_or_DataFrame auto, bool);\n\t{}\t  &valid {}, typeid: {}, \n\t{}\n",
 			padstr, address(valid), demangle(typeid(valid)), fmt::join(valid, ", "));
 #endif
 		iscoords = true;
-		if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; }))
+		if (!rng::all_of(valid, [](auto i){ return i; }))
 			warn = true;
 		static_cast<NumericVector>(t).attr("valid") = valid; 
+
 	} else if constexpr (Is_DataFrame<t_type>) {
 #if DEBUG > 0
 		fmt::print("@IIIvalidate(const NumVec_or_DataFrame auto, bool); &valid {}, &valid[0] {}, &valid[1]{}, typeid: {}, \n\t{}, \n\t{}\n",
 			address(valid), address(valid[0]), address(valid[1]), demangle(typeid(valid)), fmt::join(valid[0], ", "), fmt::join(valid[1], ", "));
 #endif
-		if (!std::all_of(valid[0].begin(), valid[0].end(), [](auto i){ return i; }) ||
-			!std::all_of(valid[1].begin(), valid[1].end(), [](auto i){ return i; }))
+		if (!rng::all_of(valid[0], [](auto i){ return i; }) ||
+			!rng::all_of(valid[1], [](auto i){ return i; }))
 			warn = true;
 		static_cast<DataFrame>(t).attr("validlat") = valid[0];
 		static_cast<DataFrame>(t).attr("validlon") = valid[1];
@@ -759,7 +765,7 @@ bool valid_ll(const DataFrame df)
 	bool valid = false;
 	vector llcols { get_vec_attr<int>(df, "llcols"s) };
 	if (2 == llcols.size()) {
-		transform(llcols.begin(), llcols.end(), llcols.begin(), [](auto x){ return --x; });
+		rng::transform(llcols, llcols.begin(), [](auto x){ return --x; });
 		if (is_item_in_df(df, llcols[0]) && is_item_in_df(df, llcols[1]) && llcols[0] != llcols[1])
 			if (is<NumericVector>(df[llcols[0]]) && is<NumericVector>(df[llcols[1]]))
 				valid = true;
@@ -1017,7 +1023,7 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate
 		exportstr, padstr, address(vs_lat), address(vs_lat[0]), vs_lat[0], demangle(typeid(vs_lat)),
 				   padstr, address(vs_lon), address(vs_lon[0]), vs_lon[0], demangle(typeid(vs_lat)));
 #endif
-	transform(vs_lat.begin(), vs_lat.end(), vs_lon.begin(), vs_lat.begin(), [](auto& latstr, auto& lonstr){ return latstr + "  " + lonstr; });
+	rng::transform(vs_lat, vs_lon, vs_lat.begin(), [](auto& latstr, auto& lonstr){ return latstr + "  " + lonstr; });
 #if DEBUG > 0
 	fmt::print("{}@IIformatwaypoints(DataFrame, bool, bool, int); &vs_lat {}, &vs_lat[0] {}, vs_lat[0] {}, typeid: {}\n",
 		exportstr, address(vs_lat), address(vs_lat[0]), vs_lat[0], demangle(typeid(vs_lat)));
