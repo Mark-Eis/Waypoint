@@ -416,7 +416,8 @@ const vector<bool> Coords<T, S>::validate() const
 	auto valid = vector<bool>{};
 	valid.assign(dv.size(), {false});
 
-	rng::transform(dv, valid.begin(), [&ff, &ll_it, &ll_size](auto n){
+//	rng::transform(dv, valid.begin(), [&ff, &ll_it, &ll_size](auto n){
+	transform(dv.begin(), dv.end(), valid.begin(), [&ff, &ll_it, &ll_size](auto n){
 		return !((fabs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
 				(fabs(ff.get_decmin(n)) >= 60) ||
 				(fabs(ff.get_sec(n)) >= 60));
