@@ -103,7 +103,7 @@ rm(dm, wp)
 \seealso{
 \code{"\link{coords}"}, \code{"\link{waypoints}"} and \code{\link{validate}()}.
 
-Other coordsandway: 
+Other coordsandway:
 \code{\link{coords}},
 \code{\link{waypoints}}
 }

@@ -114,8 +114,8 @@ rm(wp1, wp2)
 \code{\link[=format]{format}(<waypoints>)}, \code{\link[=format]{print}(<waypoints>)},
 and \code{\link{validate}()}.
 
-Other coordsandway: 
-\code{\link{convert}()},
+Other coordsandway:
+\code{\link[=convert]{convert()}},
 \code{\link{coords}}
 }
 \concept{coordsandway}
