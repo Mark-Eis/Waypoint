@@ -36,14 +36,14 @@ convert.waypoints <- function(x, fmt, ...) {
     .Call(`_Waypoint_convertwaypoints`, x, fmt)
 }
 
-#' @rdname validate
-validate.waypoints <- function(x, ..., force = TRUE) {
-    .Call(`_Waypoint_validatewaypoints`, x, force)
-}
-
 #' @rdname format
 format.waypoints <- function(x, ..., usenames = TRUE, validate = TRUE, fmt = 0L) {
     .Call(`_Waypoint_formatwaypoints`, x, usenames, validate, fmt)
+}
+
+#' @rdname validate
+validate.waypoints <- function(x, ..., force = TRUE) {
+    .Call(`_Waypoint_validatewaypoints`, x, force)
 }
 
 #' @rdname format
