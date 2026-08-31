@@ -108,7 +108,7 @@ rm(dm, wp)
 \seealso{
 \code{"\link{coords}"}, \code{"\link{waypoints}"} and \code{\link[=Extract]{[<-}(<coords>)}.
 
-Other validate: 
-\code{\link{review}()}
+Other validate:
+\code{\link[=review]{review()}}
 }
 \concept{validate}

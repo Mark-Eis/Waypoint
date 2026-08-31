@@ -115,8 +115,8 @@ rm(dm)
 \code{\link[=format]{format}(<coords>)}, \code{\link[=format]{print}(<coords>)},
 \code{\link{validate}()} and \code{\link[=Extract]{[<-}(<coords>)}.
 
-Other coordsandway: 
-\code{\link{convert}()},
+Other coordsandway:
+\code{\link[=convert]{convert()}},
 \code{\link{waypoints}}
 }
 \concept{coordsandway}

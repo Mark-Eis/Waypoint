@@ -82,7 +82,7 @@ rm(dm, wp)
 \seealso{
 \code{"\link{coords}"} and \code{"\link{waypoints}"}.
 
-Other validate: 
-\code{\link{validate}()}
+Other validate:
+\code{\link[=validate]{validate()}}
 }
 \concept{validate}
