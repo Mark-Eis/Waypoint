@@ -9,32 +9,6 @@
 #include "fmt/base.h"		// …fmt/*.h copied to …/R/Packages/Waypoint/src.
 #include <concepts>
 
-/// __________________________________________________
-/// __________________________________________________
-/// Development and debugging
-
-#define DEBUG 0
-
-#if DEBUG > 0
-
-void _ctrsgn(const std::type_info&, bool = true);
-
-/// __________________________________________________
-/// Check address for unnecessary copying
-inline void* address(const auto& t)
-{
-	return (void*)&t;
-}
-
-/// __________________________________________________
-/// Format strings for debugging code
-constexpr auto padstr { "— — — — — — — — — "sv };
-constexpr auto exportstr { "——Rcpp::export——"sv };
-
-#endif	// if DEBUG > 0
-
-const string demangle(const std::type_info&);
-
 
 /// __________________________________________________
 /// __________________________________________________
@@ -84,8 +58,6 @@ concept NumVec_or_DataFrame =
 /// __________________________________________________
 /// DVecType and SVecType
 
-#if DEBUG == 0
-
 /// __________________________________________________
 /// VecTypeBase
 template<typename T>
@@ -119,72 +91,6 @@ struct VecTypeBase : public vector<T> {
 template<typename T>
 VecTypeBase<T>::~VecTypeBase() {}
 
-#else // i.e. #if DEBUG > 0
-
-/// __________________________________________________
-/// VecTypeBase
-template<typename T>
-struct VecTypeBase : public vector<T> {
-	explicit VecTypeBase( vector<T>::size_type count ) : vector<T>(count)				// ≈ "default"
-	{
-		_ctrsgn(typeid(*this)); fmt::print("\t(vector<T>::size_type); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
-			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
-	}
-	VecTypeBase(const VecTypeBase&) = delete;											// copy constructor
-	VecTypeBase(const vector<T>& vt) : vector<T>{ vt }									// copy constructor
-	{
-		_ctrsgn(typeid(*this)); fmt::print("\t(const vector<T>&); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
-			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
-	}
-
-	VecTypeBase& operator=(const VecTypeBase&) = delete;									// copy assignment
-	VecTypeBase& operator=(const vector<T>& vt)											// copy assignment
-	{
-		fmt::print("@VecTypeBase& operator=(const vector<T>& vt); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
-			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
-		vector<T>::operator= (vt);
-		return *this;
-	}
-
-	VecTypeBase(VecTypeBase&& dv) : vector<T>{ std::move(static_cast<vector<T>&&>(dv)) }	// move constructor
-	{
-		_ctrsgn(typeid(*this)); fmt::print("\t\t\t(VecTypeBase&&); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
-			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
-	}
-
-	VecTypeBase(vector<T>&& vt) : vector<T>{ std::move(vt) }								// move constructor
-	{
-		_ctrsgn(typeid(*this)); fmt::print("\t(vector<T>&&); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
-			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
-	}
-
-	VecTypeBase& operator=(VecTypeBase&& dv)												// move assignment
-	{
-		_ctrsgn(typeid(*this)); fmt::print("\tVecTypeBase& operator=(VecTypeBase&&); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
-			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
-		vector<T>::operator=(std::move(static_cast<vector<T>&&>(dv)));
-		return *this;
-	}
-
-	VecTypeBase& operator=(vector<T>&& vt)												// move assignment
-	{
-		fmt::print("@VecTypeBase& operator=(vector<T>&& vt); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
-			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
-		vector<T>::operator=(std::move(vt));
-		return *this;
-	}
-
-	virtual ~VecTypeBase() = 0;
-};
-
-template<typename T>
-VecTypeBase<T>::~VecTypeBase()
-{
-	_ctrsgn(typeid(*this), false); fmt::print("\t{}\t\tthis {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
-			padstr, (void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], "Maybe gone…"sv);
-}
-
-#endif	// #if DEBUG > 0
 
 /// __________________________________________________
 /// DecDegVec
@@ -368,10 +274,6 @@ struct FamousFive {};
 /// Specialised struct for decimal degrees	
 template<>
 struct FamousFive<DecDegVecDouble> {
-#if DEBUG > 0
-	FamousFive<DecDegVecDouble>() { _ctrsgn(typeid(*this)); };
-	~FamousFive<DecDegVecDouble>() { _ctrsgn(typeid(*this), false); };
-#endif
 	int get_deg(double x) const { return int(x); }
 	double get_decdeg(double x) const { return x; }
 	int get_min(double x) const { return int(get_decmin(x)); }
@@ -383,10 +285,6 @@ struct FamousFive<DecDegVecDouble> {
 /// Specialised struct for degrees and minutes
 template<>
 struct FamousFive<DegMinVecDouble> {
-#if DEBUG > 0
-	FamousFive<DegMinVecDouble>() { _ctrsgn(typeid(*this)); };
-	~FamousFive<DegMinVecDouble>() { _ctrsgn(typeid(*this), false); };
-#endif
 	int get_deg(double x) const { return int(x / 1e2); }
 	double get_decdeg(double x) const { return int(x / 1e2) + mod1e2(x) / 60; }
 	int get_min(double x) const { return int(x) % int(1e2); }
@@ -398,10 +296,6 @@ struct FamousFive<DegMinVecDouble> {
 /// Specialised struct for degrees, minutes and seconds
 template<>
 struct FamousFive<DegMinSecVecDouble> {
-#if DEBUG > 0
-	FamousFive<DegMinSecVecDouble>() { _ctrsgn(typeid(*this)); };
-	~FamousFive<DegMinSecVecDouble>() { _ctrsgn(typeid(*this), false); };
-#endif
 	int get_deg(double x) const { return int(x / 1e4); }
 	double get_decdeg(double x) const { return int(x / 1e4) + (double)int(fmod(x, 1e4) / 1e2) / 60 + mod1e2(x) / 3600; }
 	int get_min(double x) const { return (int(x) % int(1e4)) / 1e2; }
@@ -471,10 +365,6 @@ struct Formateador<T, DecDegVecString>{
 	ostringstream ostrstr;
 	string operator()(double n)
 	{
-#if DEBUG > 1
-		fmt::print("@Formateador<T, DecDegVecString>::operator()(double n) const; T: {}, ff.get_decdeg(n) {}\n",
-			demangle(typeid(T)), ff.get_decdeg(n)); 
-#endif
 		ostrstr.str(""s);
 		ostrstr << setw(11) << setfill(' ')  << fixed << setprecision(6) << ff.get_decdeg(n) << "\u00B0";
 		return ostrstr.str();
@@ -495,10 +385,6 @@ struct Formateador<T, DegMinVecString>{
 			++deg;
 			min = 0;
 		} 
-#if DEBUG > 1
-		fmt::print("@Formateador<T, DegMinVecString>::operator()(double n) const; T: {}, abs(ff.get_deg(n)) {}, fabs(ff.get_decmin(n)) {}, deg {}, min {}\n",
-			demangle(typeid(T)), abs(ff.get_deg(n)), fabs(ff.get_decmin(n)), deg, min); 
-#endif
 		ostrstr.str(""s);
 		ostrstr << setw(3) << setfill(' ') << deg << "\u00B0"
 				<< setw(7) << setfill('0') << fixed << setprecision(4) << min << "\u2032";
@@ -520,10 +406,6 @@ struct Formateador<T, DegMinSecVecString>{
 			++min;
 			sec = 0;
 		} 
-#if DEBUG > 1
-		fmt::print("@Formateador<T, DegMinSecVecString>::operator()(double n) const; T: {}, abs(ff.get_deg(n)) {}, abs(ff.get_min(n)) {}, fabs(ff.get_sec(n)) {}, min {}, sec {}\n",
-			demangle(typeid(T)), abs(ff.get_deg(n)), abs(ff.get_min(n)), fabs(ff.get_sec(n)), min, sec); 
-#endif
 		ostrstr.str(""s);
 		ostrstr << setw(3) << setfill(' ') << abs(ff.get_deg(n)) << "\u00B0"
 				<< setw(2) << setfill('0') << min << "\u2032"
