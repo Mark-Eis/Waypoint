@@ -1,8 +1,8 @@
 # Waypoint (development version)
 
-* Initialise lambda captures with expressions, and use `mutable` specifier (#221)
+* Initialise lambda captures with expressions, and use `mutable` specifier (#221).
 
-* Make use of (C++20 / C++23) Ranges library (#220)
+* Make use of (C++20 / C++23) Ranges library (#220).
 
 * `Coords` made an abstract base class (#218).
 
