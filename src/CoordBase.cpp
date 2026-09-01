@@ -410,18 +410,17 @@ const vector<bool> Coords<T, S>::validate() const
 	fmt::print("@ICoords<T>::validate();\n\t{}\t\t &dv {}, &dv[0] {}, dv[0] {}, typeid: {}\n",
 		padstr, address(dv), address(dv[0]), dv[0], demangle(typeid(dv)));
 #endif
-	FamousFive<T> ff {};
-	vector<bool>::const_iterator ll_it{ latlon.begin() };
-	auto ll_size { latlon.size() };
 	auto valid = vector<bool>{};
 	valid.assign(dv.size(), {false});
 
-//	rng::transform(dv, valid.begin(), [&ff, &ll_it, &ll_size](auto n){
-	transform(dv.begin(), dv.end(), valid.begin(), [&ff, &ll_it, &ll_size](auto n){
-		return !((fabs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
-				(fabs(ff.get_decmin(n)) >= 60) ||
-				(fabs(ff.get_sec(n)) >= 60));
-	});
+	const auto lambda1 = [ff { FamousFive<T>{} }, ll_it { latlon.begin() }, ll_size { latlon.size() }] (auto n) mutable
+		{
+			return !((fabs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
+					(fabs(ff.get_decmin(n)) >= 60) ||
+					(fabs(ff.get_sec(n)) >= 60));
+		};
+
+	transform(dv.begin(), dv.end(), valid.begin(), lambda1);
 
 	if (rng::all_of(valid, [](auto v) { return v;}))
 		valid.assign({true});
