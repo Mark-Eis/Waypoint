@@ -1,4 +1,4 @@
-# Waypoint (development version)
+# Waypoint 2.0.1
 
 * Initialise lambda captures with expressions, and use `mutable` specifier (#221).
 
