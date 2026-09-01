@@ -413,14 +413,12 @@ const vector<bool> Coords<T, S>::validate() const
 	auto valid = vector<bool>{};
 	valid.assign(dv.size(), {false});
 
-	const auto lambda1 = [ff { FamousFive<T>{} }, ll_it { latlon.begin() }, ll_size { latlon.size() }] (auto n) mutable
+	transform(dv.begin(), dv.end(), valid.begin(), [ff { FamousFive<T>{} }, ll_it { latlon.begin() }, ll_size { latlon.size() }] (auto n) mutable
 		{
 			return !((fabs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
 					(fabs(ff.get_decmin(n)) >= 60) ||
 					(fabs(ff.get_sec(n)) >= 60));
-		};
-
-	transform(dv.begin(), dv.end(), valid.begin(), lambda1);
+		});
 
 	if (rng::all_of(valid, [](auto v) { return v;}))
 		valid.assign({true});
