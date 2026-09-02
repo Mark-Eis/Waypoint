@@ -31,9 +31,9 @@ inline void* address(const auto& t)
 constexpr auto padstr { "— — — — — — — — — "sv };
 constexpr auto exportstr { "——Rcpp::export——"sv };
 
-#endif	// if DEBUG > 0
-
 const string demangle(const std::type_info&);
+
+#endif	// if DEBUG > 0
 
 
 /// __________________________________________________

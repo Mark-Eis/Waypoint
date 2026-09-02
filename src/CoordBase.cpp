@@ -10,8 +10,8 @@
 #include <memory>
 #include <string>
 #include <utility>
-#include <iostream>     // std::cout
-#include <sstream>      // std::ostringstream
+#include <iostream>
+#include <sstream>
 
 using namespace Rcpp;
 
@@ -34,8 +34,8 @@ namespace rng = std::ranges;
 #include "CoordBase.h"
 
 #define FMT_HEADER_ONLY
-#include "fmt/format.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt.
-#include "fmt/ranges.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt.
+#include "fmt/format.h"		// …fmt/*.h copied to …/Waypoint/src/fmt.
+#include "fmt/ranges.h"		// …fmt/*.h copied to …/Waypoint/src/fmt.
 
 
 /// __________________________________________________
@@ -338,7 +338,7 @@ Coords<T, S>::Coords(NumericVector nv) :
 	dv { std::move(as<vector<double>>(nv)) },
 	latlon { get_vec_attr<bool>(nv, "latlon"s) }
 {
-static_assert(sufijo<S> && std::derived_from<S, Coords>);
+	static_assert(sufijo<S> && std::derived_from<S, Coords>);
 #if DEBUG > 0
 	_ctrsgn(typeid(*this)); fmt::print("\t(T, const vector<bool>); T: {}, S: {}\n", demangle(typeid(T)), demangle(typeid(S)));
 #endif
@@ -912,8 +912,6 @@ NumericVector validatecoords(const NumericVector x, const bool force = true)
 // [[Rcpp::export(name = "as_waypoints.default")]]
 DataFrame as_waypoints(DataFrame object, int fmt = 1)
 {
-#if DEBUG > 0
-#endif
 #if DEBUG > 0
 	fmt::print("{}@as_waypoints(DataFrame, int); fmt={}\n", exportstr, fmt);
 #endif
