@@ -13,7 +13,7 @@
 /// __________________________________________________
 /// Development and debugging
 
-#define DEBUG 0
+#define DEBUG 1
 
 #if DEBUG > 0
 
@@ -90,7 +90,7 @@ concept NumVec_or_DataFrame =
 /// VecTypeBase
 template<typename T>
 struct VecTypeBase : public vector<T> {
-	explicit VecTypeBase( vector<T>::size_type count ) : vector<T>(count) {}			// ≈ "default"
+	explicit VecTypeBase( typename vector<T>::size_type count ) : vector<T>(count) {}			// ≈ "default"
 	VecTypeBase(const VecTypeBase&) = delete;											// copy constructor
 	VecTypeBase(const vector<T>& vt) : vector<T>{ vt } {}								// copy constructor
 
@@ -125,7 +125,7 @@ VecTypeBase<T>::~VecTypeBase() {}
 /// VecTypeBase
 template<typename T>
 struct VecTypeBase : public vector<T> {
-	explicit VecTypeBase( vector<T>::size_type count ) : vector<T>(count)				// ≈ "default"
+	explicit VecTypeBase( typename vector<T>::size_type count ) : vector<T>(count)				// ≈ "default"
 	{
 		_ctrsgn(typeid(*this)); fmt::print("\t(vector<T>::size_type); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
 			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
