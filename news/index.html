@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Waypoint</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,9 +44,13 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="waypoint-development-version">Waypoint (development version)<a class="anchor" aria-label="anchor" href="#waypoint-development-version"></a></h2>
-<ul><li><p><code>Coords</code> as abstract base class (#218).</p></li>
-<li><p>Minimised unnecessary dependency on <code>{fmt}</code> headers. Dependency on <code>{fmt}</code> headers is not eliminated completely as it allows <code>stdlenstr(vector&lt;string&gt;&amp;)</code> to count extended Unicode characters (e.g., those with accents) as a single character (#109, #207).</p></li>
+<h2 class="pkg-version" data-toc-text="2.0.1" id="waypoint-201">Waypoint 2.0.1<a class="anchor" aria-label="anchor" href="#waypoint-201"></a></h2>
+<ul><li><p>Initialise lambda captures with expressions, and use <code>mutable</code> specifier (#221).</p></li>
+<li><p>Make use of (C++20 / C++23) Ranges library (#220).</p></li>
+<li><p><code>Coords</code> made an abstract base class (#218).</p></li>
+<li><p>Simplify <code>Coords</code> class constructor (#215).</p></li>
+<li><p>Improved messages in <code>convertcoords()</code> and <code>convertwaypoints()</code> when <code>fmt</code> unchanged (#214).</p></li>
+<li><p>Minimised dependency on {fmt} headers in favour of conventional <code>&lt;iostream&gt;</code> and <code>&lt;sstream&gt;</code> headers. Dependency not eliminated entirely; {fmt} headers remain essential to enable <code>stdlenstr(vector&lt;string&gt;&amp;)</code> to count extended Unicode characters (e.g., those with accents) as single, rather than as two characters (#109, #216, #217).</p></li>
 <li><p>Other minor tweaks and tidying of code.</p></li>
 </ul></div>
     <div class="section level2">
