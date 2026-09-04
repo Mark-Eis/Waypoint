@@ -53,6 +53,27 @@ constexpr bool isNumericVector_v = isNumericVector<T>::value;
 /// __________________________________________________
 /// Concepts
 
+# if defined __clang__
+	#if (__clang_major__ < 15)
+namespace std
+{
+
+	/// Concept —— integral (std::integral replicate)
+	template<typename T>
+	concept integral = is_integral_v<T>;
+
+	/// Concept —— floating_point (std::floating_point replicate)
+	template<typename T>
+	concept floating_point = is_floating_point_v<T>;
+
+	/// Concept —— derived_from (std::derived_from replicate)
+	template <class _Dp, class _Bp>
+	concept derived_from = is_base_of_v<_Bp, _Dp> && is_convertible_v<const volatile _Dp*, const volatile _Bp*>;
+
+}
+	#endif
+#endif
+
 /// Concept —— NumericVector
 template<typename T>
 concept Is_NumericVector = isNumericVector_v<T>;
