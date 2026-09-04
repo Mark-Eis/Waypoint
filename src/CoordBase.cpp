@@ -413,12 +413,20 @@ const vector<bool> Coords<T, S>::validate() const
 	auto valid = vector<bool>{};
 	valid.assign(dv.size(), {false});
 
-	transform(dv.begin(), dv.end(), valid.begin(), [ff { FamousFive<T>{} }, ll_it { latlon.begin() }, ll_size { latlon.size() }] (auto n) mutable
-		{
-			return !((fabs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
-					(fabs(ff.get_decmin(n)) >= 60) ||
-					(fabs(ff.get_sec(n)) >= 60));
-		});
+	if constexpr(std::indirectly_writable<std::vector<bool>::iterator, bool>)
+		rng::transform(dv, valid.begin(), [ff { FamousFive<T>{} }, ll_it { latlon.begin() }, ll_size { latlon.size() }] (auto n) mutable
+			{
+				return !((fabs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
+						(fabs(ff.get_decmin(n)) >= 60) ||
+						(fabs(ff.get_sec(n)) >= 60));
+			});
+	else 
+		transform(dv.begin(), dv.end(), valid.begin(), [ff { FamousFive<T>{} }, ll_it { latlon.begin() }, ll_size { latlon.size() }] (auto n) mutable
+			{
+				return !((fabs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
+						(fabs(ff.get_decmin(n)) >= 60) ||
+						(fabs(ff.get_sec(n)) >= 60));
+			});
 
 	if (rng::all_of(valid, [](auto v) { return v;}))
 		valid.assign({true});
