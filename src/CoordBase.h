@@ -111,11 +111,11 @@ concept NumVec_or_DataFrame =
 /// VecTypeBase
 template<typename T>
 struct VecTypeBase : public vector<T> {
-	explicit VecTypeBase( vector<T>::size_type count ) : vector<T>(count) {}			// ≈ "default"
+	explicit VecTypeBase( typename vector<T>::size_type count ) : vector<T>(count) {}	// ≈ "default"
 	VecTypeBase(const VecTypeBase&) = delete;											// copy constructor
 	VecTypeBase(const vector<T>& vt) : vector<T>{ vt } {}								// copy constructor
 
-	VecTypeBase& operator=(const VecTypeBase&) = delete;									// copy assignment
+	VecTypeBase& operator=(const VecTypeBase&) = delete;								// copy assignment
 	VecTypeBase& operator=(const vector<T>& vt)											// copy assignment
 	{
 		vector<T>::operator=(vt);
