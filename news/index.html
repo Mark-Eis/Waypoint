@@ -13,7 +13,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Waypoint</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,7 +44,13 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="2.0.1" id="waypoint-201">Waypoint 2.0.1<a class="anchor" aria-label="anchor" href="#waypoint-201"></a></h2>
+<h2 class="pkg-version" data-toc-text="development version" id="waypoint-development-version">Waypoint (development version)<a class="anchor" aria-label="anchor" href="#waypoint-development-version"></a></h2>
+<ul><li><p>Code missing concepts for compatibility with older Apple Clang compilers (#223).</p></li>
+<li><p>Use typename for compatibility with older Apple Clang compilers, see:<a href="https://wg21.link/P0634R3" class="external-link">P0634R3</a> (#222).</p></li>
+<li><p>Compile time check that <code>vector&lt;bool&gt;::iterator</code> is <code>indirectly_writable</code> (since C++23) before using Ranges library with <code>vector&lt;bool&gt;</code> (#220).</p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.0.1" id="waypoint-201">Waypoint 2.0.1<a class="anchor" aria-label="anchor" href="#waypoint-201"></a></h2><p class="text-muted">CRAN release: 2026-09-02</p>
 <ul><li><p>Initialise lambda captures with expressions, and use <code>mutable</code> specifier (#221).</p></li>
 <li><p>Make use of (C++20 / C++23) Ranges library (#220).</p></li>
 <li><p><code>Coords</code> made an abstract base class (#218).</p></li>

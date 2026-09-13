@@ -1,6 +1,20 @@
 # Changelog
 
+## Waypoint (development version)
+
+- Code missing concepts for compatibility with older Apple Clang
+  compilers (#223).
+
+- Use typename for compatibility with older Apple Clang compilers,
+  see:[P0634R3](https://wg21.link/P0634R3) (#222).
+
+- Compile time check that `vector<bool>::iterator` is
+  `indirectly_writable` (since C++23) before using Ranges library with
+  `vector<bool>` (#220).
+
 ## Waypoint 2.0.1
+
+CRAN release: 2026-09-02
 
 - Initialise lambda captures with expressions, and use `mutable`
   specifier (#221).
