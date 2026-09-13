@@ -27,6 +27,55 @@ constexpr bool isNumericVector_v = isNumericVector<T>::value;
 /// __________________________________________________
 /// Concepts
 
+# if defined __clang__
+	#if (__clang_major__ < 15)
+	namespace std
+	{
+		/// Concept —— integral (std::integral replicate)
+		template<typename T>
+		concept integral = is_integral_v<T>;
+
+		/// Concept —— floating_point (std::floating_point replicate)
+		template<typename T>
+		concept floating_point = is_floating_point_v<T>;
+
+		/// Concept —— derived_from (std::derived_from replicate)
+		template <class _Dp, class _Bp>
+		concept derived_from = is_base_of_v<_Bp, _Dp> && is_convertible_v<const volatile _Dp*, const volatile _Bp*>;
+
+		/// Concept —— referenceable (std::referenceable instantiation)
+		template<typename T>
+		using __Tref = T&;
+
+		template<typename T>
+		concept referenceable = requires() {
+			typename __Tref<T>;
+		};
+
+		/// Concept —— dereferenceable (std::dereferenceable instantiation)
+		template <class _Tp>
+		concept dereferenceable = requires(_Tp& __t) {
+		  { *__t } -> referenceable; // not required to be equality-preserving
+		};
+
+		/// iter_reference (std::iter_reference_t instantiation)
+		template< dereferenceable T >
+		using iter_reference_t = decltype(*std::declval<T&>());
+
+		/// Concept —— indirectly_writable (std::indirectly_writable replicate)
+		template< class Out, class T >
+			concept indirectly_writable =
+				requires(Out&& o, T&& t) {
+					*o = std::forward<T>(t);
+					*std::forward<Out>(o) = std::forward<T>(t);
+					const_cast<const iter_reference_t<Out>&&>(*o) = std::forward<T>(t);
+					const_cast<const iter_reference_t<Out>&&>(*std::forward<Out>(o)) =
+						std::forward<T>(t);
+				};
+	}
+	#endif
+#endif
+
 /// Concept —— NumericVector
 template<typename T>
 concept Is_NumericVector = isNumericVector_v<T>;
