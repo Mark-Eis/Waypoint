@@ -701,9 +701,7 @@ const vector<bool> validate_switch(const NumericVector);
 
 /// __________________________________________________
 /// __________________________________________________
-/// Type aliases
-template<typename T>
-using bisvec = array<vector<T>, 2>;
+/// Type alias
 template<typename T>
 using bisconstvec = array<const vector<T>, 2>;
 
