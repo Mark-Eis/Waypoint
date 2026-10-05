@@ -10,8 +10,8 @@
 #include <memory>
 #include <string>
 #include <utility>
-#include <iostream>     // std::cout
-#include <sstream>      // std::ostringstream
+#include <iostream>
+#include <sstream>
 
 using namespace Rcpp;
 
@@ -32,8 +32,8 @@ using std::setprecision;
 #include "CoordBase.h"
 
 #define FMT_HEADER_ONLY
-#include "fmt/format.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt.
-#include "fmt/ranges.h"		// …fmt/*.h copied to ~/Documents/R/Packages/Waypoint/src/fmt.
+#include "fmt/format.h"                // …fmt/*.h copied to …/Waypoint/src/fmt.
+#include "fmt/ranges.h"                // …fmt/*.h copied to …/Waypoint/src/fmt.
 
 
 /// __________________________________________________
@@ -41,10 +41,11 @@ using std::setprecision;
 /// Development and Debugging functions
 
 #if DEBUG > 0
+using std::type_info;
 
 /// __________________________________________________
 /// Report object construction and destruction
-void _ctrsgn(const std::type_info& obj, bool construct)
+void _ctrsgn(const type_info& obj, bool construct)
 { /*
 */	fmt::print("{}structing: ", construct ? "§§§Con" : "~§§De");
 	std::fflush(nullptr);
@@ -52,11 +53,9 @@ void _ctrsgn(const std::type_info& obj, bool construct)
 	std::fflush(nullptr);
 }
 
-#endif
-
 /// __________________________________________________
 /// Demangle object names
-const string demangle(const std::type_info& obj)
+const string demangle(const type_info& obj)
 {
 	int status{ 0 };
 	std::unique_ptr<char> u_ptr { abi::__cxa_demangle(obj.name(), NULL, NULL, &status) };
@@ -80,10 +79,13 @@ const string demangle(const std::type_info& obj)
 		} break;
 		default:
 			// unknown error
-			stop("demangle(const std::type_info&) my bad");
+			stop("demangle(const type_info&) my bad");
 	}
+
 	return str;
 }
+
+#endif	// #if DEBUG > 0
 
 /// __________________________________________________
 /// __________________________________________________
@@ -334,7 +336,7 @@ Coords<T, S>::Coords(NumericVector nv) :
 	dv { std::move(as<vector<double>>(nv)) },
 	latlon { get_vec_attr<bool>(nv, "latlon"s) }
 {
-static_assert(sufijo<S> && std::derived_from<S, Coords>);
+	static_assert(sufijo<S> && std::derived_from<S, Coords>);
 #if DEBUG > 0
 	_ctrsgn(typeid(*this)); fmt::print("\t(T, const vector<bool>); T: {}, S: {}\n", demangle(typeid(T)), demangle(typeid(S)));
 #endif
@@ -908,8 +910,6 @@ NumericVector validatecoords(const NumericVector x, const bool force = true)
 // [[Rcpp::export(name = "as_waypoints.default")]]
 DataFrame as_waypoints(DataFrame object, int fmt = 1)
 {
-#if DEBUG > 0
-#endif
 #if DEBUG > 0
 	fmt::print("{}@as_waypoints(DataFrame, int); fmt={}\n", exportstr, fmt);
 #endif
