@@ -31,9 +31,9 @@ inline void* address(const auto& t)
 constexpr auto padstr { "— — — — — — — — — "sv };
 constexpr auto exportstr { "——Rcpp::export——"sv };
 
-#endif	// if DEBUG > 0
-
 const string demangle(const std::type_info&);
+
+#endif	// if DEBUG > 0
 
 
 /// __________________________________________________
@@ -52,6 +52,56 @@ constexpr bool isNumericVector_v = isNumericVector<T>::value;
 
 /// __________________________________________________
 /// Concepts
+
+# if defined __clang__
+	#if (__clang_major__ < 15)
+	namespace std
+	{
+
+		/// Concept —— integral (std::integral replicate)
+		template<typename T>
+		concept integral = is_integral_v<T>;
+
+		/// Concept —— floating_point (std::floating_point replicate)
+		template<typename T>
+		concept floating_point = is_floating_point_v<T>;
+
+		/// Concept —— derived_from (std::derived_from replicate)
+		template <class _Dp, class _Bp>
+		concept derived_from = is_base_of_v<_Bp, _Dp> && is_convertible_v<const volatile _Dp*, const volatile _Bp*>;
+
+		/// Concept —— referenceable (std::referenceable instantiation)
+		template<typename T>
+		using __Tref = T&;
+
+		template<typename T>
+		concept referenceable = requires() {
+			typename __Tref<T>;
+		};
+
+		/// Concept —— dereferenceable (std::dereferenceable instantiation)
+		template <class _Tp>
+		concept dereferenceable = requires(_Tp& __t) {
+		  { *__t } -> referenceable; // not required to be equality-preserving
+		};
+
+		/// iter_reference (std::iter_reference_t instantiation)
+		template< dereferenceable T >
+		using iter_reference_t = decltype(*std::declval<T&>());
+
+		/// Concept —— indirectly_writable (std::indirectly_writable replicate)
+		template< class Out, class T >
+			concept indirectly_writable =
+				requires(Out&& o, T&& t) {
+					*o = std::forward<T>(t);
+					*std::forward<Out>(o) = std::forward<T>(t);
+					const_cast<const iter_reference_t<Out>&&>(*o) = std::forward<T>(t);
+					const_cast<const iter_reference_t<Out>&&>(*std::forward<Out>(o)) =
+						std::forward<T>(t);
+				};
+	}
+	#endif
+#endif
 
 /// Concept —— NumericVector
 template<typename T>
@@ -90,24 +140,24 @@ concept NumVec_or_DataFrame =
 /// VecTypeBase
 template<typename T>
 struct VecTypeBase : public vector<T> {
-	explicit VecTypeBase( vector<T>::size_type count ) : vector<T>(count) {}			// ≈ "default"
-	VecTypeBase(const VecTypeBase&) = delete;											// copy constructor
-	VecTypeBase(const vector<T>& vt) : vector<T>{ vt } {}								// copy constructor
+	explicit VecTypeBase( typename vector<T>::size_type count ) : vector<T>(count) {}		// ≈ "default"
+	VecTypeBase(const VecTypeBase&) = delete;												// copy constructor
+	VecTypeBase(const vector<T>& vt) : vector<T>{ vt } {}									// copy constructor
 
 	VecTypeBase& operator=(const VecTypeBase&) = delete;									// copy assignment
-	VecTypeBase& operator=(const vector<T>& vt)											// copy assignment
+	VecTypeBase& operator=(const vector<T>& vt)												// copy assignment
 	{
 		vector<T>::operator=(vt);
 		return *this;
 	}
 
-	VecTypeBase(VecTypeBase&&) = default;												// move constructor
+	VecTypeBase(VecTypeBase&&) = default;													// move constructor
 
-	VecTypeBase(vector<T>&& vt) : vector<T>{ std::move(vt) } {}							// move constructor
+	VecTypeBase(vector<T>&& vt) : vector<T>{ std::move(vt) } {}								// move constructor
 
-	VecTypeBase& operator=(VecTypeBase&&) = default;									// move assignment
+	VecTypeBase& operator=(VecTypeBase&&) = default;										// move assignment
 
-	VecTypeBase& operator=(vector<T>&& vt)												// move assignment
+	VecTypeBase& operator=(vector<T>&& vt)													// move assignment
 	{
 		vector<T>::operator=(std::move(vt));
 		return *this;
@@ -125,20 +175,20 @@ VecTypeBase<T>::~VecTypeBase() {}
 /// VecTypeBase
 template<typename T>
 struct VecTypeBase : public vector<T> {
-	explicit VecTypeBase( vector<T>::size_type count ) : vector<T>(count)				// ≈ "default"
+	explicit VecTypeBase( typename vector<T>::size_type count ) : vector<T>(count)			// ≈ "default"
 	{
 		_ctrsgn(typeid(*this)); fmt::print("\t(vector<T>::size_type); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
 			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
 	}
-	VecTypeBase(const VecTypeBase&) = delete;											// copy constructor
-	VecTypeBase(const vector<T>& vt) : vector<T>{ vt }									// copy constructor
+	VecTypeBase(const VecTypeBase&) = delete;												// copy constructor
+	VecTypeBase(const vector<T>& vt) : vector<T>{ vt }										// copy constructor
 	{
 		_ctrsgn(typeid(*this)); fmt::print("\t(const vector<T>&); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
 			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
 	}
 
 	VecTypeBase& operator=(const VecTypeBase&) = delete;									// copy assignment
-	VecTypeBase& operator=(const vector<T>& vt)											// copy assignment
+	VecTypeBase& operator=(const vector<T>& vt)												// copy assignment
 	{
 		fmt::print("@VecTypeBase& operator=(const vector<T>& vt); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
 			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
@@ -166,7 +216,7 @@ struct VecTypeBase : public vector<T> {
 		return *this;
 	}
 
-	VecTypeBase& operator=(vector<T>&& vt)												// move assignment
+	VecTypeBase& operator=(vector<T>&& vt)													// move assignment
 	{
 		fmt::print("@VecTypeBase& operator=(vector<T>&& vt); this {}, &vector<T> {}, &vector<T>[0] {}, vector<T>[0] {}\n",
 			(void*)this, (void*)dynamic_cast<vector<T>*>(this), (void*)&(*this)[0], (*this)[0]);
@@ -651,9 +701,7 @@ const vector<bool> validate_switch(const NumericVector);
 
 /// __________________________________________________
 /// __________________________________________________
-/// Type aliases
-template<typename T>
-using bisvec = array<vector<T>, 2>;
+/// Type alias
 template<typename T>
 using bisconstvec = array<const vector<T>, 2>;
 
