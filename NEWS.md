@@ -1,14 +1,30 @@
 # Waypoint (development version)
 
-* `Coords` as abstract base class (#218).
+* Code missing concepts for compatibility with older Apple Clang compilers (#223).
 
-* Minimised unnecessary dependency on {fmt} headers. Dependency on {fmt} headers is not eliminated
-  completely as it allows stdlenstr(vector<string>&) to count extended Unicode characters (e.g.,
-  those with accents) as a single character (#109, #207).
+* Use typename for compatibility with older Apple Clang compilers, see: [P0634R3](https://wg21.link/P0634R3) (#222).
+
+* Compile time check that `vector<bool>::iterator` is `indirectly_writable` (since C++23) before
+  using Ranges library with `vector<bool>` (#220).
+
+# Waypoint 2.0.1
+
+* Initialise lambda captures with expressions, and use `mutable` specifier (#221).
+
+* Make use of (C++20 / C++23) Ranges library (#220).
+
+* `Coords` made an abstract base class (#218).
+
+* Simplify `Coords` class constructor (#215).
+
+* Improved messages in `convertcoords()` and `convertwaypoints()` when `fmt` unchanged (#214).
+
+* Minimised dependency on {fmt} headers in favour of conventional `<iostream>` and `<sstream>`
+  headers. Dependency not eliminated entirely; {fmt} headers remain essential to enable
+  `stdlenstr(vector<string>&)` to count extended Unicode characters (e.g., those with accents)
+  as single, rather than as two characters (#109, #216, #217).
 
 * Other minor tweaks and tidying of code.
-
-
 
 # Waypoint 2.0.0
 
