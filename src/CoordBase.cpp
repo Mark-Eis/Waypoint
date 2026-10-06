@@ -6,6 +6,7 @@
 
 #include <array>
 #include <Rcpp.h>
+#include <cxxabi.h>
 #include <memory>
 #include <string>
 #include <utility>
@@ -28,12 +29,11 @@ using std::setw;
 using std::setfill;
 using std::setprecision;
 
-namespace rng = std::ranges;
-
 #include "CoordBase.h"
 
 #define FMT_HEADER_ONLY
-#include "fmt/format.h"		// …fmt/*.h copied to …/Waypoint/src/fmt
+#include "fmt/format.h"                // …fmt/*.h copied to …/Waypoint/src/fmt.
+#include "fmt/ranges.h"                // …fmt/*.h copied to …/Waypoint/src/fmt.
 
 
 /// __________________________________________________
@@ -94,7 +94,7 @@ int check_logical_attr(NumVec_or_DataFrame auto t, const string attrname)
 {
 	const vector vec_attr{ get_vec_attr<bool>(t, attrname) };
 	if (vec_attr.size()) {
-		return rng::all_of(vec_attr, [](bool v) { return v;}) ? 0b11 : 0b01;
+		return all_of(vec_attr.begin(), vec_attr.end(), [](bool v) { return v;}) ? 0b11 : 0b01;
 	} else {
 		return 0b00;
 	}
@@ -121,15 +121,15 @@ inline bool is_item_in_df(const DataFrame df, int item_no)
 /// Standarise width of strings in vector to that of the longest
 inline void stdlenstr(vector<string>& sv)
 {
-	auto maxwdth = rng::max_element(sv, [](const string& a, const string& b){ return a.size() < b.size(); })->size();
-	rng::transform(sv, sv.begin(), [maxwdth](const string& s) { return fmt::format("{:<{}}", s, maxwdth); });
+	auto maxwdth = max_element(sv.begin(), sv.end(), [](const string& a, const string& b){ return a.size() < b.size(); })->size();
+	transform(sv.begin(), sv.end(), sv.begin(), [maxwdth](const string& s) { return fmt::format("{:<{}}", s, maxwdth); });
 }
 
 /// __________________________________________________
 /// Concatenate corresponding elements of two vector<string>, with separator; result in second vector<string>
 inline void concat_vecstr_elmnts(const vector<string>& sv_a, vector<string>& sv_b, const string sep)
 {
-	rng::transform(sv_a, sv_b, sv_b.begin(), [&sep](const string& str_a, const string& str_b) {
+	transform(sv_a.begin(), sv_a.end(), sv_b.begin(), sv_b.begin(), [&sep](const string& str_a, const string& str_b) {
 		return str_a + sep + str_b; }); 
 }
 
@@ -137,7 +137,7 @@ inline void concat_vecstr_elmnts(const vector<string>& sv_a, vector<string>& sv_
 /// Concatenate corresponding elements of vector<int> and vector<string>, with separator; result in vector<string>
 inline void concat_vecstr_elmnts(const vector<int>& iv_a, vector<string>& sv_b, const string sep)
 {
-	rng::transform(iv_a, sv_b, sv_b.begin(), [&sep](const int i, const string& str_b) {
+	transform(iv_a.begin(), iv_a.end(), sv_b.begin(), sv_b.begin(), [&sep](const int i, const string& str_b) {
 		return (std::to_string(i)) + sep + str_b; }); 
 }
 
@@ -160,7 +160,7 @@ inline bool prefixwithnames(vector<string>& sv, RObject& namesobj)
 /// string to lower case (see cppreference.com std::tolower)
 inline string str_tolower(string s)
 {
-	rng::transform(s, s.begin(), [](unsigned char c){ return tolower(c); });
+	transform(s.begin(), s.end(), s.begin(), [](unsigned char c){ return tolower(c); });
 	return s;
 }
 
@@ -174,9 +174,7 @@ int name_pos_in_df(const DataFrame df, const string name)
 	typedef decltype(names.size()) Tmp;
 	Tmp i = 0;
 	for (auto str : names ) {
-		// fmt::print("@@name_pos_in_df(const DataFrame, const string); testing: {}\n", str);
 		if (!str_tolower(str).compare(name)) {
-			// fmt::print("@@@name_pos_in_df(const DataFrame, const string); found: {}\n", str);
 			break;
 		}
 		i++;
@@ -306,17 +304,19 @@ vector<U> Coords<T, S>::conform(CoordType required) const
 template<DVecType T, typename S>
 const vector<bool> Coords<T, S>::validate() const
 {
+	FamousFive<T> ff {};
+	vector<bool>::const_iterator ll_it{ latlon.begin() };
+	auto ll_size { latlon.size() };
 	auto valid = vector<bool>{};
 	valid.assign(dv.size(), {false});
 
-	transform(dv.begin(), dv.end(), valid.begin(), [ff { FamousFive<T>{} }, ll_it { latlon.begin() }, ll_size { latlon.size() }] (auto n) mutable
-		{
-			return !((fabs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
-					(fabs(ff.get_decmin(n)) >= 60) ||
-					(fabs(ff.get_sec(n)) >= 60));
-		});
+	transform(dv.begin(), dv.end(), valid.begin(), [&ff, &ll_it, &ll_size](auto n){
+		return !((fabs(ff.get_decdeg(n)) > (ll_size && (ll_size > 1 ? *ll_it++ : *ll_it) ? 90 : 180)) ||
+				(fabs(ff.get_decmin(n)) >= 60) ||
+				(fabs(ff.get_sec(n)) >= 60));
+	});
 
-	if (rng::all_of(valid, [](auto v) { return v;}))
+	if (all_of(valid.begin(), valid.end(), [](auto v) { return v;}))
 		valid.assign({true});
 
 	return valid;
@@ -347,22 +347,22 @@ void SufijoCoords<T>::suffix(vectype auto& uv_out) const
 		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + (*ll_it ? " lat" : " lon"); };
 	
 		if (ll_size > 1)
-			rng::transform(uv_out, dv, uv_out.begin(), lambda1);
+			transform(uv_out.begin(), uv_out.end(), dv.begin(), uv_out.begin(), lambda1);
 		else
 			if (ll_size == 1)   // uniform coords
-				rng::transform(uv_out, dv, uv_out.begin(), lambda2);
+				transform(uv_out.begin(), uv_out.end(), dv.begin(), uv_out.begin(), lambda2);
 	} else if constexpr (isDegMinVecString_v<uv_out_type> || isDegMinSecVecString_v<uv_out_type>) {
 		const auto lambda1 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it++); };
 		const auto lambda2 = [&ll_it](auto& outstr, auto n){ return outstr + cardpoint(n < 0, *ll_it); };
 		const auto lambda3 = [](auto& outstr, auto n){ return outstr + cardi_b(n < 0); };
 	
 		if (ll_size > 1)
-			rng::transform(uv_out, dv, uv_out.begin(), lambda1);
+			transform(uv_out.begin(), uv_out.end(), dv.begin(), uv_out.begin(), lambda1);
 		else
 			if (ll_size == 1)   // uniform coords
-				rng::transform(uv_out, dv, uv_out.begin(), lambda2);
+				transform(uv_out.begin(), uv_out.end(), dv.begin(), uv_out.begin(), lambda2);
 			else				// no latlon info
-				rng::transform(uv_out, dv, uv_out.begin(), lambda3);
+				transform(uv_out.begin(), uv_out.end(), dv.begin(), uv_out.begin(), lambda3);
 	}
 }
 
@@ -375,7 +375,7 @@ void SufijoWaypoints<T>::suffix(vectype auto& uv_out) const
 {
 	using uv_out_type = std::remove_cvref_t<decltype(uv_out)>;
 	if constexpr (!isDecDegVecString_v<uv_out_type>)
-		rng::transform(uv_out, dv, uv_out.begin(), [this](auto& outstr, auto n){
+		transform(uv_out.begin(), uv_out.end(), dv.begin(), uv_out.begin(), [this](auto& outstr, auto n){
 		   return outstr + cardpoint(n < 0, latlon[0]); }
 		);
 }
@@ -564,16 +564,14 @@ bool validate(const NumVec_or_DataFrame auto t, bool revalidate)
 	bool iscoords {false};
 	bool warn {false};
 	auto valid { validate_switch(t) };
-
 	if constexpr (isNumericVector_v<t_type>) {
 		iscoords = true;
-		if (!rng::all_of(valid, [](auto i){ return i; }))
+		if (!std::all_of(valid.begin(), valid.end(), [](auto i){ return i; }))
 			warn = true;
 		static_cast<NumericVector>(t).attr("valid") = valid; 
-
 	} else if constexpr (Is_DataFrame<t_type>) {
-		if (!rng::all_of(valid[0], [](auto i){ return i; }) ||
-			!rng::all_of(valid[1], [](auto i){ return i; }))
+		if (!std::all_of(valid[0].begin(), valid[0].end(), [](auto i){ return i; }) ||
+			!std::all_of(valid[1].begin(), valid[1].end(), [](auto i){ return i; }))
 			warn = true;
 		static_cast<DataFrame>(t).attr("validlat") = valid[0];
 		static_cast<DataFrame>(t).attr("validlon") = valid[1];
@@ -593,7 +591,7 @@ bool valid_ll(const DataFrame df)
 	bool valid = false;
 	vector llcols { get_vec_attr<int>(df, "llcols"s) };
 	if (2 == llcols.size()) {
-		rng::transform(llcols, llcols.begin(), [](auto x){ return --x; });
+		transform(llcols.begin(), llcols.end(), llcols.begin(), [](auto x){ return --x; });
 		if (is_item_in_df(df, llcols[0]) && is_item_in_df(df, llcols[1]) && llcols[0] != llcols[1])
 			if (is<NumericVector>(df[llcols[0]]) && is<NumericVector>(df[llcols[1]]))
 				valid = true;
@@ -794,7 +792,7 @@ CharacterVector formatwaypoints(DataFrame x, bool usenames = true, bool validate
 	auto required { fmt ? get_coordtype(fmt) : get_coordtype(x) };
 	auto vs_lat { wp.format(required, true) };
 	auto vs_lon { wp.format(required, false) };
-	rng::transform(vs_lat, vs_lon, vs_lat.begin(), [](auto& latstr, auto& lonstr){ return latstr + "  " + lonstr; });
+	transform(vs_lat.begin(), vs_lat.end(), vs_lon.begin(), vs_lat.begin(), [](auto& latstr, auto& lonstr){ return latstr + "  " + lonstr; });
 	if (usenames) {
 		RObject names = getnames(x);
 		if (!prefixwithnames(vs_lat, names))

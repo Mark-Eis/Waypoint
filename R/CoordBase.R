@@ -1,5 +1,5 @@
 ## Waypoint R Package
-## Mark Eisler (c) May 2025
+## Mark Eisler (c) Jul 2026
 ## For conversion and validation of geographic coordinates
 ##
 ## Requires R version 4.4.2 (2024-10-31) -- "Pile of Leaves" or later

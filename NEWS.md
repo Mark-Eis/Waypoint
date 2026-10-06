@@ -1,11 +1,10 @@
 # Waypoint 2.0.2
 
+* Rollback use of (C++20 / C++23) `Ranges` library for compatibility with Apple clang version 14.0.0 (clang-1400.0.29.202) (#224).
+
 * Code missing concepts for compatibility with older Apple Clang compilers (#223).
 
-* Use typename for compatibility with older Apple Clang compilers, see: [P0634R3](https://wg21.link/P0634R3) (#222).
-
-* Compile time check that `vector<bool>::iterator` is `indirectly_writable` (since C++23) before
-  using Ranges library with `vector<bool>` (#220).
+* Use `typename` for compatibility with older Apple Clang compilers, see: [P0634R3](https://wg21.link/P0634R3) (#222).
 
 # Waypoint 2.0.1
 
@@ -25,8 +24,6 @@
   as single, rather than as two characters (#109, #216, #217).
 
 * Other minor tweaks and tidying of code.
-
-
 
 # Waypoint 2.0.0
 
