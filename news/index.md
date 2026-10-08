@@ -2,6 +2,8 @@
 
 ## Waypoint 2.0.2
 
+CRAN release: 2026-10-07
+
 - Rollback use of (C++20 / C++23) `Ranges` library for compatibility
   with Apple clang version 14.0.0 (clang-1400.0.29.202) (#224).
 
